@@ -30,3 +30,4 @@ No additional instructions required.
 Name | Mobile | Email | Development OS/Toolchain
 -:|:-:|:-|-|
 Lua Yi Da | 93679300 | e0543409@u.nus.edu | Windows 11/Visual Studio 2022
+Benedict Chua Jun Jie | 97466137 | benedictchuajj@u.nus.edu | macOS Big Sur/Visual Studio 2022
