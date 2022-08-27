@@ -15,12 +15,18 @@ enum class StatementType {
 */
 class Statement {
 public:
+	/*
+	* Explicit constructor for a Statement.
+	*/
 	explicit Statement(int index, StatementType type);
 
 	StatementType getStatementType();
 
 	int getIndex();
 
+	/*
+	* Override equality operator for Statement to check index and type.
+	*/
 	bool operator==(const Statement& other) const;
 
 private:
