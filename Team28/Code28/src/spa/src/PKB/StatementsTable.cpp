@@ -26,7 +26,7 @@ Statement StatementsTable::retrieve(const int& index) {
 		return nullptr;
 	}
 
-	return statements.at(index);
+	return statements.at(index - 1);
 }
 
 StatementType StatementsTable::getStatementType(const int& index) {
@@ -35,6 +35,6 @@ StatementType StatementsTable::getStatementType(const int& index) {
 		return StatementType::NONE;
 	}
 
-	Statement statementToCheck = statements.at(index);
+	Statement statementToCheck = statements.at(index - 1);
 	return statementToCheck->getStatementType();
 }
