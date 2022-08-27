@@ -1,15 +1,16 @@
 #include <iostream>
-#include "Declaration.h"
-#include "SelectClause.h"
-#include "SuchThatClause.h"
-#include "PatternClause.h"
+#include "Clause/Declaration.h"
+#include "Clause/SelectClause.h"
+#include "Clause/SuchThatClause.h"
+#include "Clause/PatternClause.h"
 class SolvableQuery
 {
 public:
-	Declaration d;
-	SelectClause select;
-	SuchThatClause such_that;
-	PatternClause pattern;
+	Declaration decl;
+	SelectClause selectCl;
+	SuchThatClause suchThatCl;
+	PatternClause patternCl;
 
-	SolvableQuery();
+    SolvableQuery();
+	SolvableQuery(Declaration decl, SelectClause selectCl, SuchThatClause suchThatCl, PatternClause patternCl);
 };

@@ -1,0 +1,4 @@
+class StatementReference {
+public:
+    StatementReference();
+};

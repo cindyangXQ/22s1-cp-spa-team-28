@@ -1,0 +1,4 @@
+class EntityReference {
+public:
+    EntityReference();
+};
