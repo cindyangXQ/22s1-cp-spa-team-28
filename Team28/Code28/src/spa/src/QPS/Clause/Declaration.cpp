@@ -1,6 +1,6 @@
 #include "Declaration.h"
 
 Declaration::Declaration() {}
-Declaration::Declaration(list<Synonym> syns) {
+Declaration::Declaration(vector<Synonym> syns) {
     this->syns = syns;
 }

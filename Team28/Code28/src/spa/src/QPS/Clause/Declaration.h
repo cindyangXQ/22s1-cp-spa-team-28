@@ -1,11 +1,11 @@
 #include "../Reference/Synonym.h"
 #include <iostream>
-#include <list>
+#include <vector>
 
 class Declaration
 {
 public:
-	list<Synonym> syns;
+	vector<Synonym> syns;
 	Declaration();
-    Declaration(list<Synonym> syns);
+    Declaration(vector<Synonym> syns);
 };
