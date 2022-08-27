@@ -32,7 +32,7 @@ public:
 private:
 	int tableSize = 0;
 
-	map<StatementType, vector<int>> statementTypeIndexes = {
+	std::map<StatementType, std::vector<int>> statementTypeIndexes = {
 		{
 			StatementType::READ, {}
 		},
@@ -53,6 +53,6 @@ private:
 		},
 	};
 
-	vector<Statement*> statements;
-	vector<int> indexes;
+	std::vector<Statement*> statements;
+	std::vector<int> indexes;
 };
