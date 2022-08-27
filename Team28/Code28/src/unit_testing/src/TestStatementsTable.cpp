@@ -16,6 +16,6 @@ TEST_CASE("StatementsTable can store and retrieve a statement of type not NONE")
 
 	// test is stored and retrieved correctly
 	REQUIRE(*table.retrieve(test.getIndex()) == test);
-	// invalid index returns a nullptr for retrieve
+	// invalid index returns a nullptr for retrieve()
 	REQUIRE(table.retrieve(-1) == nullptr);
 }

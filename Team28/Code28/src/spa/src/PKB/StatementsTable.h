@@ -55,5 +55,4 @@ private:
 	};
 
 	std::vector<Statement*> statements;
-	std::vector<int> indexes;
 };

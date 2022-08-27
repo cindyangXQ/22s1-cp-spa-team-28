@@ -16,7 +16,6 @@ void StatementsTable::store(Statement* statement) {
 	}
 
 	statements.push_back(statement);
-	indexes.push_back(index);
 	statementTypeIndexes[type].push_back(index);
 	tableSize++;
 }
