@@ -6,6 +6,9 @@
 #include "Statement.h"
 #include "Table.h"
 
+/*
+* A table used to store SIMPLE statements.
+*/
 class StatementsTable: public Table<Statement> {
 public:
 	StatementsTable();

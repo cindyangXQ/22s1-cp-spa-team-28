@@ -15,9 +15,9 @@ void StatementsTable::store(Statement* statement) {
 		//TODO error handling
 	}
 
-	statements.push_back(statement);
-	statementTypeIndexes[type].push_back(index);
-	tableSize++;
+	this->statements.push_back(statement);
+	this->statementTypeIndexes[type].push_back(index);
+	this->tableSize++;
 }
 
 Statement *StatementsTable::retrieve(const int& index) {
@@ -26,7 +26,7 @@ Statement *StatementsTable::retrieve(const int& index) {
 		return nullptr;
 	}
 
-	return statements.at(index - 1);
+	return this->statements.at(index - 1);
 }
 
 StatementType StatementsTable::getStatementType(const int& index) {
@@ -36,6 +36,6 @@ StatementType StatementsTable::getStatementType(const int& index) {
 		return StatementType::NONE;
 	}
 
-	Statement* statementAtIndex = statements.at(index - 1);
+	Statement* statementAtIndex = this->statements.at(index - 1);
 	return statementAtIndex->getStatementType();
 }
