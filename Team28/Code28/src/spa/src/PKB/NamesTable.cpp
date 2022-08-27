@@ -1,4 +1,3 @@
-#include "NameTable.h"
 #include "NamesTable.h"
 
 void NamesTable::store(Name* name) {
@@ -11,13 +10,12 @@ void NamesTable::store(Name* name) {
 }
 
 Name* NamesTable::retrieve(const int& index) {
-	Name* retrievedName = this->indexNameMap.find(index);
-
-	if (retrievedName == this->indexNameMap.end()) {
+	//currently assumed that table index starts from 1
+	if (index <= 0 || index > this->tableSize) {
 		return nullptr;
 	}
 
-	return retrievedName;
+	return this->indexNameMap.at(index - 1);
 }
 
 int NamesTable::getTableSize() const {

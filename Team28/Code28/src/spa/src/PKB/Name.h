@@ -16,6 +16,11 @@ public:
 
 	int getIndex();
 
+	/*
+	* Override equality operator for Name to check index and nameString.
+	*/
+	bool operator==(const Name& other) const;
+
 private:
 	std::string nameString;
 	int index;

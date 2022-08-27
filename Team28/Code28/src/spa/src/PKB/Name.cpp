@@ -12,3 +12,7 @@ std::string Name::getNameString() {
 int Name::getIndex() {
 	return this->index;
 }
+
+bool Name::operator==(const Name& other) const {
+	return this->index == other.index && this->nameString == other.nameString;
+}

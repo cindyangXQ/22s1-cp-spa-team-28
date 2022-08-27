@@ -22,7 +22,7 @@ void StatementsTable::store(Statement* statement) {
 
 Statement *StatementsTable::retrieve(const int& index) {
 	//currently assumed that table index starts from 1
-	if (index <= 0 || index > tableSize) {
+	if (index <= 0 || index > this->tableSize) {
 		return nullptr;
 	}
 
@@ -31,7 +31,7 @@ Statement *StatementsTable::retrieve(const int& index) {
 
 StatementType StatementsTable::getStatementType(const int& index) {
 	//currently assumed that table index starts from 1
-	if (index <= 0 || index > tableSize) {
+	if (index <= 0 || index > this->tableSize) {
 		//TODO error handling
 		return StatementType::NONE;
 	}
