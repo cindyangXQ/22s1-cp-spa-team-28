@@ -21,6 +21,8 @@ public:
 
 	int getIndex();
 
+	bool operator==(const Statement& other) const;
+
 private:
 	StatementType type;
 	int index;

@@ -12,3 +12,7 @@ StatementType Statement::getStatementType() {
 int Statement::getIndex(){
 	return this->index;
 }
+
+bool Statement::operator==(const Statement& other) const {
+	return this->index == other.index && this->type == other.type;
+}
