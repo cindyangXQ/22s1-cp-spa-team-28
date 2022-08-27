@@ -1,5 +1,9 @@
 #include "SolvableQuery.h"
 
-SolvableQuery::SolvableQuery() {
-	std::cout << "construct a SolvableQuery Object" << std::endl;
+SolvableQuery::SolvableQuery() {}
+SolvableQuery::SolvableQuery(Declaration decl, SelectClause selectCl, SuchThatClause suchThatCl, PatternClause patternCl) {
+    this->decl = decl;
+    this->selectCl = selectCl;
+    this->suchThatCl = suchThatCl;
+    this->patternCl = patternCl;
 }
