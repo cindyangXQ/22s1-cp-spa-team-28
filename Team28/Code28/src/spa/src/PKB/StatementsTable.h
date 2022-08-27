@@ -4,8 +4,9 @@
 #include <vector>
 
 #include "Statement.h"
+#include "Table.h"
 
-class StatementsTable {
+class StatementsTable: public Table<Statement> {
 public:
 	StatementsTable();
 
@@ -25,7 +26,7 @@ public:
 	StatementType getStatementType(const int& index);
 
 	/*
-	* Returns the size of StatementsTable
+	* Returns the size of StatementsTable.
 	*/
 	int getTableSize() const;
 
