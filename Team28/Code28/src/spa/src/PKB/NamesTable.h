@@ -1,33 +1,36 @@
 #pragma once
 
-#include <map>
 #include <unordered_set>
+#include <map>
 
-#include "Name.h"
+#include "Entity.h"
 #include "Table.h"
 
-/*
-* A table used to store Names.
-*/
-class NamesTable : public Table<Name> {
+template <typename In, typename T> // example use is <ProcedureName, Procedure>
+class NamesTable : public Table<T> {
 public:
-	/*
-	* Stores a Name into the NameTable.
-	*/
-	void store(Name* name);
+	void store(T* entity) {
+		this->names.insert(entity->getName());
+		this->nameEntityMap[entity->getName()] = entity;
+		this->tableSize++;
+	};
 
-	/*
-	* Retrieves a Name from StatementsTable by index.
-	*/
-	Name* retrieve(const int& index);
+	T* retrieve(In& in) {
+		auto key = this->nameEntityMap.find(in);
 
-	/*
-	* Returns the size of NameTable.
-	*/
-	int getTableSize() const;
+		if (key == this->nameEntityMap.end()) {
+			return nullptr;
+		}
+
+		return key->second;
+	};
+
+	int getTableSize() const {
+		return this->tableSize;
+	};
 
 private:
 	int tableSize = 0;
-	std::unordered_set<int> indexes;
-	std::map<int, Name*> indexNameMap;
+	std::unordered_set<In> names;
+	std::map<In, T*> nameEntityMap;
 };
