@@ -18,7 +18,7 @@ public:
 		this->tableSize++;
 	};
 
-	T* retrieve(In& in) {
+	T* retrieve(const In& in) {
 		auto key = this->nameEntityMap.find(in);
 
 		if (key == this->nameEntityMap.end()) {
