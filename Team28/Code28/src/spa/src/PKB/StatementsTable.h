@@ -7,7 +7,7 @@
 #include "Table.h"
 
 /*
-* A table used to store SIMPLE statements.
+* Class encapsulating a Table used to store SIMPLE statements.
 */
 class StatementsTable: public Table<Statement> {
 public:

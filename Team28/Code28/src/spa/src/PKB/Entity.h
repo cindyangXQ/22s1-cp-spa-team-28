@@ -1,5 +1,8 @@
 #pragma once
 
+/*
+* Class encapsulating 1 of the following design entities: Procedure, Constant, Variable.
+*/
 template <typename Name>
 class Entity {
 public:

@@ -6,7 +6,10 @@
 #include "Entity.h"
 #include "Table.h"
 
-template <typename In, typename T> // example use is <ProcedureName, Procedure>
+/*
+* Class encapsulating a Table used for storing Procedures/Variables/Constants.
+*/
+template <typename In, typename T> 
 class NamesTable : public Table<T> {
 public:
 	void store(T* entity) {
