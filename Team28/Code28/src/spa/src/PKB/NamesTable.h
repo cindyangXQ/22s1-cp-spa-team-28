@@ -1,7 +1,8 @@
 #pragma once
 
-#include <unordered_set>
 #include <map>
+#include <type_traits>
+#include <unordered_set>
 
 #include "Entity.h"
 #include "Table.h"
@@ -11,6 +12,7 @@
 */
 template <typename In, typename T> 
 class NamesTable : public Table<T> {
+	static_assert(std::is_base_of<Entity<In>, T>::value, "T must inherit from Entity");
 public:
 	void store(T* entity) {
 		this->names.insert(entity->getName());
