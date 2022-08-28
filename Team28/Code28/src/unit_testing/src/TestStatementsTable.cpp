@@ -20,4 +20,6 @@ TEST_CASE("StatementsTable can store and retrieve a statement of type not NONE")
 	REQUIRE(table.retrieve(-1) == nullptr);
 	// tableSize updated correctly
 	REQUIRE(table.getTableSize() == 1);
+	//test is stored in the correct bucket
+	REQUIRE(table.getStatementType(test.getIndex()) == StatementType:: ASSIGN);
 }
