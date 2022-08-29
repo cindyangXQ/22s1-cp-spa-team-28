@@ -5,6 +5,7 @@
 #include <unordered_set>
 
 #include "Entity.h"
+#include "EntityPredicateMap.h"
 #include "Table.h"
 
 /*
@@ -41,6 +42,31 @@ public:
 	*/
 	int getTableSize() const {
 		return this->tableSize;
+	};
+
+	/*
+	* Filters table based on the PredicateMap
+	*/
+	NamesTable<In, T> *filter(EntityPredicateMap<T> *predicateMap) {
+		if ((*predicateMap).isEmpty()) {
+			NamesTable<In, T> *newTable = this;
+			return newTable;
+		}
+
+		NamesTable<In, T> newTable;
+		std::map<EntityHeader, T> extractedMap = (*predicateMap).getPredicateMap();
+
+		for (auto [name, entity] : this->nameEntityMap) {
+			bool isFilter = true;
+			for (auto [key, val] : extractedMap) {
+				if (!entity->isValueEqual(*key, val)) {
+					isFilter = false;
+				}
+			}
+			if (isFilter) {
+				newTable.store(entity);
+			}
+		}
 	};
 
 private:

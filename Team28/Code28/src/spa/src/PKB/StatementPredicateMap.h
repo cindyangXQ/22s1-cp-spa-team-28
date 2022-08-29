@@ -5,26 +5,26 @@
 #include "Statement.h"
 #include "PredicateMap.h"
 
-enum class StatementHeader {
-	NAME
-};
-
 /*
 * Class representing a PredicateMap for filtering StatementsTable
 */
-template <typename Name>
-class StatementPredicateMap : public PredicateMap<EntityHeader, Entity<Name> {
+class StatementPredicateMap : public PredicateMap<StatementHeader, Statement> {
 public:
 	/*
-	* Explicit constructor for a Predicate.
+	* Explicit constructor for a PredicateMap.
 	*/
-	explicit PredicateMap(std::map<EntityHeader, Entity<Name>> predicateMap);
+	explicit StatementPredicateMap(std::map<StatementHeader, Statement*> *predicateMap);
+
+	/*
+	* Checks if PredicateMap is empty
+	*/
+    bool isEmpty();
 
 	/*
 	* Gets the map of the predicate
 	*/
-    std::map<EntityHeader, Entity<Name>> getPredicateMap();
+    std::map<StatementHeader, Statement*> getPredicateMap();
     
     private:
-        std::map<EntityHeader, Entity<Name>> predicateMap;
+        std::map<StatementHeader, Statement*> predicateMap;
 };

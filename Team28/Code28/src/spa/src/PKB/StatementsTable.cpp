@@ -1,5 +1,8 @@
 #include "StatementsTable.h"
 #include "Statement.h"
+#include "StatementPredicateMap.h"
+
+#include <algorithm>
 
 StatementsTable::StatementsTable() = default;
 
@@ -38,4 +41,27 @@ StatementType StatementsTable::getStatementType(const int& index) {
 
 	Statement* statementAtIndex = this->statements.at(index - 1);
 	return statementAtIndex->getStatementType();
+}
+
+StatementsTable *StatementsTable::filter(StatementPredicateMap *predicateMap) {
+	if ((*predicateMap).isEmpty()) {
+		StatementsTable *newTable = this;
+		return newTable;
+	}
+
+	StatementsTable newTable;
+	std::map<StatementHeader, Statement*> extractedMap = (*predicateMap).getPredicateMap();
+
+	for(Statement* statement : this->statements) {
+		bool isFilter = true;
+		for (auto [key, val] : extractedMap) {
+			if (!statement->isValueEqual(key, val)) {
+				isFilter = false;
+			}
+		}
+		if (isFilter) {
+			newTable.store(statement);
+		}
+	}
+	return &newTable;
 }

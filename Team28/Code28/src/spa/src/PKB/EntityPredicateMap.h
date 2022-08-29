@@ -5,26 +5,27 @@
 #include "Entity.h"
 #include "PredicateMap.h"
 
-enum class EntityHeader {
-	NAME
-};
-
 /*
 * Class representing a PredicateMap for filtering NamesTable
 */
 template <typename Name>
-class EntityPredicateMap : public PredicateMap<EntityHeader, Entity<Name> {
+class EntityPredicateMap : public PredicateMap<EntityHeader, Entity<Name>> {
 public:
 	/*
-	* Explicit constructor for a Predicate.
+	* Explicit constructor for a PredicateMap.
 	*/
-	explicit PredicateMap(std::map<EntityHeader, Entity<Name>> predicateMap);
+	explicit EntityPredicateMap(std::map<EntityHeader, Entity<Name>*> *predicateMap);
+	
+	/*
+	* Checks if PredicateMap is empty
+	*/
+    bool isEmpty();
 
 	/*
 	* Gets the map of the predicate
 	*/
-    std::map<EntityHeader, Entity<Name>> getPredicateMap();
+    std::map<EntityHeader, Entity<Name>*> getPredicateMap();
     
     private:
-        std::map<EntityHeader, Entity<Name>> predicateMap;
+        std::map<EntityHeader, Entity<Name>*> predicateMap;
 };

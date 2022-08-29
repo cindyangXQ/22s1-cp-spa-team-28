@@ -3,6 +3,7 @@
 #include "PKB/Constant.h"
 #include "PKB/Variable.h"
 #include "PKB/Procedure.h"
+#include "PKB/EntityPredicateMap.h"
 
 #include "catch.hpp"
 
@@ -67,3 +68,20 @@ TEST_CASE("NamesTable<ConstantName, Constant> can store 10 items correctly") {
 	// tableSize updated correctly
 	REQUIRE(table.getTableSize() == 10);
 }
+
+// TEST_CASE("Succesfully filter NamesTable<ConstantName, Constant> using ConstantName") {
+// 	NamesTable<ConstantName, Constant> table;
+// 	Constant name = Constant("f"); 
+// 	std::map<EntityHeader, Constant*> m = {{EntityHeader::NAME, &name}};
+// 	EntityPredicateMap<ConstantName> predicateMap = EntityPredicateMap(m);
+
+// 	std::string alphabets = "abcdefghij";
+// 	for (int i=0; i<10; i++) {
+// 		std::string alphabet = std::string(1, alphabets[i]);
+// 		Constant letter = Constant(alphabet);
+// 		table.store(&letter);
+// 	}
+
+// 	// tableSize updated correctly
+// 	REQUIRE(table.getTableSize() == 10);
+// }
