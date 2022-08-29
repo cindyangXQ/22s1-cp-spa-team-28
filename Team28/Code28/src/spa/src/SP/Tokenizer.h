@@ -9,7 +9,8 @@ using namespace std;
 string KEYWORD_LIST[];
 char SYMBOL_LIST[];
 char WHITESPACE_LIST[];
-char OPERATOR_LIST[]; // rel & cond op not included yet
+string OPERATOR_LIST[]; // rel & cond op not included yet
+char opChar[];
 
 enum TokenType {
 	WHITESPACE, // act as default token type

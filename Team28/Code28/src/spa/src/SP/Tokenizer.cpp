@@ -4,10 +4,11 @@
 
 using namespace std;
 
-string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read", "" };
+string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read" };
 char SYMBOL_LIST[] = { '(', ')', '{', '}', ';' };
 char WHITESPACE_LIST[] = { ' ', '\n', '\t' };
-char OPERATOR_LIST[] = { '+', '-', '=', '*', '/', '%' }; // rel & cond op not included yet
+string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=", "==", "!=", "!", "&&", "||" };
+char opChar[] = { '+', '-', '=', '*', '/', '%', '>', '<', '!', '&', '|' }; 
 
 enum TokenType {
 	WHITESPACE, // act as default token type
@@ -62,7 +63,7 @@ public:
 						}
 						index = index + 1;
 					}
-					if (find(begin(OPERATOR_LIST), end(OPERATOR_LIST), currChar) != end(OPERATOR_LIST)) {
+					if (find(begin(opChar), end(opChar), currChar) != end(opChar)) {
 						tokens.push_back(new Token(KEYWORD, current));
 					}
 					else {
@@ -77,9 +78,18 @@ public:
 			}
 			else if (find(begin(OPERATOR_LIST), end(OPERATOR_LIST), currChar) != end(OPERATOR_LIST)) {
 				//TODO: if currType is not WHITESPACE throw error
-				current = "";
-				currType = OPERATOR;
-				tokens.push_back(new Token(currType, currChar));
+				if (currType == WHITESPACE) {
+					current = "";
+					currType = OPERATOR;
+				}
+
+				if (currType == OPERATOR) {
+					current.append(currChar);
+				}
+				else {
+					//throw error here
+				}
+
 			}
 			else { 
 				//TODO: invalid character throw error
