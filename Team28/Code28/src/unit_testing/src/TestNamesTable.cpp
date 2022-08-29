@@ -53,3 +53,17 @@ TEST_CASE("NamesTable<ProcedureName, Procedure> can store and retrieve correctly
 	// tableSize updated correctly
 	REQUIRE(table.getTableSize() == 1);
 }
+
+TEST_CASE("NamesTable<ConstantName, Constant> can store 10 items correctly") {
+	NamesTable<ConstantName, Constant> table;
+
+	std::string alphabets = "abcdefghij";
+	for (int i=0; i<10; i++) {
+		std::string alphabet = std::string(1, alphabets[i]);
+		Constant letter = Constant(alphabet);
+		table.store(&letter);
+	}
+
+	// tableSize updated correctly
+	REQUIRE(table.getTableSize() == 10);
+}
