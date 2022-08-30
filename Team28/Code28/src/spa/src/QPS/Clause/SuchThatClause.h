@@ -17,5 +17,5 @@ public:
     Reference refRight;
 
     SuchThatClause();
-    SuchThatClause(RelRef relationshipType, Reference refLeft, Reference refRight;
+    SuchThatClause(RelRef relationshipType, Reference refLeft, Reference refRight);
 };
