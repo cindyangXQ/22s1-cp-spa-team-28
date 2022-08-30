@@ -5,6 +5,7 @@
 
 #include "Entity.h"
 #include "Table.h"
+#include "TableValue.h"
 
 enum class TableName {
 	STATEMENTS,
@@ -20,8 +21,8 @@ public:
 	*/
 	explicit Storage();
 
-	Table* getTable(TableName name);
+	Table<TableValue>* getTable(TableName name);
 
 private:
-	std::map<TableName, Table*> tables;
+	std::map<TableName, Table<TableValue>*> tables;
 };

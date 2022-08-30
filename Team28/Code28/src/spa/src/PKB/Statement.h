@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TableValue.h"
+
 enum class StatementType {
 	READ,
 	PRINT,
@@ -13,7 +15,7 @@ enum class StatementType {
 /*
 * Class encapsulating a SIMPLE Statement.
 */
-class Statement {
+class Statement : public TableValue {
 public:
 	/*
 	* Explicit constructor for a Statement.

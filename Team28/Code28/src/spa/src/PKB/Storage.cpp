@@ -7,17 +7,17 @@
 #include "Constant.h"
 
 Storage::Storage() {
-	StatementsTable statementsTable;
+	StatementsTable *statementsTable;
 	NamesTable<ProcedureName, Procedure> proceduresTable;
 	NamesTable<VariableName, Variable> variablesTable;
 	NamesTable<ConstantName, Constant> constantsTable;
 
-	this->tables[TableName::STATEMENTS] = &statementsTable;
+	this->tables[TableName::STATEMENTS] = statementsTable;
 	this->tables[TableName::PROCEDURES] = &proceduresTable;
 	this->tables[TableName::VARIABLES] = &variablesTable;
 	this->tables[TableName::CONSTANTS] = &constantsTable;
 }
 
-Table* Storage::getTable(TableName name) {
+Table<TableValue>* Storage::getTable(TableName name) {
 	return this->tables.at(name);
 }
