@@ -63,7 +63,8 @@ public:
 						}
 						index = index + 1;
 					}
-					if (find(begin(opChar), end(opChar), currChar) != end(opChar)) {
+					char temp = input.at(index + 1);
+					if (find(begin(opChar), end(opChar), temp) != end(opChar)) {
 						tokens.push_back(new Token(KEYWORD, current));
 					}
 					else {
@@ -90,6 +91,10 @@ public:
 					//throw error here
 				}
 
+			}
+			else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST){
+				currType = SYMBOL;
+				tokens.push_back(currChar);
 			}
 			else { 
 				//TODO: invalid character throw error
