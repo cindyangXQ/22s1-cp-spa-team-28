@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 /*
 * Distinguish between different strings for each Entity type.
 */
