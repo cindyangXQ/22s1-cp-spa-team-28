@@ -7,15 +7,15 @@ enum class RelRef {
     ParentT,
     Follows,
     FollowsT,
-    EMPTY
+    Empty
 };
 class SuchThatClause
 {
 public:
     RelRef relationshipType;
-    Reference ref_1;
-    Reference ref_2;
+    Reference refLeft;
+    Reference refRight;
 
     SuchThatClause();
-    SuchThatClause(RelRef relationshipType, Reference ref_1, Reference ref_2);
+    SuchThatClause(RelRef relationshipType, Reference refLeft, Reference refRight;
 };
