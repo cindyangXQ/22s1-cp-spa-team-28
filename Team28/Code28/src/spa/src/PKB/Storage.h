@@ -25,15 +25,15 @@ template<typename T, typename std::enable_if<std::is_base_of<TableValue, T>::val
 class Storage {
 public:
 	explicit Storage() {
-		StatementsTable* statements;
-		NamesTable<ProcedureName, Procedure>* procedures;
-		NamesTable<VariableName, Variable>* variables;
-		NamesTable<ConstantName, Constant>* constants;
+		StatementsTable statements;
+		NamesTable<ProcedureName, Procedure> procedures;
+		NamesTable<VariableName, Variable> variables;
+		NamesTable<ConstantName, Constant> constants;
 
-		this->tables[TableName::STATEMENTS] = statements;
-		this->tables[TableName::PROCEDURES] = procedures;
-		this->tables[TableName::VARIABLES] = variables;
-		this->tables[TableName::CONSTANTS] = constants;
+		this->tables[TableName::STATEMENTS] = (Table<T>*) &statements;
+		this->tables[TableName::PROCEDURES] = (Table<T>*) &procedures;
+		this->tables[TableName::VARIABLES] = (Table<T>*) &variables;
+		this->tables[TableName::CONSTANTS] = (Table<T>*) &constants;
 	};
 
 	Table<T>* getTable(TableName name) {
