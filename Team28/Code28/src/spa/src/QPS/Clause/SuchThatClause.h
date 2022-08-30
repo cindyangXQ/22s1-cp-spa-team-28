@@ -1,9 +1,7 @@
 #include <iostream>
-#include "../Reference/RelationshipReference.h"
 class SuchThatClause
 {
 public:
-	RelationshipReference relRef;
     SuchThatClause();
-	SuchThatClause(RelationshipReference relRef);
+    SuchThatClause(std::string desc);
 };

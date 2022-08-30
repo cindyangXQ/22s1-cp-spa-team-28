@@ -1,14 +1,8 @@
 #include "Utils.h"
 
-#include <string>
-#include <vector>
-#include <regex>
-
-using namespace std;
-
-vector<string> Utils::splitString(string str, char splitter) {
-    vector<string> result;
-    string current = "";
+std::vector<std::string> Utils::splitString(std::string str, char splitter) {
+    std::vector<std::string> result;
+    std::string current = "";
     for (int i = 0; i < str.size(); i++) {
         if (str[i] == splitter) {
             if (current != "") {
@@ -25,6 +19,6 @@ vector<string> Utils::splitString(string str, char splitter) {
     return result;
 }
 
-string Utils::removeTrailingSpaces(string s) {
-    return regex_replace(s, regex("^ +| +$|( ) +"), "$1");
+std::string Utils::removeTrailingSpaces(std::string s) {
+    return regex_replace(s, std::regex("^ +| +$|( ) +"), "$1");
 }

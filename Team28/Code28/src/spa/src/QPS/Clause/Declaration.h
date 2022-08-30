@@ -5,7 +5,7 @@
 class Declaration
 {
 public:
-	vector<Synonym> syns;
+	std::vector<Synonym> syns;
 	Declaration();
-    Declaration(vector<Synonym> syns);
+    Declaration(std::vector<Synonym> syns);
 };

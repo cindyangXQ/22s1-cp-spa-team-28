@@ -8,5 +8,6 @@ public:
     EntityReference entRef;
     StatementReference stmtRef;
 	PatternClause();
+    PatternClause(std::string desc);
     PatternClause(Synonym syn, EntityReference entRef, StatementReference stmtRef);
 };
