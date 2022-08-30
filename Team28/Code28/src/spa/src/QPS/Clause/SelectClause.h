@@ -5,6 +5,6 @@ class SelectClause
 public:
 	Synonym syn;
     SelectClause();
-    SelectClause(string s);
+    SelectClause(std::string desc);
 	SelectClause(Synonym syn);
 };

@@ -1,13 +1,10 @@
 #pragma once
-
 #include <string>
 #include <vector>
 #include <regex>
 
-using namespace std;
-
 class Utils {
     public:
-        static vector<string> splitString(string str, char splitter);
-        static string removeTrailingSpaces(string s);
+        static std::vector<std::string> splitString(std::string str, char splitter);
+        static std::string removeTrailingSpaces(std::string s);
 };
