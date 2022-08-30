@@ -1,11 +1,8 @@
 #include "SuchThatClause.h"
 
 SuchThatClause::SuchThatClause() {}
-SuchThatClause::SuchThatClause(std::string desc) {
-
+SuchThatClause::SuchThatClause(RelRef relationshipType, Reference ref_1, Reference ref_2) {
+	this->relationshipType = relationshipType;
+	this->ref_1 = ref_1;
+	this->ref_2 = ref_2;
 }
-/*
-SuchThatClause::SuchThatClause(RelationshipReference relRef) {
-	this->relRef = relRef;
-}
- */
