@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <ctype.h>
+#include "./Token.h"
 
 using namespace std;
 
@@ -27,4 +28,5 @@ public:
 	vector<Token> tokenize();
 private:
 	string& input;
+	Token createToken(TokenType type, string value);
 };

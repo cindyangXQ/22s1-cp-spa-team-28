@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <ctype.h>
+#include "./Token.h"
 
 using namespace std;
 
@@ -22,6 +23,16 @@ enum TokenType {
 class Tokenizer{
 private:
 	string& input = {};
+
+	Token createToken(TokenType type, string value) {
+		switch (type) {
+			case CONSTANT: return new Constant(value);
+			case NAME: return new Name(value);
+			case KEYWORD: return new Keyword(value);
+			case OPERATOR: return new Operator(value);
+			case SYMBOL: return new Symbol(value);
+		}
+	}
 
 public:
 	Tokenizer(const string &sourceProg) {
@@ -47,8 +58,6 @@ public:
 				current.append(1, currChar);
 			}
 			else if (isalpha(currChar)) {
-				//TODO: throw and handle exception if currType is constant
-
 				if (currType == WHITESPACE) {
 					currType = NAME;
 				}
@@ -65,42 +74,43 @@ public:
 					}
 					char temp = input.at(index + 1);
 					if (find(begin(opChar), end(opChar), temp) != end(opChar)) {
-						tokens.push_back(new Token(KEYWORD, current));
+						tokens.push_back(createToken(KEYWORD, current));
 					}
 					else {
-						tokens.push_back(new Token(NAME, current));
+						tokens.push_back(createToken(NAME, current))
 					}
 				}
 				else {
-					tokens.push_back(new Token(currType, current));
+					if (currType != WHITESPACE) {
+						tokens.push_back(createToken(currType, current));
+					}
 				}
 				current = "";
 				currType = WHITESPACE;
 			}
 			else if (find(begin(OPERATOR_LIST), end(OPERATOR_LIST), currChar) != end(OPERATOR_LIST)) {
-				//TODO: if currType is not WHITESPACE throw error
 				if (currType == WHITESPACE) {
 					current = "";
 					currType = OPERATOR;
 				}
 
 				if (currType == OPERATOR) {
-					current.append(currChar);
+					current.append(1, currChar);
 				}
 				else {
-					//throw error here
+					tokens.push_back(createToken(currType, current));
 				}
-
 			}
 			else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST){
+				if (currType != WHITESPACE) {
+					tokens.push_back(createToken(currType, current));
+				}
 				currType = SYMBOL;
-				tokens.push_back(currChar);
+				current = "";
 			}
 			else { 
 				//TODO: invalid character throw error
 			}
 		}
 	}
-
-
 };
