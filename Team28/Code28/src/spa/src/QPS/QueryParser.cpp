@@ -90,6 +90,8 @@ SelectClause QueryParser::parseSelectClause(std::string mainClause, std::vector<
 }
 
 SuchThatClause QueryParser::parseSuchThatClause(std::string mainClause) {
+    return SuchThatClause();
+    /*
     size_t suchThatIdx = mainClause.find("such that");
     size_t patternIdx = mainClause.find("pattern");
     if (suchThatIdx < mainClause.size()) {
@@ -99,9 +101,12 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string mainClause) {
     else {
         return SuchThatClause();
     }
+    */
 }
 
 PatternClause QueryParser::parsePatternClause(std::string mainClause) {
+    return PatternClause();
+    /*
     size_t suchThatIdx = mainClause.find("such that");
     size_t patternIdx = mainClause.find("pattern");
     if (patternIdx < mainClause.size()) {
@@ -111,5 +116,6 @@ PatternClause QueryParser::parsePatternClause(std::string mainClause) {
     else {
         return PatternClause();
     }
+    */
 }
 
