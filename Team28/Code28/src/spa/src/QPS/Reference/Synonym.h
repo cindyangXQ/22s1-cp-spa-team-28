@@ -1,8 +1,10 @@
 #pragma once
 #include "DesignEntity.h"
+#include "StatementReference.h"
+#include "EntityReference.h"
 #include <iostream>
 
-class Synonym
+class Synonym : StatementReference, EntityReference
 {
 public:
 	DesignEntity entity;
