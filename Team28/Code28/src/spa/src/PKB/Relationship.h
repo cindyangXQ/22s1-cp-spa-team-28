@@ -20,11 +20,15 @@ public:
 	/*
 	* Explicit constructor for Relationship.
 	*/
-	explicit Relationship(RelationshipName name);
+	explicit Relationship(RelationshipName name) : Entity<RelationshipName>(name) {};
 
-	Left getLeft();
+	Left getLeft() {
+		return this->left;
+	};
 
-	Right getRight();
+	Right getRight() {
+		return this->right;
+	};
 
 private:
 	Left* left;
