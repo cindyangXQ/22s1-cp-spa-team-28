@@ -9,6 +9,6 @@ TEST_CASE("Variable is initialised correctly and inherits all Entity methods cor
 
 	// getName() gets the name correctly
 	REQUIRE(test.getName() == "test");
-	// Different instances of Procedure are equal if VariableName is the same
+	// Different instances of Variable are equal if VariableName is the same
 	REQUIRE(test == testCopy);
 }
