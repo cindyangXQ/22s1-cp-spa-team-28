@@ -2,9 +2,10 @@
 #include "DesignEntity.h"
 #include "StatementReference.h"
 #include "EntityReference.h"
+#include "Reference.h"
 #include <iostream>
 
-class Synonym : StatementReference, EntityReference
+class Synonym : public Reference
 {
 public:
 	DesignEntity entity;
