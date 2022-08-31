@@ -2,7 +2,10 @@
 #include <string>
 #include "EntityReference.h"
 
-class VariableName : EntityReference {
+class VariableName : public EntityReference {
 public:
 	std::string varName;
+	VariableName(std::string name) {
+		this->varName = name;
+	}
 };

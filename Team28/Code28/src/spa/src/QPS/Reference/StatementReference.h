@@ -1,6 +1,6 @@
 #pragma once
 #include "Reference.h"
 
-class StatementReference : Reference{
+class StatementReference : public Reference{
 public:
 };
