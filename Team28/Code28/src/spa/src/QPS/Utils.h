@@ -7,4 +7,5 @@ class Utils {
     public:
         static std::vector<std::string> splitString(std::string str, char splitter);
         static std::string removeTrailingSpaces(std::string s);
+        static std::vector<std::string> tokenize(std::string str, std::vector<char> special_chars);
 };
