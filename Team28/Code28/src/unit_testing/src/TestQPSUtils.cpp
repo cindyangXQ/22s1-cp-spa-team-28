@@ -15,3 +15,14 @@ TEST_CASE("Tokenizer can convert a query string into a vector of tokens") {
 	std::vector<std::string> result = Utils::tokenize(query, special_char);
 	REQUIRE(result == expected);
 }
+
+TEST_CASE("in function finds item in vector") {
+	std::vector<std::string> v{ "This", "is", "a", "test", ".", "1234" };
+	std::string present = "test";
+	std::string absent = "YAY";
+	REQUIRE(Utils::in(v, present) == true);
+	
+	//REQUIRE(!Utils::in<std::string>(v, absent));
+
+}
+
