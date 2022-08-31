@@ -30,7 +30,7 @@ No additional instructions required.
 Name | Mobile | Email | Development OS/Toolchain
 -:|:-:|:-|-|
 Lua Yi Da | 93679300 | e0543409@u.nus.edu | Windows 11/Visual Studio 2022
-Benedict Chua Jun Jie | 97466137 | benedictchuajj@u.nus.edu | macOS Big Sur/Visual Studio 2022
+Benedict Chua Jun Jie | 97466137 | benedictchuajj@u.nus.edu | macOS Big Sur/CLion 2022
 Chan Shi Yuan Galvin | 97718164 | e0543848@u.nus.edu | Windows 10/Visual Studio 2022
 Chen Xiaotong | 83452492 | e0492455@u.nus.edu | Windows 10/Visual Studio 2019
 Yang Xiquan | 82630661 | yangx@u.nus.edu | Windows 11/Visual Studio 2022
