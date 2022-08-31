@@ -9,5 +9,5 @@ TEST_CASE("Storage is initialised correctly") {
 
 	constants->store(&test);
 
-	REQUIRE(constants->retrieve(test.getName()) == test);
+	REQUIRE(constants->getTableSize() == 1);
 }

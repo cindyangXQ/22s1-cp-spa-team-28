@@ -21,7 +21,7 @@ enum class TableName {
 	CONSTANTS
 };
 
-template<typename T, typename std::enable_if<std::is_base_of<TableValue, T>::value>::type* = nullptr>
+template<typename T>
 class Storage {
 public:
 	explicit Storage() {
