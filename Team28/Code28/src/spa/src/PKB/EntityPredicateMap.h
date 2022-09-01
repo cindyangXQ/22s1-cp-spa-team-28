@@ -30,14 +30,14 @@ public:
 	};
 	
 	/*
-	* Checks if PredicateMap is empty
+	* Checks if PredicateMap is empty.
 	*/
     bool isEmpty() {
 		return this->predicateMap.size() == 0;
 	};
 
 	/*
-	* Gets the map of the predicate
+	* Gets the map of the predicate.
 	*/
     std::map<EntityHeader, Constant*> getPredicateMap() {
 		return this->predicateMap;
