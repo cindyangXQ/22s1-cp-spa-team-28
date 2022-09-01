@@ -26,13 +26,6 @@ enum class TableName {
 };
 
 /*
-* Typedef tables for brevity.
-*/
-typedef NamesTable<ProcedureName, Procedure> ProceduresTable;
-typedef NamesTable<VariableName, Variable> VariablesTable;
-typedef NamesTable<ConstantName, Constant> ConstantsTable;
-
-/*
 * Encapsulates a Storage class which is responsible for storing information to tables in PKB.
 */
 class Storage {
