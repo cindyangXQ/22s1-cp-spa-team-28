@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../Reference/Synonym.h"
 #include "../Reference/Reference.h"
 
@@ -8,6 +10,5 @@ public:
     Reference entRef;
     Reference stmtRef;
 	PatternClause();
-    PatternClause(std::string desc);
     PatternClause(Synonym syn, Reference entRef, Reference stmtRef);
 };
