@@ -1,5 +1,10 @@
 #pragma once
 
+#include "TableValue.h"
+
+/*
+* Enumerates the different kinds of SIMPLE statements.
+*/
 enum class StatementType {
 	READ,
 	PRINT,
@@ -18,7 +23,7 @@ enum class StatementHeader {
 /*
 * Class encapsulating a SIMPLE Statement.
 */
-class Statement {
+class Statement : public TableValue {
 public:
 	/*
 	* Explicit constructor for a Statement.

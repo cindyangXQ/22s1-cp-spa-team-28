@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include "TableValue.h"
 
 enum class EntityHeader {
 	NAME
@@ -10,7 +10,7 @@ enum class EntityHeader {
 * Class encapsulating 1 of the following design entities: Procedure, Constant, Variable.
 */
 template <typename Name>
-class Entity {
+class Entity : public TableValue {
 public:
 	explicit Entity(Name name) {
 		this->name = name;
