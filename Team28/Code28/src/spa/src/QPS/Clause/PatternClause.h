@@ -1,13 +1,13 @@
 #include "../Reference/Synonym.h"
-#include "../Reference/EntityReference.h"
-#include "../Reference/StatementReference.h"
+#include "../Reference/Reference.h"
+
 class PatternClause
 {
 public:
     Synonym syn;
-    EntityReference entRef;
-    StatementReference stmtRef;
+    Reference entRef;
+    Reference stmtRef;
 	PatternClause();
     PatternClause(std::string desc);
-    PatternClause(Synonym syn, EntityReference entRef, StatementReference stmtRef);
+    PatternClause(Synonym syn, Reference entRef, Reference stmtRef);
 };
