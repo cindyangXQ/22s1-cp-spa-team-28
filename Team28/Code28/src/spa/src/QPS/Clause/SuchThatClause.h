@@ -1,14 +1,6 @@
 #include <iostream>
 #include "../Reference/Reference.h"
-enum class RelRef {
-    Modifies,
-    Uses,
-    Parent,
-    ParentT,
-    Follows,
-    FollowsT,
-    Empty
-};
+
 class SuchThatClause
 {
 public:
