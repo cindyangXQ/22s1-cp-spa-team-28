@@ -1,6 +1,6 @@
 #pragma once
-#include "StatementReference.h"
-class StatementNumber : public StatementReference {
+#include "Reference.h"
+class StatementNumber : public Reference {
 public:
 	int stmtNum = 0;
 	StatementNumber(int num) {

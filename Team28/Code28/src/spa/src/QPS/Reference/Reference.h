@@ -8,6 +8,7 @@ enum class RelRef {
     FollowsT,
     Empty
 };
+
 class Reference {
 	public:
 };

@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include "EntityReference.h"
+#include "Reference.h"
 
-class VariableName : public EntityReference {
+class VariableName : public Reference {
 public:
 	std::string varName;
 	VariableName(std::string name) {
