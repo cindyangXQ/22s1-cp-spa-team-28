@@ -33,7 +33,6 @@ public:
 		if (key == this->nameEntityMap.end()) {
 			return nullptr;
 		}
-
 		return key->second;
 	};
 
@@ -45,32 +44,102 @@ public:
 	};
 
 	/*
-	* Filters table based on the PredicateMap
+	* Gets NamedEntityMap for children. 
+	* TODO: Consider removing.
 	*/
-	NamesTable<In, T> *filter(EntityPredicateMap<T> *predicateMap) {
-		if ((*predicateMap).isEmpty()) {
-			NamesTable<In, T> *newTable = this;
-			return newTable;
-		}
-
-		NamesTable<In, T> newTable;
-		std::map<EntityHeader, T> extractedMap = (*predicateMap).getPredicateMap();
-
-		for (auto [name, entity] : this->nameEntityMap) {
-			bool isFilter = true;
-			for (auto [key, val] : extractedMap) {
-				if (!entity->isValueEqual(*key, val)) {
-					isFilter = false;
-				}
-			}
-			if (isFilter) {
-				newTable.store(entity);
-			}
-		}
+	std::map<In, T*> getNameEntityMap() {
+		return this->nameEntityMap;
 	};
 
 private:
 	int tableSize = 0;
 	std::unordered_set<In> names;
 	std::map<In, T*> nameEntityMap;
+};
+
+class ConstantsTable : public NamesTable<ConstantName, Constant> {
+public:
+	/*
+	* Filters table based on the PredicateMap
+	*/
+	ConstantsTable *filter(ConstantPredicateMap *predicateMap) {
+		if ((*predicateMap).isEmpty()) {
+			ConstantsTable *newTable = this;
+			return newTable;
+		}
+
+		ConstantsTable *newTable = new ConstantsTable();
+		std::map<EntityHeader, Constant*> extractedMap = (*predicateMap).getPredicateMap();
+
+		for (auto [name, entity] : this->getNameEntityMap()) {
+			bool isFilter = true;
+			for (auto [key, val] : extractedMap) {
+				if (!entity->isValueEqual(key, *val)) {
+					isFilter = false;
+				}
+			}
+			if (isFilter) {
+				newTable->store(entity);
+			}
+		}
+		return newTable;
+	};
+};
+
+class VariablesTable : public NamesTable<VariableName, Variable> {
+public:
+	/*
+	* Filters table based on the PredicateMap
+	*/
+	VariablesTable *filter(VariablePredicateMap *predicateMap) {
+		if ((*predicateMap).isEmpty()) {
+			VariablesTable *newTable = this;
+			return newTable;
+		}
+
+		VariablesTable *newTable = new VariablesTable();
+		std::map<EntityHeader, Variable*> extractedMap = (*predicateMap).getPredicateMap();
+
+		for (auto [index, entity] : this->getNameEntityMap()) {
+			bool isFilter = true;
+			for (auto [key, val] : extractedMap) {
+				if (!entity->isValueEqual(key, *val)) {
+					isFilter = false;
+				}
+			}
+			if (isFilter) {
+				newTable->store(entity);
+			}
+		}
+		return newTable;
+	};
+};
+
+class ProceduresTable : public NamesTable<ProcedureName, Procedure> {
+public:
+	/*
+	* Filters table based on the PredicateMap
+	*/
+	ProceduresTable *filter(ProcedurePredicateMap *predicateMap) {
+		if ((*predicateMap).isEmpty()) {
+			ProceduresTable *newTable = this;
+			return newTable;
+		}
+
+		ProceduresTable *newTable = new ProceduresTable();
+		std::map<EntityHeader, Procedure*> extractedMap = (*predicateMap).getPredicateMap();
+
+		for (auto [name, entity] : this->getNameEntityMap()) {
+			bool isFilter = true;
+			for (auto [key, val] : extractedMap) {
+				if (!entity->isValueEqual(key, *val)) {
+					isFilter = false;
+				}
+			}
+			if (isFilter) {
+				newTable->store(entity);
+			}
+		}
+		return newTable;
+	};
 };

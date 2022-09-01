@@ -12,6 +12,7 @@ class StatementPredicateMap : public PredicateMap<StatementHeader, Statement> {
 public:
 	/*
 	* Explicit constructor for a PredicateMap.
+	* TODO: Document map
 	*/
 	explicit StatementPredicateMap(std::map<StatementHeader, Statement*> *predicateMap);
 

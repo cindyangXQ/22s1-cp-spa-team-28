@@ -99,8 +99,9 @@ TEST_CASE("Successfully filters StatementsTable using StatementType and Index") 
 	table.store(&statement2);
 	table.store(&statement3);
 	
-	std::map<StatementHeader, Statement*> m = {{
-		StatementHeader::INDEX, &statement2}, {StatementHeader::STATEMENT_TYPE, &statement1}};
+	std::map<StatementHeader, Statement*> m = {
+		{StatementHeader::INDEX, &statement2}, {StatementHeader::STATEMENT_TYPE, &statement1}
+	};
 	StatementPredicateMap predicateMap = StatementPredicateMap(&m);
 	StatementsTable *filteredTable = table.filter(&predicateMap);
 

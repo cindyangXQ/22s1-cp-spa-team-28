@@ -24,8 +24,7 @@ void StatementsTable::store(Statement* statement) {
 }
 
 Statement *StatementsTable::retrieve(const int& lineNum) {
-	// TODO: remove assumption
-	//currently assumes that lineNum is unique
+	// currently assumes that lineNum is unique
 	for(Statement* statement : this->statements) {
 		if (statement->getIndex() == lineNum) {
 			return statement;
@@ -35,15 +34,16 @@ Statement *StatementsTable::retrieve(const int& lineNum) {
 	return nullptr;
 }
 
-StatementType StatementsTable::getStatementType(const int& index) {
-	//currently assumed that table index starts from 1
-	if (index <= 0 || index > this->tableSize) {
-		//TODO error handling
-		return StatementType::NONE;
+StatementType StatementsTable::getStatementType(const int& lineNum) {
+	// currently assumes that lineNum is unique
+	for(Statement* statement : this->statements) {
+		if (statement->getIndex() == lineNum) {
+			return statement->getStatementType();
+		}
 	}
 
-	Statement* statementAtIndex = this->statements.at(index - 1);
-	return statementAtIndex->getStatementType();
+	return StatementType::NONE;
+
 }
 
 StatementsTable *StatementsTable::filter(StatementPredicateMap *predicateMap) {

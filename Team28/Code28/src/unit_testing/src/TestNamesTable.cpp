@@ -56,35 +56,75 @@ TEST_CASE("NamesTable<ProcedureName, Procedure> can store and retrieve correctly
 }
 
 TEST_CASE("NamesTable<ConstantName, Constant> can store 10 items correctly") {
-	NamesTable<ConstantName, Constant> table;
+	ConstantsTable table;
+	Constant a = Constant("a");
+	table.store(&a);
+	Constant b = Constant("b");
+	table.store(&b);
+	Constant c = Constant("c");
+	table.store(&c);
 
-	std::string alphabets = "abcdefghij";
-	for (int i=0; i<10; i++) {
-		std::string alphabet = std::string(1, alphabets[i]);
-		Constant letter = Constant(alphabet);
-		table.store(&letter);
-	}
-
-	// tableSize updated correctly
-	REQUIRE(table.getTableSize() == 10);
+	REQUIRE(*table.retrieve(a.getName()) == a);
+	REQUIRE(*table.retrieve("b") == b);
+	REQUIRE(table.getTableSize() == 3);
 }
 
-TEST_CASE("Succesfully filter ConstantPredicateMap using ConstantName") {
-	static_assert(std::is_base_of<Entity<ConstantName>, Constant>::value, "T must inherit from Entity");
-	NamesTable<ConstantName, Constant> table;
-	Constant name = Constant("f"); 
-	std::map<EntityHeader, Constant*> m = {{EntityHeader::NAME, &name}};
+TEST_CASE("Successfully filters ConstantsTable using ConstantName") {
+	ConstantsTable table;
+	Constant testName = Constant("b"); 
+	std::map<EntityHeader, Constant*> m = {{EntityHeader::NAME, &testName}};
 	ConstantPredicateMap predicateMap = ConstantPredicateMap(&m);
 
-	std::string alphabets = "abcdefghij";
-	for (int i=0; i<10; i++) {
-		std::string alphabet = std::string(1, alphabets[i]);
-		Constant letter = Constant(alphabet);
-		table.store(&letter);
-	}
+	Constant a = Constant("a");
+	table.store(&a);
+	Constant b = Constant("b");
+	table.store(&b);
+	Constant c = Constant("c");
+	table.store(&c);
 
-	// ConstantPredicateMap *filteredTable = (ConstantPredicateMap*) table.filter(&predicateMap);
+	ConstantsTable *filteredTable = table.filter(&predicateMap);
 
 	// tableSize updated correctly
-	REQUIRE(table.getTableSize() == 10);
+	REQUIRE(*table.retrieve("b") == Constant("b"));
+	REQUIRE(filteredTable->getTableSize() == 1);
+}
+
+TEST_CASE("Successfully filters ProceduresTable using ConstantName") {
+	ProceduresTable table;
+	Procedure testName = Procedure("b"); 
+	std::map<EntityHeader, Procedure*> m = {{EntityHeader::NAME, &testName}};
+	ProcedurePredicateMap predicateMap = ProcedurePredicateMap(&m);
+
+	Procedure a = Procedure("a");
+	table.store(&a);
+	Procedure b = Procedure("b");
+	table.store(&b);
+	Procedure c = Procedure("c");
+	table.store(&c);
+
+	ProceduresTable *filteredTable = table.filter(&predicateMap);
+
+	// tableSize updated correctly
+	REQUIRE(*table.retrieve("b") == Procedure("b"));
+	REQUIRE(filteredTable->getTableSize() == 1);
+}
+
+TEST_CASE("Successfully filters VariablesTable using VariableName") {
+	VariablesTable table;
+	Variable testName = Variable("b"); 
+	std::map<EntityHeader, Variable*> m = {{EntityHeader::NAME, &testName}};
+	VariablePredicateMap predicateMap = VariablePredicateMap(&m);
+
+	Variable a = Variable("a");
+	table.store(&a);
+	Variable b = Variable("b");
+	table.store(&b);
+	Variable c = Variable("c");
+	table.store(&c);
+
+	VariablesTable *filteredTable = table.filter(&predicateMap);
+
+	// tableSize updated correctly
+	REQUIRE(*table.retrieve("b") == Variable("b"));
+	REQUIRE(filteredTable->getTableSize() == 1);
 }
