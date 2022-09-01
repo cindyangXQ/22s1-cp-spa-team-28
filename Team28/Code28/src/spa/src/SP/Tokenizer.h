@@ -1,9 +1,14 @@
 #pragma once
 
+#ifndef Tokenizer_HEADER
+#define Tokenizer_HEADER
+
+#include "Token.h"
 #include <string>
 #include <vector>
 #include <ctype.h>
-#include "./Token.h"
+#include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -16,10 +21,11 @@ char opChar[];
 enum class TokenType;
 
 class Tokenizer {
-public:
-	Tokenizer(string sourceProg);
-	vector<Token> tokenize();
 private:
 	string input;
 	Token createToken(TokenType type, string value);
+public:
+	Tokenizer(string sourceProg);
+	vector<Token> tokenize();
 };
+#endif

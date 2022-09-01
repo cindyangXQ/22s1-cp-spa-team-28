@@ -1,3 +1,4 @@
+#include "Tokenizer.h"
 #include "Token.h"
 #include <string>
 #include <vector>
@@ -23,11 +24,7 @@ enum class TokenType {
 };
 
 
-class Tokenizer {
-private:
-	string input = {};
-
-	Token createToken(TokenType type, string value) {
+Token Tokenizer::createToken(TokenType type, string value) {
 		cout << static_cast<int>(type) << " " << value << endl;
 		switch (type) {
 		case TokenType::CONSTANT: return Constant(value);
@@ -37,14 +34,14 @@ private:
 		default: return Symbol(value);
 		}
 		//return Token(value);
-	}
+}
 
-public:
-	Tokenizer(string sourceProg) {
+
+Tokenizer::Tokenizer(string sourceProg) {
 		this->input = sourceProg;
 	}
 
-	vector<Token> tokenize() {
+vector<Token> Tokenizer::tokenize() {
 		vector<Token> tokens;
 		TokenType currType = TokenType::WHITESPACE;
 
@@ -131,4 +128,4 @@ public:
 		}
 		return tokens;
 	}
-};
+
