@@ -22,7 +22,7 @@ TEST_CASE("in function finds item in vector") {
 	std::string absent = "YAY";
 	REQUIRE(Utils::in(v, present) == true);
 	
-	//REQUIRE(!Utils::in<std::string>(v, absent));
+	REQUIRE(Utils::in(v, absent) == false);
 
 }
 
