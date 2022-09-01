@@ -2,6 +2,9 @@
 
 #include "TableValue.h"
 
+/*
+* Enumerates the different kinds of SIMPLE statements.
+*/
 enum class StatementType {
 	READ,
 	PRINT,
