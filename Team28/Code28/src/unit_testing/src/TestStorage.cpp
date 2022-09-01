@@ -11,9 +11,7 @@ TEST_CASE("Storage is initialised correctly") {
 	ProceduresTable* procedures = (ProceduresTable*) storage.getTable(TableName::PROCEDURES);
 	StatementsTable* statements = (StatementsTable*) storage.getTable(TableName::STATEMENTS);
 
-	/*
-	* Check that all tables are instantiated.
-	*/
+	// Check that all tables are instantiated.
 	REQUIRE(constants != nullptr);
 	REQUIRE(variables != nullptr);
 	REQUIRE(procedures != nullptr);
