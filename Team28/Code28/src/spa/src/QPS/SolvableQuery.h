@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include "Clause/Declaration.h"
 #include "Clause/SelectClause.h"
@@ -13,4 +15,5 @@ public:
 
     SolvableQuery();
 	SolvableQuery(Declaration decl, SelectClause selectCl, SuchThatClause suchThatCl, PatternClause patternCl);
+    void evaluate();
 };

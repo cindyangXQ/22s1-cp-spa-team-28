@@ -1,5 +1,5 @@
 #pragma once
-enum DesignEntity
+enum class DesignEntity
 {
     PROCEDURE,
 	STATEMENT,

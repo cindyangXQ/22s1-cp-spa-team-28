@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../Reference/Synonym.h"
 #include <iostream>
 #include <vector>
