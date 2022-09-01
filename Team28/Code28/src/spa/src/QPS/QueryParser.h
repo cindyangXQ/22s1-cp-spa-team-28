@@ -15,4 +15,8 @@ public:
     static SelectClause parseSelectClause(std::string mainClause, std::vector<Synonym> syns);
     static SuchThatClause parseSuchThatClause(std::string mainClause, std::vector<Synonym> syns);
     static PatternClause parsePatternClause(std::string mainClause);
+private:
+    static bool isSuchThatClause(std::vector<std::string> tokens, size_t start);
+    static RelationshipReference getRelationshipReference(std::string input);
+    static Reference getReference(std::string input, std::vector<Synonym> syns);
 };

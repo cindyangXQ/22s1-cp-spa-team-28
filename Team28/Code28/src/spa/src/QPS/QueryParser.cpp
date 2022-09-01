@@ -87,66 +87,6 @@ SelectClause QueryParser::parseSelectClause(std::string mainClause, std::vector<
     }
 }
 
-bool isSuchThatClause(std::vector<std::string> tokens, size_t start) {
-    if (start > tokens.size() - 8) {
-        return false;
-    }
-    std::vector<std::string> relref{"Modifies", "Uses", "Parent", "Parent*", "Follows", "Follows*"};
-    if (tokens[start] == "such" && tokens[start + 1] == "that") {
-        if (Utils::in(relref, tokens[start + 2]) && 
-            tokens[start + 3] == "(" && 
-            tokens[start + 5] == "," && 
-            tokens[start + 7] == ")") {
-            return true;
-        }
-        else {
-            throw ParseError("Syntax error for such that clause");
-        }
-    }
-    return false;
-}
-
-RelationshipReference getRelationshipReference(std::string input) {
-    RelationshipReference r = RelationshipReference::Empty;
-    if (input.compare("Modifies") == 0) {
-        r = RelationshipReference::Modifies;
-    }
-    else if (input.compare("Uses") == 0) {
-        r = RelationshipReference::Uses;
-    }
-    else if (input.compare("Parent") == 0) {
-        r = RelationshipReference::Parent;
-    }
-    else if (input.compare("Parent*") == 0) {
-        r = RelationshipReference::ParentT;
-    }
-    else if (input.compare("Follows") == 0) {
-        r = RelationshipReference::Follows;
-    }
-    else if (input.compare("Follows*") == 0) {
-        r = RelationshipReference::FollowsT;
-    }
-    return r;
-}
-Reference getReference(std::string input, std::vector<Synonym> syns) {
-    if (std::all_of(input.begin(), input.end(), ::isdigit)) {
-        return StatementNumber(atoi(input.c_str()));
-    }
-    if (input[0] == '"' && input[-1] == '"') {
-        return VariableName(input);
-    }
-    Synonym selectedSyn;
-    bool isSynInit = false;
-    for (int i = 0; i < syns.size(); i++) {
-        Synonym s = syns[i];
-        if (input.compare(s.name) == 0) {
-            selectedSyn = s;
-            isSynInit = true;
-            return selectedSyn;
-        }
-    }
-    throw ParseError("not a number, not a name, not a synonym declared");
-}
 SuchThatClause QueryParser::parseSuchThatClause(std::string mainClause, std::vector<Synonym> syns) {
     std::vector<char> special_char{ ';', '(', ',', ')', '_' };
     std::vector<std::string> tokens = Utils::tokenize(mainClause, special_char);
@@ -177,3 +117,63 @@ PatternClause QueryParser::parsePatternClause(std::string mainClause) {
     */
 }
 
+bool QueryParser::isSuchThatClause(std::vector<std::string> tokens, size_t start) {
+    if (start > tokens.size() - 8) {
+        return false;
+    }
+    std::vector<std::string> relref{ "Modifies", "Uses", "Parent", "Parent*", "Follows", "Follows*" };
+    if (tokens[start] == "such" && tokens[start + 1] == "that") {
+        if (Utils::in(relref, tokens[start + 2]) &&
+            tokens[start + 3] == "(" &&
+            tokens[start + 5] == "," &&
+            tokens[start + 7] == ")") {
+            return true;
+        }
+        else {
+            throw ParseError("Syntax error for such that clause");
+        }
+    }
+    return false;
+}
+
+RelationshipReference QueryParser::getRelationshipReference(std::string input) {
+    RelationshipReference r = RelationshipReference::Empty;
+    if (input.compare("Modifies") == 0) {
+        r = RelationshipReference::Modifies;
+    }
+    else if (input.compare("Uses") == 0) {
+        r = RelationshipReference::Uses;
+    }
+    else if (input.compare("Parent") == 0) {
+        r = RelationshipReference::Parent;
+    }
+    else if (input.compare("Parent*") == 0) {
+        r = RelationshipReference::ParentT;
+    }
+    else if (input.compare("Follows") == 0) {
+        r = RelationshipReference::Follows;
+    }
+    else if (input.compare("Follows*") == 0) {
+        r = RelationshipReference::FollowsT;
+    }
+    return r;
+}
+Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns) {
+    if (std::all_of(input.begin(), input.end(), ::isdigit)) {
+        return StatementNumber(atoi(input.c_str()));
+    }
+    if (input[0] == '"' && input[-1] == '"') {
+        return VariableName(input);
+    }
+    Synonym selectedSyn;
+    bool isSynInit = false;
+    for (int i = 0; i < syns.size(); i++) {
+        Synonym s = syns[i];
+        if (input.compare(s.name) == 0) {
+            selectedSyn = s;
+            isSynInit = true;
+            return selectedSyn;
+        }
+    }
+    throw ParseError("not a number, not a name, not a synonym declared");
+}
