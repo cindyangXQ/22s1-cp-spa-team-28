@@ -69,19 +69,22 @@ TEST_CASE("NamesTable<ConstantName, Constant> can store 10 items correctly") {
 	REQUIRE(table.getTableSize() == 10);
 }
 
-// TEST_CASE("Succesfully filter NamesTable<ConstantName, Constant> using ConstantName") {
-// 	NamesTable<ConstantName, Constant> table;
-// 	Constant name = Constant("f"); 
-// 	std::map<EntityHeader, Constant*> m = {{EntityHeader::NAME, &name}};
-// 	EntityPredicateMap<ConstantName> predicateMap = EntityPredicateMap(m);
+TEST_CASE("Succesfully filter ConstantPredicateMap using ConstantName") {
+	static_assert(std::is_base_of<Entity<ConstantName>, Constant>::value, "T must inherit from Entity");
+	NamesTable<ConstantName, Constant> table;
+	Constant name = Constant("f"); 
+	std::map<EntityHeader, Constant*> m = {{EntityHeader::NAME, &name}};
+	ConstantPredicateMap predicateMap = ConstantPredicateMap(&m);
 
-// 	std::string alphabets = "abcdefghij";
-// 	for (int i=0; i<10; i++) {
-// 		std::string alphabet = std::string(1, alphabets[i]);
-// 		Constant letter = Constant(alphabet);
-// 		table.store(&letter);
-// 	}
+	std::string alphabets = "abcdefghij";
+	for (int i=0; i<10; i++) {
+		std::string alphabet = std::string(1, alphabets[i]);
+		Constant letter = Constant(alphabet);
+		table.store(&letter);
+	}
 
-// 	// tableSize updated correctly
-// 	REQUIRE(table.getTableSize() == 10);
-// }
+	// ConstantPredicateMap *filteredTable = (ConstantPredicateMap*) table.filter(&predicateMap);
+
+	// tableSize updated correctly
+	REQUIRE(table.getTableSize() == 10);
+}

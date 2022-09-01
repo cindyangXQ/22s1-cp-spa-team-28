@@ -25,7 +25,7 @@ bool Statement::isValueEqual(StatementHeader header, Statement* other) {
 			return Statement::isIndexEqual(other);
 
 		case StatementHeader::STATEMENT_TYPE:
-			return Statement::isIndexEqual(other);
+			return Statement::isStatementTypeEqual(other);
 
 		default:
 			std::cerr << "Unknown StatementHeader." << std::endl;

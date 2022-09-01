@@ -25,8 +25,30 @@ TEST_CASE("StatementsTable can store and retrieve a statement of type not NONE")
 	REQUIRE(table.getStatementType(test.getIndex()) == StatementType:: ASSIGN);
 }
 
+TEST_CASE("Empty PredicateMap returns same StatementsTable") {
+	StatementsTable table = StatementsTable();
+	Statement statement1 = Statement(1, StatementType::ASSIGN);
+	Statement statement2 = Statement(2, StatementType::PRINT);
+	Statement statement3 = Statement(3, StatementType::PRINT);
+
+	table.store(&statement1);
+	table.store(&statement2);
+	table.store(&statement3);
+	
+	std::map<StatementHeader, Statement*> m = {};
+	StatementPredicateMap predicateMap = StatementPredicateMap(&m);
+	StatementsTable *filteredTable = table.filter(&predicateMap);
+
+	// test is stored and retrieved correctly
+	REQUIRE(*filteredTable->retrieve(statement1.getIndex()) == statement1);
+	REQUIRE(*filteredTable->retrieve(statement2.getIndex()) == statement2);
+	REQUIRE(*filteredTable->retrieve(statement3.getIndex()) == statement3);
+	// tableSize updated correctly
+	REQUIRE(filteredTable->getTableSize() == 3);
+}
+
 TEST_CASE("Successfully filters StatementsTable using StatementType") {
-	StatementsTable table;
+	StatementsTable table = StatementsTable();
 	Statement statement1 = Statement(1, StatementType::ASSIGN);
 	Statement statement2 = Statement(2, StatementType::PRINT);
 	Statement statement3 = Statement(3, StatementType::PRINT);
@@ -37,12 +59,13 @@ TEST_CASE("Successfully filters StatementsTable using StatementType") {
 	
 	std::map<StatementHeader, Statement*> m = {{StatementHeader::STATEMENT_TYPE, &statement2}};
 	StatementPredicateMap predicateMap = StatementPredicateMap(&m);
+	StatementsTable *filteredTable = table.filter(&predicateMap);
 
 	// test is stored and retrieved correctly
-	REQUIRE(*table.retrieve(statement2.getIndex()) == statement2);
-	REQUIRE(*table.retrieve(statement3.getIndex()) == statement3);
+	REQUIRE(*filteredTable->retrieve(statement2.getIndex()) == statement2);
+	REQUIRE(*filteredTable->retrieve(statement3.getIndex()) == statement3);
 	// tableSize updated correctly
-	REQUIRE(table.getTableSize() == 2);
+	REQUIRE(filteredTable->getTableSize() == 2);
 }
 
 TEST_CASE("Successfully filters StatementsTable using Index") {
@@ -57,11 +80,13 @@ TEST_CASE("Successfully filters StatementsTable using Index") {
 	
 	std::map<StatementHeader, Statement*> m = {{StatementHeader::INDEX, &statement2}};
 	StatementPredicateMap predicateMap = StatementPredicateMap(&m);
+	StatementsTable *filteredTable = table.filter(&predicateMap);
+
 
 	// test is stored and retrieved correctly
-	REQUIRE(*table.retrieve(statement2.getIndex()) == statement2);
+	REQUIRE(*filteredTable->retrieve(statement2.getIndex()) == statement2);
 	// tableSize updated correctly
-	REQUIRE(table.getTableSize() == 1);
+	REQUIRE(filteredTable->getTableSize() == 1);
 }
 
 TEST_CASE("Successfully filters StatementsTable using StatementType and Index") {
@@ -77,7 +102,10 @@ TEST_CASE("Successfully filters StatementsTable using StatementType and Index") 
 	std::map<StatementHeader, Statement*> m = {{
 		StatementHeader::INDEX, &statement2}, {StatementHeader::STATEMENT_TYPE, &statement1}};
 	StatementPredicateMap predicateMap = StatementPredicateMap(&m);
+	StatementsTable *filteredTable = table.filter(&predicateMap);
 
 	// tableSize updated correctly
-	REQUIRE(table.getTableSize() == 0);
+	REQUIRE(filteredTable->retrieve(statement2.getIndex()) == nullptr);
+
+	REQUIRE(filteredTable->getTableSize() == 0);
 }

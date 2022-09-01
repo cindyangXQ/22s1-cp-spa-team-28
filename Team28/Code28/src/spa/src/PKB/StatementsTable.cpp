@@ -3,6 +3,7 @@
 #include "StatementPredicateMap.h"
 
 #include <algorithm>
+#include <iostream>
 
 StatementsTable::StatementsTable() = default;
 
@@ -17,6 +18,7 @@ void StatementsTable::store(Statement* statement) {
 	if (type == StatementType::NONE) {
 		//TODO error handling
 	}
+	std::cout << index << std::endl;
 
 	this->statements.push_back(statement);
 	this->statementTypeIndexes[type].push_back(index);
@@ -45,11 +47,10 @@ StatementType StatementsTable::getStatementType(const int& index) {
 
 StatementsTable *StatementsTable::filter(StatementPredicateMap *predicateMap) {
 	if ((*predicateMap).isEmpty()) {
-		StatementsTable *newTable = this;
-		return newTable;
+		return this;
 	}
 
-	StatementsTable newTable;
+	StatementsTable *newTable = new StatementsTable();
 	std::map<StatementHeader, Statement*> extractedMap = (*predicateMap).getPredicateMap();
 
 	for(Statement* statement : this->statements) {
@@ -60,8 +61,14 @@ StatementsTable *StatementsTable::filter(StatementPredicateMap *predicateMap) {
 			}
 		}
 		if (isFilter) {
-			newTable.store(statement);
+			std::cout << "Filter" << std::endl;
+			newTable->store(statement);
 		}
 	}
-	return &newTable;
+	std::cout << newTable->getTableSize() << std::endl;
+	std::cout << newTable->retrieve(2) << std::endl;
+	std::cout << newTable->retrieve(3) << std::endl;
+
+
+	return newTable;
 }
