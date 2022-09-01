@@ -2,7 +2,7 @@
 #include "Utils.h"
 #include "./Error/ParseError.h"
 
-void QueryParser::parse(std::string query) {
+SolvableQuery QueryParser::parse(std::string query) {
     std::vector<std::string> clauses = Utils::splitString(query, ';');
     int size = clauses.size();
 
@@ -17,7 +17,7 @@ void QueryParser::parse(std::string query) {
     SuchThatClause suchThatCl = QueryParser::parseSuchThatClause(mainClause);
     PatternClause patternCl = QueryParser::parsePatternClause(mainClause);
 
-    SolvableQuery solvableQ = SolvableQuery(decl, selectCl, suchThatCl, patternCl);
+    return SolvableQuery(decl, selectCl, suchThatCl, patternCl);
 }
 
 Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
@@ -33,34 +33,34 @@ Synonym QueryParser::parseSynonym(std::string desc) {
     std::vector<std::string> tokens = Utils::splitString(desc, ' ');
     DesignEntity entity;
     if (tokens[0].compare("Procedure") == 0) {
-        entity = PROCEDURE;
+        entity = DesignEntity::PROCEDURE;
     }
     else if (tokens[0].compare("Statement") == 0) {
-        entity = STATEMENT;
+        entity = DesignEntity::STATEMENT;
     }
     else if (tokens[0].compare("Read") == 0) {
-        entity = READ;
+        entity = DesignEntity::READ;
     }
     else if (tokens[0].compare("Print") == 0) {
-        entity = PRINT;
+        entity = DesignEntity::PRINT;
     }
     else if (tokens[0].compare("Assign") == 0) {
-        entity = ASSIGN;
+        entity = DesignEntity::ASSIGN;
     }
     else if (tokens[0].compare("Call") == 0) {
-        entity = CALL;
+        entity = DesignEntity::CALL;
     }
     else if (tokens[0].compare("While") == 0) {
-        entity = WHILE;
+        entity = DesignEntity::WHILE;
     }
     else if (tokens[0].compare("If") == 0) {
-        entity = IF;
+        entity = DesignEntity::IF;
     }
     else if (tokens[0].compare("Variable") == 0) {
-        entity = VARIABLE;
+        entity = DesignEntity::VARIABLE;
     }
     else if (tokens[0].compare("Constant") == 0) {
-        entity = CONSTANT;
+        entity = DesignEntity::CONSTANT;
     }
     std::string name = tokens[1];
     return Synonym(entity, name);
