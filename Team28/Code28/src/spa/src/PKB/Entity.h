@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "TableValue.h"
 
 enum class EntityHeader {
