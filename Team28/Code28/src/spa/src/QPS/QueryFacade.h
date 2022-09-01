@@ -8,10 +8,10 @@
 
 class QueryFacade {
 public:
-    static bool getRelationship(RelRef relRef, StatementNumber stmtNum, VariableName varName);
-    static std::vector<StatementNumber> getRelationshipByVariable(RelRef relRef, VariableName varName);
-    static std::vector<VariableName> getRelationshipByStatement(RelRef relRef, StatementNumber stmtNum);
-    static std::vector<StatementNumber, VariableName> getAllRelationship(RelRef relRef);
+    static bool getRelationship(RelationshipReference relRef, StatementNumber stmtNum, VariableName varName);
+    static std::vector<StatementNumber> getRelationshipByVariable(RelationshipReference relRef, VariableName varName);
+    static std::vector<VariableName> getRelationshipByStatement(RelationshipReference relRef, StatementNumber stmtNum);
+    static std::vector<StatementNumber, VariableName> getAllRelationship(RelationshipReference relRef);
     static std::vector<VariableName> getAllVariable();
     static std::vector<StatementNumber> getAllStatement();
 };

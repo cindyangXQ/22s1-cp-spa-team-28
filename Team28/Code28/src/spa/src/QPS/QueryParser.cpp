@@ -106,25 +106,25 @@ bool isSuchThatClause(std::vector<std::string> tokens, size_t start) {
     return false;
 }
 
-RelRef getRelationshipReference(std::string input) {
-    RelRef r = RelRef::Empty;
+RelationshipReference getRelationshipReference(std::string input) {
+    RelationshipReference r = RelationshipReference::Empty;
     if (input.compare("Modifies") == 0) {
-        r = RelRef::Modifies;
+        r = RelationshipReference::Modifies;
     }
     else if (input.compare("Uses") == 0) {
-        r = RelRef::Uses;
+        r = RelationshipReference::Uses;
     }
     else if (input.compare("Parent") == 0) {
-        r = RelRef::Parent;
+        r = RelationshipReference::Parent;
     }
     else if (input.compare("Parent*") == 0) {
-        r = RelRef::ParentT;
+        r = RelationshipReference::ParentT;
     }
     else if (input.compare("Follows") == 0) {
-        r = RelRef::Follows;
+        r = RelationshipReference::Follows;
     }
     else if (input.compare("Follows*") == 0) {
-        r = RelRef::FollowsT;
+        r = RelationshipReference::FollowsT;
     }
     return r;
 }
@@ -153,7 +153,7 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string mainClause, std::vec
     size_t i;
     for (i = 0; i < tokens.size(); i++) {
         if (isSuchThatClause(tokens, i)) {
-            RelRef r = getRelationshipReference(tokens[i]);
+            RelationshipReference r = getRelationshipReference(tokens[i]);
             Reference left = getReference(tokens[i + 4], syns);
             Reference right = getReference(tokens[i + 6], syns);
             return SuchThatClause(r, left, right);
