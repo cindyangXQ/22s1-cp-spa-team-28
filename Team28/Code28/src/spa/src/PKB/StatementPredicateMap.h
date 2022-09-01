@@ -12,17 +12,17 @@ class StatementPredicateMap : public PredicateMap<StatementHeader, Statement> {
 public:
 	/*
 	* Explicit constructor for a PredicateMap.
-	* TODO: Document map
+	* Takes in a map specifying the condition(s) to filter by.
 	*/
 	explicit StatementPredicateMap(std::map<StatementHeader, Statement*> *predicateMap);
 
 	/*
-	* Checks if PredicateMap is empty
+	* Checks if PredicateMap is empty.
 	*/
     bool isEmpty();
 
 	/*
-	* Gets the map of the predicate
+	* Gets the map of the predicate.
 	*/
     std::map<StatementHeader, Statement*> getPredicateMap();
     

@@ -60,7 +60,7 @@ private:
 class ConstantsTable : public NamesTable<ConstantName, Constant> {
 public:
 	/*
-	* Filters table based on the PredicateMap
+	* Filter table based on the PredicateMap.
 	*/
 	ConstantsTable *filter(ConstantPredicateMap *predicateMap) {
 		if ((*predicateMap).isEmpty()) {
@@ -89,7 +89,7 @@ public:
 class VariablesTable : public NamesTable<VariableName, Variable> {
 public:
 	/*
-	* Filters table based on the PredicateMap
+	* Filter table based on the PredicateMap.
 	*/
 	VariablesTable *filter(VariablePredicateMap *predicateMap) {
 		if ((*predicateMap).isEmpty()) {
@@ -118,7 +118,7 @@ public:
 class ProceduresTable : public NamesTable<ProcedureName, Procedure> {
 public:
 	/*
-	* Filters table based on the PredicateMap
+	* Filter table based on the PredicateMap.
 	*/
 	ProceduresTable *filter(ProcedurePredicateMap *predicateMap) {
 		if ((*predicateMap).isEmpty()) {

@@ -35,7 +35,7 @@ public:
 	int getTableSize() const;
 
 	/*
-	* Filters table based on the PredicateMap
+	* Filters table based on the PredicateMap.
 	*/
 	StatementsTable *filter(StatementPredicateMap *predicateMap);
 

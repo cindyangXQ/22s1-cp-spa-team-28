@@ -40,7 +40,7 @@ public:
 	bool operator==(const Statement& other) const;
 
 	/*
-	* Checks whether value of StatementHeader is equal
+	* Checks whether value of StatementHeader is equal.
 	*/
 	bool isValueEqual(StatementHeader header, Statement* other);
 

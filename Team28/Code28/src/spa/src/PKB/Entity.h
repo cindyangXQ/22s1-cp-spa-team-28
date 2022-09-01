@@ -27,7 +27,7 @@ public:
 	};
 
 	/*
-	* Checks whether value of EntityHeader is equal
+	* Checks whether value of EntityHeader is equal.
 	*/
 	bool isValueEqual(EntityHeader header, const Entity& other) {
 		switch (header) {

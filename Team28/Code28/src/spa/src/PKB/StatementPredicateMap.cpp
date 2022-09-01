@@ -4,7 +4,6 @@ StatementPredicateMap::StatementPredicateMap(std::map<StatementHeader, Statement
     this->predicateMap = *predicateMap;
 };
 
-// Checks if predicate is empty, 
 bool StatementPredicateMap::isEmpty() {
     return this->predicateMap.size() == 0;
 };
