@@ -1,5 +1,8 @@
 #include "StatementsTable.h"
 #include "Statement.h"
+#include "StatementPredicateMap.h"
+
+#include <algorithm>
 
 StatementsTable::StatementsTable() = default;
 
@@ -20,22 +23,48 @@ void StatementsTable::store(Statement* statement) {
 	this->tableSize++;
 }
 
-Statement *StatementsTable::retrieve(const int& index) {
-	//currently assumed that table index starts from 1
-	if (index <= 0 || index > this->tableSize) {
-		return nullptr;
+Statement *StatementsTable::retrieve(const int& lineNum) {
+	// currently assumes that lineNum is unique
+	for(Statement* statement : this->statements) {
+		if (statement->getIndex() == lineNum) {
+			return statement;
+		}
 	}
 
-	return this->statements.at(index - 1);
+	return nullptr;
 }
 
-StatementType StatementsTable::getStatementType(const int& index) {
-	//currently assumed that table index starts from 1
-	if (index <= 0 || index > this->tableSize) {
-		//TODO error handling
-		return StatementType::NONE;
+StatementType StatementsTable::getStatementType(const int& lineNum) {
+	// currently assumes that lineNum is unique
+	for(Statement* statement : this->statements) {
+		if (statement->getIndex() == lineNum) {
+			return statement->getStatementType();
+		}
 	}
 
-	Statement* statementAtIndex = this->statements.at(index - 1);
-	return statementAtIndex->getStatementType();
+	return StatementType::NONE;
+
+}
+
+StatementsTable *StatementsTable::filter(StatementPredicateMap *predicateMap) {
+	if ((*predicateMap).isEmpty()) {
+		return this;
+	}
+
+	StatementsTable *newTable = new StatementsTable();
+	std::map<StatementHeader, Statement*> extractedMap = (*predicateMap).getPredicateMap();
+
+	for(Statement* statement : this->statements) {
+		bool isFilter = true;
+		for (auto [key, val] : extractedMap) {
+			if (!statement->isValueEqual(key, val)) {
+				isFilter = false;
+			}
+		}
+		if (isFilter) {
+			newTable->store(statement);
+		}
+	}
+
+	return newTable;
 }
