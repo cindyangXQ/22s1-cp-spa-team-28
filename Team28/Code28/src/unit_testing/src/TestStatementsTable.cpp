@@ -111,3 +111,15 @@ TEST_CASE("Successfully filters StatementsTable using StatementType and Index") 
 
 	REQUIRE(filteredTable->getTableSize() == 0);
 }
+
+TEST_CASE("StatementsTable can getAll statements correctly") {
+	StatementsTable table;
+	Statement test1 = Statement(1, StatementType::ASSIGN);
+	Statement test2 = Statement(2, StatementType::ASSIGN);
+
+	table.store(&test1);
+	table.store(&test2);
+
+	// number of elements in table is equal to number stored
+	REQUIRE(table.getAll().size() == 2);
+}
