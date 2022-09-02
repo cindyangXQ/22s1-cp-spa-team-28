@@ -1,20 +1,17 @@
-#include "Tokenizer.h"
-#include "Token.h"
 #include <string>
 #include <vector>
 #include <ctype.h>
-#include <iostream>
-#include <algorithm>
+#include "./Token.h"
 
 using namespace std;
 
 string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read" };
 char SYMBOL_LIST[] = { '(', ')', '{', '}', ';' };
-char WHITESPACE_LIST[] = { ' ' , '\n', '\t' };
-string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=","!=", "!", "&&", "||" };
-char opChar[] = { '+', '-', '=', '*', '/', '%', '>', '<', '!', '&', '|' };
+char WHITESPACE_LIST[] = { ' ', '\n', '\t' };
+string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=", "==", "!=", "!", "&&", "||" };
+char opChar[] = { '+', '-', '=', '*', '/', '%', '>', '<', '!', '&', '|' }; 
 
-enum class TokenType {
+enum TokenType {
 	WHITESPACE, // act as default token type
 	NAME,
 	CONSTANT,
@@ -23,27 +20,28 @@ enum class TokenType {
 	SYMBOL // parenthesis and ';'
 };
 
+class Tokenizer{
+private:
+	string& input = {};
 
-Token Tokenizer::createToken(TokenType type, string value) {
-		cout << static_cast<int>(type) << " " << value << endl;
+	Token createToken(TokenType type, string value) {
 		switch (type) {
-		case TokenType::CONSTANT: return Constant(value);
-		case TokenType::NAME: return Name(value);
-		case TokenType::KEYWORD: return Keyword(value);
-		case TokenType::OPERATOR: return Operator(value);
-		default: return Symbol(value);
+			case CONSTANT: return new Constant(value);
+			case NAME: return new Name(value);
+			case KEYWORD: return new Keyword(value);
+			case OPERATOR: return new Operator(value);
+			case SYMBOL: return new Symbol(value);
 		}
-		//return Token(value);
-}
+	}
 
-
-Tokenizer::Tokenizer(string sourceProg) {
+public:
+	Tokenizer(const string &sourceProg) {
 		this->input = sourceProg;
 	}
 
-vector<Token> Tokenizer::tokenize() {
+	vector<Token> tokenize() {
 		vector<Token> tokens;
-		TokenType currType = TokenType::WHITESPACE;
+		TokenType currType = WHITESPACE;
 
 		string current = ""; // store current Token value
 		char currChar;
@@ -52,80 +50,67 @@ vector<Token> Tokenizer::tokenize() {
 		// Iterate throught every char in the source program
 		while (index < input.length()) {
 			currChar = input.at(index);
-
-			if (isdigit(currChar)) {
-				if (currType == TokenType::WHITESPACE) {
-					currType = TokenType::CONSTANT;
-					current = "";
+			
+			if (isdigit(currChar)) {  
+				if (currType == WHITESPACE) {
+					currType = CONSTANT;
 				}
-				else if (currType != TokenType::CONSTANT) {
-					tokens.push_back(createToken(currType, current));
-					currType = TokenType::CONSTANT;
-					current = "";
-				}
-
 				current.append(1, currChar);
 			}
 			else if (isalpha(currChar)) {
-				if (currType == TokenType::WHITESPACE) {
-					currType = TokenType::NAME;
-					current = "";
-				}
-				else if (currType != TokenType::NAME) {
-					tokens.push_back(createToken(currType, current));
-					currType = TokenType::NAME;
-					current = "";
+				if (currType == WHITESPACE) {
+					currType = NAME;
 				}
 				current.append(1, currChar);
 			}
-			else if (currChar == ' ') {
+			else if (find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), currChar) != end(WHITESPACE_LIST)) {
 				// when currType is Name, check if it is keyword
-				if (currType == TokenType::NAME && find(begin(KEYWORD_LIST), end(KEYWORD_LIST), current) != end(KEYWORD_LIST)) {
-					while (index + 1 < input.length()) {
+				if (currType == NAME && find(begin(KEYWORD_LIST), end(KEYWORD_LIST), currChar) != end(KEYWORD_LIST)) {
+					while(index + 1 < input.length()){
 						if (find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), currChar) != end(WHITESPACE_LIST)) {
 							break;
 						}
 						index = index + 1;
 					}
 					char temp = input.at(index + 1);
-					if (find(begin(opChar), end(opChar), temp) != end(opChar) && temp != ';') {
-						tokens.push_back(createToken(TokenType::NAME, current));
+					if (find(begin(opChar), end(opChar), temp) != end(opChar)) {
+						tokens.push_back(createToken(KEYWORD, current));
 					}
 					else {
-						tokens.push_back(createToken(TokenType::KEYWORD, current));
+						tokens.push_back(createToken(NAME, current))
 					}
 				}
 				else {
-					if (currType != TokenType::WHITESPACE) {
+					if (currType != WHITESPACE) {
 						tokens.push_back(createToken(currType, current));
 					}
 				}
 				current = "";
-				currType = TokenType::WHITESPACE;
+				currType = WHITESPACE;
 			}
-			else if (find(begin(opChar), end(opChar), currChar) != end(opChar)) {
-				if (currType == TokenType::WHITESPACE) {
+			else if (find(begin(OPERATOR_LIST), end(OPERATOR_LIST), currChar) != end(OPERATOR_LIST)) {
+				if (currType == WHITESPACE) {
 					current = "";
-					currType = TokenType::OPERATOR;
+					currType = OPERATOR;
 				}
 
-				if (currType == TokenType::OPERATOR) {
+				if (currType == OPERATOR) {
 					current.append(1, currChar);
 				}
 				else {
 					tokens.push_back(createToken(currType, current));
 				}
 			}
-			else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST)) {
-				if (currType != TokenType::WHITESPACE) {
+			else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST){
+				if (currType != WHITESPACE) {
 					tokens.push_back(createToken(currType, current));
 				}
-				currType = TokenType::SYMBOL;
+				currType = SYMBOL;
 				current = "";
-				current.push_back(currChar);
 			}
-			index = index + 1;
+			else { 
+				//TODO: invalid character throw error
+			}
 		}
-		return tokens;
 	}
-
+};
