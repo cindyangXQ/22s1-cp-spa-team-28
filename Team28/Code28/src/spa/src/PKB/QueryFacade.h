@@ -15,6 +15,21 @@ public:
 	*/
 	std::vector<Statement*> getAllStatements();
 
+	/*
+	* Returns all variable names inside the VariablesTable.
+	*/
+	std::vector<VariableName> getAllVariables();
+
+	/*
+	* Returns all constant names inside the ConstantsTable.
+	*/
+	std::vector<ConstantName> getAllConstants();
+
+	/*
+	* Returns all procedure names inside the ProceduresTable.
+	*/
+	std::vector<ProcedureName> getAllProcedures();
+
 private:
 	Storage storage;
 };

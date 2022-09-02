@@ -51,6 +51,10 @@ public:
 		return this->nameEntityMap;
 	};
 
+	std::unordered_set<In> getAll() {
+		return this->names;
+	}
+
 private:
 	int tableSize = 0;
 	std::unordered_set<In> names;
