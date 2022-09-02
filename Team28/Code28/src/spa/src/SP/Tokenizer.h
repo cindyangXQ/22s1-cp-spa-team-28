@@ -1,14 +1,9 @@
 #pragma once
 
-#ifndef Tokenizer_HEADER
-#define Tokenizer_HEADER
-
-#include "Token.h"
 #include <string>
 #include <vector>
 #include <ctype.h>
-#include <iostream>
-#include <algorithm>
+#include "./Token.h"
 
 using namespace std;
 
@@ -18,14 +13,20 @@ char WHITESPACE_LIST[];
 string OPERATOR_LIST[]; // rel & cond op not included yet
 char opChar[];
 
-enum class TokenType;
+enum TokenType {
+	WHITESPACE, // act as default token type
+	NAME,
+	CONSTANT,
+	KEYWORD, // word that decide stmt type 
+	OPERATOR, // cond, rel, arithmetic symbols
+	SYMBOL // parenthesis and ';'
+};
 
 class Tokenizer {
-private:
-	string input;
-	Token createToken(TokenType type, string value);
 public:
-	Tokenizer(string sourceProg);
+	Tokenizer(const string& sourceProg);
 	vector<Token> tokenize();
+private:
+	string& input;
+	Token createToken(TokenType type, string value);
 };
-#endif
