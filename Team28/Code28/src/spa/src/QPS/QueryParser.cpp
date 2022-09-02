@@ -137,9 +137,6 @@ bool QueryParser::isSuchThatClause(std::vector<std::string> tokens, size_t start
 }
 
 bool QueryParser::isPatternClause(std::vector<std::string> tokens, size_t start) {
-    if (start > tokens.size() - 8) {
-        return false;
-    }
     if (tokens[start] == "pattern") {
         if (tokens[start + 2] == "(" &&
             tokens[start + 4] == "," &&
