@@ -3,6 +3,9 @@
 #include <iostream>
 #include "../Reference/Reference.h"
 
+/*
+ * Class encapsulating the logic of the such that clause.
+ */
 class SuchThatClause
 {
 public:

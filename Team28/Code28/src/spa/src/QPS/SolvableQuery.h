@@ -5,6 +5,10 @@
 #include "Clause/SelectClause.h"
 #include "Clause/SuchThatClause.h"
 #include "Clause/PatternClause.h"
+
+/*
+ * Class encapsulating the logical representation of the query after parsing.
+ */
 class SolvableQuery
 {
 public:

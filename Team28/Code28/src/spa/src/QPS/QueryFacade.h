@@ -6,6 +6,9 @@
 #include "Reference/StatementNumber.h"
 #include "Reference/VariableName.h"
 
+/*
+ * Facade class responsible for communicating with PKB.
+ */
 class QueryFacade {
 public:
     static bool getRelationship(RelationshipReference relRef, StatementNumber stmtNum, VariableName varName);

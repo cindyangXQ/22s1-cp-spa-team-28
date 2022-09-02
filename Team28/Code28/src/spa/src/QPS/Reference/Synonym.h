@@ -4,6 +4,9 @@
 #include "../Utils.h"
 #include <iostream>
 
+/*
+ * Class encapsulating a synonym.
+ */
 class Synonym : public Reference
 {
 public:

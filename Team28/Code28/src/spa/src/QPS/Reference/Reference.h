@@ -1,4 +1,8 @@
 #pragma once
+
+/*
+ * Enumerates the different type of relationship.
+ */
 enum class RelationshipReference {
     Modifies,
     Uses,
