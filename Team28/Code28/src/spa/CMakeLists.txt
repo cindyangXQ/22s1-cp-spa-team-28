@@ -4,9 +4,7 @@ add_library(spa ${srcs} ${headers})
 
 add_subdirectory(src/pkb)
 add_subdirectory(src/qps)
-add_subdirectory(src/sp)
 # this makes the headers accessible for other projects which uses spa lib
 target_include_directories(spa PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(spa pkb)
 target_link_libraries(spa qps)
-target_link_libraries(spa sp)
