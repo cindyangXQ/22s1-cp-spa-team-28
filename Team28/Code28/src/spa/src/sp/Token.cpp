@@ -9,71 +9,22 @@ Token::Token(string s) {
 	this->value = s;
 }
 
-bool Token::equals(string other) {
-	if (value.compare(other) == 0) {
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
 Constant::Constant(string s) {
-	super(s);
-}
-
-bool Constant::isKeyword() {
-	return false;
-}
-
-bool Constant::isName() {
-	return false;
+	this->value = s;
 }
 
 Name::Name(string s) {
-	super(s);
-}
-
-bool Name::isKeyword() {
-	return false;
-}
-
-bool Name::isName() {
-	return true;
+	this->value = s;
 }
 
 Keyword::Keyword(string s) {
-	super(s);
-}
-
-bool Keyword::isKeyword() {
-	return true;
-}
-
-bool Keyword::isName() {
-	return false;
+	this->value = s;
 }
 
 Operator::Operator(string s) {
-	super(s);
-}
-
-bool Operator::isKeyword() {
-	return false;
-}
-
-bool Operator::isName() {
-	return false;
+	this->value = s;
 }
 
 Symbol::Symbol(string s) {
-	super(s);
-}
-
-bool Symbol::isKeyword() {
-	return false;
-}
-
-bool Symbol::isName() {
-	return false;
+	this->value = s;
 }
