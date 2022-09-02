@@ -68,3 +68,7 @@ StatementsTable *StatementsTable::filter(StatementPredicateMap *predicateMap) {
 
 	return newTable;
 }
+
+std::vector<Statement*> StatementsTable::getAll() {
+	return this->statements;
+}

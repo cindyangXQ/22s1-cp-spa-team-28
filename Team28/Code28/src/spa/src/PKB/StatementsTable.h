@@ -39,6 +39,8 @@ public:
 	*/
 	StatementsTable *filter(StatementPredicateMap *predicateMap);
 
+	std::vector<Statement*> getAll();
+
 private:
 	int tableSize = 0;
 

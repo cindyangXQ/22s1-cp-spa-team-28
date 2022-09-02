@@ -10,6 +10,11 @@ public:
 	*/
 	explicit QueryFacade(Storage storage);
 
+	/*
+	* Returns all statements inside the StatementsTable.
+	*/
+	std::vector<Statement*> getAllStatements();
+
 private:
 	Storage storage;
 };
