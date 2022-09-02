@@ -2,6 +2,9 @@
 
 #include "SolvableQuery.h"
 
+/*
+ * Class responsible for parsing the strings of query.
+ */
 class QueryParser {
 public:
     static SolvableQuery parse(std::string query);
