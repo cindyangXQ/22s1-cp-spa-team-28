@@ -18,20 +18,20 @@ bool Token::equals(string other) {
 	}
 }
 
-Constant::Constant(string s) {
-	super(s);
+ConstantToken::ConstantToken(string s) {
+	this->value = s;
 }
 
-bool Constant::isKeyword() {
+bool ConstantToken::isKeyword() {
 	return false;
 }
 
-bool Constant::isName() {
+bool ConstantToken::isName() {
 	return false;
 }
 
 Name::Name(string s) {
-	super(s);
+	this->value = s;
 }
 
 bool Name::isKeyword() {
@@ -43,7 +43,7 @@ bool Name::isName() {
 }
 
 Keyword::Keyword(string s) {
-	super(s);
+	this->value = s;
 }
 
 bool Keyword::isKeyword() {
@@ -55,7 +55,7 @@ bool Keyword::isName() {
 }
 
 Operator::Operator(string s) {
-	super(s);
+	this->value = s;
 }
 
 bool Operator::isKeyword() {
@@ -67,7 +67,7 @@ bool Operator::isName() {
 }
 
 Symbol::Symbol(string s) {
-	super(s);
+	this->value = s;
 }
 
 bool Symbol::isKeyword() {
