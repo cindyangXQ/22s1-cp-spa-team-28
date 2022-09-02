@@ -3,7 +3,7 @@
 /*
  * Enumerates the different type of relationship.
  */
-enum class RelRef {
+enum class RelationshipReference {
     Modifies,
     Uses,
     Parent,
