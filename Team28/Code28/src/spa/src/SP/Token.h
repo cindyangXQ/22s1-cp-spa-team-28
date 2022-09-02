@@ -1,7 +1,4 @@
 #pragma once
-
-#ifndef Token_HEADER
-#define Token_HEADER
 #include <string>
 
 using namespace std;
@@ -20,28 +17,37 @@ public:
 	};
 };
 
-class Constant : public Token {
+class ConstantToken : public Token {
 public:
-	Constant(string s);
+	ConstantToken(string s);
+	bool isName();
+	bool isKeyword();
 };
 
 class Name : public Token {
 public:
 	Name(string s);
+	bool isName();
+	bool isKeyword();
 };
 
 class Keyword : public Token {
 public:
 	Keyword(string s);
+	bool isName();
+	bool isKeyword();
 };
 
 class Operator : public Token {
 public:
 	Operator(string s);
+	bool isName();
+	bool isKeyword();
 };
 
 class Symbol : public Token {
 public:
 	Symbol(string s);
+	bool isName();
+	bool isKeyword();
 };
-#endif
