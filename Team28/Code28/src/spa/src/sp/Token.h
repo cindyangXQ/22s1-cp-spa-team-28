@@ -11,6 +11,13 @@ public:
 	string value;
 	Token();
 	Token(string s);
+	bool equals(string other);
+	virtual bool isKeyword() {
+		return false;
+	};
+	virtual bool isName() {
+		return false;
+	};
 };
 
 class Constant : public Token {
