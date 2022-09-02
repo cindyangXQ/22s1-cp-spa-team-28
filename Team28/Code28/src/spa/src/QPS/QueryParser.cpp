@@ -13,7 +13,7 @@ SolvableQuery QueryParser::parse(std::string query) {
     Declaration decl = QueryParser::parseDeclaration(clauses);
     SelectClause selectCl = QueryParser::parseSelectClause(mainClause, decl.syns);
     SuchThatClause suchThatCl = QueryParser::parseSuchThatClause(mainClause, decl.syns);
-    PatternClause patternCl = QueryParser::parsePatternClause(mainClause);
+    PatternClause patternCl = QueryParser::parsePatternClause(mainClause, decl.syns);
 
     return SolvableQuery(decl, selectCl, suchThatCl, patternCl);
 }
@@ -102,19 +102,19 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string mainClause, std::vec
     return SuchThatClause();
 }
 
-PatternClause QueryParser::parsePatternClause(std::string mainClause) {
+PatternClause QueryParser::parsePatternClause(std::string mainClause, std::vector<Synonym> syns) {
+    std::vector<char> special_char{ ';', '(', ',', ')', '_' };
+    std::vector<std::string> tokens = Utils::tokenize(mainClause, special_char);
+    size_t i;
+    for (i = 0; i < tokens.size(); i++) {
+        if (isPatternClause(tokens, i)) {
+            Synonym syn = getSynonym(tokens[i + 1], syns);
+            Reference entRef = getReference(tokens[i + 3], syns);
+            Expression expression = tokens[i + 5];
+            return PatternClause(syn, entRef, expression);
+        }
+    }
     return PatternClause();
-    /*
-    size_t suchThatIdx = mainClause.find("such that");
-    size_t patternIdx = mainClause.find("pattern");
-    if (patternIdx < mainClause.size()) {
-        std::string patternString = mainClause.substr(patternIdx);
-        return PatternClause(patternString);
-    }
-    else {
-        return PatternClause();
-    }
-    */
 }
 
 bool QueryParser::isSuchThatClause(std::vector<std::string> tokens, size_t start) {
@@ -131,6 +131,23 @@ bool QueryParser::isSuchThatClause(std::vector<std::string> tokens, size_t start
         }
         else {
             throw ParseError("Syntax error for such that clause");
+        }
+    }
+    return false;
+}
+
+bool QueryParser::isPatternClause(std::vector<std::string> tokens, size_t start) {
+    if (start > tokens.size() - 8) {
+        return false;
+    }
+    if (tokens[start] == "pattern") {
+        if (tokens[start + 2] == "(" &&
+            tokens[start + 4] == "," &&
+            tokens[tokens.size() - 8] == ")") {
+            return true;
+        }
+        else {
+            throw ParseError("Syntax error for pattern clause");
         }
     }
     return false;
@@ -167,12 +184,22 @@ Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns
         return VariableName(input);
     }
     Synonym selectedSyn;
-    bool isSynInit = false;
     for (int i = 0; i < syns.size(); i++) {
         Synonym s = syns[i];
         if (input.compare(s.name) == 0) {
             selectedSyn = s;
-            isSynInit = true;
+            return selectedSyn;
+        }
+    }
+    throw ParseError("not a number, not a name, not a synonym declared");
+}
+
+Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
+    Synonym selectedSyn;
+    for (int i = 0; i < syns.size(); i++) {
+        Synonym s = syns[i];
+        if (input.compare(s.name) == 0) {
+            selectedSyn = s;
             return selectedSyn;
         }
     }
