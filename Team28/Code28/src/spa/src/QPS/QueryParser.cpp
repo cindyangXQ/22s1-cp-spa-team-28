@@ -158,6 +158,7 @@ RelationshipReference QueryParser::getRelationshipReference(std::string input) {
     }
     return r;
 }
+
 Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns) {
     if (std::all_of(input.begin(), input.end(), ::isdigit)) {
         return StatementNumber(atoi(input.c_str()));
