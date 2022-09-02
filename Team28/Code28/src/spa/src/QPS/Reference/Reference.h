@@ -1,5 +1,5 @@
 #pragma once
-enum class RelRef {
+enum class RelationshipReference {
     Modifies,
     Uses,
     Parent,
