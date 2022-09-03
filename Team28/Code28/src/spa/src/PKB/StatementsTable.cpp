@@ -72,3 +72,7 @@ StatementsTable *StatementsTable::filter(StatementPredicateMap *predicateMap) {
 std::vector<Statement*> StatementsTable::getAll() {
 	return this->statements;
 }
+
+std::vector<int> StatementsTable::getStatementsByType(StatementType type) {
+	return this->statementTypeIndexes[type];
+}

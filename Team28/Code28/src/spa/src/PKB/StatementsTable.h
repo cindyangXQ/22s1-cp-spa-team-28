@@ -39,7 +39,15 @@ public:
 	*/
 	StatementsTable *filter(StatementPredicateMap *predicateMap);
 
+	/*
+	* Gets all statements in StatementsTable.
+	*/
 	std::vector<Statement*> getAll();
+
+	/*
+	* Gets all statements of the specified type from StatementsTable.
+	*/
+	std::vector<int> getStatementsByType(StatementType type);
 
 private:
 	int tableSize = 0;

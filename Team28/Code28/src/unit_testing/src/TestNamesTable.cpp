@@ -128,3 +128,39 @@ TEST_CASE("Successfully filters VariablesTable using VariableName") {
 	REQUIRE(*table.retrieve("b") == Variable("b"));
 	REQUIRE(filteredTable->getTableSize() == 1);
 }
+
+TEST_CASE("VariablesTable can getAll statements correctly") {
+	VariablesTable table;
+	Variable test1 = Variable("test1");
+	Variable test2 = Variable("test2");
+
+	table.store(&test1);
+	table.store(&test2);
+
+	// number of elements in table is equal to number stored
+	REQUIRE(table.getAll().size() == 2);
+}
+
+TEST_CASE("ConstantsTable can getAll statements correctly") {
+	ConstantsTable table;
+	Constant test1 = Constant("test1");
+	Constant test2 = Constant("test2");
+
+	table.store(&test1);
+	table.store(&test2);
+
+	// number of elements in table is equal to number stored
+	REQUIRE(table.getAll().size() == 2);
+}
+
+TEST_CASE("ProceduresTable can getAll statements correctly") {
+	ProceduresTable table;
+	Procedure test1 = Procedure("test1");
+	Procedure test2 = Procedure("test2");
+
+	table.store(&test1);
+	table.store(&test2);
+
+	// number of elements in table is equal to number stored
+	REQUIRE(table.getAll().size() == 2);
+}

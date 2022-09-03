@@ -51,6 +51,9 @@ public:
 		return this->nameEntityMap;
 	};
 
+	/*
+	* Gets all names from NamesTable.
+	*/
 	std::unordered_set<In> getAll() {
 		return this->names;
 	}

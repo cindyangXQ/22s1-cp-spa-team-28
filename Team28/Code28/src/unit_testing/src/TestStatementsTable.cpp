@@ -111,3 +111,40 @@ TEST_CASE("Successfully filters StatementsTable using StatementType and Index") 
 
 	REQUIRE(filteredTable->getTableSize() == 0);
 }
+
+TEST_CASE("StatementsTable can getAll statements correctly") {
+	StatementsTable table;
+	Statement test1 = Statement(1, StatementType::ASSIGN);
+	Statement test2 = Statement(2, StatementType::ASSIGN);
+
+	table.store(&test1);
+	table.store(&test2);
+
+	// number of elements in table is equal to number stored
+	REQUIRE(table.getAll().size() == 2);
+}
+
+TEST_CASE("StatementsTable can getStatementByType correctly") {
+	StatementsTable table;
+	Statement assignStmt = Statement(1, StatementType::ASSIGN);
+	Statement callStmt = Statement(1, StatementType::CALL);
+	Statement ifStmt = Statement(1, StatementType::IF);
+	Statement printStmt = Statement(1, StatementType::PRINT);
+	Statement readStmt = Statement(1, StatementType::READ);
+	Statement whileStmt = Statement(1, StatementType::WHILE);
+
+	table.store(&assignStmt);
+	table.store(&callStmt);
+	table.store(&ifStmt);
+	table.store(&printStmt);
+	table.store(&readStmt);
+	table.store(&whileStmt);
+
+	// 1 statement of each type successfully retrieved
+	REQUIRE(table.getStatementsByType(StatementType::ASSIGN).size() == 1);
+	REQUIRE(table.getStatementsByType(StatementType::CALL).size() == 1);
+	REQUIRE(table.getStatementsByType(StatementType::IF).size() == 1);
+	REQUIRE(table.getStatementsByType(StatementType::PRINT).size() == 1);
+	REQUIRE(table.getStatementsByType(StatementType::READ).size() == 1);
+	REQUIRE(table.getStatementsByType(StatementType::WHILE).size() == 1);
+}
