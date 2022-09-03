@@ -33,10 +33,11 @@ public:
 class StatementNode : public EntityNode {
 public:
 	StatementNode();
-	bool isRead();
-	bool isPrint();
-	bool isCall();
-	bool isAssign();
+	virtual bool isRead();
+	virtual bool isPrint();
+	virtual bool isCall();
+	virtual bool isAssign();
+	virtual string getVariable();
 };
 
 class ProcedureNode : public EntityNode {
@@ -67,6 +68,7 @@ public:
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
+	string getVariable();
 };
 
 class PrintStatementNode : public StatementNode {
@@ -78,6 +80,7 @@ public:
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
+	string getVariable();
 };
 
 class CallStatementNode : public StatementNode {
@@ -89,6 +92,7 @@ public:
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
+	string getVariable();
 };
 
 
@@ -111,7 +115,5 @@ public:
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
+	string getVariable();
 };
-
-
-

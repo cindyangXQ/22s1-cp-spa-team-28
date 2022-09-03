@@ -99,9 +99,17 @@ ReadStatementNode::ReadStatementNode(VariableNode VariableNode ) {
 	this->var = VariableNode ;
 }
 
+string ReadStatementNode::getVariable() {
+	return this->var.getValue();
+}
+
 // Print Statement
 PrintStatementNode::PrintStatementNode(VariableNode VariableNode ) {
 	this->var = VariableNode ;
+}
+
+string PrintStatementNode::getVariable() {
+	return this->var.getValue();
 }
 
 // Call Statement
@@ -109,10 +117,18 @@ CallStatementNode::CallStatementNode(VariableNode VariableNode ) {
 	this->var = VariableNode ;
 }
 
+string ReadStatementNode::getVariable() {
+	return "";
+}
+
 // Assignment Statement
 AssignStatementNode::AssignStatementNode(VariableNode VariableNode , ExpressionNode expression) {
 	var = VariableNode ;
 	expr = expression;
+}
+
+string ReadStatementNode::getVariable() {
+	return this->var.getValue();
 }
 
 // Expression
