@@ -1,11 +1,16 @@
 #pragma once
 
+#include "../../PKB/QueryFacade.h"
 #include "../Clause/PatternClause.h"
+#include "ClauseResult.h"
 
 /*
  * Evaluator for the pattern clause.
  */
 class PatternEvaluator {
+private:
+    QueryFacade *queryFacade;
 public:
-    static void evaluate(PatternClause patternCl);
+    explicit PatternEvaluator(QueryFacade *queryFacade);
+    ClauseResult evaluate(PatternClause patternCl);
 };

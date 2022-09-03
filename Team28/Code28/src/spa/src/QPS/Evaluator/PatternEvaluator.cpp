@@ -1,5 +1,5 @@
 #include "PatternEvaluator.h"
 
-void PatternEvaluator::evaluate(PatternClause patternCl) {
-
+ClauseResult PatternEvaluator::evaluate(PatternClause patternCl) {
+    return ClauseResult(true);
 }

@@ -11,11 +11,11 @@ SolvableQuery QueryParser::parse(std::string query) {
     }
 
     Declaration decl = QueryParser::parseDeclaration(clauses);
-    SelectClause selectCl = QueryParser::parseSelectClause(mainClause, decl.syns);
+    SelectType selectType = QueryParser::parseSelectClause(mainClause, decl.syns);
     SuchThatClause suchThatCl = QueryParser::parseSuchThatClause(mainClause, decl.syns);
     PatternClause patternCl = QueryParser::parsePatternClause(mainClause, decl.syns);
 
-    return SolvableQuery(decl, selectCl, suchThatCl, patternCl);
+    return SolvableQuery(decl, selectType, suchThatCl, patternCl);
 }
 
 Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
@@ -64,7 +64,7 @@ Synonym QueryParser::parseSynonym(std::string desc) {
     return Synonym(entity, name);
 }
 
-SelectClause QueryParser::parseSelectClause(std::string mainClause, std::vector<Synonym> syns) {
+SelectType QueryParser::parseSelectClause(std::string mainClause, std::vector<Synonym> syns) {
     std::vector<std::string> tokens = Utils::splitString(mainClause, ' ');
     if (tokens[0].compare("Select") == 0) {
         Synonym selectedSyn;
@@ -80,7 +80,7 @@ SelectClause QueryParser::parseSelectClause(std::string mainClause, std::vector<
         if (isSynInit == false ) {
             throw ParseError("Synonym not initialized");
         }
-        return SelectClause(selectedSyn);
+        return selectedSyn;
     }
     else {
         throw ParseError("Expected select clause at the start of main clause");
