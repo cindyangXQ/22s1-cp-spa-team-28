@@ -10,8 +10,21 @@ ProgramNode::ProgramNode(vector<ProcedureNode> procList) {
 	this->procList = procList;
 }
 
-ProcedureNode::ProcedureNode(vector<StatementNode> stmtList) {
+vector<ProcedureNode> ProgramNode::getProcList() {
+	return this->procList;
+}
+
+ProcedureNode::ProcedureNode(string procName, vector<StatementNode> stmtList) {
+	this->procName = procName;
 	this->stmtList = stmtList;
+}
+
+string ProcedureNode::getName() {
+	return this->procName;
+}
+
+vector<StatementNode> ProcedureNode::getStmtList() {
+	return this->stmtList;
 }
 
 ReadStatementNode::ReadStatementNode(VariableNode  VariableNode ) {

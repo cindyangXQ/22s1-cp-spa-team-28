@@ -33,10 +33,13 @@ public:
 };
 
 class ProcedureNode : public EntityNode {
+	string procName;
 	vector<StatementNode> stmtList;
 
 public:
-	ProcedureNode(vector<StatementNode> stmtList);
+	ProcedureNode(string procName, vector<StatementNode> stmtList);
+	string getName();
+	vector<StatementNode> getStmtList();
 };
 
 class ProgramNode : public EntityNode {
@@ -44,6 +47,7 @@ class ProgramNode : public EntityNode {
 
 public:
 	ProgramNode(vector<ProcedureNode> procList);
+	vector<ProcedureNode> getProcList();
 };
 
 class ReadStatementNode : public StatementNode {
