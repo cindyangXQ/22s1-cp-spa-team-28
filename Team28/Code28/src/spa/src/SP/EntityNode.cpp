@@ -4,6 +4,8 @@
 
 using namespace std;
 
+StatementNode::StatementNode(){}
+
 ProgramNode::ProgramNode(vector<ProcedureNode> procList) {
 	this->procList = procList;
 }

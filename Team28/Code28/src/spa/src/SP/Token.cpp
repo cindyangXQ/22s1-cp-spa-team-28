@@ -5,6 +5,9 @@ using namespace std;
 
 Token::Token() {}
 
+bool Token::isName() { return false; }
+bool Token::isKeyword() { return false; }
+
 Token::Token(string s) {
 	this->value = s;
 }
@@ -16,32 +19,6 @@ bool Token::equals(string other) {
 	else {
 		return false;
 	}
-}
-
-Constant::Constant(string s) {
-	this->value = s;
-}
-
-bool Constant::isKeyword() {
-	return false;
-}
-
-bool Constant::isName() {
-	return false;
-}
-
-Variable::Variable(string s) {
-	this->value = s;
-}
-
-Variable::Variable(){}
-
-bool Variable::isKeyword() {
-	return false;
-}
-
-bool Variable::isName() {
-	return true;
 }
 
 Keyword::Keyword(string s) {

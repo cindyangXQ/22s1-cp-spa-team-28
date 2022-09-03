@@ -2,10 +2,25 @@
 
 #include <vector>
 #include <string>
-
 #include "Token.h"
 
+
 using namespace std;
+
+class Constant : public Token, public EntityNode {
+public:
+	Constant(string s);
+	bool isName();
+	bool isKeyword();
+};
+
+class Variable : public Token, public EntityNode {
+public:
+	Variable(string s);
+	Variable();
+	bool isName();
+	bool isKeyword();
+};
 
 class EntityNode {};
 
@@ -23,7 +38,10 @@ public:
 	ProcedureNode(vector<StatementNode> stmtList);
 };
 
-class StatementNode : public EntityNode {};
+class StatementNode : public EntityNode {
+public:
+	StatementNode();
+};
 
 class ReadStatementNode : public StatementNode {
 	Variable var;

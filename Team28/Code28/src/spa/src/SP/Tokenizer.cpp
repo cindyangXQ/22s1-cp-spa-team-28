@@ -1,5 +1,6 @@
 #include "Tokenizer.h"
 #include "Token.h"
+#include "EntityNode.h"
 #include <string>
 #include <vector>
 #include <ctype.h>
