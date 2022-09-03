@@ -3,6 +3,7 @@
 #include "../commons/Procedure.h"
 #include "../commons/Variable.h"
 #include "../commons/Statement.h"
+#include "../PKB/PopulateFacade.h"
 
 #include <vector>
 
@@ -16,28 +17,27 @@ public:
 	DesignExtractor();
 };
 
+class ProcedureExtractor :public DesignExtractor {
+public:
+	ProcedureExtractor(ProgramNode program);
+	void extract(PopulateFacade storage);
+};
+
 class StatementExtractor :public DesignExtractor {
 public:
 	StatementExtractor(ProgramNode program);
-	vector<Statement> extract();
+	void extract(PopulateFacade storage);
 };
 
 class VariableExtractor : public DesignExtractor {
 public:
 	VariableExtractor(ProgramNode program);
-	vector<Variable> extract();
-};
-
-
-class ProcedureExtractor :public DesignExtractor {
-public:
-	ProcedureExtractor(ProgramNode program);
-	vector<Procedure> extract();
+	void extract(PopulateFacade storage);
 };
 
 class ConstantExtractor :public DesignExtractor {
 public:
 	ConstantExtractor(ProgramNode program);
-	vector<Constant> extract();
+	void extract(PopulateFacade storage);
 };
 

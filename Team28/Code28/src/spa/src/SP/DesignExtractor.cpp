@@ -31,19 +31,19 @@ ConstantExtractor::ConstantExtractor(ProgramNode program)
 }
 
 // DRY needs improvement
-vector<Procedure> ProcedureExtractor::extract() {
-	vector<Procedure> result;
+void ProcedureExtractor::extract(PopulateFacade storage) {
+	vector<Procedure*> result;
 
 	vector<ProcedureNode> procList = program.getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		result.push_back(Procedure(procList[i].getName()));
+		result.push_back(&Procedure(procList[i].getName()));
 	}
 
-	return result;
+	storage.storeProcedures(&result);
 }
 
-vector<Statement> StatementExtractor::extract() {
-	vector<Statement> result;
+void StatementExtractor::extract(PopulateFacade storage) {
+	vector<Statement*> result;
 
 	vector<ProcedureNode> procList = this->program.getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
@@ -68,32 +68,32 @@ vector<Statement> StatementExtractor::extract() {
 			}
 
 			Statement statement = Statement(stmtList[i].getLineNumber(), type);
-			result.push_back(statement);
+			result.push_back(&statement);
 		}
 	}
 
-	return result;
+	storage.storeStatements(&result);
 }
 
 
-vector<Variable> VariableExtractor::extract() {
-	vector<Variable> result;
+void VariableExtractor::extract(PopulateFacade storage) {
+	vector<Variable*> result;
 
 	vector<ProcedureNode> procList = this->program.getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
 		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			StatementNode currStmt = stmtList[i];
-			vector<Variable> currStmtVars = currStmt.getVariables();
+			vector<Variable*> currStmtVars = currStmt.getVariables();
 			result.insert(result.end(), currStmtVars.begin(), currStmtVars.end());
 		}
 	}
 
-	return result;
+	storage.storeVariables(&result);
 }
 
-vector<Constant> ConstantExtractor::extract() {
-	vector<Constant> result;
+void ConstantExtractor::extract(PopulateFacade storage) {
+	vector<Constant*> result;
 
 	vector<ProcedureNode> procList = program.getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
@@ -101,11 +101,11 @@ vector<Constant> ConstantExtractor::extract() {
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			StatementNode currStmt = stmtList[i];
 			if (currStmt.isAssign()) {
-				vector<Variable> currStmtCsts = currStmt.getConstants();
+				vector<Constant*> currStmtCsts = currStmt.getConstants();
 				result.insert(result.end(), currStmtCsts.begin(), currStmtCsts.end());
 			}
 		}
 	}
 
-	return result;
+	storage.storeConstants(&result);
 }

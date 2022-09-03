@@ -41,8 +41,8 @@ public:
 	virtual bool isCall() {};
 	virtual bool isAssign() {};
 	virtual string getVariable() {};
-	virtual vector<Variable> getVariables() {};
-	virtual vector<Constant> getConstants() {};
+	virtual vector<Variable*> getVariables() {};
+	virtual vector<Constant*> getConstants() {};
 	int getLineNumber();
 };
 
@@ -76,8 +76,8 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	vector<Variable> getVariables();
-	vector<Constant> getConstants();
+	vector<Variable*> getVariables();
+	vector<Constant*> getConstants();
 };
 
 class PrintStatementNode : public StatementNode {
@@ -90,8 +90,8 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	vector<Variable> getVariables();
-	vector<Constant> getConstants();
+	vector<Variable*> getVariables();
+	vector<Constant*> getConstants();
 };
 
 class CallStatementNode : public StatementNode {
@@ -104,8 +104,8 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	vector<Variable> getVariables();
-	vector<Constant> getConstants();
+	vector<Variable*> getVariables();
+	vector<Constant*> getConstants();
 };
 
 
@@ -116,8 +116,8 @@ public:
 	ExpressionNode* right;
 	ExpressionNode(Token* token);
 	ExpressionNode();
-	vector<Variable> getVariables();
-	vector<Constant> getConstants();
+	vector<Variable*> getVariables();
+	vector<Constant*> getConstants();
 };
 
 class AssignStatementNode : public StatementNode {
@@ -131,6 +131,6 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	vector<Variable> getVariables();
-	vector<Constant> getConstants();
+	vector<Variable*> getVariables();
+	vector<Constant*> getConstants();
 };

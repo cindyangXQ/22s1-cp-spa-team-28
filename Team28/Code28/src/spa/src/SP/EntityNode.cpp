@@ -99,14 +99,14 @@ string ReadStatementNode::getVariable() {
 	return this->var.getValue();
 }
 
-vector<Variable> ReadStatementNode::getVariables() {
-	vector<Variable> result;
-	result.push_back(Variable(this->getVariable()));
+vector<Variable*> ReadStatementNode::getVariables() {
+	vector<Variable*> result;
+	result.push_back(&Variable(this->getVariable()));
 	return result;
 }
 
-vector<Constant> ReadStatementNode::getConstants() {
-	return vector<Constant>();
+vector<Constant*> ReadStatementNode::getConstants() {
+	return vector<Constant*>();
 }
 
 // Print Statement
@@ -118,14 +118,14 @@ string PrintStatementNode::getVariable() {
 	return this->var.getValue();
 }
 
-vector<Variable> PrintStatementNode::getVariables() {
-	vector<Variable> result;
-	result.push_back(Variable(this->getVariable()));
+vector<Variable*> PrintStatementNode::getVariables() {
+	vector<Variable*> result;
+	result.push_back(&Variable(this->getVariable()));
 	return result;
 }
 
-vector<Constant> PrintStatementNode::getConstants() {
-	return vector<Constant>();
+vector<Constant*> PrintStatementNode::getConstants() {
+	return vector<Constant*>();
 }
 
 // Call Statement
@@ -137,12 +137,12 @@ string CallStatementNode::getVariable() {
 	return "";
 }
 
-vector<Variable> CallStatementNode::getVariables() {
-	return vector<Variable>();
+vector<Variable*> CallStatementNode::getVariables() {
+	return vector<Variable*>();
 }
 
-vector<Constant> CallStatementNode::getConstants() {
-	return vector<Constant>();
+vector<Constant*> CallStatementNode::getConstants() {
+	return vector<Constant*>();
 }
 
 // Assignment Statement
@@ -155,15 +155,15 @@ string AssignStatementNode::getVariable() {
 	return this->var.getValue();
 }
 
-vector<Variable> AssignStatementNode::getVariables() {
-	vector<Variable> result;
-	result.push_back(Variable(this->getVariable()));
-	vector<Variable> inExpr = this->expr.getVariables();
+vector<Variable*> AssignStatementNode::getVariables() {
+	vector<Variable*> result;
+	result.push_back(&Variable(this->getVariable()));
+	vector<Variable*> inExpr = this->expr.getVariables();
 	result.insert(result.end(), inExpr.begin(), inExpr.end());
 	return result;
 }
 
-vector<Constant> AssignStatementNode::getConstants() {
+vector<Constant*> AssignStatementNode::getConstants() {
 	return this->expr.getConstants();
 }
 
@@ -177,16 +177,16 @@ ExpressionNode::ExpressionNode(Token* token)
 
 ExpressionNode::ExpressionNode() {};
 
-vector<Variable> ExpressionNode::getVariables() {
-	vector<Variable> result;
+vector<Variable*> ExpressionNode::getVariables() {
+	vector<Variable*> result;
 
 	if (this->token->isName()) {
-		result.push_back(Variable(this->token->getValue()));
+		result.push_back(&Variable(this->token->getValue()));
 	}
 	else if (this->token->isConstant()) {}
 	else {
-		vector<Variable> inLeft = this->left->getVariables();
-		vector<Variable> inRight = this->right->getVariables();
+		vector<Variable*> inLeft = this->left->getVariables();
+		vector<Variable*> inRight = this->right->getVariables();
 		result.insert(result.end(), inLeft.begin(), inLeft.end());
 		result.insert(result.end(), inRight.begin(), inRight.end());
 	}
@@ -194,16 +194,16 @@ vector<Variable> ExpressionNode::getVariables() {
 	return result;
 }
 
-vector<Constant> ExpressionNode::getConstants() {
-	vector<Constant> result;
+vector<Constant*> ExpressionNode::getConstants() {
+	vector<Constant*> result;
 	
 	if (this->token->isConstant()) {
-		result.push_back(Constant(this->token->getValue()));
+		result.push_back(&Constant(this->token->getValue()));
 	}
 	else if (this->token->isName()) {}
 	else {
-		vector<Constant> inLeft = this->left->getConstants();
-		vector<Constant> inRight = this->right->getConstants();
+		vector<Constant*> inLeft = this->left->getConstants();
+		vector<Constant*> inRight = this->right->getConstants();
 		result.insert(result.end(), inLeft.begin(), inLeft.end());
 		result.insert(result.end(), inRight.begin(), inRight.end());
 	}
