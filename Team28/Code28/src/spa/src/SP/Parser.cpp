@@ -53,11 +53,13 @@ AssignStmParser::AssignStmParser(int offset, vector<Token*> tokens) {
 ParseResult<ProgramNode> ProgramParser::parse() {
 	int index = this->offset;
 	vector<Token*> tokenList = this->tokens;
+	int* line;
+	*line = 0;
 
 	vector<ProcedureNode> procList;
 
 	while (index < tokenList.size()) {
-		ParseResult<ProcedureNode> temp = ProcedureParser(index, tokenList).parse();
+		ParseResult<ProcedureNode> temp = ProcedureParser(index, tokenList).parse(line);
 		procList.push_back(temp.entity);
 		index = temp.index;
 	}
@@ -66,7 +68,7 @@ ParseResult<ProgramNode> ProgramParser::parse() {
 	return result;
 }
 
-ParseResult<ProcedureNode> ProcedureParser::parse() {
+ParseResult<ProcedureNode> ProcedureParser::parse(int* startLine) {
 	int index = this->offset;
 	vector<Token*> tokenList = this->tokens;
 
@@ -81,7 +83,8 @@ ParseResult<ProcedureNode> ProcedureParser::parse() {
 			&& secondToken->isName() 
 			&& thirdToken->equals("{")) {
 		while (!tokenList.at(index)->equals("}")) {
-			ParseResult<StatementNode> temp = StatementParser(index, tokenList).parse();
+			ParseResult<StatementNode> temp = StatementParser(index, tokenList).parse(*startLine);
+			*startLine = *startLine + 1;
 			stmtList.push_back(temp.entity);
 			index = temp.index;
 			if (index >= tokenList.size()) {
@@ -97,7 +100,7 @@ ParseResult<ProcedureNode> ProcedureParser::parse() {
 	return result;
 }
 
-ParseResult<StatementNode> StatementParser::parse() {
+ParseResult<StatementNode> StatementParser::parse(int line) {
 	int index = this->offset;
 	vector<Token*> tokenList = this->tokens;
 
