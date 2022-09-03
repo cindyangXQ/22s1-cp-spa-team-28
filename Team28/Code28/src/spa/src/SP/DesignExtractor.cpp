@@ -127,7 +127,7 @@ vector<string> DesignExtractor::extractConstant() {
 		for (size_type j = 0; j < stmtList.size(); j++) {
 			StatementNode currStmt = stmtList[i];
 			if (currStmt.isAssign()) {
-				currStmt.getConstantsInto(result); //implement void AssignStatement::getConstantsInto(vector<string> result);
+				currStmt.getConstantsInto(result);
 			}
 		}
 	}

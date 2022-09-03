@@ -95,6 +95,10 @@ void ReadStatementNode::getVariablesInto(vector<string> result) {
 	result.push_back(this.getVariable());
 }
 
+void ReadStatementNode::getConstantsInto(vector<string> result) {
+	return;
+}
+
 
 // Print Statement
 PrintStatementNode::PrintStatementNode(VariableNode VariableNode ) {
@@ -109,6 +113,10 @@ void PrintStatementNode::getVariablesInto(vector<string> result) {
 	result.push_back(this.getVariable());
 }
 
+void PrintStatementNode::getConstantsInto(vector<string> result) {
+	return;
+}
+
 // Call Statement
 CallStatementNode::CallStatementNode(VariableNode VariableNode ) {
 	this->var = VariableNode ;
@@ -119,6 +127,10 @@ string CallStatementNode::getVariable() {
 }
 
 void CallStatementNode::getVariablesInto(vector<string> result) {
+	return;
+}
+
+void CallStatementNode::getConstantsInto(vector<string> result) {
 	return;
 }
 
@@ -135,6 +147,10 @@ string AssignStatementNode::getVariable() {
 void AssignStatementNode::getVariablesInto(vector<string> result) {
 	result.push_back(this.getVariable());
 	this->expr.getVariablsInto(result); //implement ExpressionNode::getVariablesInto(vector<string> result);
+}
+
+void AssignStatementNode::getConstantsInto(vector<string> result) {
+	this->expr.getConstantsInto(result); //implement ExpressionNode::getConstantsInto(vector<string> result);
 }
 
 // Expression
