@@ -1,4 +1,5 @@
 #include "EntityNode.h"
+#include "Relationship.h"
 #include <vector>
 
 using namespace std;
@@ -41,7 +42,7 @@ vector<string> DesignExtractor::extractReadStmt() {
 	for (size_type i = 0; i < procList.size(); i++) {
 		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
-			Statement statement= stmtList[i];
+			StatementNode statement= stmtList[i];
 			if (statement.isRead()) { //implement bool Statement::isRead();
 				result.push_back(statement.getName());
 			}
@@ -58,7 +59,7 @@ vector<string> DesignExtractor::extractPrintStmt() {
 	for (size_type i = 0; i < procList.size(); i++) {
 		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
-			Statement statement = stmtList[i];
+			StatementNode statement = stmtList[i];
 			if (statement.isPrint()) { //implement bool Statement::isPrint();
 				result.push_back(statement.getName());
 			}
@@ -75,7 +76,7 @@ vector<string> DesignExtractor::extractCallStmt() {
 	for (size_type i = 0; i < procList.size(); i++) {
 		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
-			Statement statement = stmtList[i];
+			StatementNode statement = stmtList[i];
 			if (statement.isCall()) { //implement bool Statement::isCall();
 				result.push_back(statement.getName()); 
 			}
@@ -92,7 +93,7 @@ vector<string> DesignExtractor::extractAssignStmt() {
 	for (size_type i = 0; i < procList.size(); i++) {
 		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
-			Statement statement = stmtList[i];
+			StatementNode statement = stmtList[i];
 			if (statement.isAssign()) { //implement bool Statement::isAssign();
 				result.push_back(statement.getName());
 			}
@@ -107,10 +108,9 @@ vector<string> DesignExtractor::extractVariable() {
 
 	vector<ProcedureNode> procList = this.program.getProcList();
 	for (size_type i = 0; i < procList.size(); i++) {
-		ProcedureNode curProc = procList[i];
-		vector<StatementNode> stmtList = curProc.getStmtList();
+		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
-			Statement currStmt = stmtList[i];
+			StatementNode currStmt = stmtList[i];
 			if (currStmt.isCall()) {
 				continue;
 			}
@@ -128,12 +128,36 @@ vector<string> DesignExtractor::extractConstant() {
 
 	vector<ProcedureNode> procList = this.program.getProcList();
 	for (size_type i = 0; i < procList.size(); i++) {
-		ProcedureNode curProc = procList[i];
-		vector<StatementNode> stmtList = curProc.getStmtList();
+		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
-			Statement currStmt = stmtList[i];
+			StatementNode currStmt = stmtList[i];
 			if (currStmt.isAssign()) {
-				currStmt.getConstantsInto(result); //implement void Statement::getConstantsInto(vector<string> result);
+				currStmt.getConstantsInto(result); //implement void AssignStatement::getConstantsInto(vector<string> result);
+			}
+		}
+	}
+
+	return result;
+}
+
+vector<ModifyRel> DesignExtractor::extractModifies() {
+	vector<ModifyRel> result;
+
+	vector<ProcedureNode> procList = this.program.getProcList();
+	for (size_type i = 0; i < procList.size(); i++) {
+		ProcedureNode currProc = procList[i];
+		vector<StatementNode> stmtList = currProc.getStmtList();
+		for (size_type j = 0; j < stmtList.size(); j++) {
+			StatementNode currStmt = stmtList[i];
+			if (currStmt.isRead()) {
+				string varName = currStmt.getVariable(); //implement string ReadStatement::getVariable();
+				result.push_back(ProcModifyRel(currProc.getName(), varName);
+				result.push_back(RdStModifyRel(currStmt.getName(), varName);
+			}
+			else if (currStmt.isAssign()) {
+				string varName = currStmt.getVariable(); //implement string AssignStatement::getVariable(); ie. get the modified variable
+				result.push_back(ProcModifyRel(currProc.getName(), varName);
+				result.push_back(AsgStModifyRel(currStmt.getName(), currStmt.getVariable()));
 			}
 		}
 	}

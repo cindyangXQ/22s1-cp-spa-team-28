@@ -1,4 +1,5 @@
 #include "EntityNode.h"
+#include "Relationship.h"
 #include <vector>
 
 using namespace std;
@@ -18,5 +19,5 @@ public:
 	vector<string> extractVariable();
 	vector<string> extractConstant();
 
-	vector<ModRel> extractModifies();
+	vector<ModifyRel> extractModifies();
 };
