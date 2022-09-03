@@ -1,5 +1,6 @@
 #include "SP/Tokenizer.h"
 #include "catch.hpp"
+#include "SP/ExprParser.h"
 
 #include <iostream>
 #include <vector>
@@ -7,14 +8,17 @@
 using namespace std;
 
 TEST_CASE() {
-	string sourceProgram = "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + 2;\nwest\n= 9 + east + west;\n}";
+	string sourceProgram = "(1+3);";
 	Tokenizer tokenizer = Tokenizer(sourceProgram);
-	vector<Token> token_list = tokenizer.tokenize();
+	vector<Token*> token_list = tokenizer.tokenize();
 
 	for (int i = 0; i < token_list.size(); i++) {
-		Token temp = token_list[i];
-		std::cout << temp.value << endl;
+		Token* temp = token_list[i];
+		std::cout << temp->value << endl;
 	}
+
+	ExprParser parser = ExprParser(0, token_list);
+	parser.parse();
 
 	//will implement later
 }

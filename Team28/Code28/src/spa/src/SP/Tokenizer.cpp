@@ -1,5 +1,6 @@
 #include "Tokenizer.h"
 #include "Token.h"
+#include "EntityNode.h"
 #include <string>
 #include <vector>
 #include <ctype.h>
@@ -24,14 +25,14 @@ enum class TokenType {
 };
 
 
-Token Tokenizer::createToken(TokenType type, string value) {
+Token* Tokenizer::createToken(TokenType type, string value) {
 	cout << static_cast<int>(type) << " " << value << endl;
 	switch (type) {
-	case TokenType::CONSTANT: return ConstantToken(value);
-	case TokenType::NAME: return Name(value);
-	case TokenType::KEYWORD: return Keyword(value);
-	case TokenType::OPERATOR: return Operator(value);
-	default: return Symbol(value);
+	case TokenType::CONSTANT: return new ConstantNode(value);
+	case TokenType::NAME: return new VariableNode(value);
+	case TokenType::KEYWORD: return new Keyword(value);
+	case TokenType::OPERATOR: return new Operator(value);
+	default: return new Symbol(value);
 	}
 	//return Token(value);
 }
@@ -41,8 +42,8 @@ Tokenizer::Tokenizer(string sourceProg) {
 	this->input = sourceProg;
 }
 
-vector<Token> Tokenizer::tokenize() {
-	vector<Token> tokens;
+vector<Token*> Tokenizer::tokenize() {
+	vector<Token*> tokens;
 	TokenType currType = TokenType::WHITESPACE;
 
 	string current = ""; // store current Token value
@@ -114,6 +115,9 @@ vector<Token> Tokenizer::tokenize() {
 			}
 			else {
 				tokens.push_back(createToken(currType, current));
+				current = "";
+				current.append(1, currChar);
+				currType = TokenType::OPERATOR;
 			}
 		}
 		else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST)) {
@@ -125,6 +129,10 @@ vector<Token> Tokenizer::tokenize() {
 			current.push_back(currChar);
 		}
 		index = index + 1;
+	}
+
+	if(currType != TokenType::WHITESPACE) {
+		tokens.push_back(createToken(currType, current));
 	}
 	return tokens;
 }

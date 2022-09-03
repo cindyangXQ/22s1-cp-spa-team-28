@@ -9,26 +9,9 @@ public:
 	Token();
 	Token(string s);
 	bool equals(string other);
-	virtual bool isKeyword() {
-		return false;
-	};
-	virtual bool isName() {
-		return false;
-	};
-};
-
-class ConstantToken : public Token {
-public:
-	ConstantToken(string s);
-	bool isName();
-	bool isKeyword();
-};
-
-class Name : public Token {
-public:
-	Name(string s);
-	bool isName();
-	bool isKeyword();
+	virtual bool isName() = 0;
+	virtual bool isKeyword() = 0;
+	virtual bool isConstant() = 0;
 };
 
 class Keyword : public Token {
@@ -36,6 +19,7 @@ public:
 	Keyword(string s);
 	bool isName();
 	bool isKeyword();
+	bool isConstant();
 };
 
 class Operator : public Token {
@@ -43,6 +27,7 @@ public:
 	Operator(string s);
 	bool isName();
 	bool isKeyword();
+	bool isConstant();
 };
 
 class Symbol : public Token {
@@ -50,4 +35,5 @@ public:
 	Symbol(string s);
 	bool isName();
 	bool isKeyword();
+	bool isConstant();
 };
