@@ -112,6 +112,8 @@ public:
 	ExpressionNode* right;
 	ExpressionNode(Token* token);
 	ExpressionNode();
+	void getVariablesInto(vector<VariableNode> result);
+	void getConstantsInto(vector<ConstantNode> result);
 };
 
 class AssignStatementNode : public StatementNode {
@@ -125,6 +127,6 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	void getVariablesInto(vector<string> result);
-	void getConstantsInto(vector<string> result);
+	void getVariablesInto(vector<VariableNode> result);
+	void getConstantsInto(vector<ConstantNode> result);
 };
