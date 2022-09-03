@@ -43,7 +43,7 @@ vector<string> DesignExtractor::extractReadStmt() {
 		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
 			StatementNode statement= stmtList[i];
-			if (statement.isRead()) { //implement bool Statement::isRead();
+			if (statement.isRead()) {
 				result.push_back(statement.getName());
 			}
 		}
@@ -60,7 +60,7 @@ vector<string> DesignExtractor::extractPrintStmt() {
 		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
 			StatementNode statement = stmtList[i];
-			if (statement.isPrint()) { //implement bool Statement::isPrint();
+			if (statement.isPrint()) {
 				result.push_back(statement.getName());
 			}
 		}
@@ -77,7 +77,7 @@ vector<string> DesignExtractor::extractCallStmt() {
 		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
 			StatementNode statement = stmtList[i];
-			if (statement.isCall()) { //implement bool Statement::isCall();
+			if (statement.isCall()) {
 				result.push_back(statement.getName()); 
 			}
 		}
@@ -94,7 +94,7 @@ vector<string> DesignExtractor::extractAssignStmt() {
 		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
 			StatementNode statement = stmtList[i];
-			if (statement.isAssign()) { //implement bool Statement::isAssign();
+			if (statement.isAssign()) {
 				result.push_back(statement.getName());
 			}
 		}

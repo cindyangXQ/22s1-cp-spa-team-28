@@ -12,6 +12,7 @@ public:
 	EntityNode();
 };
 
+
 class ConstantNode : public Token, public EntityNode {
 public:
 	ConstantNode(string s);
@@ -30,6 +31,10 @@ public:
 class StatementNode : public EntityNode {
 public:
 	StatementNode();
+	bool isRead();
+	bool isPrint();
+	bool isCall();
+	bool isAssign();
 };
 
 class ProcedureNode : public EntityNode {
@@ -50,11 +55,16 @@ public:
 	vector<ProcedureNode> getProcList();
 };
 
+
 class ReadStatementNode : public StatementNode {
 	VariableNode var;
 
 public:
 	ReadStatementNode(VariableNode variable);
+	bool isRead();
+	bool isPrint();
+	bool isCall();
+	bool isAssign();
 };
 
 class PrintStatementNode : public StatementNode {
@@ -62,6 +72,10 @@ class PrintStatementNode : public StatementNode {
 
 public:
 	PrintStatementNode(VariableNode variable);
+	bool isRead();
+	bool isPrint();
+	bool isCall();
+	bool isAssign();
 };
 
 class CallStatementNode : public StatementNode {
@@ -69,7 +83,12 @@ class CallStatementNode : public StatementNode {
 
 public:
 	CallStatementNode(VariableNode variable);
+	bool isRead();
+	bool isPrint();
+	bool isCall();
+	bool isAssign();
 };
+
 
 class ExpressionNode : public EntityNode {
 	Token token;
@@ -86,7 +105,10 @@ class AssignStatementNode : public StatementNode {
 
 public:
 	AssignStatementNode(VariableNode variable, ExpressionNode expression);
-
+	bool isRead();
+	bool isPrint();
+	bool isCall();
+	bool isAssign();
 };
 
 
