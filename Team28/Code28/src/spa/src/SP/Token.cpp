@@ -18,27 +18,29 @@ bool Token::equals(string other) {
 	}
 }
 
-ConstantToken::ConstantToken(string s) {
+Constant::Constant(string s) {
 	this->value = s;
 }
 
-bool ConstantToken::isKeyword() {
+bool Constant::isKeyword() {
 	return false;
 }
 
-bool ConstantToken::isName() {
+bool Constant::isName() {
 	return false;
 }
 
-Name::Name(string s) {
+Variable::Variable(string s) {
 	this->value = s;
 }
 
-bool Name::isKeyword() {
+Variable::Variable(){}
+
+bool Variable::isKeyword() {
 	return false;
 }
 
-bool Name::isName() {
+bool Variable::isName() {
 	return true;
 }
 

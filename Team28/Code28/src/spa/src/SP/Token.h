@@ -1,4 +1,5 @@
 #pragma once
+#include "EntityNode.h"
 #include <string>
 
 using namespace std;
@@ -17,16 +18,17 @@ public:
 	};
 };
 
-class ConstantToken : public Token {
+class Constant : public Token, public EntityNode {
 public:
-	ConstantToken(string s);
+	Constant(string s);
 	bool isName();
 	bool isKeyword();
 };
 
-class Name : public Token {
+class Variable : public Token, public EntityNode {
 public:
-	Name(string s);
+	Variable(string s);
+	Variable();
 	bool isName();
 	bool isKeyword();
 };

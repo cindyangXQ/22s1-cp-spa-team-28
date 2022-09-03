@@ -1,68 +1,71 @@
 #pragma once
 
 #include "Token.h"
-#include "Entity.h"
-#include "Node.h"
+#include "EntityNode.h"
 
 #include <vector>
 
+template <typename T>
 struct ParseResult {
-	Entity entity;
+	T entity;
 	int index;
 };
 
 class Parser {
+protected:
 	int offset;
 	vector<Token> tokens;
 
 public:
 	inline Parser(int offset, vector<Token> tokens);
-	virtual ParseResult parse() = 0;
+	Parser();
+	virtual ParseResult<EntityNode> parse() = 0;
 };
 
 Parser::Parser(int offset, vector<Token> tokens) {
-	this.offset = offset;
+	this->offset = offset;
 	this->tokens = tokens;
 }
 
 class ProgramParser : public Parser {
 public:
 	ProgramParser(int offset, vector<Token> tokens);
-	ParseResult parse();
+	ParseResult<ProgramNode> parse();
 };
 
 class ProcedureParser : public Parser {
 public:
 	ProcedureParser(int offset, vector<Token> tokens);
-	ParseResult parse();
+	ParseResult<ProcedureNode> parse();
 };
 
 class StatementParser : public Parser {
 public:
+	StatementParser();
 	StatementParser(int offset, vector<Token> tokens);
-	ParseResult parse();
+	ParseResult<StatementNode> parse();
 };
 
 class ReadStmParser : public StatementParser {
 public:
 	ReadStmParser(int offset, vector<Token> tokens);
-	ParseResult parse();
+	ParseResult<ReadStatementNode> parse();
 };
 
 class PrintStmParser : public StatementParser {
 public:
 	PrintStmParser(int offset, vector<Token> tokens);
-	ParseResult parse();
+	ParseResult<PrintStatementNode> parse();
 };
 
 class CallStmParser : public StatementParser {
 public:
 	CallStmParser(int offset, vector<Token> tokens);
-	ParseResult parse();
+	ParseResult<CallStatementNode> parse();
 };
 
 class AssignStmParser : public StatementParser {
 public:
 	AssignStmParser(int offset, vector<Token> tokens);
-	ParseResult parse();
+	ParseResult<AssignStatementNode> parse();
 };
