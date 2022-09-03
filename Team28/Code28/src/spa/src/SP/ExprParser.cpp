@@ -21,26 +21,36 @@ FactorParser::FactorParser(int offset, vector<Token> tokens) {
 	this->tokens = tokens;
 }
 
-ParseResult ExprParser::parse() {
-	TermParser parser = TermParser(offset, tokens);
-	ExpressionNode term = parser.parse();
+ParseResult<ExpressionNode> ExprParser::parse() {
+	int index = this->offset;
+	TermParser parser = TermParser(index, tokens);
+	ParseResult result = parser.parse();
+	index = result.index;
+	vector<ExpressionNode> terms;
+	terms.push_back(result.entity);
 
-	Token next = tokens.at(offset + 1);
+	index++;
+	Token next = tokens.at(index);
 	while (next.value == "+" || next.value == "-") {
-		offset++;
+		index++;
 
-		ExpressionNode expr = Node(next);
-		expr.addChildren(expr);
+		ExpressionNode expr = ExpressionNode(next);
+		expr.left = &terms.back();
 
-		term = Factor(&offset, tokens).parse();
-		expr.addChildren(term);
+		result = TermParser(index, tokens).parse();
+		terms.push_back(result.entity);
+		index = result.index;
 
-		term = expr;
-		next = tokens.at(offset + 1)
+		expr.right = &terms.back();
+		terms.push_back(expr);
+
+		index++;
+		next = tokens.at(index);
 	}
 
 	if (next.value == ";") {
-		return term;
+		result.index = index + 1;
+		return result;
 	}
 	else {
 		//throw error
@@ -48,46 +58,56 @@ ParseResult ExprParser::parse() {
 }
 
 
-ParseResult TermParser::parse() {
+ParseResult<ExpressionNode> TermParser::parse() {
+	int index = offset;
 	FactorParser parser = FactorParser(offset, tokens);
-	Node factor = parser.parse();
+	ParseResult result = parser.parse();
+	vector<ExpressionNode> factors;
+	index = result.index;
+	factors.push_back(result.entity);
 
-	Token next = tokens.at(offset + 1);
-	while (next.value == "*" || next.value == "/" || next.value == '%') {
+	index++;
+	Token next = tokens.at(index);
+	while (next.value == "*" || next.value == "/" || next.value == "%") {
 		//continue process as term
-		offset++;
+		index++;
 
-		Node term = Node(next);
-		term.addChildren(factor);
+		ExpressionNode term = ExpressionNode(next);
+		term.left = &factors.back();
 
-		//second factor
-		factor = FactorParser(&offset, tokens).parse();
-		term.addChildren(factor);
+		result = FactorParser(index, tokens).parse();
+		factors.push_back(result.entity);
+		index = result.index;
+		term.right = &factors.back();
 
-		factor = term;
-		next = tokens.at(offset + 1)
+		factors.push_back(term);
+
+		index++;
+		next = tokens.at(index);
 	}
 
 	if (next.value == "+" || next.value == "-" || next.value == ";") {
 		// term end, return to expression
-		return factor;
+		return result;
 	}
 	else {
 		//throw error
 	}
 }
 
-ParseResult FactorParser::parse() {
+ParseResult<ExpressionNode> FactorParser::parse() {
+	int index = this->offset;
 	Token curr = tokens.at(offset);
-	if (typeid(curr) == typeid(Constant) || typeid(curr) == typeid(Name)) {
-		return Node(curr);
+	if (typeid(curr) == typeid(Constant) || typeid(curr) == typeid(Variable)) {
+		ParseResult<ExpressionNode> result = { ExpressionNode(curr), offset };
+		return result;
 	}
 	else if (curr.value == "(") {
-		offset++;
-		ExprParser parser = ExprParser(&offset, tokens);
-		Node factor = parser.parse();
+		index++;
+		ExprParser parser = ExprParser(index, tokens);
+		ParseResult<ExpressionNode> factor = parser.parse();
 		//if next token is not ")" throw error
-		offset++;
+		factor.index++;
 		return factor;
 	}
 	else {
