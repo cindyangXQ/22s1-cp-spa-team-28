@@ -4,7 +4,7 @@
 
 TEST_CASE("getAllStatements returns all statements correctly") {
 	Storage storage;
-	QueryFacade facade = QueryFacade(storage);
+	QueryFacade facade = QueryFacade(&storage);
 	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
 	Statement test1 = Statement(1, StatementType::ASSIGN);
 	Statement test2 = Statement(2, StatementType::ASSIGN);
@@ -22,7 +22,7 @@ TEST_CASE("getAllStatements returns all statements correctly") {
 
 TEST_CASE("getAllVariables returns all variables correctly") {
 	Storage storage;
-	QueryFacade facade = QueryFacade(storage);
+	QueryFacade facade = QueryFacade(&storage);
 	VariablesTable* variables = (VariablesTable*)storage.getTable(TableName::VARIABLES);
 	Variable test1 = Variable("test1");
 	Variable test2 = Variable("test2");
@@ -36,7 +36,7 @@ TEST_CASE("getAllVariables returns all variables correctly") {
 
 TEST_CASE("getAllConstants returns all constants correctly") {
 	Storage storage;
-	QueryFacade facade = QueryFacade(storage);
+	QueryFacade facade = QueryFacade(&storage);
 	ConstantsTable* constants = (ConstantsTable*)storage.getTable(TableName::CONSTANTS);
 	Constant test1 = Constant("test1");
 	Constant test2 = Constant("test2");
@@ -50,7 +50,7 @@ TEST_CASE("getAllConstants returns all constants correctly") {
 
 TEST_CASE("getAllProcedures returns all constants correctly") {
 	Storage storage;
-	QueryFacade facade = QueryFacade(storage);
+	QueryFacade facade = QueryFacade(&storage);
 	ProceduresTable* constants = (ProceduresTable*)storage.getTable(TableName::PROCEDURES);
 	Procedure test1 = Procedure("test1");
 	Procedure test2 = Procedure("test2");

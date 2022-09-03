@@ -8,7 +8,7 @@ public:
 	/*
 	* Explicit constructor for a QueryFacade.
 	*/
-	explicit QueryFacade(Storage storage);
+	explicit QueryFacade(Storage* storage);
 
 	/*
 	* Returns all statements inside the StatementsTable.
@@ -31,5 +31,5 @@ public:
 	std::vector<ProcedureName> getAllProcedures();
 
 private:
-	Storage storage;
+	Storage* storage;
 };
