@@ -4,7 +4,7 @@
 #include <type_traits>
 #include <unordered_set>
 
-#include "Entity.h"
+#include "../commons/Entity.h"
 #include "EntityPredicateMap.h"
 #include "Table.h"
 
@@ -50,6 +50,13 @@ public:
 	std::map<In, T*> getNameEntityMap() {
 		return this->nameEntityMap;
 	};
+
+	/*
+	* Gets all names from NamesTable.
+	*/
+	std::unordered_set<In> getAll() {
+		return this->names;
+	}
 
 private:
 	int tableSize = 0;

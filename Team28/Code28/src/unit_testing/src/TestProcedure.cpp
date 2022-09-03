@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include "PKB/Procedure.h"
+#include "commons/Procedure.h"
 
 TEST_CASE("Procedure is initialised correctly and inherits all Entity methods correctly") {
 	Procedure test = Procedure("test");
