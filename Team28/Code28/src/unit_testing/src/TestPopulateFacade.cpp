@@ -1,24 +1,39 @@
+#include <vector>
+
 #include "PKB/PopulateFacade.h"
 
 #include "catch.hpp"
+
+TEST_CASE("storeStatement stores empty vector<Statement*> correctly") {
+	Storage storage;
+	PopulateFacade facade = PopulateFacade(&storage);
+	std::vector<Statement*> statements = {};
+
+	facade.storeStatements(&statements);
+
+	StatementsTable* statementsTable = (StatementsTable*) storage.getTable(TableName::STATEMENTS);
+
+	// returned number of statements is equal to 0
+	REQUIRE(statementsTable->getTableSize() == 0);
+}
 
 TEST_CASE("storeStatement stores Statement objects correctly") {
 	Storage storage;
 	PopulateFacade facade = PopulateFacade(&storage);
 	Statement test1 = Statement(1, StatementType::ASSIGN);
 	Statement test2 = Statement(2, StatementType::ASSIGN);
+	std::vector<Statement*> statements = {&test1, &test2};
 
-	facade.storeStatement(&test1);
-	facade.storeStatement(&test2);
+	facade.storeStatements(&statements);
 
-	StatementsTable* statements = (StatementsTable*) storage.getTable(TableName::STATEMENTS);
+	StatementsTable* statementsTable = (StatementsTable*) storage.getTable(TableName::STATEMENTS);
 
 	// returned number of statements is equal to number stored
-	REQUIRE(statements->getTableSize() == 2);
+	REQUIRE(statementsTable->getTableSize() == 2);
 	// first statement is test1
-	REQUIRE(*statements->retrieve(1) == test1);
+	REQUIRE(*statementsTable->retrieve(1) == test1);
 	// second statement is test2
-	REQUIRE(*statements->retrieve(2) == test2);
+	REQUIRE(*statementsTable->retrieve(2) == test2);
 }
 
 TEST_CASE("storeVariable stores Variable objects correctly") {
@@ -27,21 +42,20 @@ TEST_CASE("storeVariable stores Variable objects correctly") {
 	Variable test1 = Variable("a");
 	Variable test2 = Variable("b");
 	Variable test3 = Variable("");
+	std::vector<Variable*> variables = {&test1, &test2, &test3};
 
-	facade.storeVariable(&test1);
-	facade.storeVariable(&test2);
-	facade.storeVariable(&test3);
+	facade.storeVariables(&variables);
 
-	VariablesTable* variables = (VariablesTable*) storage.getTable(TableName::VARIABLES);
+	VariablesTable* variablesTable = (VariablesTable*) storage.getTable(TableName::VARIABLES);
 
 	// returned number of variables is equal to number stored
-	REQUIRE(variables->getTableSize() == 3);
+	REQUIRE(variablesTable->getTableSize() == 3);
 	// first variable is test1
-	REQUIRE(*variables->retrieve("a") == test1);
+	REQUIRE(*variablesTable->retrieve("a") == test1);
 	// second variable is test2
-	REQUIRE(*variables->retrieve("b") == test2);
+	REQUIRE(*variablesTable->retrieve("b") == test2);
 	// third variable is test3
-	REQUIRE(*variables->retrieve("") == test3);
+	REQUIRE(*variablesTable->retrieve("") == test3);
 }
 
 TEST_CASE("storeConstant stores Constant objects correctly") {
@@ -50,21 +64,20 @@ TEST_CASE("storeConstant stores Constant objects correctly") {
 	Constant test1 = Constant("a");
 	Constant test2 = Constant("b");
 	Constant test3 = Constant("");
+	std::vector<Constant*> constants = {&test1, &test2, &test3};
 
-	facade.storeConstant(&test1);
-	facade.storeConstant(&test2);
-	facade.storeConstant(&test3);
+	facade.storeConstants(&constants);
 
-	ConstantsTable* constants = (ConstantsTable*) storage.getTable(TableName::CONSTANTS);
+	ConstantsTable* constantsTable = (ConstantsTable*) storage.getTable(TableName::CONSTANTS);
 
 	// returned number of constants is equal to number stored
-	REQUIRE(constants->getTableSize() == 3);
+	REQUIRE(constantsTable->getTableSize() == 3);
 	// first constant is test1
-	REQUIRE(*constants->retrieve("a") == test1);
+	REQUIRE(*constantsTable->retrieve("a") == test1);
 	// second constant is test2
-	REQUIRE(*constants->retrieve("b") == test2);
+	REQUIRE(*constantsTable->retrieve("b") == test2);
 	// third constant is test3
-	REQUIRE(*constants->retrieve("") == test3);
+	REQUIRE(*constantsTable->retrieve("") == test3);
 }
 
 TEST_CASE("storeProcedure stores Procedure objects correctly") {
@@ -73,40 +86,40 @@ TEST_CASE("storeProcedure stores Procedure objects correctly") {
 	Procedure test1 = Procedure("a");
 	Procedure test2 = Procedure("b");
 	Procedure test3 = Procedure("");
+	std::vector<Procedure*> procedures = {&test1, &test2, &test3};
 
-	facade.storeProcedure(&test1);
-	facade.storeProcedure(&test2);
-	facade.storeProcedure(&test3);
+	facade.storeProcedures(&procedures);
 
-	ProceduresTable* procedures = (ProceduresTable*) storage.getTable(TableName::PROCEDURES);
+	ProceduresTable* proceduresTable = (ProceduresTable*) storage.getTable(TableName::PROCEDURES);
 
 	// returned number of procedures is equal to number stored
-	REQUIRE(procedures->getTableSize() == 3);
+	REQUIRE(proceduresTable->getTableSize() == 3);
 	// first procedure is test1
-	REQUIRE(*procedures->retrieve("a") == test1);
+	REQUIRE(*proceduresTable->retrieve("a") == test1);
 	// second procedure is test2
-	REQUIRE(*procedures->retrieve("b") == test2);
+	REQUIRE(*proceduresTable->retrieve("b") == test2);
 	// third procedure is test3
-	REQUIRE(*procedures->retrieve("") == test3);
+	REQUIRE(*proceduresTable->retrieve("") == test3);
 }
 
 TEST_CASE("storeProcedure does not affect other tables") {
 	Storage storage;
 	PopulateFacade facade = PopulateFacade(&storage);
 	Procedure test = Procedure("a");
+	std::vector<Procedure*> procedures = {&test};
 
-	facade.storeProcedure(&test);
+	facade.storeProcedures(&procedures);
 
-	ProceduresTable* procedures = (ProceduresTable*) storage.getTable(TableName::PROCEDURES);
-	VariablesTable* variables = (VariablesTable*) storage.getTable(TableName::VARIABLES);
-	ConstantsTable* constants = (ConstantsTable*) storage.getTable(TableName::CONSTANTS);
-	StatementsTable* statements = (StatementsTable*) storage.getTable(TableName::STATEMENTS);	
+	ProceduresTable* proceduresTable = (ProceduresTable*) storage.getTable(TableName::PROCEDURES);
+	VariablesTable* variablesTable = (VariablesTable*) storage.getTable(TableName::VARIABLES);
+	ConstantsTable* constantsTable = (ConstantsTable*) storage.getTable(TableName::CONSTANTS);
+	StatementsTable* statementsTable = (StatementsTable*) storage.getTable(TableName::STATEMENTS);	
 
 	// returned number of procedures is equal to number stored
-	REQUIRE(procedures->getTableSize() == 1);
+	REQUIRE(proceduresTable->getTableSize() == 1);
 	// returned number of other tables is equal to 0
-	REQUIRE(variables->getTableSize() == 0);
-	REQUIRE(constants->getTableSize() == 0);
-	REQUIRE(statements->getTableSize() == 0);
+	REQUIRE(variablesTable->getTableSize() == 0);
+	REQUIRE(constantsTable->getTableSize() == 0);
+	REQUIRE(statementsTable->getTableSize() == 0);
 
 }

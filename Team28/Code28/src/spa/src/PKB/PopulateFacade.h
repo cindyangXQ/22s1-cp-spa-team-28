@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "Storage.h"
 
 /*
@@ -11,24 +13,24 @@ public:
 	explicit PopulateFacade(Storage *storage);
 
 	/*
-	* Stores the given Statement in a StatementsTable.
+	* Stores the given statements in a StatementsTable.
 	*/
-	void storeStatement(Statement *statement);
+	void storeStatements(std::vector<Statement*> *statements);
 
 	/*
-	* Stores the given Variable in a VariablesTable.
+	* Stores the given variables in a VariablesTable.
 	*/
-	void storeVariable(Variable *variable);
+	void storeVariables(std::vector<Variable*> *variables);
 
 	/*
-	* Stores the given Constant in a ConstantsTable.
+	* Stores the given constants in a ConstantsTable.
 	*/
-	void storeConstant(Constant *constant);
+	void storeConstants(std::vector<Constant*> *constants);
 
 	/*
-	* Stores the given Procedure in a ProceduresTable.
+	* Stores the given procedures in a ProceduresTable.
 	*/
-	void storeProcedure(Procedure *procedure);
+	void storeProcedures(std::vector<Procedure*> *procedures);
 
 private:
 	Storage *storage;

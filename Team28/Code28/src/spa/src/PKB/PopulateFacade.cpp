@@ -4,22 +4,31 @@ PopulateFacade::PopulateFacade(Storage *storage) {
 	this->storage = storage;
 };
 
-void PopulateFacade::storeStatement(Statement *statement) {
-	StatementsTable* statements = (StatementsTable*) this->storage->getTable(TableName::STATEMENTS);
-	statements->store(statement);
+void PopulateFacade::storeStatements(std::vector<Statement*> *statements) {
+	StatementsTable* statementsTable = (StatementsTable*) this->storage->getTable(TableName::STATEMENTS);
+	
+	for(Statement* statement : *statements) {
+		statementsTable->store(statement);
+	}	
 };
 
-void PopulateFacade::storeVariable(Variable *variable) {
-	VariablesTable* variables = (VariablesTable*) this->storage->getTable(TableName::VARIABLES);
-	variables->store(variable);
+void PopulateFacade::storeVariables(std::vector<Variable*> *variables) {
+	VariablesTable* variableTable = (VariablesTable*) this->storage->getTable(TableName::VARIABLES);
+	for(Variable* variable : *variables) {
+		variableTable->store(variable);
+	}
 };
 
-void PopulateFacade::storeConstant(Constant *constant) {
-	ConstantsTable* constants = (ConstantsTable*) this->storage->getTable(TableName::CONSTANTS);
-	constants->store(constant);
+void PopulateFacade::storeConstants(std::vector<Constant*> *constants) {
+	ConstantsTable* constantsTable = (ConstantsTable*) this->storage->getTable(TableName::CONSTANTS);
+	for(Constant* constant : *constants) {
+		constantsTable->store(constant);
+	}
 };
 
-void PopulateFacade::storeProcedure(Procedure *procedure) {
-	ProceduresTable* procedures = (ProceduresTable*) this->storage->getTable(TableName::PROCEDURES);
-	procedures->store(procedure);
+void PopulateFacade::storeProcedures(std::vector<Procedure*> *procedures) {
+	ProceduresTable* proceduresTable = (ProceduresTable*) this->storage->getTable(TableName::PROCEDURES);
+	for(Procedure* procedure : *procedures) {
+		proceduresTable->store(procedure);
+	}
 };
