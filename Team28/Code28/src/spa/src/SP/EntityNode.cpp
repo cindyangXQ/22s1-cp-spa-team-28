@@ -30,9 +30,6 @@ vector<StatementNode> ProcedureNode::getStmtList() {
 }
 
 // Statement - findType
-bool StatementNode::isRead() {
-	return false;
-}
 bool ReadStatementNode::isRead() {
 	return true;
 }
@@ -46,9 +43,6 @@ bool AssignStatementNode::isRead() {
 	return false;
 }
 
-bool StatementNode::isPrint() {
-	return false;
-}
 bool ReadStatementNode::isPrint() {
 	return false;
 }
@@ -62,9 +56,6 @@ bool AssignStatementNode::isPrint() {
 	return false;
 }
 
-bool StatementNode::isCall() {
-	return false;
-}
 bool ReadStatementNode::isCall() {
 	return false;
 }
@@ -78,9 +69,6 @@ bool AssignStatementNode::isCall() {
 	return false;
 }
 
-bool StatementNode::isAssign() {
-	return false;
-}
 bool ReadStatementNode::isAssign() {
 	return false;
 }
@@ -103,6 +91,11 @@ string ReadStatementNode::getVariable() {
 	return this->var.getValue();
 }
 
+void ReadStatementNode::getVariablesInto(vector<string> result) {
+	result.push_back(this.getVariable());
+}
+
+
 // Print Statement
 PrintStatementNode::PrintStatementNode(VariableNode VariableNode ) {
 	this->var = VariableNode ;
@@ -112,13 +105,21 @@ string PrintStatementNode::getVariable() {
 	return this->var.getValue();
 }
 
+void PrintStatementNode::getVariablesInto(vector<string> result) {
+	result.push_back(this.getVariable());
+}
+
 // Call Statement
 CallStatementNode::CallStatementNode(VariableNode VariableNode ) {
 	this->var = VariableNode ;
 }
 
-string ReadStatementNode::getVariable() {
+string CallStatementNode::getVariable() {
 	return "";
+}
+
+void CallStatementNode::getVariablesInto(vector<string> result) {
+	return;
 }
 
 // Assignment Statement
@@ -127,8 +128,13 @@ AssignStatementNode::AssignStatementNode(VariableNode VariableNode , ExpressionN
 	expr = expression;
 }
 
-string ReadStatementNode::getVariable() {
+string AssignStatementNode::getVariable() {
 	return this->var.getValue();
+}
+
+void AssignStatementNode::getVariablesInto(vector<string> result) {
+	result.push_back(this.getVariable());
+	this->expr.getVariablsInto(result); //implement ExpressionNode::getVariablesInto(vector<string> result);
 }
 
 // Expression

@@ -38,6 +38,7 @@ public:
 	virtual bool isCall();
 	virtual bool isAssign();
 	virtual string getVariable();
+	virtual void getVariablesInto(vector<string> result);
 };
 
 class ProcedureNode : public EntityNode {
@@ -69,6 +70,7 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
+	void getVariablesInto(vector<string> result);
 };
 
 class PrintStatementNode : public StatementNode {
@@ -81,6 +83,7 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
+	void getVariablesInto(vector<string> result);
 };
 
 class CallStatementNode : public StatementNode {
@@ -93,6 +96,7 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
+	void getVariablesInto(vector<string> result);
 };
 
 
@@ -116,4 +120,5 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
+	void getVariablesInto(vector<string> result);
 };

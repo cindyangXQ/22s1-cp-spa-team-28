@@ -111,12 +111,7 @@ vector<string> DesignExtractor::extractVariable() {
 		vector<StatementNode> stmtList = procList[i].getStmtList();
 		for (size_type j = 0; j < stmtList.size(); j++) {
 			StatementNode currStmt = stmtList[i];
-			if (currStmt.isCall()) {
-				continue;
-			}
-			else {
-				currStmt.getVariablesInto(result); //implement void Statement::getVariablesInto(vector<string> result);
-			}
+			currStmt.getVariablesInto(result);
 		}
 	}
 
@@ -150,12 +145,12 @@ vector<ModifyRel> DesignExtractor::extractModifies() {
 		for (size_type j = 0; j < stmtList.size(); j++) {
 			StatementNode currStmt = stmtList[i];
 			if (currStmt.isRead()) {
-				string varName = currStmt.getVariable(); //implement string ReadStatement::getVariable();
+				string varName = currStmt.getVariable();
 				result.push_back(ProcModifyRel(currProc.getName(), varName);
 				result.push_back(RdStModifyRel(currStmt.getName(), varName);
 			}
 			else if (currStmt.isAssign()) {
-				string varName = currStmt.getVariable(); //implement string AssignStatement::getVariable(); ie. get the modified variable
+				string varName = currStmt.getVariable();
 				result.push_back(ProcModifyRel(currProc.getName(), varName);
 				result.push_back(AsgStModifyRel(currStmt.getName(), currStmt.getVariable()));
 			}
