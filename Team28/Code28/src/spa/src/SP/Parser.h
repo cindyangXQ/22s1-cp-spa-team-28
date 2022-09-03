@@ -5,9 +5,8 @@
 
 #include <vector>
 
-template <typename T>
 struct ParseResult {
-	T entity;
+	EntityNode entity;
 	int index;
 };
 
@@ -19,7 +18,7 @@ protected:
 public:
 	inline Parser(int offset, vector<Token> tokens);
 	Parser();
-	virtual ParseResult<EntityNode> parse() = 0;
+	virtual ParseResult parse() = 0;
 };
 
 Parser::Parser(int offset, vector<Token> tokens) {
@@ -30,42 +29,42 @@ Parser::Parser(int offset, vector<Token> tokens) {
 class ProgramParser : public Parser {
 public:
 	ProgramParser(int offset, vector<Token> tokens);
-	ParseResult<ProgramNode> parse();
+	ParseResult parse();
 };
 
 class ProcedureParser : public Parser {
 public:
 	ProcedureParser(int offset, vector<Token> tokens);
-	ParseResult<ProcedureNode> parse();
+	ParseResult parse();
 };
 
 class StatementParser : public Parser {
 public:
 	StatementParser();
 	StatementParser(int offset, vector<Token> tokens);
-	ParseResult<StatementNode> parse();
+	ParseResult parse();
 };
 
 class ReadStmParser : public StatementParser {
 public:
 	ReadStmParser(int offset, vector<Token> tokens);
-	ParseResult<ReadStatementNode> parse();
+	ParseResult parse();
 };
 
 class PrintStmParser : public StatementParser {
 public:
 	PrintStmParser(int offset, vector<Token> tokens);
-	ParseResult<PrintStatementNode> parse();
+	ParseResult parse();
 };
 
 class CallStmParser : public StatementParser {
 public:
 	CallStmParser(int offset, vector<Token> tokens);
-	ParseResult<CallStatementNode> parse();
+	ParseResult parse();
 };
 
 class AssignStmParser : public StatementParser {
 public:
 	AssignStmParser(int offset, vector<Token> tokens);
-	ParseResult<AssignStatementNode> parse();
+	ParseResult parse();
 };
