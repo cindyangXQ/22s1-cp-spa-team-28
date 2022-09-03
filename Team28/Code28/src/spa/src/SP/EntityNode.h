@@ -40,6 +40,7 @@ public:
 	virtual string getVariable();
 	virtual void getVariablesInto(vector<string> result);
 	virtual void getConstantsInto(vector<string> result);
+	int getLineNumber();
 };
 
 class ProcedureNode : public EntityNode {

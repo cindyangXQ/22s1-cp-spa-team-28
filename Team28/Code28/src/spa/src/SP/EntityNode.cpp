@@ -29,6 +29,10 @@ vector<StatementNode> ProcedureNode::getStmtList() {
 	return this->stmtList;
 }
 
+int Statement::getLineNumber() {
+	return 0;
+}
+
 // Statement - findType
 bool ReadStatementNode::isRead() {
 	return true;
@@ -88,7 +92,7 @@ ReadStatementNode::ReadStatementNode(VariableNode VariableNode ) {
 }
 
 string ReadStatementNode::getVariable() {
-	return this->var.getValue();
+	return this.var.getValue();
 }
 
 void ReadStatementNode::getVariablesInto(vector<string> result) {
@@ -146,11 +150,11 @@ string AssignStatementNode::getVariable() {
 
 void AssignStatementNode::getVariablesInto(vector<string> result) {
 	result.push_back(this.getVariable());
-	this->expr.getVariablsInto(result); //implement ExpressionNode::getVariablesInto(vector<string> result);
+	//this->expr.getVariablsInto(result); //implement ExpressionNode::getVariablesInto(vector<string> result);
 }
 
 void AssignStatementNode::getConstantsInto(vector<string> result) {
-	this->expr.getConstantsInto(result); //implement ExpressionNode::getConstantsInto(vector<string> result);
+	//this->expr.getConstantsInto(result); //implement ExpressionNode::getConstantsInto(vector<string> result);
 }
 
 // Expression

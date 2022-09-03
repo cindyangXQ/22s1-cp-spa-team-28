@@ -10,22 +10,22 @@ public:
 	ModifyRel(string modifier, string modified);
 };
 
-class ProcModifyRel : ModifyRel {
+class ProcModifyRel : public ModifyRel {
 public:
 	ProcModifyRel(string procedure, string modified);
 };
 
-class StmtModifyRel : ModifyRel {
+class StmtModifyRel : public ModifyRel {
 public:
 	StmtModifyRel(string statement, string modified);
 };
 
-class RdStModifyRel : StmtModifyRel {
+class RdStModifyRel : public ModifyRel {
 public:
 	RdStModifyRel(string statement, string modified);
 };
 
-class AsgStModifyRel : StmtModifyRel {
+class AsgStModifyRel : public ModifyRel {
 public:
 	AsgStModifyRel(string statement, string modified);
 };
