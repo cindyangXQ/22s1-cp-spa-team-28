@@ -61,3 +61,47 @@ TEST_CASE("getAllProcedures returns all constants correctly") {
 	// returned number of procedures is equal to number stored
 	REQUIRE(facade.getAllProcedures().size() == 2);
 }
+
+TEST_CASE("getStatementByLineNo retrieves statement correctly") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
+	Statement test = Statement(1, StatementType::ASSIGN);
+
+	statements->store(&test);
+
+	REQUIRE(*facade.getStatementByLineNo(test.getLineNumber()) == test);
+}
+
+TEST_CASE("getProcedureByName retrieves procedure correctly") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	ProceduresTable* procedures = (ProceduresTable*)storage.getTable(TableName::PROCEDURES);
+	Procedure test = Procedure("test");
+
+	procedures->store(&test);
+
+	REQUIRE(*facade.getProcedureByName(test.getName()) == test);
+}
+
+TEST_CASE("getConstantByName retrieves procedure correctly") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	ConstantsTable* constants = (ConstantsTable*)storage.getTable(TableName::CONSTANTS);
+	Constant test = Constant("test");
+
+	constants->store(&test);
+
+	REQUIRE(*facade.getConstantByName(test.getName()) == test);
+}
+
+TEST_CASE("getVariableByName retrieves procedure correctly") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	VariablesTable* variables = (VariablesTable*)storage.getTable(TableName::VARIABLES);
+	Variable test = Variable("test");
+
+	variables->store(&test);
+
+	REQUIRE(*facade.getVariableByName(test.getName()) == test);
+}

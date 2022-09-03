@@ -22,7 +22,7 @@ public:
 	/*
 	* Retrieves a statement from StatementsTable by index. 
 	*/
-	Statement *retrieve(const int& index);
+	Statement* retrieve(const int& index);
 
 	/*
 	* Retrieves type of a statement from StatementsTable by index.
@@ -37,7 +37,7 @@ public:
 	/*
 	* Filters table based on the PredicateMap.
 	*/
-	StatementsTable *filter(StatementPredicateMap *predicateMap);
+	StatementsTable* filter(StatementPredicateMap* predicateMap);
 
 	/*
 	* Gets all statements in StatementsTable.
