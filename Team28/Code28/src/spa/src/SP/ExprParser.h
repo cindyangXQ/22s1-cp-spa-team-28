@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Token.h"
 #include "Parser.h"
 #include "EntityNode.h"
 
@@ -23,30 +22,4 @@ public:
 	FactorParser(int offset, vector<Token> tokens);
 	ParseResult<ExpressionNode> parse();
 };
-
-Constant::Constant(string s) {
-	this->value = s;
-}
-
-bool Constant::isKeyword() {
-	return false;
-}
-
-bool Constant::isName() {
-	return false;
-}
-
-Variable::Variable(string s) {
-	this->value = s;
-}
-
-Variable::Variable() {}
-
-bool Variable::isKeyword() {
-	return false;
-}
-
-bool Variable::isName() {
-	return true;
-}
 

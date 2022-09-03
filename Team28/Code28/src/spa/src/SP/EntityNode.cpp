@@ -1,9 +1,9 @@
 #include "EntityNode.h"
-#include "Token.h"
 #include <vector>
 
 using namespace std;
 
+EntityNode::EntityNode(){}
 StatementNode::StatementNode(){}
 
 ProgramNode::ProgramNode(vector<ProcedureNode> procList) {
@@ -14,21 +14,21 @@ ProcedureNode::ProcedureNode(vector<StatementNode> stmtList) {
 	this->stmtList = stmtList;
 }
 
-ReadStatementNode::ReadStatementNode(Variable variable) {
-	this->var = variable;
+ReadStatementNode::ReadStatementNode(VariableNode  VariableNode ) {
+	this->var = VariableNode ;
 }
 
-PrintStatementNode::PrintStatementNode(Variable variable) {
-	this->var = variable;
+PrintStatementNode::PrintStatementNode(VariableNode  VariableNode ) {
+	this->var = VariableNode ;
 }
 
-CallStatementNode::CallStatementNode(Variable variable) {
-	this->var = variable;
+CallStatementNode::CallStatementNode(VariableNode  VariableNode ) {
+	this->var = VariableNode ;
 }
 
-AssignStatementNode::AssignStatementNode(Variable variable, ExpressionNode expression) {
-	this->var = variable;
-	this->expr = expression;
+AssignStatementNode::AssignStatementNode(VariableNode  VariableNode , ExpressionNode expression) {
+	var = VariableNode ;
+	expr = expression;
 }
 
 ExpressionNode::ExpressionNode(Token token)
@@ -39,3 +39,29 @@ ExpressionNode::ExpressionNode(Token token)
 }
 
 ExpressionNode::ExpressionNode() {};
+
+ConstantNode ::ConstantNode (string s) {
+	this->value = s;
+}
+
+bool ConstantNode::isKeyword() {
+	return false;
+}
+
+bool ConstantNode ::isName() {
+	return false;
+}
+
+VariableNode ::VariableNode (string s) {
+	this->value = s;
+}
+
+VariableNode ::VariableNode () {}
+
+bool VariableNode ::isKeyword() {
+	return false;
+}
+
+bool VariableNode ::isName() {
+	return true;
+}

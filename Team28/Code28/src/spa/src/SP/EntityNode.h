@@ -7,28 +7,29 @@
 
 using namespace std;
 
-class Constant : public Token, public EntityNode {
+class EntityNode {
 public:
-	Constant(string s);
+	EntityNode();
+};
+
+class ConstantNode : public Token, public EntityNode {
+public:
+	ConstantNode(string s);
 	bool isName();
 	bool isKeyword();
 };
 
-class Variable : public Token, public EntityNode {
+class VariableNode : public Token, public EntityNode {
 public:
-	Variable(string s);
-	Variable();
+	VariableNode(string s);
+	VariableNode();
 	bool isName();
 	bool isKeyword();
 };
 
-class EntityNode {};
-
-class ProgramNode : public EntityNode {
-	vector<ProcedureNode> procList;
-
+class StatementNode : public EntityNode {
 public:
-	ProgramNode(vector<ProcedureNode> procList);
+	StatementNode();
 };
 
 class ProcedureNode : public EntityNode {
@@ -38,39 +39,32 @@ public:
 	ProcedureNode(vector<StatementNode> stmtList);
 };
 
-class StatementNode : public EntityNode {
+class ProgramNode : public EntityNode {
+	vector<ProcedureNode> procList;
+
 public:
-	StatementNode();
+	ProgramNode(vector<ProcedureNode> procList);
 };
 
 class ReadStatementNode : public StatementNode {
-	Variable var;
+	VariableNode var;
 
 public:
-	ReadStatementNode(Variable variable);
+	ReadStatementNode(VariableNode variable);
 };
 
 class PrintStatementNode : public StatementNode {
-	Variable var;
+	VariableNode var;
 
 public:
-	PrintStatementNode(Variable variable);
+	PrintStatementNode(VariableNode variable);
 };
 
 class CallStatementNode : public StatementNode {
-	Variable var;
+	VariableNode var;
 
 public:
-	CallStatementNode(Variable variable);
-};
-
-class AssignStatementNode : public StatementNode {
-	Variable var;
-	ExpressionNode expr;
-
-public:
-	AssignStatementNode(Variable variable, ExpressionNode expression);
-
+	CallStatementNode(VariableNode variable);
 };
 
 class ExpressionNode : public EntityNode {
@@ -80,6 +74,15 @@ public:
 	ExpressionNode* right;
 	ExpressionNode(Token token);
 	ExpressionNode();
+};
+
+class AssignStatementNode : public StatementNode {
+	VariableNode var;
+	ExpressionNode expr;
+
+public:
+	AssignStatementNode(VariableNode variable, ExpressionNode expression);
+
 };
 
 

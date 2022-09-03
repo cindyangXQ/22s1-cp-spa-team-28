@@ -1,5 +1,4 @@
 #include "ExprParser.h"
-#include "Token.h"
 #include "EntityNode.h"
 #include <vector>
 #include <typeinfo>
@@ -98,7 +97,7 @@ ParseResult<ExpressionNode> TermParser::parse() {
 ParseResult<ExpressionNode> FactorParser::parse() {
 	int index = this->offset;
 	Token curr = tokens.at(offset);
-	if (typeid(curr) == typeid(Constant) || typeid(curr) == typeid(Variable)) {
+	if (typeid(curr) == typeid(ConstantNode) || typeid(curr) == typeid(VariableNode)) {
 		ParseResult<ExpressionNode> result = { ExpressionNode(curr), offset };
 		return result;
 	}

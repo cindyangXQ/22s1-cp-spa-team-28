@@ -28,8 +28,8 @@ enum class TokenType {
 Token Tokenizer::createToken(TokenType type, string value) {
 	cout << static_cast<int>(type) << " " << value << endl;
 	switch (type) {
-	case TokenType::CONSTANT: return Constant(value);
-	case TokenType::NAME: return Variable(value);
+	case TokenType::CONSTANT: return ConstantNode(value);
+	case TokenType::NAME: return VariableNode(value);
 	case TokenType::KEYWORD: return Keyword(value);
 	case TokenType::OPERATOR: return Operator(value);
 	default: return Symbol(value);
@@ -126,6 +126,10 @@ vector<Token> Tokenizer::tokenize() {
 			current.push_back(currChar);
 		}
 		index = index + 1;
+	}
+
+	if(currType != TokenType::WHITESPACE) {
+		tokens.push_back(createToken(currType, current));
 	}
 	return tokens;
 }

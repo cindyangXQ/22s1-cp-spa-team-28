@@ -139,7 +139,7 @@ ParseResult<ReadStatementNode> ReadStmParser::parse() {
 			&& firstToken.equals("read")
 			&& secondToken.isName()
 			&& thirdToken.equals(";")) {
-		ParseResult<ReadStatementNode> result = { ReadStatementNode(Variable(secondToken.value)), index };
+		ParseResult<ReadStatementNode> result = { ReadStatementNode(VariableNode (secondToken.value)), index };
 		return result;
 	}
 	else {
@@ -159,7 +159,7 @@ ParseResult<PrintStatementNode> PrintStmParser::parse() {
 			&& firstToken.equals("print")
 			&& secondToken.isName()
 			&& thirdToken.equals(";")) {
-		ParseResult<PrintStatementNode> result = { PrintStatementNode(Variable(secondToken.value)), index };
+		ParseResult<PrintStatementNode> result = { PrintStatementNode(VariableNode (secondToken.value)), index };
 		return result;
 	}
 	else {
@@ -179,7 +179,7 @@ ParseResult<CallStatementNode> CallStmParser::parse() {
 			&& firstToken.equals("call")
 			&& secondToken.isName()
 			&& thirdToken.equals(";")) {
-		ParseResult<CallStatementNode> result = { CallStatementNode(Variable(secondToken.value)), index };
+		ParseResult<CallStatementNode> result = { CallStatementNode(VariableNode (secondToken.value)), index };
 		return result;
 	}
 	else {
@@ -199,7 +199,7 @@ ParseResult<AssignStatementNode> AssignStmParser::parse() {
 		ExpressionNode expr = temp.entity;
 		index = temp.index;
 
-		ParseResult<AssignStatementNode> result = { AssignStatementNode(Variable(firstToken.value), expr), index };
+		ParseResult<AssignStatementNode> result = { AssignStatementNode(VariableNode (firstToken.value), expr), index };
 		return result;
 	}
 	else {
