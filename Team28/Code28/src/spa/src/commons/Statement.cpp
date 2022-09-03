@@ -2,27 +2,27 @@
 
 #include <iostream>
 
-Statement::Statement(int index, StatementType type) {
+Statement::Statement(int lineNo, StatementType type) {
 	this->type = type;
-	this->index = index;
+	this->lineNo = lineNo;
 }
 
 StatementType Statement::getStatementType() {
 	return this->type;
 }
 
-int Statement::getIndex(){
-	return this->index;
+int Statement::getLineNumber(){
+	return this->lineNo;
 }
 
 bool Statement::operator==(const Statement& other) const {
-	return this->index == other.index && this->type == other.type;
+	return this->lineNo == other.lineNo && this->type == other.type;
 }
 
 bool Statement::isValueEqual(StatementHeader header, Statement* other) {
 	switch (header) {
-		case StatementHeader::INDEX:
-			return Statement::isIndexEqual(other);
+		case StatementHeader::LINE_NUMBER:
+			return Statement::isLineNumberEqual(other);
 
 		case StatementHeader::STATEMENT_TYPE:
 			return Statement::isStatementTypeEqual(other);
@@ -36,6 +36,6 @@ bool Statement::isStatementTypeEqual(Statement* other) {
 	return this->type == other->type;
 }
 
-bool Statement::isIndexEqual(Statement* other) {
-	return this->index == other->index;
+bool Statement::isLineNumberEqual(Statement* other) {
+	return this->lineNo == other->lineNo;
 }
