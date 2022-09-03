@@ -2,6 +2,7 @@
 #include "EntityNode.h"
 #include <vector>
 #include <typeinfo>
+#include <iostream>
 
 using namespace std;
 
@@ -22,6 +23,7 @@ FactorParser::FactorParser(int offset, vector<Token> tokens) {
 
 ParseResult<ExpressionNode> ExprParser::parse() {
 	int index = this->offset;
+	cout << tokens.at(1).isName() <<endl;
 	TermParser parser = TermParser(index, tokens);
 	ParseResult result = parser.parse();
 	index = result.index;

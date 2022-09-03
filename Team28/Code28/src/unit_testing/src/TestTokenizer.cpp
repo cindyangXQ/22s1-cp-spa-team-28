@@ -8,7 +8,7 @@
 using namespace std;
 
 TEST_CASE() {
-	string sourceProgram = "procedure Bedok {read x;}";
+	string sourceProgram = "x+3;";
 	Tokenizer tokenizer = Tokenizer(sourceProgram);
 	vector<Token> token_list = tokenizer.tokenize();
 
@@ -17,7 +17,7 @@ TEST_CASE() {
 		std::cout << temp.value << endl;
 	}
 
-	ProgramParser parser = ProgramParser(0, token_list);
+	ExprParser parser = ExprParser(0, token_list);
 	parser.parse();
 
 	//will implement later

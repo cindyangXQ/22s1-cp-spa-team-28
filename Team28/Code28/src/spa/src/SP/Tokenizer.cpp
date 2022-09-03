@@ -115,6 +115,9 @@ vector<Token> Tokenizer::tokenize() {
 			}
 			else {
 				tokens.push_back(createToken(currType, current));
+				current = "";
+				current.append(1, currChar);
+				currType = TokenType::OPERATOR;
 			}
 		}
 		else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST)) {

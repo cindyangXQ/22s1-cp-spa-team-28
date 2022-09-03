@@ -9,8 +9,8 @@ public:
 	Token();
 	Token(string s);
 	bool equals(string other);
-	bool isKeyword();
 	bool isName();
+	bool isKeyword();
 };
 
 class Keyword : public Token {
