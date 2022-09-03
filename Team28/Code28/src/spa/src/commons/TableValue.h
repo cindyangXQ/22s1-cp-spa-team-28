@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO: Refactor name
 /*
 * An interface representing a possible Value in Table.
 */

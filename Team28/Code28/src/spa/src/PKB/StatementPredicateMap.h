@@ -2,7 +2,7 @@
 
 #include <map>
 
-#include "Statement.h"
+#include "../commons/Statement.h"
 #include "PredicateMap.h"
 
 /*

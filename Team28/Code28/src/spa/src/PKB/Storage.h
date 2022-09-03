@@ -5,15 +5,16 @@
 #include <utility>
 #include <iostream>
 
-#include "Entity.h"
+#include "../commons/Entity.h"
+#include "../commons/TableValue.h"
+#include "../commons/NameDefinitions.h"
+#include "../commons/Procedure.h"
+#include "../commons/Variable.h"
+#include "../commons/Constant.h"
+
 #include "Table.h"
-#include "TableValue.h"
 #include "StatementsTable.h"
 #include "NamesTable.h"
-#include "NameDefinitions.h"
-#include "Procedure.h"
-#include "Variable.h"
-#include "Constant.h"
 
 /*
 * Enumerates the different kinds of tables to instantiate.

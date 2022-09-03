@@ -16,7 +16,7 @@ enum class StatementType {
 };
 
 enum class StatementHeader {
-	INDEX,
+	LINE_NUMBER,
 	STATEMENT_TYPE
 };
 
@@ -28,11 +28,11 @@ public:
 	/*
 	* Explicit constructor for a Statement.
 	*/
-	explicit Statement(int index, StatementType type);
+	explicit Statement(int lineNo, StatementType type);
 
 	StatementType getStatementType();
 
-	int getIndex();
+	int getLineNumber();
 
 	/*
 	* Override equality operator for Statement to check index and type.
@@ -46,9 +46,9 @@ public:
 
 	bool isStatementTypeEqual(Statement* other);
 
-	bool isIndexEqual(Statement* other);
+	bool isLineNumberEqual(Statement* other);
 
 private:
 	StatementType type;
-	int index;
+	int lineNo;
 };

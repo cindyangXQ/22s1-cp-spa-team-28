@@ -47,7 +47,7 @@ TEST_CASE("Storage stores and retrieves Statements correctly") {
 	// Statement stored to StatementsTable correctly
 	REQUIRE(statements->getTableSize() == 1);
 	// Statement retrieved from StatementsTable correctly
-	REQUIRE(*statements->retrieve(test.getIndex()) == test);
+	REQUIRE(*statements->retrieve(test.getLineNumber()) == test);
 }
 
 TEST_CASE("Storage stores and retrieves Variables correctly") {

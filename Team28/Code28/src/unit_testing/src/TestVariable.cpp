@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include "PKB/Variable.h"
+#include "commons/Variable.h"
 
 TEST_CASE("Variable is initialised correctly and inherits all Entity methods correctly") {
 	Variable test = Variable("test");
