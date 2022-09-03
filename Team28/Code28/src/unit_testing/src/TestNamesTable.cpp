@@ -1,8 +1,8 @@
+#include "commons/NameDefinitions.h"
+#include "commons/Constant.h"
+#include "commons/Variable.h"
+#include "commons/Procedure.h"
 #include "PKB/NamesTable.h"
-#include "PKB/NameDefinitions.h"
-#include "PKB/Constant.h"
-#include "PKB/Variable.h"
-#include "PKB/Procedure.h"
 #include "PKB/EntityPredicateMap.h"
 
 #include "catch.hpp"

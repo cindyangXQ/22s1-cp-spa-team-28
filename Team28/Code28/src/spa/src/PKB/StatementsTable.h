@@ -3,7 +3,7 @@
 #include <map>
 #include <vector>
 
-#include "Statement.h"
+#include "../commons/Statement.h"
 #include "StatementPredicateMap.h"
 #include "Table.h"
 

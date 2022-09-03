@@ -1,5 +1,5 @@
+#include "../commons/Statement.h"
 #include "StatementsTable.h"
-#include "Statement.h"
 #include "StatementPredicateMap.h"
 
 #include <algorithm>

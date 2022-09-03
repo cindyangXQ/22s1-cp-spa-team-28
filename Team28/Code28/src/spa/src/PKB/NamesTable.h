@@ -4,7 +4,7 @@
 #include <type_traits>
 #include <unordered_set>
 
-#include "Entity.h"
+#include "../commons/Entity.h"
 #include "EntityPredicateMap.h"
 #include "Table.h"
 

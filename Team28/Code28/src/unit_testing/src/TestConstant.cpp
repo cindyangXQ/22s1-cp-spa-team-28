@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include "PKB/Constant.h"
+#include "commons/Constant.h"
 
 TEST_CASE("Constant is initialised correctly and inherits all Entity methods correctly") {
 	Constant test = Constant("test");
