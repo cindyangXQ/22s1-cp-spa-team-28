@@ -31,7 +31,7 @@ AssignStatementNode::AssignStatementNode(VariableNode  VariableNode , Expression
 	expr = expression;
 }
 
-ExpressionNode::ExpressionNode(Token token)
+ExpressionNode::ExpressionNode(Token* token)
 {
 	this->token = token;
 	this->left = nullptr;
@@ -63,5 +63,13 @@ bool VariableNode ::isKeyword() {
 }
 
 bool VariableNode ::isName() {
+	return true;
+}
+
+bool VariableNode::isConstant() {
+	return false;
+}
+
+bool ConstantNode::isConstant() {
 	return true;
 }

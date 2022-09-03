@@ -5,9 +5,6 @@ using namespace std;
 
 Token::Token() {}
 
-bool Token::isName() { return false; }
-bool Token::isKeyword() { return false; }
-
 Token::Token(string s) {
 	this->value = s;
 }
@@ -33,6 +30,10 @@ bool Keyword::isName() {
 	return false;
 }
 
+bool Keyword::isConstant() {
+	return false;
+}
+
 Operator::Operator(string s) {
 	this->value = s;
 }
@@ -45,6 +46,10 @@ bool Operator::isName() {
 	return false;
 }
 
+bool Operator::isConstant() {
+	return false;
+}
+
 Symbol::Symbol(string s) {
 	this->value = s;
 }
@@ -54,5 +59,9 @@ bool Symbol::isKeyword() {
 }
 
 bool Symbol::isName() {
+	return false;
+}
+
+bool Symbol::isConstant() {
 	return false;
 }

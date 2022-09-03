@@ -14,52 +14,52 @@ struct ParseResult {
 class Parser {
 protected:
 	int offset;
-	vector<Token> tokens;
+	vector<Token*> tokens;
 
 public:
-	Parser(int offset, vector<Token> tokens);
+	Parser(int offset, vector<Token*> tokens);
 	Parser();
 };
 
 class ProgramParser : public Parser {
 public:
-	ProgramParser(int offset, vector<Token> tokens);
+	ProgramParser(int offset, vector<Token*> tokens);
 	ParseResult<ProgramNode> parse();
 };
 
 class ProcedureParser : public Parser {
 public:
-	ProcedureParser(int offset, vector<Token> tokens);
+	ProcedureParser(int offset, vector<Token*> tokens);
 	ParseResult<ProcedureNode> parse();
 };
 
 class StatementParser : public Parser {
 public:
 	StatementParser();
-	StatementParser(int offset, vector<Token> tokens);
+	StatementParser(int offset, vector<Token*> tokens);
 	ParseResult<StatementNode> parse();
 };
 
 class ReadStmParser : public StatementParser {
 public:
-	ReadStmParser(int offset, vector<Token> tokens);
+	ReadStmParser(int offset, vector<Token*> tokens);
 	ParseResult<ReadStatementNode> parse();
 };
 
 class PrintStmParser : public StatementParser {
 public:
-	PrintStmParser(int offset, vector<Token> tokens);
+	PrintStmParser(int offset, vector<Token*> tokens);
 	ParseResult<PrintStatementNode> parse();
 };
 
 class CallStmParser : public StatementParser {
 public:
-	CallStmParser(int offset, vector<Token> tokens);
+	CallStmParser(int offset, vector<Token*> tokens);
 	ParseResult<CallStatementNode> parse();
 };
 
 class AssignStmParser : public StatementParser {
 public:
-	AssignStmParser(int offset, vector<Token> tokens);
+	AssignStmParser(int offset, vector<Token*> tokens);
 	ParseResult<AssignStatementNode> parse();
 };

@@ -17,6 +17,7 @@ public:
 	ConstantNode(string s);
 	bool isName();
 	bool isKeyword();
+	bool isConstant();
 };
 
 class VariableNode : public Token, public EntityNode {
@@ -25,6 +26,7 @@ public:
 	VariableNode();
 	bool isName();
 	bool isKeyword();
+	bool isConstant();
 };
 
 class StatementNode : public EntityNode {
@@ -68,11 +70,11 @@ public:
 };
 
 class ExpressionNode : public EntityNode {
-	Token token;
+	Token* token;
 public:
 	ExpressionNode* left;
 	ExpressionNode* right;
-	ExpressionNode(Token token);
+	ExpressionNode(Token* token);
 	ExpressionNode();
 };
 

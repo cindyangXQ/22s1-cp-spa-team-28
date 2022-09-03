@@ -20,8 +20,8 @@ enum class TokenType;
 class Tokenizer {
 private:
 	string input;
-	Token createToken(TokenType type, string value);
+	Token* createToken(TokenType type, string value);
 public:
 	Tokenizer(string sourceProg);
-	vector<Token> tokenize();
+	vector<Token*> tokenize();
 };
