@@ -152,13 +152,13 @@ string AssignStatementNode::getVariable() {
 	return this->var.getValue();
 }
 
-void AssignStatementNode::getVariablesInto(vector<string> result) {
+void AssignStatementNode::getVariablesInto(vector<VariableNode> result) {
 	result.push_back(this->getVariable());
-	//this->expr.getVariablsInto(result); //implement ExpressionNode::getVariablesInto(vector<string> result);
+	this->expr.getVariablesInto(result);
 }
 
-void AssignStatementNode::getConstantsInto(vector<string> result) {
-	//this->expr.getConstantsInto(result); //implement ExpressionNode::getConstantsInto(vector<string> result);
+void AssignStatementNode::getConstantsInto(vector<ConstantNode> result) {
+	this->expr.getConstantsInto(result);
 }
 
 // Expression
@@ -170,6 +170,28 @@ ExpressionNode::ExpressionNode(Token* token)
 }
 
 ExpressionNode::ExpressionNode() {};
+
+void ExpressionNode::getVariablesInto(vector<VariableNode> result) {
+	if (this->token->isName()) {
+		result.push_back(VariableNode(this->token->getValue()));
+	}
+	else if (this->token->isConstant()) {}
+	else {
+		this->left->getVariablesInto(result);
+		this->right->getVariablesInto(result);
+	}
+}
+
+void ExpressionNode::getConstantsInto(vector<ConstantNode> result) {
+	if (this->token->isConstant()) {
+		result.push_back(ConstantNode(this->token->getValue()));
+	}
+	else if (this->token->isName()) {}
+	else {
+		this->left->getConstantsInto(result);
+		this->right->getConstantsInto(result);
+	}
+}
 
 
 // Constant
@@ -185,6 +207,9 @@ bool ConstantNode ::isName() {
 	return false;
 }
 
+bool ConstantNode::isConstant() {
+	return true;
+}
 
 // Variable
 VariableNode ::VariableNode (string s) {
@@ -203,8 +228,4 @@ bool VariableNode ::isName() {
 
 bool VariableNode::isConstant() {
 	return false;
-}
-
-bool ConstantNode::isConstant() {
-	return true;
 }
