@@ -78,9 +78,9 @@ public:
 		ConstantsTable *newTable = new ConstantsTable();
 		std::map<EntityHeader, Constant*> extractedMap = (*predicateMap).getPredicateMap();
 
-		for (auto [name, entity] : this->getNameEntityMap()) {
+		for (auto const&[name, entity] : this->getNameEntityMap()) {
 			bool isFilter = true;
-			for (auto [key, val] : extractedMap) {
+			for (auto const&[key, val] : extractedMap) {
 				if (!entity->isValueEqual(key, *val)) {
 					isFilter = false;
 				}
@@ -107,9 +107,9 @@ public:
 		VariablesTable *newTable = new VariablesTable();
 		std::map<EntityHeader, Variable*> extractedMap = (*predicateMap).getPredicateMap();
 
-		for (auto [index, entity] : this->getNameEntityMap()) {
+		for (auto const&[index, entity] : this->getNameEntityMap()) {
 			bool isFilter = true;
-			for (auto [key, val] : extractedMap) {
+			for (auto const&[key, val] : extractedMap) {
 				if (!entity->isValueEqual(key, *val)) {
 					isFilter = false;
 				}
@@ -136,9 +136,9 @@ public:
 		ProceduresTable *newTable = new ProceduresTable();
 		std::map<EntityHeader, Procedure*> extractedMap = (*predicateMap).getPredicateMap();
 
-		for (auto [name, entity] : this->getNameEntityMap()) {
+		for (auto const&[name, entity] : this->getNameEntityMap()) {
 			bool isFilter = true;
-			for (auto [key, val] : extractedMap) {
+			for (auto const&[key, val] : extractedMap) {
 				if (!entity->isValueEqual(key, *val)) {
 					isFilter = false;
 				}
