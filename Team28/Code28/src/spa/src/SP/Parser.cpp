@@ -6,6 +6,11 @@
 
 using namespace std;
 
+Parser::Parser(int offset, vector<Token> tokens) {
+	this->offset = offset;
+	this->tokens = tokens;
+}
+
 Parser::Parser(){}
 StatementParser::StatementParser(){}
 
@@ -45,29 +50,27 @@ AssignStmParser::AssignStmParser(int offset, vector<Token> tokens) {
 }
 
 
-ParseResult ProgramParser::parse() {
+ParseResult<ProgramNode> ProgramParser::parse() {
 	int index = this->offset;
 	vector<Token> tokenList = this->tokens;
 
 	vector<ProcedureNode> procList;
-	ParseResult result;
 
 	while (index < tokenList.size()) {
-		ParseResult temp = ProcedureParser(index, tokenList).parse();
-		procList.push_back(dynamic_cast<StatementNode*>(temp.entity));
+		ParseResult<ProcedureNode> temp = ProcedureParser(index, tokenList).parse();
+		procList.push_back(temp.entity);
 		index = temp.index;
 	}
 
-	result = { ProgramNode(procList), index };
+	ParseResult<ProgramNode> result = { ProgramNode(procList), index };
 	return result;
 }
 
-ParseResult ProcedureParser::parse() {
+ParseResult<ProcedureNode> ProcedureParser::parse() {
 	int index = this->offset;
 	vector<Token> tokenList = this->tokens;
 
 	vector<StatementNode> stmtList;
-	ParseResult result;
 
 	Token firstToken = tokenList.at(index++);
 	Token secondToken = tokenList.at(index++);
@@ -78,7 +81,7 @@ ParseResult ProcedureParser::parse() {
 			&& secondToken.isName() 
 			&& thirdToken.equals("{")) {
 		while (!tokenList.at(index).equals("}")) {
-			ParseResult temp = StatementParser(index, tokenList).parse();
+			ParseResult<StatementNode> temp = StatementParser(index, tokenList).parse();
 			stmtList.push_back(temp.entity);
 			index = temp.index;
 			if (index >= tokenList.size()) {
@@ -90,46 +93,53 @@ ParseResult ProcedureParser::parse() {
 		throw "procedure wrong syntax";
 	}
 
-	result = { ProcedureNode(stmtList), index + 1 };
+	ParseResult<ProcedureNode> result = { ProcedureNode(stmtList), index + 1 };
 	return result;
 }
 
-ParseResult StatementParser::parse() {
+ParseResult<StatementNode> StatementParser::parse() {
 	int index = this->offset;
 	vector<Token> tokenList = this->tokens;
 
-	ParseResult result;
+	ParseResult<StatementNode> result;
 
 	Token firstToken = tokenList.at(index);
 	if (firstToken.equals("read")) {
-		result = ReadStmParser(index, tokenList).parse();
+		ParseResult<ReadStatementNode> temp = ReadStmParser(index, tokenList).parse();
+		result.index = temp.index;
+		result.entity = temp.entity;
 	}
 	else if (firstToken.equals("print")) {
-		result = PrintStmParser(index, tokenList).parse();
+		ParseResult<PrintStatementNode> temp = PrintStmParser(index, tokenList).parse();
+		result.index = temp.index;
+		result.entity = temp.entity;
 	}
 	else if (firstToken.equals("call")) {
-		result = CallStmParser(index, tokenList).parse();
+		ParseResult<CallStatementNode> temp = CallStmParser(index, tokenList).parse();
+		result.index = temp.index;
+		result.entity = temp.entity;
 	}
 	else {
-		result = AssignStmParser(index, tokenList).parse();
-	}
+		ParseResult<AssignStatementNode> temp = AssignStmParser(index, tokenList).parse();
+		result.index = temp.index;
+		result.entity = temp.entity;
+	} //TODO: Need to change later
 	return result;
 }
 
-ParseResult ReadStmParser::parse() {
+ParseResult<ReadStatementNode> ReadStmParser::parse() {
 	int index = this->offset;
 	vector<Token> tokenList = this->tokens;
 
 	Token firstToken = tokenList.at(index++);
 	Token secondToken = tokenList.at(index++);
 	Token thirdToken = tokenList.at(index++);
-	ParseResult result;
 
 	if (firstToken.isKeyword()
 			&& firstToken.equals("read")
 			&& secondToken.isName()
 			&& thirdToken.equals(";")) {
-		result = { ReadStatementNode(Variable(secondToken.value)), index };
+		ParseResult<ReadStatementNode> result = { ReadStatementNode(Variable(secondToken.value)), index };
 		return result;
 	}
 	else {
@@ -137,20 +147,19 @@ ParseResult ReadStmParser::parse() {
 	}
 }
 
-ParseResult PrintStmParser::parse() {
+ParseResult<PrintStatementNode> PrintStmParser::parse() {
 	int index = this->offset;
 	vector<Token> tokenList = this->tokens;
 
 	Token firstToken = tokenList.at(index++);
 	Token secondToken = tokenList.at(index++);
 	Token thirdToken = tokenList.at(index++);
-	ParseResult result;
 
 	if (firstToken.isKeyword()
 			&& firstToken.equals("print")
 			&& secondToken.isName()
 			&& thirdToken.equals(";")) {
-		result = { PrintStatementNode(Variable(secondToken.value)), index };
+		ParseResult<PrintStatementNode> result = { PrintStatementNode(Variable(secondToken.value)), index };
 		return result;
 	}
 	else {
@@ -158,20 +167,19 @@ ParseResult PrintStmParser::parse() {
 	}
 }
 
-ParseResult CallStmParser::parse() {
+ParseResult<CallStatementNode> CallStmParser::parse() {
 	int index = this->offset;
 	vector<Token> tokenList = this->tokens;
 
 	Token firstToken = tokenList.at(index++);
 	Token secondToken = tokenList.at(index++);
 	Token thirdToken = tokenList.at(index++);
-	ParseResult result;
 
 	if (firstToken.isKeyword()
 			&& firstToken.equals("call")
 			&& secondToken.isName()
 			&& thirdToken.equals(";")) {
-		result = { CallStatementNode(Variable(secondToken.value)), index };
+		ParseResult<CallStatementNode> result = { CallStatementNode(Variable(secondToken.value)), index };
 		return result;
 	}
 	else {
@@ -179,21 +187,19 @@ ParseResult CallStmParser::parse() {
 	}
 }
 
-ParseResult AssignStmParser::parse() {
+ParseResult<AssignStatementNode> AssignStmParser::parse() {
 	int index = this->offset;
 	vector<Token> tokenList = this->tokens;
 
 	Token firstToken = tokenList.at(index++);
 	Token secondToken = tokenList.at(index++);
-	ParseResult temp;
-	ParseResult result;
 
 	if (firstToken.isName() && secondToken.equals("=")) {
-		temp = ExprParser(index, tokenList).parse();
+		ParseResult<ExpressionNode> temp = ExprParser(index, tokenList).parse();
 		ExpressionNode expr = temp.entity;
 		index = temp.index;
 
-		result = { AssignStatementNode(Variable(firstToken.value), expr), index };
+		ParseResult<AssignStatementNode> result = { AssignStatementNode(Variable(firstToken.value), expr), index };
 		return result;
 	}
 	else {
