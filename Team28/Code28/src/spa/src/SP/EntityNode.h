@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include "Token.h"
+#include "../commons/Variable.h"
+#include "../commons/Constant.h"
 
 
 using namespace std;
@@ -39,8 +41,8 @@ public:
 	virtual bool isCall() {};
 	virtual bool isAssign() {};
 	virtual string getVariable() {};
-	virtual void getVariablesInto(vector<string> result) {};
-	virtual void getConstantsInto(vector<string> result) {};
+	virtual vector<Variable> getVariables() {};
+	virtual vector<Constant> getConstants() {};
 	int getLineNumber();
 };
 
@@ -74,8 +76,8 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	void getVariablesInto(vector<string> result);
-	void getConstantsInto(vector<string> result);
+	vector<Variable> getVariables();
+	vector<Constant> getConstants();
 };
 
 class PrintStatementNode : public StatementNode {
@@ -88,8 +90,8 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	void getVariablesInto(vector<string> result);
-	void getConstantsInto(vector<string> result);
+	vector<Variable> getVariables();
+	vector<Constant> getConstants();
 };
 
 class CallStatementNode : public StatementNode {
@@ -102,8 +104,8 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	void getVariablesInto(vector<string> result);
-	void getConstantsInto(vector<string> result);
+	vector<Variable> getVariables();
+	vector<Constant> getConstants();
 };
 
 
@@ -114,8 +116,8 @@ public:
 	ExpressionNode* right;
 	ExpressionNode(Token* token);
 	ExpressionNode();
-	void getVariablesInto(vector<VariableNode> result);
-	void getConstantsInto(vector<ConstantNode> result);
+	vector<Variable> getVariables();
+	vector<Constant> getConstants();
 };
 
 class AssignStatementNode : public StatementNode {
@@ -129,6 +131,6 @@ public:
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	void getVariablesInto(vector<VariableNode> result);
-	void getConstantsInto(vector<ConstantNode> result);
+	vector<Variable> getVariables();
+	vector<Constant> getConstants();
 };

@@ -8,25 +8,6 @@
 
 using namespace std;
 
-/*
-class DesignExtractor {
-	ProgramNode program;
-
-public:
-	DesignExtractor(ProgramNode program);
-
-	vector<string> extractProcedure();
-	vector<string> extractStatement();
-	vector<string> extractReadStmt();
-	vector<string> extractPrintStmt();
-	vector<string> extractCallStmt();
-	vector<string> extractAssignStmt();
-	vector<string> extractVariable();
-	vector<string> extractConstant();
-
-	vector<ModifyRel> extractModifies();
-};*/
-
 class DesignExtractor {
 protected:
 	ProgramNode program;
@@ -38,25 +19,25 @@ public:
 class StatementExtractor :public DesignExtractor {
 public:
 	StatementExtractor(ProgramNode program);
-	vector<Statement> extractor();
+	vector<Statement> extract();
 };
 
 class VariableExtractor : public DesignExtractor {
 public:
 	VariableExtractor(ProgramNode program);
-	vector<Variable> extractor();
+	vector<Variable> extract();
 };
 
 
 class ProcedureExtractor :public DesignExtractor {
 public:
 	ProcedureExtractor(ProgramNode program);
-	vector<Procedure> extractor();
+	vector<Procedure> extract();
 };
 
 class ConstantExtractor :public DesignExtractor {
 public:
 	ConstantExtractor(ProgramNode program);
-	vector<Constant> extractor();
+	vector<Constant> extract();
 };
 
