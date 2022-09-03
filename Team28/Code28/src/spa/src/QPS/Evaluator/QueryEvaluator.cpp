@@ -1,8 +1,8 @@
 #include "QueryEvaluator.h"
 
 QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
-    ClauseResult suchThatResult = this->suchThatEvaluator.evaluate(solvableQ->suchThatCl);
-    ClauseResult patternResult = this->patternEvaluator.evaluate(solvableQ->patternCl);
+    ClauseResult suchThatResult = suchThatEvaluator.evaluate(&solvableQ->suchThatCl);
+    ClauseResult patternResult = patternEvaluator.evaluate(&solvableQ->patternCl);
     std::vector<ClauseResult> clauseResultList{suchThatResult, patternResult};
     return QueryResult(solvableQ->selectType, clauseResultList);
 }
@@ -18,23 +18,23 @@ std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *query
     }
     if (isQueryResultAllTrue == true) {
         if (queryResult->selectType.entity == DesignEntity::STATEMENT) {
-            std::vector<Statement*> statementList = this->queryFacade->getAllStatements();
+            std::vector<Statement*> statementList = queryFacade->getAllStatements();
             std::vector<std::string> result;
             for (int i = 0; i < statementList.size(); i++) {
-                result.push_back(std::to_string(statementList[i]->getLineNumber());
+                result.push_back(std::to_string(statementList[i]->getLineNumber()));
             }
             return result;
         }
         else if (queryResult->selectType.entity == DesignEntity::VARIABLE) {
-            std::vector<VariableName> variableList = this->queryFacade->getAllVariables();
+            std::vector<VariableName> variableList = queryFacade->getAllVariables();
             return variableList;
         }
         else if (queryResult->selectType.entity == DesignEntity::CONSTANT) {
-            std::vector<ConstantName> constantList = this->queryFacade->getAllConstants();
+            std::vector<ConstantName> constantList = queryFacade->getAllConstants();
             return constantList;
         }
         else if (queryResult->selectType.entity == DesignEntity::PROCEDURE) {
-            std::vector<ProcedureName> procedureList = this->queryFacade->getAllProcedures();
+            std::vector<ProcedureName> procedureList = queryFacade->getAllProcedures();
             return procedureList;
         }
     }

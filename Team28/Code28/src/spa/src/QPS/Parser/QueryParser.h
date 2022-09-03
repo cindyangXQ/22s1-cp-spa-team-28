@@ -2,9 +2,9 @@
 #include <iostream>
 #include "SolvableQuery.h"
 #include "../Utils.h"
-#include "../Reference/Reference.h"
-#include "../Reference/VariableName.h"
-#include "../Reference/StatementNumber.h"
+#include "../../commons/Reference.h"
+#include "../../commons//Variable.h"
+#include "../../commons//Statement.h"
 #include "../Error/ParseError.h"
 
 /*

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../PKB/QueryFacade.h"
 #include "../Parser/SolvableQuery.h"
 #include "SuchThatEvaluator.h"
 #include "PatternEvaluator.h"

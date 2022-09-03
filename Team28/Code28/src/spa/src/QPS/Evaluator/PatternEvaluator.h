@@ -12,5 +12,5 @@ private:
     QueryFacade *queryFacade;
 public:
     explicit PatternEvaluator(QueryFacade *queryFacade);
-    ClauseResult evaluate(PatternClause patternCl);
+    ClauseResult evaluate(PatternClause *patternCl);
 };

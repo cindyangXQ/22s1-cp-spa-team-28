@@ -175,10 +175,10 @@ RelationshipReference QueryParser::getRelationshipReference(std::string input) {
 
 Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns) {
     if (std::all_of(input.begin(), input.end(), ::isdigit)) {
-        return StatementNumber(atoi(input.c_str()));
+        return Statement(atoi(input.c_str()));
     }
     if (input[0] == '"' && input[-1] == '"') {
-        return VariableName(input);
+        return Variable(input);
     }
     Synonym selectedSyn;
     for (int i = 0; i < syns.size(); i++) {
