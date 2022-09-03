@@ -12,6 +12,10 @@ Token::Token(string s) {
 	this->value = s;
 }
 
+string Token::getValue() {
+	return this->value;
+}
+
 bool Token::equals(string other) {
 	if (value.compare(other) == 0) {
 		return true;

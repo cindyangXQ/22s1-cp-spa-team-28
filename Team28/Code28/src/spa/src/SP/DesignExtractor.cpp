@@ -15,7 +15,7 @@ vector<string> DesignExtractor::extractProcedure() {
 
 	vector<ProcedureNode> procList = this.program.getProcList();
 	for (size_type i = 0; i < procList.size(); i++) {
-		result.push_back(procList[i].getName()); //implement string Procedure::getName();
+		result.push_back(procList[i].getName());
 	}
 
 	return result;

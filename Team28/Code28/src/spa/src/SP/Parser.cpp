@@ -93,7 +93,7 @@ ParseResult<ProcedureNode> ProcedureParser::parse() {
 		throw "procedure wrong syntax";
 	}
 
-	ParseResult<ProcedureNode> result = { ProcedureNode(stmtList), index + 1 };
+	ParseResult<ProcedureNode> result = { ProcedureNode(secondToken.getValue(), stmtList), index + 1 };
 	return result;
 }
 

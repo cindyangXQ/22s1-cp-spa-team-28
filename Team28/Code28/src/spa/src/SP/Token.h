@@ -11,6 +11,7 @@ public:
 	bool equals(string other);
 	bool isName();
 	bool isKeyword();
+	string getValue();
 };
 
 class Keyword : public Token {

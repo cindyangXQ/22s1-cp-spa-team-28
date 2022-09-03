@@ -6,6 +6,7 @@ using namespace std;
 EntityNode::EntityNode(){}
 StatementNode::StatementNode(){}
 
+// Program
 ProgramNode::ProgramNode(vector<ProcedureNode> procList) {
 	this->procList = procList;
 }
@@ -14,6 +15,7 @@ vector<ProcedureNode> ProgramNode::getProcList() {
 	return this->procList;
 }
 
+// Procedure
 ProcedureNode::ProcedureNode(string procName, vector<StatementNode> stmtList) {
 	this->procName = procName;
 	this->stmtList = stmtList;
@@ -27,23 +29,25 @@ vector<StatementNode> ProcedureNode::getStmtList() {
 	return this->stmtList;
 }
 
-ReadStatementNode::ReadStatementNode(VariableNode  VariableNode ) {
+// Statement
+ReadStatementNode::ReadStatementNode(VariableNode VariableNode ) {
 	this->var = VariableNode ;
 }
 
-PrintStatementNode::PrintStatementNode(VariableNode  VariableNode ) {
+PrintStatementNode::PrintStatementNode(VariableNode VariableNode ) {
 	this->var = VariableNode ;
 }
 
-CallStatementNode::CallStatementNode(VariableNode  VariableNode ) {
+CallStatementNode::CallStatementNode(VariableNode VariableNode ) {
 	this->var = VariableNode ;
 }
 
-AssignStatementNode::AssignStatementNode(VariableNode  VariableNode , ExpressionNode expression) {
+AssignStatementNode::AssignStatementNode(VariableNode VariableNode , ExpressionNode expression) {
 	var = VariableNode ;
 	expr = expression;
 }
 
+// Expression
 ExpressionNode::ExpressionNode(Token token)
 {
 	this->token = token;
@@ -53,6 +57,8 @@ ExpressionNode::ExpressionNode(Token token)
 
 ExpressionNode::ExpressionNode() {};
 
+
+// Constant
 ConstantNode ::ConstantNode (string s) {
 	this->value = s;
 }
@@ -65,6 +71,8 @@ bool ConstantNode ::isName() {
 	return false;
 }
 
+
+// Variable
 VariableNode ::VariableNode (string s) {
 	this->value = s;
 }
