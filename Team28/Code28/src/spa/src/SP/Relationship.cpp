@@ -1,4 +1,4 @@
-#include <Relationship.h>
+/*#include <Relationship.h>
 
 using namespace std;
 
@@ -22,5 +22,5 @@ RdStModifyRel::RdStModifyRel(string statement, string modified) {
 }
 AsgStModifyRel::AsgStModifyRel(string statement, string modified) {
 	this.modifier = statement;
-	this.modified = modified;
+	this.modified = modified;*/
 }

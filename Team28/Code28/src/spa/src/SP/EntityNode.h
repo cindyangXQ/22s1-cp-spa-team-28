@@ -31,15 +31,16 @@ public:
 };
 
 class StatementNode : public EntityNode {
+	int line;
 public:
 	StatementNode();
-	virtual bool isRead();
-	virtual bool isPrint();
-	virtual bool isCall();
-	virtual bool isAssign();
-	virtual string getVariable();
-	virtual void getVariablesInto(vector<string> result);
-	virtual void getConstantsInto(vector<string> result);
+	virtual bool isRead() {};
+	virtual bool isPrint() {};
+	virtual bool isCall() {};
+	virtual bool isAssign() {};
+	virtual string getVariable() {};
+	virtual void getVariablesInto(vector<string> result) {};
+	virtual void getConstantsInto(vector<string> result) {};
 	int getLineNumber();
 };
 
@@ -58,6 +59,7 @@ class ProgramNode : public EntityNode {
 
 public:
 	ProgramNode(vector<ProcedureNode> procList);
+	ProgramNode();
 	vector<ProcedureNode> getProcList();
 };
 

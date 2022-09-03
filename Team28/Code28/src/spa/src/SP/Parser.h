@@ -30,14 +30,14 @@ public:
 class ProcedureParser : public Parser {
 public:
 	ProcedureParser(int offset, vector<Token*> tokens);
-	ParseResult<ProcedureNode> parse();
+	ParseResult<ProcedureNode> parse(int* startLine);
 };
 
 class StatementParser : public Parser {
 public:
 	StatementParser();
 	StatementParser(int offset, vector<Token*> tokens);
-	ParseResult<StatementNode> parse();
+	ParseResult<StatementNode> parse(int line);
 };
 
 class ReadStmParser : public StatementParser {

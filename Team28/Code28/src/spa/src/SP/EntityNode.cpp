@@ -11,6 +11,10 @@ ProgramNode::ProgramNode(vector<ProcedureNode> procList) {
 	this->procList = procList;
 }
 
+ProgramNode::ProgramNode()
+{
+}
+
 vector<ProcedureNode> ProgramNode::getProcList() {
 	return this->procList;
 }
@@ -29,8 +33,8 @@ vector<StatementNode> ProcedureNode::getStmtList() {
 	return this->stmtList;
 }
 
-int Statement::getLineNumber() {
-	return 0;
+int StatementNode::getLineNumber() {
+	return line;
 }
 
 // Statement - findType
@@ -92,11 +96,11 @@ ReadStatementNode::ReadStatementNode(VariableNode VariableNode ) {
 }
 
 string ReadStatementNode::getVariable() {
-	return this.var.getValue();
+	return this->var.getValue();
 }
 
 void ReadStatementNode::getVariablesInto(vector<string> result) {
-	result.push_back(this.getVariable());
+	result.push_back(this->getVariable());
 }
 
 void ReadStatementNode::getConstantsInto(vector<string> result) {
@@ -114,7 +118,7 @@ string PrintStatementNode::getVariable() {
 }
 
 void PrintStatementNode::getVariablesInto(vector<string> result) {
-	result.push_back(this.getVariable());
+	result.push_back(this->getVariable());
 }
 
 void PrintStatementNode::getConstantsInto(vector<string> result) {
@@ -149,7 +153,7 @@ string AssignStatementNode::getVariable() {
 }
 
 void AssignStatementNode::getVariablesInto(vector<string> result) {
-	result.push_back(this.getVariable());
+	result.push_back(this->getVariable());
 	//this->expr.getVariablsInto(result); //implement ExpressionNode::getVariablesInto(vector<string> result);
 }
 
