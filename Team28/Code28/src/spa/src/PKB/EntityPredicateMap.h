@@ -2,11 +2,11 @@
 
 #include <map>
 
-#include "Entity.h"
-#include "Constant.h"
-#include "Variable.h"
-#include "Procedure.h"
-#include "NameDefinitions.h"
+#include "../commons/Entity.h"
+#include "../commons/Constant.h"
+#include "../commons/Variable.h"
+#include "../commons/Procedure.h"
+#include "../commons/NameDefinitions.h"
 #include "PredicateMap.h"
 
 /*

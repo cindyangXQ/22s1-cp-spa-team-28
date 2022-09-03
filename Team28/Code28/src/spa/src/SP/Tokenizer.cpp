@@ -25,14 +25,14 @@ enum class TokenType {
 };
 
 
-Token Tokenizer::createToken(TokenType type, string value) {
+Token* Tokenizer::createToken(TokenType type, string value) {
 	cout << static_cast<int>(type) << " " << value << endl;
 	switch (type) {
-	case TokenType::CONSTANT: return ConstantNode(value);
-	case TokenType::NAME: return VariableNode(value);
-	case TokenType::KEYWORD: return Keyword(value);
-	case TokenType::OPERATOR: return Operator(value);
-	default: return Symbol(value);
+	case TokenType::CONSTANT: return new ConstantNode(value);
+	case TokenType::NAME: return new VariableNode(value);
+	case TokenType::KEYWORD: return new Keyword(value);
+	case TokenType::OPERATOR: return new Operator(value);
+	default: return new Symbol(value);
 	}
 	//return Token(value);
 }
@@ -42,8 +42,8 @@ Tokenizer::Tokenizer(string sourceProg) {
 	this->input = sourceProg;
 }
 
-vector<Token> Tokenizer::tokenize() {
-	vector<Token> tokens;
+vector<Token*> Tokenizer::tokenize() {
+	vector<Token*> tokens;
 	TokenType currType = TokenType::WHITESPACE;
 
 	string current = ""; // store current Token value

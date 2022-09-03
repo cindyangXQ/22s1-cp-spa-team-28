@@ -6,24 +6,24 @@
 
 using namespace std;
 
-ExprParser::ExprParser(int offset, vector<Token> tokens) {
+ExprParser::ExprParser(int offset, vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
 }
 
-TermParser::TermParser(int offset, vector<Token> tokens) {
+TermParser::TermParser(int offset, vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
 }
 
-FactorParser::FactorParser(int offset, vector<Token> tokens) {
+FactorParser::FactorParser(int offset, vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
 }
 
 ParseResult<ExpressionNode> ExprParser::parse() {
 	int index = this->offset;
-	cout << tokens.at(1).isName() <<endl;
+	cout << "______________________" << endl;
 	TermParser parser = TermParser(index, tokens);
 	ParseResult result = parser.parse();
 	index = result.index;
@@ -31,11 +31,12 @@ ParseResult<ExpressionNode> ExprParser::parse() {
 	terms.push_back(result.entity);
 
 	index++;
-	Token next = tokens.at(index);
-	while (next.value == "+" || next.value == "-") {
+	Token* next = tokens.at(index);
+	while (next->value == "+" || next->value == "-") {
 		index++;
 
 		ExpressionNode expr = ExpressionNode(next);
+		cout << next->value << endl;
 		expr.left = &terms.back();
 
 		result = TermParser(index, tokens).parse();
@@ -48,9 +49,13 @@ ParseResult<ExpressionNode> ExprParser::parse() {
 		index++;
 		next = tokens.at(index);
 	}
-
-	if (next.value == ";") {
+	
+	if (next->value == ";") {
 		result.index = index + 1;
+		return result;
+	}
+	else if (next->value == ")") {
+		cout << result.index << endl;
 		return result;
 	}
 	else {
@@ -68,12 +73,13 @@ ParseResult<ExpressionNode> TermParser::parse() {
 	factors.push_back(result.entity);
 
 	index++;
-	Token next = tokens.at(index);
-	while (next.value == "*" || next.value == "/" || next.value == "%") {
+	Token* next = tokens.at(index);
+	while (next->value == "*" || next->value == "/" || next->value == "%") {
 		//continue process as term
 		index++;
 
 		ExpressionNode term = ExpressionNode(next);
+		cout << next->value << endl;
 		term.left = &factors.back();
 
 		result = FactorParser(index, tokens).parse();
@@ -87,7 +93,7 @@ ParseResult<ExpressionNode> TermParser::parse() {
 		next = tokens.at(index);
 	}
 
-	if (next.value == "+" || next.value == "-" || next.value == ";") {
+	if (next->value == "+" || next->value == "-" || next->value == ";"||next->value == ")") {
 		// term end, return to expression
 		return result;
 	}
@@ -98,12 +104,13 @@ ParseResult<ExpressionNode> TermParser::parse() {
 
 ParseResult<ExpressionNode> FactorParser::parse() {
 	int index = this->offset;
-	Token curr = tokens.at(offset);
-	if (typeid(curr) == typeid(ConstantNode) || typeid(curr) == typeid(VariableNode)) {
+	Token* curr = tokens.at(offset);
+	if (curr->isConstant() || curr->isName()) {
+		cout << curr->value << endl << endl;
 		ParseResult<ExpressionNode> result = { ExpressionNode(curr), offset };
 		return result;
 	}
-	else if (curr.value == "(") {
+	else if (curr->value == "(") {
 		index++;
 		ExprParser parser = ExprParser(index, tokens);
 		ParseResult<ExpressionNode> factor = parser.parse();

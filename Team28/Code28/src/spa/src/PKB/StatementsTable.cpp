@@ -1,5 +1,5 @@
+#include "../commons/Statement.h"
 #include "StatementsTable.h"
-#include "Statement.h"
 #include "StatementPredicateMap.h"
 
 #include <algorithm>
@@ -12,7 +12,7 @@ int StatementsTable::getTableSize() const {
 
 void StatementsTable::store(Statement* statement) {
 	StatementType type = statement->getStatementType();
-	int index = statement->getIndex();
+	int index = statement->getLineNumber();
 
 	if (type == StatementType::NONE) {
 		//TODO error handling
@@ -26,7 +26,7 @@ void StatementsTable::store(Statement* statement) {
 Statement *StatementsTable::retrieve(const int& lineNum) {
 	// currently assumes that lineNum is unique
 	for(Statement* statement : this->statements) {
-		if (statement->getIndex() == lineNum) {
+		if (statement->getLineNumber() == lineNum) {
 			return statement;
 		}
 	}
@@ -37,7 +37,7 @@ Statement *StatementsTable::retrieve(const int& lineNum) {
 StatementType StatementsTable::getStatementType(const int& lineNum) {
 	// currently assumes that lineNum is unique
 	for(Statement* statement : this->statements) {
-		if (statement->getIndex() == lineNum) {
+		if (statement->getLineNumber() == lineNum) {
 			return statement->getStatementType();
 		}
 	}
@@ -67,4 +67,12 @@ StatementsTable *StatementsTable::filter(StatementPredicateMap *predicateMap) {
 	}
 
 	return newTable;
+}
+
+std::vector<Statement*> StatementsTable::getAll() {
+	return this->statements;
+}
+
+std::vector<int> StatementsTable::getStatementsByType(StatementType type) {
+	return this->statementTypeIndexes[type];
 }
