@@ -28,6 +28,7 @@ ExpressionNode* ExprParser::parse() {
 	offset = parser.getOffset();
 	vector<ExpressionNode*> terms;
 	terms.push_back(result);
+	ExpressionNode* root = result;
 
 	Token* next = tokens.at(offset);
 	while (next->value == "+" || next->value == "-") {
@@ -36,6 +37,7 @@ ExpressionNode* ExprParser::parse() {
 		ExpressionNode* expr = new ExpressionNode(next);
 		cout << next->value << endl;
 		expr->left = terms.back();
+		root = expr;
 
 		parser = TermParser(offset, tokens);
 		result = parser.parse();
@@ -50,11 +52,11 @@ ExpressionNode* ExprParser::parse() {
 	
 	if (next->value == ";") {
 		offset ++;
-		return result;
+		return root;
 	}
 	else if (next->value == ")") {
 		//cout << result.index << endl;
-		return result;
+		return root;
 	}
 	else {
 		//throw error
@@ -68,6 +70,7 @@ ExpressionNode* TermParser::parse() {
 	vector<ExpressionNode*> factors;
 	offset = parser.getOffset();
 	factors.push_back(result);
+	ExpressionNode* root = result;
 
 	offset++;
 	Token* next = tokens.at(offset);
@@ -78,6 +81,7 @@ ExpressionNode* TermParser::parse() {
 		ExpressionNode* term = new ExpressionNode(next);
 		cout << next->value << endl;
 		term->left = factors.back();
+		root = term;
 
 		parser = FactorParser(offset, tokens);
 		result = parser.parse();

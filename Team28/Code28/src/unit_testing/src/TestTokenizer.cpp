@@ -22,14 +22,13 @@ TEST_CASE() {
 	ProgramNode* program = parser.parse();
 	cout << program->getProcList().size() << endl;
 	//ProcedureNode* procedure = program->getProcList().at(0);
-	vector<Statement> statements = StatementExtractor(program).extractor();
+	vector<Procedure> procs = ProcedureExtractor(program).extractor();
 	//cout << vars.size() << endl;
 	//for (size_t i = 0; i < vars.size(); i++) {
 	//	cout << vars.at(i).getName() << endl;
 	//}
-	for (size_t i = 0; i < statements.size(); i++) {
-		cout << statements.at(i).getLineNumber();
-		cout << static_cast<int>(statements.at(i).getStatementType()) << endl;
+	for (size_t i = 0; i < procs.size(); i++) {
+		cout << procs.at(i).getName();
 	}
 
 	//will implement unit test later
