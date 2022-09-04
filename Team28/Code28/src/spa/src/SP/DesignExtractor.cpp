@@ -37,7 +37,7 @@ vector<Procedure*> ProcedureExtractor::extract() {
 
 	vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		result.push_back(&Procedure(procList.at(i)->getName()));
+		result.push_back(new Procedure(procList.at(i)->getName()));
 	}
 
 	return result;
@@ -70,8 +70,8 @@ vector<Statement*> StatementExtractor::extract() {
 			}
 			//cout << stmtList.at(i).getLineNumber() << endl;
 			//cout << static_cast<int>(type) << endl;
-			Statement statement = Statement(stmtList.at(j)->getLineNumber(), type);
-			result.push_back(&statement);
+			Statement* statement = new Statement(stmtList.at(j)->getLineNumber(), type);
+			result.push_back(statement);
 		}
 	}
 
@@ -95,7 +95,7 @@ vector<Variable*> VariableExtractor::extract() {
 	preresult.erase(unique(preresult.begin(), preresult.end()), preresult.end());
 
 	for (size_t i = 0; i < preresult.size(); i++) {
-		result.push_back(&Variable(preresult[i]));
+		result.push_back(new Variable(preresult[i]));
 	}
 
 	return result;
@@ -116,7 +116,7 @@ vector<Constant*> ConstantExtractor::extract() {
 		}
 	}
 	for (size_t i = 0; i < preresult.size(); i++) {
-		result.push_back(&Constant(preresult[i]));
+		result.push_back(new Constant(preresult[i]));
 	}
 
 	return result;
