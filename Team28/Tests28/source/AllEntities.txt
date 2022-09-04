@@ -1,0 +1,29 @@
+procedure foo {
+	x1 = 1 / 1;
+	x2 = (2 * 1 + 2) / 2;
+    x3 = 3 +2;
+    x4 = x3;
+    x5 = x1+x2;
+    x6 = x1+ x3;
+
+    while (x6 < x7) {
+        if (x8 == x9) then {
+            x10 = 1-4;
+        } else {
+            if (x2>x9) then {
+                x11 = 5;
+                call bar;
+            } else {
+                x12 = 6;
+                print x12; }
+        }
+    }
+}
+
+procedure bar {
+	call foobar;
+}
+
+procedure foobar {
+	while (7 != 8) {
+		x13 = x13; } }
