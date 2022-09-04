@@ -5,9 +5,9 @@
 
 using namespace std;
 
-DesignExtractor::DesignExtractor(ProgramNode* program) {
+DesignExtractor::DesignExtractor(ProgramNode* program, PopulateFacade* storage) {
 	this->program = program;
-	this->storage = &PopulateFacade(Storage());
+	this->storage = storage;
 }
 
 DesignExtractor::DesignExtractor() {}
