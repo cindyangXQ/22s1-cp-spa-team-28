@@ -96,7 +96,7 @@ vector<Variable*> VariableExtractor::extract(PopulateFacade storage) {
 	preresult.erase(unique(preresult.begin(), preresult.end()), preresult.end());
 
 	for (size_t i = 0; i < preresult.size(); i++) {
-		result.push_back(&Variable(preresult[i]));
+		result.push_back(new Variable(preresult[i]));
 	}
 
 	storage.storeVariables(&result);

@@ -26,9 +26,9 @@ TEST_CASE() {
 	PopulateFacade facade = PopulateFacade(storage);
 	vector<Variable*> vars = VariableExtractor(program).extract(facade);
 
-	/*
+	
 	std::cout << "__________________________" << endl;
 	for (size_t i = 0; i < vars.size(); i++) {
 		std::cout << vars.at(i)->getName();
-	}*/
+	}
 }
