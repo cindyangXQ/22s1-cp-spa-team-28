@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Reference/Synonym.h"
-#include "../Reference/Reference.h"
+#include "../../commons/Reference.h"
 
 typedef std::string Expression;
 /*

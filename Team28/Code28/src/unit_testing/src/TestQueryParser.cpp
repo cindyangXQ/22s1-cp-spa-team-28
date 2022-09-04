@@ -1,11 +1,12 @@
-#include "QPS/QueryParser.h"
-#include "QPS/SolvableQuery.h"
+#include "QPS/Parser/QueryParser.h"
+#include "QPS/Parser/SolvableQuery.h"
 
 #include "catch.hpp"
 
 TEST_CASE("QueryParser is parsing correctly") {
     SolvableQuery solvableQ = QueryParser::parse("Assign a; Constant c; Variable v; Select v such that Modifies(1, v) pattern a(v, _)");
-    solvableQ.evaluate();
+
+    REQUIRE(solvableQ.selectType.entity == DesignEntity::VARIABLE);
 }
 
 TEST_CASE("Parser can parse such that clause") {
@@ -22,7 +23,7 @@ TEST_CASE("Parser can parse such that clause") {
 	*/
 	std::string extra_bracket = "such that Modifies((1, v) pattern a(_, x)";
 	REQUIRE_THROWS(QueryParser::parseSuchThatClause(extra_bracket, syns));
-	
+
 	std::string undeclared_syn = "such that Modifies(1, p) pattern a(_, x)";
 	REQUIRE_THROWS(QueryParser::parseSuchThatClause(undeclared_syn, syns));
 }

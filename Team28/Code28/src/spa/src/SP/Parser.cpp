@@ -6,6 +6,10 @@
 
 using namespace std;
 
+int Parser::getOffset() {
+	return offset;
+}
+
 Parser::Parser(int offset, vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
@@ -19,75 +23,82 @@ ProgramParser::ProgramParser(int offset, vector<Token*> tokens) {
 	this->tokens = tokens;
 }
 
-ProcedureParser::ProcedureParser(int offset, vector<Token*> tokens) {
+ProcedureParser::ProcedureParser(int offset, vector<Token*> tokens, int startline) {
 	this->offset = offset;
 	this->tokens = tokens;
+	this->startline = startline;
 }
 
-StatementParser::StatementParser(int offset, vector<Token*> tokens) {
+StatementParser::StatementParser(int offset, vector<Token*> tokens, int line) {
 	this->offset = offset;
 	this->tokens = tokens;
+	this->line = line;
 }
 
-ReadStmParser::ReadStmParser(int offset, vector<Token*> tokens) {
+ReadStmParser::ReadStmParser(int offset, vector<Token*> tokens, int line) {
 	this->offset = offset;
 	this->tokens = tokens;
+	this->line = line;
 }
 
-PrintStmParser::PrintStmParser(int offset, vector<Token*> tokens) {
+PrintStmParser::PrintStmParser(int offset, vector<Token*> tokens, int line) {
 	this->offset = offset;
 	this->tokens = tokens;
+	this->line = line;
 }
 
-CallStmParser::CallStmParser(int offset, vector<Token*> tokens) {
+CallStmParser::CallStmParser(int offset, vector<Token*> tokens, int line) {
 	this->offset = offset;
 	this->tokens = tokens;
+	this->line = line;
 }
 
-AssignStmParser::AssignStmParser(int offset, vector<Token*> tokens) {
+AssignStmParser::AssignStmParser(int offset, vector<Token*> tokens, int line) {
 	this->offset = offset;
 	this->tokens = tokens;
+	this->line = line;
 }
 
 
-ParseResult<ProgramNode> ProgramParser::parse() {
-	int index = this->offset;
+ProgramNode* ProgramParser::parse() {
 	vector<Token*> tokenList = this->tokens;
-	int* line;
-	*line = 0;
 
-	vector<ProcedureNode> procList;
+	vector<ProcedureNode*> procList;
+	int line = 1;
 
-	while (index < tokenList.size()) {
-		ParseResult<ProcedureNode> temp = ProcedureParser(index, tokenList).parse(line);
-		procList.push_back(temp.entity);
-		index = temp.index;
+	while (offset < tokenList.size()) {
+		ProcedureParser parser = ProcedureParser(offset, tokenList, line);
+		ProcedureNode* temp = parser.parse();
+		procList.push_back(temp);
+		line = temp->getEndline() + 1;
+		offset = parser.getOffset();
 	}
-
-	ParseResult<ProgramNode> result = { ProgramNode(procList), index };
+	ProgramNode* result = new ProgramNode(procList);
 	return result;
 }
 
-ParseResult<ProcedureNode> ProcedureParser::parse(int* startLine) {
-	int index = this->offset;
+ProcedureNode* ProcedureParser::parse() {
+	int line = this->startline;
 	vector<Token*> tokenList = this->tokens;
 
-	vector<StatementNode> stmtList;
+	vector<StatementNode*> stmtList;
 
-	Token* firstToken = tokenList.at(index++);
-	Token* secondToken = tokenList.at(index++);
-	Token* thirdToken = tokenList.at(index++);
+	Token* firstToken = tokenList.at(offset++);
+	Token* secondToken = tokenList.at(offset++);
+	Token* thirdToken = tokenList.at(offset++);
 
 	if (firstToken->isKeyword() 
 			&& firstToken->equals("procedure")
 			&& secondToken->isName() 
 			&& thirdToken->equals("{")) {
-		while (!tokenList.at(index)->equals("}")) {
-			ParseResult<StatementNode> temp = StatementParser(index, tokenList).parse(*startLine);
-			*startLine = *startLine + 1;
-			stmtList.push_back(temp.entity);
-			index = temp.index;
-			if (index >= tokenList.size()) {
+		while (!tokenList.at(offset)->equals("}")) {
+			cout << line << endl;
+			StatementParser parser = StatementParser(offset, tokenList, line);
+			StatementNode* temp = parser.parse();
+			line++;
+			stmtList.push_back(temp);
+			offset = parser.getOffset();
+			if (offset >= tokenList.size()) {
 				throw "procedure wrong syntax";
 			}
 		}
@@ -95,54 +106,54 @@ ParseResult<ProcedureNode> ProcedureParser::parse(int* startLine) {
 	else {
 		throw "procedure wrong syntax";
 	}
-
-	ParseResult<ProcedureNode> result = { ProcedureNode(secondToken->getValue(), stmtList), index + 1 };
+	offset++;
+	ProcedureNode* result = new ProcedureNode(secondToken->getValue(), stmtList);
 	return result;
 }
 
-ParseResult<StatementNode> StatementParser::parse(int line) {
-	int index = this->offset;
+StatementNode* StatementParser::parse() {
 	vector<Token*> tokenList = this->tokens;
+	cout << tokenList.at(offset)->value << endl;
+	StatementNode* result;
 
-	ParseResult<StatementNode> result;
-
-	Token* firstToken = tokenList.at(index);
+	Token* firstToken = tokenList.at(offset);
 	if (firstToken->equals("read")) {
-		ParseResult<ReadStatementNode> temp = ReadStmParser(index, tokenList).parse();
-		result.index = temp.index;
-		result.entity = temp.entity;
+		ReadStmParser parser = ReadStmParser(offset, tokenList, line);
+		result = parser.parse();
+		offset = parser.getOffset();
 	}
 	else if (firstToken->equals("print")) {
-		ParseResult<PrintStatementNode> temp = PrintStmParser(index, tokenList).parse();
-		result.index = temp.index;
-		result.entity = temp.entity;
+		PrintStmParser parser = PrintStmParser(offset, tokenList, line);
+		result = parser.parse();
+		offset = parser.getOffset();
 	}
 	else if (firstToken->equals("call")) {
-		ParseResult<CallStatementNode> temp = CallStmParser(index, tokenList).parse();
-		result.index = temp.index;
-		result.entity = temp.entity;
+		CallStmParser parser = CallStmParser(offset, tokenList, line);
+		result = parser.parse();
+		offset = parser.getOffset();
 	}
 	else {
-		ParseResult<AssignStatementNode> temp = AssignStmParser(index, tokenList).parse();
-		result.index = temp.index;
-		result.entity = temp.entity;
+		AssignStmParser parser = AssignStmParser(offset, tokenList, line);
+		result = parser.parse();
+		offset = parser.getOffset();
 	} //TODO: Need to change later
+
+
 	return result;
 }
 
-ParseResult<ReadStatementNode> ReadStmParser::parse() {
-	int index = this->offset;
+ReadStatementNode* ReadStmParser::parse() {
 	vector<Token*> tokenList = this->tokens;
 
-	Token* firstToken = tokenList.at(index++);
-	Token* secondToken = tokenList.at(index++);
-	Token* thirdToken = tokenList.at(index++);
+	Token* firstToken = tokenList.at(offset++);
+	Token* secondToken = tokenList.at(offset++);
+	Token* thirdToken = tokenList.at(offset++);
 
 	if (firstToken->isKeyword()
 			&& firstToken->equals("read")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		ParseResult<ReadStatementNode> result = { ReadStatementNode(VariableNode (secondToken->value)), index };
+		ReadStatementNode* result = new ReadStatementNode(VariableNode (secondToken->value), line);
 		return result;
 	}
 	else {
@@ -150,19 +161,18 @@ ParseResult<ReadStatementNode> ReadStmParser::parse() {
 	}
 }
 
-ParseResult<PrintStatementNode> PrintStmParser::parse() {
-	int index = this->offset;
+PrintStatementNode* PrintStmParser::parse() {
 	vector<Token*> tokenList = this->tokens;
 
-	Token* firstToken = tokenList.at(index++);
-	Token* secondToken = tokenList.at(index++);
-	Token* thirdToken = tokenList.at(index++);
+	Token* firstToken = tokenList.at(offset++);
+	Token* secondToken = tokenList.at(offset++);
+	Token* thirdToken = tokenList.at(offset++);
 
 	if (firstToken->isKeyword()
 			&& firstToken->equals("print")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		ParseResult<PrintStatementNode> result = { PrintStatementNode(VariableNode (secondToken->value)), index };
+		PrintStatementNode* result = new PrintStatementNode(VariableNode (secondToken->value), line);
 		return result;
 	}
 	else {
@@ -170,19 +180,18 @@ ParseResult<PrintStatementNode> PrintStmParser::parse() {
 	}
 }
 
-ParseResult<CallStatementNode> CallStmParser::parse() {
-	int index = this->offset;
+CallStatementNode* CallStmParser::parse() {
 	vector<Token*> tokenList = this->tokens;
 
-	Token* firstToken = tokenList.at(index++);
-	Token* secondToken = tokenList.at(index++);
-	Token* thirdToken = tokenList.at(index++);
+	Token* firstToken = tokenList.at(offset++);
+	Token* secondToken = tokenList.at(offset++);
+	Token* thirdToken = tokenList.at(offset++);
 
 	if (firstToken->isKeyword()
 			&& firstToken->equals("call")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		ParseResult<CallStatementNode> result = { CallStatementNode(VariableNode (secondToken->value)), index };
+		CallStatementNode* result = new CallStatementNode(VariableNode (secondToken->value), line);
 		return result;
 	}
 	else {
@@ -190,19 +199,18 @@ ParseResult<CallStatementNode> CallStmParser::parse() {
 	}
 }
 
-ParseResult<AssignStatementNode> AssignStmParser::parse() {
-	int index = this->offset;
+AssignStatementNode* AssignStmParser::parse() {
 	vector<Token*> tokenList = this->tokens;
 
-	Token* firstToken = tokenList.at(index++);
-	Token* secondToken = tokenList.at(index++);
+	Token* firstToken = tokenList.at(offset++);
+	Token* secondToken = tokenList.at(offset++);
 
 	if (firstToken->isName() && secondToken->equals("=")) {
-		ParseResult<ExpressionNode> temp = ExprParser(index, tokenList).parse();
-		ExpressionNode expr = temp.entity;
-		index = temp.index;
+		ExprParser parser = ExprParser(offset, tokenList);
+		ExpressionNode* expr = parser.parse();
+		offset = parser.getOffset();
 
-		ParseResult<AssignStatementNode> result = { AssignStatementNode(VariableNode (firstToken->value), expr), index };
+		AssignStatementNode* result = new AssignStatementNode(VariableNode (firstToken->value), expr, line);
 		return result;
 	}
 	else {

@@ -33,36 +33,37 @@ public:
 };
 
 class StatementNode : public EntityNode {
+protected:
 	int line;
 public:
 	StatementNode();
-	virtual bool isRead() {};
-	virtual bool isPrint() {};
-	virtual bool isCall() {};
-	virtual bool isAssign() {};
-	virtual string getVariable() {};
-	virtual vector<Variable*> getVariables() {};
-	virtual vector<Constant*> getConstants() {};
+	virtual bool isRead() { return false;  }
+	virtual bool isPrint() { return false;  }
+	virtual bool isCall() { return false;  }
+	virtual bool isAssign() { return false;  }
+	virtual void getVariablesInto(vector<string>& result) {};
+	virtual void getConstantsInto(vector<string>& result) {};
 	int getLineNumber();
 };
 
 class ProcedureNode : public EntityNode {
 	string procName;
-	vector<StatementNode> stmtList;
+	vector<StatementNode*> stmtList;
 
 public:
-	ProcedureNode(string procName, vector<StatementNode> stmtList);
+	ProcedureNode(string procName, vector<StatementNode*> stmtList);
 	string getName();
-	vector<StatementNode> getStmtList();
+	vector<StatementNode*> getStmtList();
+	int getEndline();
 };
 
 class ProgramNode : public EntityNode {
-	vector<ProcedureNode> procList;
+	vector<ProcedureNode*> procList;
 
 public:
-	ProgramNode(vector<ProcedureNode> procList);
+	ProgramNode(vector<ProcedureNode*> procList);
 	ProgramNode();
-	vector<ProcedureNode> getProcList();
+	vector<ProcedureNode*> getProcList();
 };
 
 
@@ -70,42 +71,42 @@ class ReadStatementNode : public StatementNode {
 	VariableNode var;
 
 public:
-	ReadStatementNode(VariableNode variable);
+	ReadStatementNode(VariableNode variable, int line);
 	bool isRead();
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	vector<Variable*> getVariables();
-	vector<Constant*> getConstants();
+	void getVariablesInto(vector<string>& result);
+	void getConstantsInto(vector<string>& result);
 };
 
 class PrintStatementNode : public StatementNode {
 	VariableNode var;
 
 public:
-	PrintStatementNode(VariableNode variable);
+	PrintStatementNode(VariableNode variable, int line);
 	bool isRead();
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	vector<Variable*> getVariables();
-	vector<Constant*> getConstants();
+	void getVariablesInto(vector<string>& result);
+	void getConstantsInto(vector<string>& result);
 };
 
 class CallStatementNode : public StatementNode {
 	VariableNode var;
 
 public:
-	CallStatementNode(VariableNode variable);
+	CallStatementNode(VariableNode variable, int line);
 	bool isRead();
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	vector<Variable*> getVariables();
-	vector<Constant*> getConstants();
+	void getVariablesInto(vector<string>& result);
+	void getConstantsInto(vector<string>& result);
 };
 
 
@@ -116,21 +117,21 @@ public:
 	ExpressionNode* right;
 	ExpressionNode(Token* token);
 	ExpressionNode();
-	vector<Variable*> getVariables();
-	vector<Constant*> getConstants();
+	void getVariablesInto(vector<string>& result);
+	void getConstantsInto(vector<string>& result);
 };
 
 class AssignStatementNode : public StatementNode {
 	VariableNode var;
-	ExpressionNode expr;
+	ExpressionNode* expr;
 
 public:
-	AssignStatementNode(VariableNode variable, ExpressionNode expression);
+	AssignStatementNode(VariableNode variable, ExpressionNode* expression, int line);
 	bool isRead();
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
 	string getVariable();
-	vector<Variable*> getVariables();
-	vector<Constant*> getConstants();
+	void getVariablesInto(vector<string>& result);
+	void getConstantsInto(vector<string>& result);
 };

@@ -11,33 +11,32 @@ using namespace std;
 
 class DesignExtractor {
 protected:
-	ProgramNode program;
+	ProgramNode* program;
 public:
-	DesignExtractor(ProgramNode program);
+	DesignExtractor(ProgramNode* program);
 	DesignExtractor();
 };
 
 class ProcedureExtractor :public DesignExtractor {
 public:
-	ProcedureExtractor(ProgramNode program);
-	void extract(PopulateFacade storage);
+	ProcedureExtractor(ProgramNode* program);
+	vector<Procedure*> extract(PopulateFacade storage);
 };
 
 class StatementExtractor :public DesignExtractor {
 public:
-	StatementExtractor(ProgramNode program);
-	void extract(PopulateFacade storage);
+	StatementExtractor(ProgramNode* program);
+	vector<Statement*> extract(PopulateFacade storage);
 };
 
 class VariableExtractor : public DesignExtractor {
 public:
-	VariableExtractor(ProgramNode program);
-	void extract(PopulateFacade storage);
+	VariableExtractor(ProgramNode* program);
+	vector<Variable*> extract(PopulateFacade storage);
 };
 
 class ConstantExtractor :public DesignExtractor {
 public:
-	ConstantExtractor(ProgramNode program);
-	void extract(PopulateFacade storage);
+	ConstantExtractor(ProgramNode* program);
+	vector<Constant*> extract(PopulateFacade storage);
 };
-
