@@ -15,7 +15,7 @@ TEST_CASE("QPS can process simple queries to select statements") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Statement s; Select s;";
+	std::string input = "Statement s; Select s";
 	std::string output = qps.processQuery(input);
 	REQUIRE(output == "1, 2");
 }
@@ -32,7 +32,7 @@ TEST_CASE("QPS can process simple queries to select variables") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Variable v; Select v;";
+	std::string input = "Variable v; Select v";
 	std::string output = qps.processQuery(input);
 	REQUIRE(output == "test1, test2");
 }
@@ -49,7 +49,7 @@ TEST_CASE("QPS can process simple queries to select constants") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Constant c; Select c;";
+	std::string input = "Constant c; Select c";
 	std::string output = qps.processQuery(input);
 	REQUIRE(output == "test1, test2");
 }
@@ -66,19 +66,53 @@ TEST_CASE("QPS can process simple queries to select procedures") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Procedure p; Select p;";
+	std::string input = "Procedure p; Select p";
 	std::string output = qps.processQuery(input);
 	REQUIRE(output == "test1, test2");
 }
 
-TEST_CASE("QPS can process simple queries to select procedures when got no procedures") {
+TEST_CASE("QPS can process simple queries to select procedures when there are no procedures") {
 	Storage storage;
 	QueryFacade facade = QueryFacade(&storage);
 	ProceduresTable* procedures = (ProceduresTable*)storage.getTable(TableName::PROCEDURES);
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Procedure p; Select p;";
+	std::string input = "Procedure p; Select p";
 	std::string output = qps.processQuery(input);
 	REQUIRE(output == "None");
+}
+
+TEST_CASE("QPS can process simple queries with syntax error") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	VariablesTable* variables = (VariablesTable*)storage.getTable(TableName::VARIABLES);
+	Variable test1 = Variable("test1");
+	Variable test2 = Variable("test2");
+
+	variables->store(&test1);
+	variables->store(&test2);
+
+	QPS qps = QPS(&facade);
+
+	std::string extra_bracket = "Variable v; Select v such that Modifies((1, v)";
+	REQUIRE_THROWS(qps.processQuery(extra_bracket));
+
+}
+
+TEST_CASE("QPS can process simple queries with semantic error") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	VariablesTable* variables = (VariablesTable*)storage.getTable(TableName::VARIABLES);
+	Variable test1 = Variable("test1");
+	Variable test2 = Variable("test2");
+
+	variables->store(&test1);
+	variables->store(&test2);
+
+	QPS qps = QPS(&facade);
+
+	std::string undeclared_synonym = "Variable v; Select v such that Modifies(1, yey)";
+	REQUIRE_THROWS(qps.processQuery(undeclared_synonym));
+
 }
