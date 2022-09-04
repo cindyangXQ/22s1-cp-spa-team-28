@@ -11,6 +11,6 @@ class PatternEvaluator {
 private:
     QueryFacade *queryFacade;
 public:
-    explicit PatternEvaluator(QueryFacade *queryFacade);
+    explicit PatternEvaluator(QueryFacade *queryFacade) : queryFacade(queryFacade) {};
     ClauseResult evaluate(PatternClause *patternCl);
 };

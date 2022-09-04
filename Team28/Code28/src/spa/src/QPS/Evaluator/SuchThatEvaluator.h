@@ -11,6 +11,6 @@ class SuchThatEvaluator {
 private:
     QueryFacade *queryFacade;
 public:
-    explicit SuchThatEvaluator(QueryFacade *queryFacade);
+    explicit SuchThatEvaluator(QueryFacade *queryFacade) : queryFacade(queryFacade) {};
     ClauseResult evaluate(SuchThatClause *suchThatCl);
 };

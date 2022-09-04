@@ -11,7 +11,7 @@
 
 TEST_CASE("Query evaluator can evaluate query with only select statement clause") {
     Storage storage;
-    QueryFacade facade = QueryFacade(storage);
+    QueryFacade facade = QueryFacade(&storage);
     StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
@@ -21,16 +21,16 @@ TEST_CASE("Query evaluator can evaluate query with only select statement clause"
 
     SolvableQuery solvableQ = QueryParser::parse("Statement s; Select s;");
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
-
     QueryResult queryResult = queryEvaluator.evaluate(&solvableQ);
     std::vector<std::string> result = queryEvaluator.interpretQueryResult(&queryResult);
 
     REQUIRE(result.size() == 2);
 }
 
+
 TEST_CASE("Query evaluator can evaluate query with only select variable clause") {
     Storage storage;
-    QueryFacade facade = QueryFacade(storage);
+    QueryFacade facade = QueryFacade(&storage);
     VariablesTable* variables = (VariablesTable*)storage.getTable(TableName::VARIABLES);
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");

@@ -8,5 +8,6 @@ public:
     SelectType selectType;
     std::vector<ClauseResult> clauseResultList;
     QueryResult();
-    explicit QueryResult(SelectType selectType, std::vector<ClauseResult> clauseResultList);
+    explicit QueryResult(SelectType selectType, std::vector<ClauseResult> clauseResultList) :
+        selectType(selectType), clauseResultList(clauseResultList) {};
 };
