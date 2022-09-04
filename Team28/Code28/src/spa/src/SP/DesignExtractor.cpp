@@ -35,7 +35,7 @@ vector<Procedure*> ProcedureExtractor::extract(PopulateFacade storage) {
 
 	vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		result.push_back(&Procedure(procList.at(i)->getName()));
+		result.push_back(new Procedure(procList.at(i)->getName()));
 	}
 
 	storage.storeProcedures(&result);
@@ -69,8 +69,8 @@ vector<Statement*> StatementExtractor::extract(PopulateFacade storage) {
 			}
 			//cout << stmtList.at(i).getLineNumber() << endl;
 			//cout << static_cast<int>(type) << endl;
-			Statement statement = Statement(stmtList.at(j)->getLineNumber(), type);
-			result.push_back(&statement); //implement string Statement::getName(); ie. getLineNumber()
+			Statement* statement = new Statement(stmtList.at(j)->getLineNumber(), type);
+			result.push_back(statement); //implement string Statement::getName(); ie. getLineNumber()
 		}
 	}
 
@@ -123,7 +123,7 @@ vector<Constant*> ConstantExtractor::extract(PopulateFacade storage) {
 		}
 	}
 	for (size_t i = 0; i < preresult.size(); i++) {
-		result.push_back(&Constant(preresult[i]));
+		result.push_back(new Constant(preresult[i]));
 	}
 	storage.storeConstants(&result);
 	return result;
