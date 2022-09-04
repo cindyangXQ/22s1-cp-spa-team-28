@@ -9,6 +9,7 @@ public:
 	Token();
 	Token(string s);
 	bool equals(string other);
+	string getValue();
 	virtual bool isName() = 0;
 	virtual bool isKeyword() = 0;
 	virtual bool isConstant() = 0;
