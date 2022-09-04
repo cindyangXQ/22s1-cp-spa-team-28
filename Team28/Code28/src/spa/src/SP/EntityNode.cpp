@@ -185,13 +185,9 @@ void ExpressionNode::getVariablesInto(vector<string>& result) {
 	}
 	else if (this->token->isConstant()) {}
 	else {
-		vector<Variable*> inLeft = this->left->getVariables();
-		vector<Variable*> inRight = this->right->getVariables();
-		result.insert(result.end(), inLeft.begin(), inLeft.end());
-		result.insert(result.end(), inRight.begin(), inRight.end());
+		this->left->getVariablesInto(result);
+		this->right->getVariablesInto(result);
 	}
-
-	return result;
 }
 
 void ExpressionNode::getConstantsInto(vector<string>& result) {
@@ -200,13 +196,9 @@ void ExpressionNode::getConstantsInto(vector<string>& result) {
 	}
 	else if (this->token->isName()) {}
 	else {
-		vector<Constant*> inLeft = this->left->getConstants();
-		vector<Constant*> inRight = this->right->getConstants();
-		result.insert(result.end(), inLeft.begin(), inLeft.end());
-		result.insert(result.end(), inRight.begin(), inRight.end());
+		this->left->getConstantsInto(result);
+		this->right->getConstantsInto(result);
 	}
-	
-	return result;
 }
 
 

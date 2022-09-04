@@ -7,31 +7,32 @@ using namespace std;
 
 DesignExtractor::DesignExtractor(ProgramNode* program) {
 	this->program = program;
+	this->storage = &PopulateFacade(Storage());
 }
 
 DesignExtractor::DesignExtractor() {}
 
-ProcedureExtractor::ProcedureExtractor(ProgramNode program)
-{
+ProcedureExtractor::ProcedureExtractor(ProgramNode* program, PopulateFacade* storage) {
 	this->program = program;
+	this->storage = storage;
 }
 
-StatementExtractor::StatementExtractor(ProgramNode* program)
-{
+StatementExtractor::StatementExtractor(ProgramNode* program, PopulateFacade* storage) {
 	this->program = program;
+	this->storage = storage;
 }
 
-VariableExtractor::VariableExtractor(ProgramNode* program)
-{
+VariableExtractor::VariableExtractor(ProgramNode* program, PopulateFacade* storage) {
 	this->program = program;
+	this->storage = storage;
 }
 
-ConstantExtractor::ConstantExtractor(ProgramNode program)
-{
+ConstantExtractor::ConstantExtractor(ProgramNode* program, PopulateFacade* storage) {
 	this->program = program;
+	this->storage = storage;
 }
 
-vector<Procedure*> ProcedureExtractor::extract(PopulateFacade storage) {
+vector<Procedure*> ProcedureExtractor::extract() {
 	vector<Procedure*> result;
 
 	vector<ProcedureNode*> procList = this->program->getProcList();
@@ -39,11 +40,10 @@ vector<Procedure*> ProcedureExtractor::extract(PopulateFacade storage) {
 		result.push_back(&Procedure(procList.at(i)->getName()));
 	}
 
-	storage.storeProcedures(&result);
 	return result;
 }
 
-vector<Statement*> StatementExtractor::extract(PopulateFacade storage) {
+vector<Statement*> StatementExtractor::extract() {
 	vector<Statement*> result;
 
 	vector<ProcedureNode*> procList = this->program->getProcList();
@@ -71,16 +71,14 @@ vector<Statement*> StatementExtractor::extract(PopulateFacade storage) {
 			//cout << stmtList.at(i).getLineNumber() << endl;
 			//cout << static_cast<int>(type) << endl;
 			Statement statement = Statement(stmtList.at(j)->getLineNumber(), type);
-			result.push_back(&statement); //implement string Statement::getName(); ie. getLineNumber()
+			result.push_back(&statement);
 		}
 	}
 
-	storage.storeStatements(&result);
 	return result;
 }
 
-
-vector<Variable*> VariableExtractor::extract(PopulateFacade storage) {
+vector<Variable*> VariableExtractor::extract() {
 	vector<string> preresult;
 	vector<Variable*> result;
 
@@ -100,16 +98,10 @@ vector<Variable*> VariableExtractor::extract(PopulateFacade storage) {
 		result.push_back(&Variable(preresult[i]));
 	}
 
-	storage.storeVariables(&result);
 	return result;
 }
 
-ConstantExtractor::ConstantExtractor(ProgramNode* program)
-{
-	this->program = program;
-}
-
-vector<Constant*> ConstantExtractor::extract(PopulateFacade storage) {
+vector<Constant*> ConstantExtractor::extract() {
 	vector<string> preresult;
 	vector<Constant*> result;
 
@@ -126,6 +118,30 @@ vector<Constant*> ConstantExtractor::extract(PopulateFacade storage) {
 	for (size_t i = 0; i < preresult.size(); i++) {
 		result.push_back(&Constant(preresult[i]));
 	}
-	storage.storeConstants(&result);
+
 	return result;
+}
+
+
+void DesignExtractor::extractAll() {
+	ProcedureExtractor(this->program, this->storage).populate();
+	StatementExtractor(this->program, this->storage).populate();
+	VariableExtractor(this->program, this->storage).populate();
+	ConstantExtractor(this->program, this->storage).populate();
+}
+
+void ProcedureExtractor::populate() {
+	this->storage.storeProcedures(this->extract());
+}
+
+void StatementExtractor::populate() {
+	this->storage.storeStatements(this->extract());
+}
+
+void VariableExtractor::populate() {
+	this->storage.storeVariables(this->extract());
+}
+
+void ConstantExtractor::populate() {
+	this->storage.storeConstants(this->extract());
 }

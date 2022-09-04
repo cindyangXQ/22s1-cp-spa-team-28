@@ -24,6 +24,7 @@ TEST_CASE() {
 	//ProcedureNode* procedure = program->getProcList().at(0);
 	Storage* storage = new Storage();
 	PopulateFacade facade = PopulateFacade(storage);
+	//DesignExtractor(program, &facade).extractAll();
 	vector<Variable*> vars = VariableExtractor(program).extract(facade);
 
 	/*
