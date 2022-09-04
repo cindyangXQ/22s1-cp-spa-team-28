@@ -56,7 +56,7 @@ StatementsTable *StatementsTable::filter(StatementPredicateMap *predicateMap) {
 
 	for(Statement* statement : this->statements) {
 		bool isFilter = true;
-		for (auto [key, val] : extractedMap) {
+		for (auto const&[key, val] : extractedMap) {
 			if (!statement->isValueEqual(key, val)) {
 				isFilter = false;
 			}
