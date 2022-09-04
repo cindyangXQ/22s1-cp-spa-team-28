@@ -34,7 +34,7 @@ vector<Procedure> ProcedureExtractor::extractor() {
 
 	vector<ProcedureNode> procList = program.getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		result.push_back(Procedure(procList[i].getName()));
+		result.push_back(Procedure(procList.at(i).getName()));
 	}
 
 	return result;
@@ -45,27 +45,29 @@ vector<Statement> StatementExtractor::extractor() {
 
 	vector<ProcedureNode> procList = this->program.getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode> stmtList = procList[i].getStmtList();
+		vector<StatementNode> stmtList = procList.at(i).getStmtList();
+		cout << stmtList.size() << endl;
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			StatementType type;
-			
-			if (stmtList[i].isRead()) {
+			//cout << stmtList.at(i) << endl;
+			if (stmtList.at(j).isRead()) {
 				type = StatementType::READ;
 			}
-			else if (stmtList[i].isPrint()) {
+			else if (stmtList.at(j).isPrint()) {
 				type = StatementType::PRINT;
 			}
-			else if (stmtList[i].isAssign()) {
+			else if (stmtList.at(j).isAssign()) {
 				type = StatementType::ASSIGN;
 			}
-			else if (stmtList[i].isCall()) {
+			else if (stmtList.at(j).isCall()) {
 				type = StatementType::CALL;
 			}
 			else {
 				type = StatementType::NONE;
 			}
-
-			Statement statement = Statement(stmtList[i].getLineNumber(), type);
+			//cout << stmtList.at(i).getLineNumber() << endl;
+			//cout << static_cast<int>(type) << endl;
+			Statement statement = Statement(stmtList.at(j).getLineNumber(), type);
 			result.push_back(statement); //implement string Statement::getName(); ie. getLineNumber()
 		}
 	}
@@ -75,15 +77,19 @@ vector<Statement> StatementExtractor::extractor() {
 
 
 vector<Variable> VariableExtractor::extractor() {
+	vector<string> preresult;
 	vector<Variable> result;
 
 	vector<ProcedureNode> procList = this->program.getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode> stmtList = procList[i].getStmtList();
+		vector<StatementNode> stmtList = procList.at(i).getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
-			StatementNode currStmt = stmtList[i];
-			currStmt.getVariablesInto(result);
+			StatementNode currStmt = stmtList.at(j);
+			currStmt.getVariablesInto(preresult);
 		}
+	}
+	for (size_t i = 0; i < preresult.size(); i++) {
+		result.push_back(Variable(preresult[i]));
 	}
 
 	return result;
@@ -95,17 +101,21 @@ ConstantExtractor::ConstantExtractor(ProgramNode program)
 }
 
 vector<Constant> ConstantExtractor::extractor() {
+	vector<string> preresult;
 	vector<Constant> result;
 
 	vector<ProcedureNode> procList = program.getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode> stmtList = procList[i].getStmtList();
+		vector<StatementNode> stmtList = procList.at(i).getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
-			StatementNode currStmt = stmtList[i];
+			StatementNode currStmt = stmtList.at(j);
 			if (currStmt.isAssign()) {
-				currStmt.getConstantsInto(result);
+				currStmt.getConstantsInto(preresult);
 			}
 		}
+	}
+	for (size_t i = 0; i < preresult.size(); i++) {
+		result.push_back(Constant(preresult[i]));
 	}
 
 	return result;

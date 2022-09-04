@@ -4,7 +4,7 @@
 using namespace std;
 
 EntityNode::EntityNode(){}
-StatementNode::StatementNode(){}
+StatementNode::StatementNode() { this->line = 0; }
 
 // Program
 ProgramNode::ProgramNode(vector<ProcedureNode> procList) {
@@ -33,8 +33,13 @@ vector<StatementNode> ProcedureNode::getStmtList() {
 	return this->stmtList;
 }
 
+int ProcedureNode::getEndline()
+{
+	return stmtList.back().getLineNumber();
+}
+
 int StatementNode::getLineNumber() {
-	return line;
+	return this->line;
 }
 
 // Statement - findType
@@ -91,73 +96,77 @@ bool AssignStatementNode::isAssign() {
 }
 
 // Read Statement
-ReadStatementNode::ReadStatementNode(VariableNode VariableNode ) {
+ReadStatementNode::ReadStatementNode(VariableNode VariableNode, int line) {
 	this->var = VariableNode ;
+	this->line = line;
 }
 
 string ReadStatementNode::getVariable() {
 	return this->var.getValue();
 }
 
-void ReadStatementNode::getVariablesInto(vector<string> result) {
+void ReadStatementNode::getVariablesInto(vector<string>& result) {
 	result.push_back(this->getVariable());
 }
 
-void ReadStatementNode::getConstantsInto(vector<string> result) {
+void ReadStatementNode::getConstantsInto(vector<string>& result) {
 	return;
 }
 
 
 // Print Statement
-PrintStatementNode::PrintStatementNode(VariableNode VariableNode ) {
+PrintStatementNode::PrintStatementNode(VariableNode VariableNode, int line ) {
 	this->var = VariableNode ;
+	this->line = line;
 }
 
 string PrintStatementNode::getVariable() {
 	return this->var.getValue();
 }
 
-void PrintStatementNode::getVariablesInto(vector<string> result) {
+void PrintStatementNode::getVariablesInto(vector<string>& result) {
 	result.push_back(this->getVariable());
 }
 
-void PrintStatementNode::getConstantsInto(vector<string> result) {
+void PrintStatementNode::getConstantsInto(vector<string>& result) {
 	return;
 }
 
 // Call Statement
-CallStatementNode::CallStatementNode(VariableNode VariableNode ) {
+CallStatementNode::CallStatementNode(VariableNode VariableNode, int line ) {
 	this->var = VariableNode ;
+	this->line = line;
 }
 
 string CallStatementNode::getVariable() {
 	return "";
 }
 
-void CallStatementNode::getVariablesInto(vector<string> result) {
+void CallStatementNode::getVariablesInto(vector<string>& result) {
 	return;
 }
 
-void CallStatementNode::getConstantsInto(vector<string> result) {
+void CallStatementNode::getConstantsInto(vector<string>& result) {
 	return;
 }
 
 // Assignment Statement
-AssignStatementNode::AssignStatementNode(VariableNode VariableNode , ExpressionNode expression) {
+AssignStatementNode::AssignStatementNode(VariableNode VariableNode , ExpressionNode expression, int line) {
 	var = VariableNode ;
 	expr = expression;
+	this->line = line;
 }
 
 string AssignStatementNode::getVariable() {
 	return this->var.getValue();
 }
 
-void AssignStatementNode::getVariablesInto(vector<VariableNode> result) {
+void AssignStatementNode::getVariablesInto(vector<string>& result) {
 	result.push_back(this->getVariable());
 	this->expr.getVariablesInto(result);
 }
 
-void AssignStatementNode::getConstantsInto(vector<ConstantNode> result) {
+void AssignStatementNode::getConstantsInto(vector<string>& result) {
 	this->expr.getConstantsInto(result);
 }
 
@@ -171,9 +180,9 @@ ExpressionNode::ExpressionNode(Token* token)
 
 ExpressionNode::ExpressionNode() {};
 
-void ExpressionNode::getVariablesInto(vector<VariableNode> result) {
+void ExpressionNode::getVariablesInto(vector<string>& result) {
 	if (this->token->isName()) {
-		result.push_back(VariableNode(this->token->getValue()));
+		result.push_back(this->token->getValue());
 	}
 	else if (this->token->isConstant()) {}
 	else {
@@ -182,9 +191,9 @@ void ExpressionNode::getVariablesInto(vector<VariableNode> result) {
 	}
 }
 
-void ExpressionNode::getConstantsInto(vector<ConstantNode> result) {
+void ExpressionNode::getConstantsInto(vector<string>& result) {
 	if (this->token->isConstant()) {
-		result.push_back(ConstantNode(this->token->getValue()));
+		result.push_back(this->token->getValue());
 	}
 	else if (this->token->isName()) {}
 	else {

@@ -22,5 +22,5 @@ RdStModifyRel::RdStModifyRel(string statement, string modified) {
 }
 AsgStModifyRel::AsgStModifyRel(string statement, string modified) {
 	this.modifier = statement;
-	this.modified = modified;*/
-}
+	this.modified = modified;
+}*/

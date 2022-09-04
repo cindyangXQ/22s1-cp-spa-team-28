@@ -28,38 +28,42 @@ public:
 };
 
 class ProcedureParser : public Parser {
+protected:
+	int startline;
 public:
-	ProcedureParser(int offset, vector<Token*> tokens);
-	ParseResult<ProcedureNode> parse(int* startLine);
+	ProcedureParser(int offset, vector<Token*> tokens, int startline);
+	ParseResult<ProcedureNode> parse();
 };
 
 class StatementParser : public Parser {
+protected:
+	int line;
 public:
 	StatementParser();
-	StatementParser(int offset, vector<Token*> tokens);
-	ParseResult<StatementNode> parse(int line);
+	StatementParser(int offset, vector<Token*> tokens, int line);
+	ParseResult<StatementNode> parse();
 };
 
 class ReadStmParser : public StatementParser {
 public:
-	ReadStmParser(int offset, vector<Token*> tokens);
+	ReadStmParser(int offset, vector<Token*> tokens, int line);
 	ParseResult<ReadStatementNode> parse();
 };
 
 class PrintStmParser : public StatementParser {
 public:
-	PrintStmParser(int offset, vector<Token*> tokens);
+	PrintStmParser(int offset, vector<Token*> tokens, int line);
 	ParseResult<PrintStatementNode> parse();
 };
 
 class CallStmParser : public StatementParser {
 public:
-	CallStmParser(int offset, vector<Token*> tokens);
+	CallStmParser(int offset, vector<Token*> tokens, int line);
 	ParseResult<CallStatementNode> parse();
 };
 
 class AssignStmParser : public StatementParser {
 public:
-	AssignStmParser(int offset, vector<Token*> tokens);
+	AssignStmParser(int offset, vector<Token*> tokens, int line);
 	ParseResult<AssignStatementNode> parse();
 };
