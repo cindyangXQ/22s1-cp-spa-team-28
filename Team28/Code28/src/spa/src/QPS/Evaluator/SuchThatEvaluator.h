@@ -1,11 +1,16 @@
 #pragma once
 
+#include "../../PKB/QueryFacade.h"
 #include "../Clause/SuchThatClause.h"
+#include "ClauseResult.h"
 
 /*
  * Evaluator class for the such that clause.
  */
 class SuchThatEvaluator {
+private:
+    QueryFacade *queryFacade;
 public:
-    static void evaluate(SuchThatClause suchThatCl);
+    explicit SuchThatEvaluator(QueryFacade *queryFacade) : queryFacade(queryFacade) {};
+    ClauseResult evaluate(SuchThatClause *suchThatCl);
 };

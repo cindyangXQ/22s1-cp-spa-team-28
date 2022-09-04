@@ -7,6 +7,10 @@ Statement::Statement(int lineNo, StatementType type) {
 	this->lineNo = lineNo;
 }
 
+Statement::Statement(int lineNo) {
+    this->lineNo = lineNo;
+}
+
 StatementType Statement::getStatementType() {
 	return this->type;
 }
