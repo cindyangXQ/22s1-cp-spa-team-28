@@ -19,17 +19,14 @@ TEST_CASE() {
 	}
 
 	ProgramParser parser = ProgramParser(0, token_list);
-	ProgramNode program = parser.parse().entity;
-	cout << program.getProcList().size() << endl;
-	ProcedureNode procedure = program.getProcList().at(0);
-	cout << procedure.getStmtList().size() << endl;
+	ProgramNode* program = parser.parse();
+	cout << program->getProcList().size() << endl;
+	//ProcedureNode* procedure = program->getProcList().at(0);
 	vector<Statement> statements = StatementExtractor(program).extractor();
 	//cout << vars.size() << endl;
 	//for (size_t i = 0; i < vars.size(); i++) {
 	//	cout << vars.at(i).getName() << endl;
 	//}
-	cout << statements.size() << endl;
-	cout << program.getProcList().size() << endl;
 	for (size_t i = 0; i < statements.size(); i++) {
 		cout << statements.at(i).getLineNumber();
 		cout << static_cast<int>(statements.at(i).getStatementType()) << endl;

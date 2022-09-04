@@ -7,7 +7,7 @@ EntityNode::EntityNode(){}
 StatementNode::StatementNode() { this->line = 0; }
 
 // Program
-ProgramNode::ProgramNode(vector<ProcedureNode> procList) {
+ProgramNode::ProgramNode(vector<ProcedureNode*> procList) {
 	this->procList = procList;
 }
 
@@ -15,12 +15,12 @@ ProgramNode::ProgramNode()
 {
 }
 
-vector<ProcedureNode> ProgramNode::getProcList() {
+vector<ProcedureNode*> ProgramNode::getProcList() {
 	return this->procList;
 }
 
 // Procedure
-ProcedureNode::ProcedureNode(string procName, vector<StatementNode> stmtList) {
+ProcedureNode::ProcedureNode(string procName, vector<StatementNode*> stmtList) {
 	this->procName = procName;
 	this->stmtList = stmtList;
 }
@@ -29,13 +29,13 @@ string ProcedureNode::getName() {
 	return this->procName;
 }
 
-vector<StatementNode> ProcedureNode::getStmtList() {
+vector<StatementNode*> ProcedureNode::getStmtList() {
 	return this->stmtList;
 }
 
 int ProcedureNode::getEndline()
 {
-	return stmtList.back().getLineNumber();
+	return stmtList.back()->getLineNumber();
 }
 
 int StatementNode::getLineNumber() {
@@ -151,7 +151,7 @@ void CallStatementNode::getConstantsInto(vector<string>& result) {
 }
 
 // Assignment Statement
-AssignStatementNode::AssignStatementNode(VariableNode VariableNode , ExpressionNode expression, int line) {
+AssignStatementNode::AssignStatementNode(VariableNode VariableNode , ExpressionNode* expression, int line) {
 	var = VariableNode ;
 	expr = expression;
 	this->line = line;
@@ -163,19 +163,19 @@ string AssignStatementNode::getVariable() {
 
 void AssignStatementNode::getVariablesInto(vector<string>& result) {
 	result.push_back(this->getVariable());
-	this->expr.getVariablesInto(result);
+	this->expr->getVariablesInto(result);
 }
 
 void AssignStatementNode::getConstantsInto(vector<string>& result) {
-	this->expr.getConstantsInto(result);
+	this->expr->getConstantsInto(result);
 }
 
 // Expression
 ExpressionNode::ExpressionNode(Token* token)
 {
 	this->token = token;
-	this->left = nullptr;
-	this->right = nullptr;
+	this->left = NULL;
+	this->right = NULL;
 }
 
 ExpressionNode::ExpressionNode() {};

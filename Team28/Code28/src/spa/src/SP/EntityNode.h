@@ -47,22 +47,22 @@ public:
 
 class ProcedureNode : public EntityNode {
 	string procName;
-	vector<StatementNode> stmtList;
+	vector<StatementNode*> stmtList;
 
 public:
-	ProcedureNode(string procName, vector<StatementNode> stmtList);
+	ProcedureNode(string procName, vector<StatementNode*> stmtList);
 	string getName();
-	vector<StatementNode> getStmtList();
+	vector<StatementNode*> getStmtList();
 	int getEndline();
 };
 
 class ProgramNode : public EntityNode {
-	vector<ProcedureNode> procList;
+	vector<ProcedureNode*> procList;
 
 public:
-	ProgramNode(vector<ProcedureNode> procList);
+	ProgramNode(vector<ProcedureNode*> procList);
 	ProgramNode();
-	vector<ProcedureNode> getProcList();
+	vector<ProcedureNode*> getProcList();
 };
 
 
@@ -122,10 +122,10 @@ public:
 
 class AssignStatementNode : public StatementNode {
 	VariableNode var;
-	ExpressionNode expr;
+	ExpressionNode* expr;
 
 public:
-	AssignStatementNode(VariableNode variable, ExpressionNode expression, int line);
+	AssignStatementNode(VariableNode variable, ExpressionNode* expression, int line);
 	bool isRead();
 	bool isPrint();
 	bool isCall();

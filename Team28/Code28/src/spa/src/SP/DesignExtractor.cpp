@@ -4,7 +4,7 @@
 
 using namespace std;
 
-DesignExtractor::DesignExtractor(ProgramNode program) {
+DesignExtractor::DesignExtractor(ProgramNode* program) {
 	this->program = program;
 }
 
@@ -12,19 +12,19 @@ DesignExtractor::DesignExtractor()
 {
 }
 
-StatementExtractor::StatementExtractor(ProgramNode program)
+StatementExtractor::StatementExtractor(ProgramNode* program)
 {
 	this->program = program;
 }
 
-VariableExtractor::VariableExtractor(ProgramNode program)
+VariableExtractor::VariableExtractor(ProgramNode* program)
 {
 	this->program = program;
 }
 
 // DRY needs improvement
 
-ProcedureExtractor::ProcedureExtractor(ProgramNode program)
+ProcedureExtractor::ProcedureExtractor(ProgramNode* program)
 {
 	this->program = program;
 }
@@ -32,9 +32,9 @@ ProcedureExtractor::ProcedureExtractor(ProgramNode program)
 vector<Procedure> ProcedureExtractor::extractor() {
 	vector<Procedure> result;
 
-	vector<ProcedureNode> procList = program.getProcList();
+	vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		result.push_back(Procedure(procList.at(i).getName()));
+		result.push_back(Procedure(procList.at(i)->getName()));
 	}
 
 	return result;
@@ -43,23 +43,23 @@ vector<Procedure> ProcedureExtractor::extractor() {
 vector<Statement> StatementExtractor::extractor() {
 	vector<Statement> result;
 
-	vector<ProcedureNode> procList = this->program.getProcList();
+	vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode> stmtList = procList.at(i).getStmtList();
+		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		cout << stmtList.size() << endl;
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			StatementType type;
 			//cout << stmtList.at(i) << endl;
-			if (stmtList.at(j).isRead()) {
+			if (stmtList.at(j)->isRead()) {
 				type = StatementType::READ;
 			}
-			else if (stmtList.at(j).isPrint()) {
+			else if (stmtList.at(j)->isPrint()) {
 				type = StatementType::PRINT;
 			}
-			else if (stmtList.at(j).isAssign()) {
+			else if (stmtList.at(j)->isAssign()) {
 				type = StatementType::ASSIGN;
 			}
-			else if (stmtList.at(j).isCall()) {
+			else if (stmtList.at(j)->isCall()) {
 				type = StatementType::CALL;
 			}
 			else {
@@ -67,7 +67,7 @@ vector<Statement> StatementExtractor::extractor() {
 			}
 			//cout << stmtList.at(i).getLineNumber() << endl;
 			//cout << static_cast<int>(type) << endl;
-			Statement statement = Statement(stmtList.at(j).getLineNumber(), type);
+			Statement statement = Statement(stmtList.at(j)->getLineNumber(), type);
 			result.push_back(statement); //implement string Statement::getName(); ie. getLineNumber()
 		}
 	}
@@ -80,12 +80,12 @@ vector<Variable> VariableExtractor::extractor() {
 	vector<string> preresult;
 	vector<Variable> result;
 
-	vector<ProcedureNode> procList = this->program.getProcList();
+	vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode> stmtList = procList.at(i).getStmtList();
+		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
-			StatementNode currStmt = stmtList.at(j);
-			currStmt.getVariablesInto(preresult);
+			StatementNode* currStmt = stmtList.at(j);
+			currStmt->getVariablesInto(preresult);
 		}
 	}
 	for (size_t i = 0; i < preresult.size(); i++) {
@@ -95,7 +95,7 @@ vector<Variable> VariableExtractor::extractor() {
 	return result;
 }
 
-ConstantExtractor::ConstantExtractor(ProgramNode program)
+ConstantExtractor::ConstantExtractor(ProgramNode* program)
 {
 	this->program = program;
 }
@@ -104,13 +104,13 @@ vector<Constant> ConstantExtractor::extractor() {
 	vector<string> preresult;
 	vector<Constant> result;
 
-	vector<ProcedureNode> procList = program.getProcList();
+	vector<ProcedureNode*> procList = program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode> stmtList = procList.at(i).getStmtList();
+		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
-			StatementNode currStmt = stmtList.at(j);
-			if (currStmt.isAssign()) {
-				currStmt.getConstantsInto(preresult);
+			StatementNode* currStmt = stmtList.at(j);
+			if (currStmt->isAssign()) {
+				currStmt->getConstantsInto(preresult);
 			}
 		}
 	}

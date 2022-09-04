@@ -29,34 +29,34 @@ public:
 
 class DesignExtractor {
 protected:
-	ProgramNode program;
+	ProgramNode* program;
 public:
-	DesignExtractor(ProgramNode program);
+	DesignExtractor(ProgramNode* program);
 	DesignExtractor();
 };
 
 class StatementExtractor :public DesignExtractor {
 public:
-	StatementExtractor(ProgramNode program);
+	StatementExtractor(ProgramNode* program);
 	vector<Statement> extractor();
 };
 
 class VariableExtractor : public DesignExtractor {
 public:
-	VariableExtractor(ProgramNode program);
+	VariableExtractor(ProgramNode* program);
 	vector<Variable> extractor();
 };
 
 
 class ProcedureExtractor :public DesignExtractor {
 public:
-	ProcedureExtractor(ProgramNode program);
+	ProcedureExtractor(ProgramNode* program);
 	vector<Procedure> extractor();
 };
 
 class ConstantExtractor :public DesignExtractor {
 public:
-	ConstantExtractor(ProgramNode program);
+	ConstantExtractor(ProgramNode* program);
 	vector<Constant> extractor();
 };
 
