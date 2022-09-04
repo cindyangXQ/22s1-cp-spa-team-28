@@ -131,17 +131,17 @@ void DesignExtractor::extractAll() {
 }
 
 void ProcedureExtractor::populate() {
-	this->storage.storeProcedures(this->extract());
+	this->storage->storeProcedures(&this->extract());
 }
 
 void StatementExtractor::populate() {
-	this->storage.storeStatements(this->extract());
+	this->storage->storeStatements(&this->extract());
 }
 
 void VariableExtractor::populate() {
-	this->storage.storeVariables(this->extract());
+	this->storage->storeVariables(&this->extract());
 }
 
 void ConstantExtractor::populate() {
-	this->storage.storeConstants(this->extract());
+	this->storage->storeConstants(&this->extract());
 }
