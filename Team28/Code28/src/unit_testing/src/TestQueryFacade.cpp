@@ -51,12 +51,12 @@ TEST_CASE("getAllConstants returns all constants correctly") {
 TEST_CASE("getAllProcedures returns all constants correctly") {
 	Storage storage;
 	QueryFacade facade = QueryFacade(&storage);
-	ProceduresTable* constants = (ProceduresTable*)storage.getTable(TableName::PROCEDURES);
+	ProceduresTable* procedures = (ProceduresTable*)storage.getTable(TableName::PROCEDURES);
 	Procedure test1 = Procedure("test1");
 	Procedure test2 = Procedure("test2");
 
-	constants->store(&test1);
-	constants->store(&test2);
+    procedures->store(&test1);
+    procedures->store(&test2);
 
 	// returned number of procedures is equal to number stored
 	REQUIRE(facade.getAllProcedures().size() == 2);
