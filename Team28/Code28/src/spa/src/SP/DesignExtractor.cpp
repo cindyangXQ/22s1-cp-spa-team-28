@@ -30,19 +30,20 @@ ProcedureExtractor::ProcedureExtractor(ProgramNode* program)
 	this->program = program;
 }
 
-vector<Procedure> ProcedureExtractor::extractor() {
-	vector<Procedure> result;
+vector<Procedure*> ProcedureExtractor::extract(PopulateFacade storage) {
+	vector<Procedure*> result;
 
 	vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		result.push_back(Procedure(procList.at(i)->getName()));
+		result.push_back(&Procedure(procList.at(i)->getName()));
 	}
 
+	storage.storeProcedures(&result);
 	return result;
 }
 
-vector<Statement> StatementExtractor::extractor() {
-	vector<Statement> result;
+vector<Statement*> StatementExtractor::extract(PopulateFacade storage) {
+	vector<Statement*> result;
 
 	vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
@@ -69,17 +70,18 @@ vector<Statement> StatementExtractor::extractor() {
 			//cout << stmtList.at(i).getLineNumber() << endl;
 			//cout << static_cast<int>(type) << endl;
 			Statement statement = Statement(stmtList.at(j)->getLineNumber(), type);
-			result.push_back(statement); //implement string Statement::getName(); ie. getLineNumber()
+			result.push_back(&statement); //implement string Statement::getName(); ie. getLineNumber()
 		}
 	}
 
+	storage.storeStatements(&result);
 	return result;
 }
 
 
-vector<Variable> VariableExtractor::extractor() {
+vector<Variable*> VariableExtractor::extract(PopulateFacade storage) {
 	vector<string> preresult;
-	vector<Variable> result;
+	vector<Variable*> result;
 
 	vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
@@ -94,9 +96,10 @@ vector<Variable> VariableExtractor::extractor() {
 	preresult.erase(unique(preresult.begin(), preresult.end()), preresult.end());
 
 	for (size_t i = 0; i < preresult.size(); i++) {
-		result.push_back(Variable(preresult[i]));
+		result.push_back(&Variable(preresult[i]));
 	}
 
+	storage.storeVariables(&result);
 	return result;
 }
 
@@ -105,9 +108,9 @@ ConstantExtractor::ConstantExtractor(ProgramNode* program)
 	this->program = program;
 }
 
-vector<Constant> ConstantExtractor::extractor() {
+vector<Constant*> ConstantExtractor::extract(PopulateFacade storage) {
 	vector<string> preresult;
-	vector<Constant> result;
+	vector<Constant*> result;
 
 	vector<ProcedureNode*> procList = program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
@@ -120,9 +123,9 @@ vector<Constant> ConstantExtractor::extractor() {
 		}
 	}
 	for (size_t i = 0; i < preresult.size(); i++) {
-		result.push_back(Constant(preresult[i]));
+		result.push_back(&Constant(preresult[i]));
 	}
-
+	storage.storeConstants(&result);
 	return result;
 }
 

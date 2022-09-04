@@ -20,17 +20,15 @@ TEST_CASE() {
 
 	ProgramParser parser = ProgramParser(0, token_list);
 	ProgramNode* program = parser.parse();
-	cout << program->getProcList().size() << endl;
+	std::cout << program->getProcList().size() << endl;
 	//ProcedureNode* procedure = program->getProcList().at(0);
-	vector<Variable> vars = VariableExtractor(program).extractor();
-	//cout << vars.size() << endl;
-	//for (size_t i = 0; i < vars.size(); i++) {
-	//	cout << vars.at(i).getName() << endl;
-	//}
-	cout << "__________________________" << endl;
-	for (size_t i = 0; i < vars.size(); i++) {
-		cout << vars.at(i).getName();
-	}
+	Storage* storage = new Storage();
+	PopulateFacade facade = PopulateFacade(storage);
+	vector<Variable*> vars = VariableExtractor(program).extract(facade);
 
-	//will implement unit test later
+	/*
+	std::cout << "__________________________" << endl;
+	for (size_t i = 0; i < vars.size(); i++) {
+		std::cout << vars.at(i)->getName();
+	}*/
 }
