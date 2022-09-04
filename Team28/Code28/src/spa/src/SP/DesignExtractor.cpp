@@ -1,6 +1,7 @@
 #include "DesignExtractor.h"
 #include "EntityNode.h"
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -88,6 +89,10 @@ vector<Variable> VariableExtractor::extractor() {
 			currStmt->getVariablesInto(preresult);
 		}
 	}
+
+	sort(preresult.begin(), preresult.end());
+	preresult.erase(unique(preresult.begin(), preresult.end()), preresult.end());
+
 	for (size_t i = 0; i < preresult.size(); i++) {
 		result.push_back(Variable(preresult[i]));
 	}

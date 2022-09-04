@@ -22,13 +22,14 @@ TEST_CASE() {
 	ProgramNode* program = parser.parse();
 	cout << program->getProcList().size() << endl;
 	//ProcedureNode* procedure = program->getProcList().at(0);
-	vector<Procedure> procs = ProcedureExtractor(program).extractor();
+	vector<Variable> vars = VariableExtractor(program).extractor();
 	//cout << vars.size() << endl;
 	//for (size_t i = 0; i < vars.size(); i++) {
 	//	cout << vars.at(i).getName() << endl;
 	//}
-	for (size_t i = 0; i < procs.size(); i++) {
-		cout << procs.at(i).getName();
+	cout << "__________________________" << endl;
+	for (size_t i = 0; i < vars.size(); i++) {
+		cout << vars.at(i).getName();
 	}
 
 	//will implement unit test later
