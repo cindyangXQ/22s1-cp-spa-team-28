@@ -1,14 +1,16 @@
 1 - SPA parses variables correctly
 Variable v; Select v
-x1, x2, x3
+x1
 5000
 2 - SPA parses constants correctly
 Constant c; Select c
-1, 2
+1
 5000
 3 - SPA parses procedures correctly
 Procedure proc; Select proc
 foo
+5000
 4 - SPA parses statements correctly
 Statement s; Select s
 1, 2, 3
+5000
