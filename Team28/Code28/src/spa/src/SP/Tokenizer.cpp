@@ -59,7 +59,7 @@ vector<Token*> Tokenizer::tokenize() {
 				currType = TokenType::CONSTANT;
 				current = "";
 			}
-			else if (currType != TokenType::CONSTANT) {
+			else if (currType != TokenType::CONSTANT && currType != TokenType::CONSTANT) {
 				tokens.push_back(createToken(currType, current));
 				currType = TokenType::CONSTANT;
 				current = "";
@@ -72,7 +72,7 @@ vector<Token*> Tokenizer::tokenize() {
 				currType = TokenType::NAME;
 				current = "";
 			}
-			else if (currType != TokenType::NAME && currType != TokenType::CONSTANT) {
+			else if (currType != TokenType::NAME) {
 				tokens.push_back(createToken(currType, current));
 				currType = TokenType::NAME;
 				current = "";
