@@ -1,5 +1,7 @@
 #pragma once
 
+#include <list>
+
 #include "../PKB/QueryFacade.h"
 #include "Parser/QueryParser.h"
 #include "Parser/SolvableQuery.h"
