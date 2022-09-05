@@ -90,19 +90,14 @@ vector<Token*> Tokenizer::tokenize() {
 				}
 				char temp = input.at(index + 1);
 				if (find(begin(opChar), end(opChar), temp) != end(opChar) && temp != ';') {
-					cout << "[DEBUG] Creating NAME token for " << current << endl;
-
 					tokens.push_back(createToken(TokenType::NAME, current));
 				}
 				else {
-					cout << "[DEBUG] Creating KEYWORD token for " << current << endl;
 					tokens.push_back(createToken(TokenType::KEYWORD, current));
 				}
 			}
 			else {
 				if (currType != TokenType::WHITESPACE) {
-					cout << "[DEBUG] Creating " << static_cast<std::underlying_type<TokenType>::type>(currType) << " token for " << current << endl;
-
 					tokens.push_back(createToken(currType, current));
 				}
 			}
@@ -119,7 +114,6 @@ vector<Token*> Tokenizer::tokenize() {
 				current.append(1, currChar);
 			}
 			else {
-				cout << "[DEBUG] Creating " << static_cast<std::underlying_type<TokenType>::type>(currType) << " token for " << current << endl;
 				tokens.push_back(createToken(currType, current));
 				current = "";
 				current.append(1, currChar);
@@ -128,7 +122,6 @@ vector<Token*> Tokenizer::tokenize() {
 		}
 		else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST)) {
 			if (currType != TokenType::WHITESPACE) {
-					cout << "[DEBUG] Creating " << static_cast<std::underlying_type<TokenType>::type>(currType) << " token for " << current << endl;
 				tokens.push_back(createToken(currType, current));
 			}
 			currType = TokenType::SYMBOL;
@@ -139,8 +132,6 @@ vector<Token*> Tokenizer::tokenize() {
 	}
 
 	if(currType != TokenType::WHITESPACE) {
-		cout << "[DEBUG] Creating " << static_cast<std::underlying_type<TokenType>::type>(currType) << " token for " << current << endl;
-
 		tokens.push_back(createToken(currType, current));
 	}
 	return tokens;

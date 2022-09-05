@@ -48,7 +48,6 @@ PrintStmParser::PrintStmParser(int offset, vector<Token*> tokens, int line) {
 }
 
 CallStmParser::CallStmParser(int offset, vector<Token*> tokens, int line) {
-	cout << "[DEBUG] CallStmParser" << endl;
 	this->offset = offset;
 	this->tokens = tokens;
 	this->line = line;
@@ -93,7 +92,6 @@ ProcedureNode* ProcedureParser::parse() {
 			&& secondToken->isName() 
 			&& thirdToken->equals("{")) {
 		while (!tokenList.at(offset)->equals("}")) {
-			cout << "[DEBUG] Line number " << line << endl;
 			StatementParser parser = StatementParser(offset, tokenList, line);
 			StatementNode* temp = parser.parse();
 			line++;
@@ -114,11 +112,9 @@ ProcedureNode* ProcedureParser::parse() {
 
 StatementNode* StatementParser::parse() {
 	vector<Token*> tokenList = this->tokens;
-	cout << "[DEBUG] Statement First Token " << tokenList.at(offset)->value << endl;
 	StatementNode* result;
 
 	Token* firstToken = tokenList.at(offset);
-	cout << "[DEBUG] First token is keyword: " << firstToken->isKeyword() << endl;
 
 	if (firstToken->equals("read")) {
 		ReadStmParser parser = ReadStmParser(offset, tokenList, line);
@@ -131,19 +127,13 @@ StatementNode* StatementParser::parse() {
 		offset = parser.getOffset();
 	}
 	else if (firstToken->equals("call")) {
-		cout << "[DEBUG] Call statement" << endl;
 		CallStmParser parser = CallStmParser(offset, tokenList, line);
-		cout << "[DEBUG] Parse result" << endl;
 		result = parser.parse();
-		cout << "[DEBUG] Get offset" << endl;
 		offset = parser.getOffset();
 	}
 	else {
-		cout << "[DEBUG] Assignment statement" << endl;
 		AssignStmParser parser = AssignStmParser(offset, tokenList, line);
-		cout << "[DEBUG] Parse result" << endl;
 		result = parser.parse();
-		cout << "[DEBUG] Get offset" << endl;
 		offset = parser.getOffset();
 	} //TODO: Need to change later
 
@@ -195,21 +185,15 @@ CallStatementNode* CallStmParser::parse() {
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
 	Token* thirdToken = tokenList.at(offset++);
-	cout << "[DEBUG] Parsing ... " << endl;
-	cout << "[DEBUG] firstToken " << firstToken->getValue() << endl;
-	cout << "[DEBUG] secondToken " << secondToken->getValue() << endl;
-	cout << "[DEBUG] thirdToken " << thirdToken->getValue() << endl;
 	
 	if (firstToken->isKeyword()
 			&& firstToken->equals("call")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		cout << "[DEBUG] Creating CallStatementNode " << endl;
 		CallStatementNode* result = new CallStatementNode(VariableNode (secondToken->value), line);
 		return result;
 	}
 	else {
-		cout << "[DEBUG] Wrong syntax " << endl;
 		throw "call statement wrong syntax";
 	}
 }
@@ -219,9 +203,6 @@ AssignStatementNode* AssignStmParser::parse() {
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
-	cout << "[DEBUG] Parsing ... " << endl;
-	cout << "[DEBUG] firstToken " << firstToken->getValue() << endl;
-	cout << "[DEBUG] secondToken " << secondToken->getValue() << endl;
 
 	if (firstToken->isName() && secondToken->equals("=")) {
 		ExprParser parser = ExprParser(offset, tokenList);
@@ -232,7 +213,6 @@ AssignStatementNode* AssignStmParser::parse() {
 		return result;
 	}
 	else {
-		cout << "[DEBUG] Assignment stmt wrong syntax" << endl;
 		throw "assignment statement wrong syntax";
 	}
 }
