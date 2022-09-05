@@ -4,7 +4,7 @@
 #include "catch.hpp"
 
 TEST_CASE("QueryParser is parsing correctly") {
-    SolvableQuery solvableQ = QueryParser::parse("Assign a; Constant c; Variable v; Select v such that Modifies(1, v) pattern a(v, _)");
+    SolvableQuery solvableQ = QueryParser::parse("assign a; constant c; variable v; Select v such that Modifies(1, v) pattern a(v, _)");
 
     REQUIRE(solvableQ.selectType.entity == DesignEntity::VARIABLE);
 }
