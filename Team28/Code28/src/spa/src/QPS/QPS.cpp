@@ -5,7 +5,7 @@ std::string QPS::processQuery(std::string input) {
 	QueryResult queryResult = evaluator.evaluate(&solvableQ);
 	std::vector<std::string> result = evaluator.interpretQueryResult(&queryResult);
 	if (result.size() == 0) {
-		return;
+		return "";
 	}
 	std::string print;
 	for (int i = 0; i < result.size() - 1; i++) {

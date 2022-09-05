@@ -80,7 +80,7 @@ TEST_CASE("QPS can process simple queries to select procedures when there are no
 
 	std::string input = "procedure p; Select p";
 	std::string output = qps.processQuery(input);
-	REQUIRE(output == "None");
+	REQUIRE(output.size() == 0);
 }
 
 TEST_CASE("QPS can process simple queries with syntax error") {
@@ -189,6 +189,19 @@ TEST_CASE("QPS evaluate select procedures") {
 	qps.evaluate(input, results);
 	std::list<std::string> correct_output{ "test1", "test2" };
 	REQUIRE(results == correct_output);
+}
+
+TEST_CASE("QPS can evaluate select procedures when there are no procedures") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	ProceduresTable* procedures = (ProceduresTable*)storage.getTable(TableName::PROCEDURES);
+
+	QPS qps = QPS(&facade);
+
+	std::string input = "procedure p; Select p";
+	std::list<std::string> results;
+	qps.evaluate(input, results);
+	REQUIRE(results.size() == 0);
 }
 
 TEST_CASE("QPS evaluate syntax error") {
