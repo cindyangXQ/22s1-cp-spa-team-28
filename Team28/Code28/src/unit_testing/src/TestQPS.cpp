@@ -15,7 +15,7 @@ TEST_CASE("QPS can process simple queries to select statements") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Statement s; Select s";
+	std::string input = "stmt s; Select s";
 	std::string output = qps.processQuery(input);
 	REQUIRE(output == "1, 2");
 }
@@ -32,7 +32,7 @@ TEST_CASE("QPS can process simple queries to select variables") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Variable v; Select v";
+	std::string input = "variable v; Select v";
 	std::string output = qps.processQuery(input);
 	REQUIRE(output == "test1, test2");
 }
@@ -49,7 +49,7 @@ TEST_CASE("QPS can process simple queries to select constants") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Constant c; Select c";
+	std::string input = "constant c; Select c";
 	std::string output = qps.processQuery(input);
 	REQUIRE(output == "test1, test2");
 }
@@ -66,7 +66,7 @@ TEST_CASE("QPS can process simple queries to select procedures") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Procedure p; Select p";
+	std::string input = "procedure p; Select p";
 	std::string output = qps.processQuery(input);
 	REQUIRE(output == "test1, test2");
 }
@@ -78,7 +78,7 @@ TEST_CASE("QPS can process simple queries to select procedures when there are no
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Procedure p; Select p";
+	std::string input = "procedure p; Select p";
 	std::string output = qps.processQuery(input);
 	REQUIRE(output == "None");
 }
@@ -95,7 +95,7 @@ TEST_CASE("QPS can process simple queries with syntax error") {
 
 	QPS qps = QPS(&facade);
 
-	std::string extra_bracket = "Variable v; Select v such that Modifies((1, v)";
+	std::string extra_bracket = "variable v; Select v such that Modifies((1, v)";
 	REQUIRE_THROWS(qps.processQuery(extra_bracket));
 }
 
@@ -111,7 +111,7 @@ TEST_CASE("QPS can process simple queries with semantic error") {
 
 	QPS qps = QPS(&facade);
 
-	std::string undeclared_synonym = "Variable v; Select v such that Modifies(1, yey)";
+	std::string undeclared_synonym = "variable v; Select v such that Modifies(1, yey)";
 	REQUIRE_THROWS(qps.processQuery(undeclared_synonym));
 }
 
@@ -127,7 +127,7 @@ TEST_CASE("QPS evaluate select statements") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Statement s; Select s";
+	std::string input = "stmt s; Select s";
 	std::list<std::string> results;
 	qps.evaluate(input, results);
 	std::list<std::string> correct_output{ "1", "2" };
@@ -146,7 +146,7 @@ TEST_CASE("QPS evaluate select variables") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Variable v; Select v";
+	std::string input = "variable v; Select v";
 	std::list<std::string> results;
 	qps.evaluate(input, results);
 	std::list<std::string> correct_output{ "test1", "test2" };
@@ -165,7 +165,7 @@ TEST_CASE("QPS evaluate select constants") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Constant c; Select c";
+	std::string input = "constant c; Select c";
 	std::list<std::string> results;
 	qps.evaluate(input, results);
 	std::list<std::string> correct_output{ "test1", "test2" };
@@ -184,7 +184,7 @@ TEST_CASE("QPS evaluate select procedures") {
 
 	QPS qps = QPS(&facade);
 
-	std::string input = "Procedure p; Select p";
+	std::string input = "procedure p; Select p";
 	std::list<std::string> results;
 	qps.evaluate(input, results);
 	std::list<std::string> correct_output{ "test1", "test2" };
@@ -203,7 +203,7 @@ TEST_CASE("QPS evaluate syntax error") {
 
 	QPS qps = QPS(&facade);
 
-	std::string extra_bracket = "Variable v; Select v such that Modifies((1, v)";
+	std::string extra_bracket = "variable v; Select v such that Modifies((1, v)";
 	std::list<std::string> results;
 	REQUIRE_THROWS(qps.evaluate(extra_bracket, results));
 }
@@ -220,7 +220,7 @@ TEST_CASE("QPS evaluate semantic error") {
 
 	QPS qps = QPS(&facade);
 
-	std::string undeclared_synonym = "Variable v; Select v such that Modifies(1, yey)";
+	std::string undeclared_synonym = "variable v; Select v such that Modifies(1, yey)";
 	std::list<std::string> results;
 	REQUIRE_THROWS(qps.evaluate(undeclared_synonym, results));
 }

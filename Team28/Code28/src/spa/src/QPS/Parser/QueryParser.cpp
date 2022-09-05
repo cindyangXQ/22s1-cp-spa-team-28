@@ -30,34 +30,34 @@ Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
 Synonym QueryParser::parseSynonym(std::string desc) {
     std::vector<std::string> tokens = Utils::splitString(desc, ' ');
     DesignEntity entity;
-    if (tokens[0].compare("Procedure") == 0) {
+    if (tokens[0].compare("procedure") == 0) {
         entity = DesignEntity::PROCEDURE;
     }
-    else if (tokens[0].compare("Statement") == 0) {
+    else if (tokens[0].compare("stmt") == 0) {
         entity = DesignEntity::STATEMENT;
     }
-    else if (tokens[0].compare("Read") == 0) {
+    else if (tokens[0].compare("read") == 0) {
         entity = DesignEntity::READ;
     }
-    else if (tokens[0].compare("Print") == 0) {
+    else if (tokens[0].compare("print") == 0) {
         entity = DesignEntity::PRINT;
     }
-    else if (tokens[0].compare("Assign") == 0) {
+    else if (tokens[0].compare("assign") == 0) {
         entity = DesignEntity::ASSIGN;
     }
-    else if (tokens[0].compare("Call") == 0) {
+    else if (tokens[0].compare("call") == 0) {
         entity = DesignEntity::CALL;
     }
-    else if (tokens[0].compare("While") == 0) {
+    else if (tokens[0].compare("while") == 0) {
         entity = DesignEntity::WHILE;
     }
-    else if (tokens[0].compare("If") == 0) {
+    else if (tokens[0].compare("if") == 0) {
         entity = DesignEntity::IF;
     }
-    else if (tokens[0].compare("Variable") == 0) {
+    else if (tokens[0].compare("variable") == 0) {
         entity = DesignEntity::VARIABLE;
     }
-    else if (tokens[0].compare("Constant") == 0) {
+    else if (tokens[0].compare("constant") == 0) {
         entity = DesignEntity::CONSTANT;
     }
     std::string name = tokens[1];

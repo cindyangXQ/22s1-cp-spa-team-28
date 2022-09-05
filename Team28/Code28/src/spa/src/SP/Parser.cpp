@@ -92,7 +92,6 @@ ProcedureNode* ProcedureParser::parse() {
 			&& secondToken->isName() 
 			&& thirdToken->equals("{")) {
 		while (!tokenList.at(offset)->equals("}")) {
-			cout << line << endl;
 			StatementParser parser = StatementParser(offset, tokenList, line);
 			StatementNode* temp = parser.parse();
 			line++;
@@ -113,10 +112,10 @@ ProcedureNode* ProcedureParser::parse() {
 
 StatementNode* StatementParser::parse() {
 	vector<Token*> tokenList = this->tokens;
-	cout << tokenList.at(offset)->value << endl;
 	StatementNode* result;
 
 	Token* firstToken = tokenList.at(offset);
+
 	if (firstToken->equals("read")) {
 		ReadStmParser parser = ReadStmParser(offset, tokenList, line);
 		result = parser.parse();
@@ -186,7 +185,7 @@ CallStatementNode* CallStmParser::parse() {
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
 	Token* thirdToken = tokenList.at(offset++);
-
+	
 	if (firstToken->isKeyword()
 			&& firstToken->equals("call")
 			&& secondToken->isName()

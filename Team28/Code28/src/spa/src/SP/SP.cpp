@@ -21,6 +21,10 @@ void SP::parse(string filename) {
 	buffer << t.rdbuf();
 
 	vector<Token*> tokens = Tokenizer(buffer.str()).tokenize();
+
+	for (Token* token: tokens) {
+		cout << token->getValue() << endl;	
+	}
 	ProgramNode* program = ProgramParser(0, tokens).parse();
 	DesignExtractor(program, this->storage).extractAll();
 }

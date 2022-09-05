@@ -1,0 +1,16 @@
+procedure Bedok {
+  print east;
+  west = 9 + east;
+  y = east - 4;
+  z = west + 2;
+  call Yishun;
+  west = 9 + x * y * z * east + west;
+  west = 9 + x * y * z * east + west;
+  print west; }
+
+procedure Yishun {
+  call Serangoon; }
+
+procedure Serangoon {
+  read x;
+  read y; }
