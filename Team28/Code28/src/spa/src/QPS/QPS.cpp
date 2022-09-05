@@ -5,8 +5,7 @@ std::string QPS::processQuery(std::string input) {
 	QueryResult queryResult = evaluator.evaluate(&solvableQ);
 	std::vector<std::string> result = evaluator.interpretQueryResult(&queryResult);
 	if (result.size() == 0) {
-		// std::cout << "None" << std::endl;
-		return "None";
+		return;
 	}
 	std::string print;
 	for (int i = 0; i < result.size() - 1; i++) {
@@ -23,15 +22,11 @@ void QPS::evaluate(std::string query, std::list<std::string>& results) {
 	QueryResult queryResult = evaluator.evaluate(&solvableQ);
 	std::vector<std::string> result = evaluator.interpretQueryResult(&queryResult);
 	if (result.size() == 0) {
-		// std::cout << "None" << std::endl;
-		results.push_back("None");
 		return;
 	}
 	std::string print;
 	for (int i = 0; i < result.size(); i++) {
-		// std::cout << result[i] + ", ";
 		results.push_back(result[i]);
 	}
-	// std::cout << result[result.size() - 1] << std::endl;
 	return;
 }
