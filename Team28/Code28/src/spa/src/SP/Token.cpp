@@ -1,5 +1,6 @@
 #include "Token.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ string Token::getValue() {
 }
 
 bool Token::equals(string other) {
+	cout << "[DEBUG] Call token equals" << endl;
 	if (value.compare(other) == 0) {
 		return true;
 	}
@@ -27,6 +29,7 @@ Keyword::Keyword(string s) {
 }
 
 bool Keyword::isKeyword() {
+	cout << "[DEBUG] Call Keyword::isKeyword" << endl;
 	return true;
 }
 
@@ -43,6 +46,7 @@ Operator::Operator(string s) {
 }
 
 bool Operator::isKeyword() {
+	cout << "[DEBUG] Call Operator::isKeyword" << endl;
 	return false;
 }
 
@@ -59,6 +63,7 @@ Symbol::Symbol(string s) {
 }
 
 bool Symbol::isKeyword() {
+	cout << "[DEBUG] Call Symbol::isKeyword" << endl;
 	return false;
 }
 

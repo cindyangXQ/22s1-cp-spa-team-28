@@ -20,7 +20,16 @@ void SP::parse(string filename) {
 	stringstream buffer;
 	buffer << t.rdbuf();
 
+	cout << "[DEBUG] Done reading from file" << endl;
 	vector<Token*> tokens = Tokenizer(buffer.str()).tokenize();
+	cout << "[DEBUG] Done tokenizing" << endl;
+
+	for (Token* token: tokens) {
+		cout << token->getValue() << endl;	
+	}
+	cout << "[DEBUG] Start parsing" << endl;
 	ProgramNode* program = ProgramParser(0, tokens).parse();
+	cout << "[DEBUG] Done parsing" << endl;
 	DesignExtractor(program, this->storage).extractAll();
+	cout << "[DEBUG] Done extracting" << endl;
 }
