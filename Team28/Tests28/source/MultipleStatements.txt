@@ -3,3 +3,7 @@ procedure main {
     print print;
     read read;
 }
+
+procedure bar {
+    print read;
+}
