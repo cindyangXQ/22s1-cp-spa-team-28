@@ -1,7 +1,7 @@
 1 - SPA parses variables correctly
 variable v; 
 Select v
-x
+x1
 5000
 2 - SPA parses constants correctly
 constant c; 
