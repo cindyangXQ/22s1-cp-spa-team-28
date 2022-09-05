@@ -97,7 +97,7 @@ ExpressionNode* TermParser::parse() {
 
 	if (next->value == "+" || next->value == "-" || next->value == ";"||next->value == ")") {
 		// term end, return to expression
-		return result;
+		return root;
 	}
 	else {
 		//throw error
@@ -115,8 +115,8 @@ ExpressionNode* FactorParser::parse() {
 		offset++;
 		ExprParser parser = ExprParser(offset, tokens);
 		ExpressionNode* factor = parser.parse();
+		offset = parser.getOffset();
 		//if next token is not ")" throw error
-		offset++;
 		return factor;
 	}
 	else {
