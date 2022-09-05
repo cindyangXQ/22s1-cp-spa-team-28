@@ -1,0 +1,36 @@
+<?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
+<test_results>
+<info>
+<name>build</name><parsing_time_taken>0.372000</parsing_time_taken>
+</info>
+<queries>
+<query>
+<id ReturnTuple="1" CondNum="1" RelNum="0" comment="SPA parses variables correctly">1</id><querystr><![CDATA[variable v;  Select v]]></querystr>
+<stuans>x</stuans>
+<correct>x</correct>
+<time_taken>0.859000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" CondNum="1" RelNum="0" comment="SPA parses constants correctly">2</id><querystr><![CDATA[constant c;  Select c]]></querystr>
+<stuans>1</stuans>
+<correct>1</correct>
+<time_taken>0.670000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" CondNum="1" RelNum="0" comment="SPA parses procedures correctly">3</id><querystr><![CDATA[procedure proc;  Select proc]]></querystr>
+<stuans>foo</stuans>
+<correct>foo</correct>
+<time_taken>0.905000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" CondNum="1" RelNum="0" comment="SPA parses statements correctly">4</id><querystr><![CDATA[stmt s;  Select s]]></querystr>
+<stuans>1</stuans>
+<correct>1</correct>
+<time_taken>0.798000</time_taken>
+<passed/>
+</query>
+</queries>
+</test_results>

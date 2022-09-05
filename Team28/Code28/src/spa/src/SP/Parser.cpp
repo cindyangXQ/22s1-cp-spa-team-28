@@ -114,7 +114,7 @@ ProcedureNode* ProcedureParser::parse() {
 
 StatementNode* StatementParser::parse() {
 	vector<Token*> tokenList = this->tokens;
-	cout << "[DEBUG] Statement type " << tokenList.at(offset)->value << endl;
+	cout << "[DEBUG] Statement First Token " << tokenList.at(offset)->value << endl;
 	StatementNode* result;
 
 	Token* firstToken = tokenList.at(offset);
@@ -139,8 +139,11 @@ StatementNode* StatementParser::parse() {
 		offset = parser.getOffset();
 	}
 	else {
+		cout << "[DEBUG] Assignment statement" << endl;
 		AssignStmParser parser = AssignStmParser(offset, tokenList, line);
+		cout << "[DEBUG] Parse result" << endl;
 		result = parser.parse();
+		cout << "[DEBUG] Get offset" << endl;
 		offset = parser.getOffset();
 	} //TODO: Need to change later
 
@@ -216,6 +219,9 @@ AssignStatementNode* AssignStmParser::parse() {
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
+	cout << "[DEBUG] Parsing ... " << endl;
+	cout << "[DEBUG] firstToken " << firstToken->getValue() << endl;
+	cout << "[DEBUG] secondToken " << secondToken->getValue() << endl;
 
 	if (firstToken->isName() && secondToken->equals("=")) {
 		ExprParser parser = ExprParser(offset, tokenList);
@@ -226,6 +232,7 @@ AssignStatementNode* AssignStmParser::parse() {
 		return result;
 	}
 	else {
+		cout << "[DEBUG] Assignment stmt wrong syntax" << endl;
 		throw "assignment statement wrong syntax";
 	}
 }
