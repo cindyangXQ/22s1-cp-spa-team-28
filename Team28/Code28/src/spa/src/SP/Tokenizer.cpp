@@ -26,15 +26,24 @@ enum class TokenType {
 
 
 Token* Tokenizer::createToken(TokenType type, string value) {
-	cout << static_cast<int>(type) << " " << value << endl;
+	//cout << static_cast<int>(type) << " " << value << endl;
 	switch (type) {
-	case TokenType::CONSTANT: return new ConstantNode(value);
-	case TokenType::NAME: return new VariableNode(value);
-	case TokenType::KEYWORD: return new Keyword(value);
-	case TokenType::OPERATOR: return new Operator(value);
+	case TokenType::CONSTANT: 
+		return new ConstantNode(value);
+	case TokenType::NAME: 
+		return new VariableNode(value);
+	case TokenType::KEYWORD: 
+		return new Keyword(value);
+	case TokenType::OPERATOR: 
+		if (find(begin(OPERATOR_LIST), end(OPERATOR_LIST), value) != end(OPERATOR_LIST)) {
+			return new Operator(value);
+		}
+		else {
+			throw "operator wrong syntax";
+		}
+		return new Operator(value);
 	default: return new Symbol(value);
 	}
-	//return Token(value);
 }
 
 
@@ -97,29 +106,29 @@ vector<Token*> Tokenizer::tokenize() {
 		// if current char is a space
 		else if (currChar == ' ') {
 			/* 
-			if previous token is a name, and keyword??
+			if previous token is a keyword, push it as a keyword and create a whitespace token;
+			if previous token is a name and not keyword, 
+				push the previous token and create a whitespace token;
 			if previous token is a constant, operator, bracket, or semicolon, 
-				push previous token and create a whitespace token;
+				push the previous token and create a whitespace token;
 			if previous token is some whitespace, create a whitespace token. */
 			if (currType == TokenType::NAME && find(begin(KEYWORD_LIST), end(KEYWORD_LIST), current) != end(KEYWORD_LIST)) {
-				while (index + 1 < input.length()) { // why + 1? currChar is a whitespace, this loop does nothing?
-					if (find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), currChar) != end(WHITESPACE_LIST)) {
+				while (++index < input.length()) {
+					if (find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), input.at(index)) == end(WHITESPACE_LIST)) {
 						break;
 					}
-					index = index + 1;
 				}
-				char temp = input.at(index + 1);
-				if (find(begin(opChar), end(opChar), temp) != end(opChar) && temp != ';') { // a char cannot be a opchar and a semicolon
+				char nextChar = input.at(index--);
+				if (find(begin(opChar), end(opChar), nextChar) != end(opChar) || nextChar == ';' || nextChar == ')' || nextChar == '{') {
+					// Keywords then and else are also succeeded by '{', but we do not support that yet. 
 					tokens.push_back(createToken(TokenType::NAME, current));
 				}
-				else {
+				else { // A Keyword is succeeded by a Name or '('
 					tokens.push_back(createToken(TokenType::KEYWORD, current));
 				}
 			}
-			else {
-				if (currType != TokenType::WHITESPACE) {
-					tokens.push_back(createToken(currType, current));
-				}
+			else if (currType != TokenType::WHITESPACE) {
+				tokens.push_back(createToken(currType, current));
 			}
 			current = "";
 			currType = TokenType::WHITESPACE;
@@ -146,12 +155,12 @@ vector<Token*> Tokenizer::tokenize() {
 				currType = TokenType::OPERATOR;
 			}
 		}
-		// if current token is a bracket or semicolon
+		// if current token is a bracket or semicolon, create a symbol token and push it. 
 		else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST)) {
 			/*
-			if previous token is some whitespace, create a symbol token
+			if previous token is some whitespace, do nothing else;
 			if previous token is a name, constant, operator, bracket, or semicolon, 
-				push the previous token and create a symbol token. */
+				push the previous token. */
 			if (currType != TokenType::WHITESPACE) {
 				tokens.push_back(createToken(currType, current));
 			}
