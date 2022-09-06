@@ -1,26 +1,18 @@
 #pragma once
 
 #include "Entity.h"
-
-enum class RelationshipName {
-	FOLLOWS,
-	FOLLOWS_STAR,
-	PARENT,
-	PARENT_STAR,
-	USES,
-	MODIFIES
-};
+#include "Reference.h"
 
 /*
 * A class encapsulating Relationships in SIMPLE.
 */
 template <typename Left, typename Right>
-class Relationship : public Entity<RelationshipName> {
+class Relationship : public Entity<RelationshipReference> {
 public:
 	/*
 	* Explicit constructor for Relationship.
 	*/
-	explicit Relationship(RelationshipName name) : Entity<RelationshipName>(name) {};
+	explicit Relationship(RelationshipReference name) : Entity<RelationshipReference>(name) {};
 
 	Left getLeft() {
 		return this->left;

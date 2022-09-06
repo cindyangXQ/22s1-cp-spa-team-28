@@ -3,20 +3,23 @@
 #include <map>
 #include <unordered_set>
 
-#include "Relationship.h"
+#include "../commons/Relationship.h"
+#include "Table.h"
 
 template <typename Left, typename Right>
-class RelationshipsTable : public Table<Relationship> {
+class RelationshipsTable : public Table<Relationship<Left, Right>> {
 public:
 	/*
 	* Stores a Relationship to both leftToRightsMap and rightToLeftsMap.
 	*/
-	void store(Relationship* relationship) {
-		insertLeft(relationship->getLeft());
-		insertRight(relationship->getRight());
+	void store(Relationship<Left, Right>* relationship) {
+		Left& left = relationship->getLeft();
+		Right& right = relationship->getRight();
+		insertLeft(left, right);
+		insertRight(right, left);
 	}
 
-	void insertRight(&Left left, &Right right) {
+	void insertRight(Left &left, Right &right) {
 		auto key = this->rightToLeftsMap.find(right);
 
 		if (key != this->rightToLeftsMap.end()) {
@@ -26,7 +29,7 @@ public:
 		}
 	}
 
-	void insertLeft(&Left left, &Right right) {
+	void insertLeft(Left &left, Right &right) {
 		auto key = this->leftToRightsMap.find(left);
 
 		if (key != this->leftToRightsMap.end()) {
@@ -34,6 +37,10 @@ public:
 		} else {
 			leftToRightsMap[left] = { right };
 		}
+	}
+
+	int getTableSize() const {
+		return -1;
 	}
 
 private:
