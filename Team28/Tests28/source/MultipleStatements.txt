@@ -2,6 +2,7 @@ procedure main {
     call bar;
     print print;
     read read;
+    r = read;
 }
 
 procedure bar {
