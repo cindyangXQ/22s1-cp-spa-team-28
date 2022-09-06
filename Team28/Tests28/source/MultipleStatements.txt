@@ -1,0 +1,9 @@
+procedure main {
+    call bar;
+    print print;
+    read read;
+}
+
+procedure bar {
+    print read;
+}

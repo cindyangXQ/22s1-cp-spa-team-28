@@ -9,7 +9,7 @@
 
 using namespace std;
 
-string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read" };
+string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read", "call" };
 char SYMBOL_LIST[] = { '(', ')', '{', '}', ';' };
 char WHITESPACE_LIST[] = { ' ' , '\n', '\t' };
 string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=","!=", "!", "&&", "||" };
@@ -59,7 +59,7 @@ vector<Token*> Tokenizer::tokenize() {
 				currType = TokenType::CONSTANT;
 				current = "";
 			}
-			else if (currType != TokenType::CONSTANT) {
+			else if (currType != TokenType::CONSTANT && currType != TokenType::NAME) {
 				tokens.push_back(createToken(currType, current));
 				currType = TokenType::CONSTANT;
 				current = "";

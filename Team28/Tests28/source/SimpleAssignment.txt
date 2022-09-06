@@ -1,0 +1,3 @@
+procedure foo {
+	x1 = 1 + 1;
+}

@@ -1,0 +1,20 @@
+1 - SPA parses variables correctly
+variable v;
+Select v
+print, read
+5000
+2 - SPA parses constants correctly
+constant c;
+Select c
+none
+5000
+3 - SPA parses procedures correctly
+procedure proc;
+Select proc
+main, bar
+5000
+4 - SPA parses statements correctly
+stmt s;
+Select s
+1, 2, 3, 4
+5000

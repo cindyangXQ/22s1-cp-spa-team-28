@@ -1,5 +1,6 @@
 #include "Token.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -7,6 +8,10 @@ Token::Token() {}
 
 Token::Token(string s) {
 	this->value = s;
+}
+
+string Token::getValue() {
+	return this->value;
 }
 
 bool Token::equals(string other) {

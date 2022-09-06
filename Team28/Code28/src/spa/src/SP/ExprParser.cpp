@@ -21,42 +21,42 @@ FactorParser::FactorParser(int offset, vector<Token*> tokens) {
 	this->tokens = tokens;
 }
 
-ParseResult<ExpressionNode> ExprParser::parse() {
-	int index = this->offset;
-	cout << "______________________" << endl;
-	TermParser parser = TermParser(index, tokens);
-	ParseResult result = parser.parse();
-	index = result.index;
-	vector<ExpressionNode> terms;
-	terms.push_back(result.entity);
+ExpressionNode* ExprParser::parse() {
+	//cout << "______________________" << endl;
+	TermParser parser = TermParser(offset, tokens);
+	ExpressionNode* result = parser.parse();
+	offset = parser.getOffset();
+	vector<ExpressionNode*> terms;
+	terms.push_back(result);
+	ExpressionNode* root = result;
 
-	index++;
-	Token* next = tokens.at(index);
+	Token* next = tokens.at(offset);
 	while (next->value == "+" || next->value == "-") {
-		index++;
+		offset++;
 
-		ExpressionNode expr = ExpressionNode(next);
+		ExpressionNode* expr = new ExpressionNode(next);
 		cout << next->value << endl;
-		expr.left = &terms.back();
+		expr->left = terms.back();
+		root = expr;
 
-		result = TermParser(index, tokens).parse();
-		terms.push_back(result.entity);
-		index = result.index;
+		parser = TermParser(offset, tokens);
+		result = parser.parse();
+		terms.push_back(result);
+		offset = parser.getOffset();
 
-		expr.right = &terms.back();
+		expr->right = terms.back();
 		terms.push_back(expr);
 
-		index++;
-		next = tokens.at(index);
+		next = tokens.at(offset);
 	}
 	
 	if (next->value == ";") {
-		result.index = index + 1;
-		return result;
+		offset ++;
+		return root;
 	}
 	else if (next->value == ")") {
-		cout << result.index << endl;
-		return result;
+		//cout << result.index << endl;
+		return root;
 	}
 	else {
 		//throw error
@@ -64,33 +64,35 @@ ParseResult<ExpressionNode> ExprParser::parse() {
 }
 
 
-ParseResult<ExpressionNode> TermParser::parse() {
-	int index = offset;
+ExpressionNode* TermParser::parse() {
 	FactorParser parser = FactorParser(offset, tokens);
-	ParseResult result = parser.parse();
-	vector<ExpressionNode> factors;
-	index = result.index;
-	factors.push_back(result.entity);
+	ExpressionNode* result = parser.parse();
+	vector<ExpressionNode*> factors;
+	offset = parser.getOffset();
+	factors.push_back(result);
+	ExpressionNode* root = result;
 
-	index++;
-	Token* next = tokens.at(index);
+	offset++;
+	Token* next = tokens.at(offset);
 	while (next->value == "*" || next->value == "/" || next->value == "%") {
 		//continue process as term
-		index++;
+		offset++;
 
-		ExpressionNode term = ExpressionNode(next);
+		ExpressionNode* term = new ExpressionNode(next);
 		cout << next->value << endl;
-		term.left = &factors.back();
+		term->left = factors.back();
+		root = term;
 
-		result = FactorParser(index, tokens).parse();
-		factors.push_back(result.entity);
-		index = result.index;
-		term.right = &factors.back();
+		parser = FactorParser(offset, tokens);
+		result = parser.parse();
+		factors.push_back(result);
+		offset = parser.getOffset();
+		term->right = factors.back();
 
 		factors.push_back(term);
 
-		index++;
-		next = tokens.at(index);
+		offset++;
+		next = tokens.at(offset);
 	}
 
 	if (next->value == "+" || next->value == "-" || next->value == ";"||next->value == ")") {
@@ -102,20 +104,19 @@ ParseResult<ExpressionNode> TermParser::parse() {
 	}
 }
 
-ParseResult<ExpressionNode> FactorParser::parse() {
-	int index = this->offset;
+ExpressionNode* FactorParser::parse() {
 	Token* curr = tokens.at(offset);
 	if (curr->isConstant() || curr->isName()) {
-		cout << curr->value << endl << endl;
-		ParseResult<ExpressionNode> result = { ExpressionNode(curr), offset };
+		cout << curr->value << endl;
+		ExpressionNode* result = new ExpressionNode(curr);
 		return result;
 	}
 	else if (curr->value == "(") {
-		index++;
-		ExprParser parser = ExprParser(index, tokens);
-		ParseResult<ExpressionNode> factor = parser.parse();
+		offset++;
+		ExprParser parser = ExprParser(offset, tokens);
+		ExpressionNode* factor = parser.parse();
 		//if next token is not ")" throw error
-		factor.index++;
+		offset++;
 		return factor;
 	}
 	else {
