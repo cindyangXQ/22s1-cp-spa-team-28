@@ -64,3 +64,20 @@ private:
 	std::map<Left, std::unordered_set<Right>> leftToRightsMap;
 	std::map<Right, std::unordered_set<Left>> rightToLeftsMap;
 };
+
+class ParentTable : public RelationshipsTable<int, int> {
+
+};
+
+class ParentTTable : public RelationshipsTable<int, int> {
+
+};
+
+class FollowsTable : public RelationshipsTable<int, int> {
+
+};
+
+class FollowsTTable : public RelationshipsTable<int, int> {
+
+};
+
