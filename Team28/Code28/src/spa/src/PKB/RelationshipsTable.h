@@ -13,13 +13,16 @@ public:
 	* Stores a Relationship to both leftToRightsMap and rightToLeftsMap.
 	*/
 	void store(Relationship<Left, Right>* relationship) {
-		Left& left = relationship->getLeft();
-		Right& right = relationship->getRight();
-		insertLeft(left, right);
-		insertRight(right, left);
+		Left left = relationship->getLeft();
+		Right right = relationship->getRight();
+		storeLeft(left, right);
+		storeRight(right, left);
 	}
 
-	void insertRight(Left &left, Right &right) {
+	/*
+	* Stores a Left to RightToLeftsMap.
+	*/
+	void storeRight(Right right, Left left) {
 		auto key = this->rightToLeftsMap.find(right);
 
 		if (key != this->rightToLeftsMap.end()) {
@@ -29,7 +32,10 @@ public:
 		}
 	}
 
-	void insertLeft(Left &left, Right &right) {
+	/*
+	* Stores a Right to LeftToRightsMap.
+	*/
+	void storeLeft(Left left, Right right) {
 		auto key = this->leftToRightsMap.find(left);
 
 		if (key != this->leftToRightsMap.end()) {
@@ -39,8 +45,19 @@ public:
 		}
 	}
 
+	/*
+	* Retrieves all Rights associated to a given Left.
+	*/
+	std::unordered_set<Right> retrieveLeft(Left left) {
+		return this->leftToRightsMap[left];
+	}
+
+	std::unordered_set<Left> retrieveRight(Right right) {
+		return this->rightToLeftsMap[right];
+	}
+
 	int getTableSize() const {
-		return -1;
+		return -1; // TODO change behaviour, now returning dummy value
 	}
 
 private:

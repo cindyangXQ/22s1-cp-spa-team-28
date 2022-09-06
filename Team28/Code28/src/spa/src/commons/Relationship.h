@@ -12,7 +12,10 @@ public:
 	/*
 	* Explicit constructor for Relationship.
 	*/
-	explicit Relationship(RelationshipReference name) : Entity<RelationshipReference>(name) {};
+	explicit Relationship(RelationshipReference name, Left left, Right right) : Entity<RelationshipReference>(name) {
+		this->left = left;
+		this->right = right;
+	};
 
 	Left getLeft() {
 		return this->left;
@@ -23,6 +26,6 @@ public:
 	};
 
 private:
-	Left* left;
-	Right* right;
+	Left left;
+	Right right;
 };
