@@ -3,7 +3,8 @@
 #include <map>
 #include <vector>
 
-#include "Statement.h"
+#include "../commons/Statement.h"
+#include "StatementPredicateMap.h"
 #include "Table.h"
 
 /*
@@ -21,7 +22,7 @@ public:
 	/*
 	* Retrieves a statement from StatementsTable by index. 
 	*/
-	Statement *retrieve(const int& index);
+	Statement* retrieve(const int& index);
 
 	/*
 	* Retrieves type of a statement from StatementsTable by index.
@@ -32,6 +33,21 @@ public:
 	* Returns the size of StatementsTable.
 	*/
 	int getTableSize() const;
+
+	/*
+	* Filters table based on the PredicateMap.
+	*/
+	StatementsTable* filter(StatementPredicateMap* predicateMap);
+
+	/*
+	* Gets all statements in StatementsTable.
+	*/
+	std::vector<Statement*> getAll();
+
+	/*
+	* Gets all statements of the specified type from StatementsTable.
+	*/
+	std::vector<int> getStatementsByType(StatementType type);
 
 private:
 	int tableSize = 0;

@@ -1,13 +1,18 @@
+#pragma once
+
 #include "../Reference/Synonym.h"
-#include "../Reference/EntityReference.h"
-#include "../Reference/StatementReference.h"
+#include "../../commons/Reference.h"
+
+typedef std::string Expression;
+/*
+ * Class encapsulating the logic of the pattern clause.
+ */
 class PatternClause
 {
 public:
     Synonym syn;
-    EntityReference entRef;
-    StatementReference stmtRef;
+    Reference entRef;
+    Expression expression;
 	PatternClause();
-    PatternClause(std::string desc);
-    PatternClause(Synonym syn, EntityReference entRef, StatementReference stmtRef);
+    PatternClause(Synonym syn, Reference entRef, Expression expression);
 };

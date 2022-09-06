@@ -1,5 +1,9 @@
 #pragma once
-enum DesignEntity
+
+/*
+ * Enumerates the different design entity.
+ */
+enum class DesignEntity
 {
     PROCEDURE,
 	STATEMENT,

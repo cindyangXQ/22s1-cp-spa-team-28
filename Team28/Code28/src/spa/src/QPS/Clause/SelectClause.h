@@ -1,9 +1,5 @@
-#include <iostream>
+#pragma once
+
 #include "../Reference/Synonym.h"
-class SelectClause
-{
-public:
-	Synonym syn;
-    SelectClause();
-	SelectClause(Synonym syn);
-};
+
+typedef Synonym SelectType;

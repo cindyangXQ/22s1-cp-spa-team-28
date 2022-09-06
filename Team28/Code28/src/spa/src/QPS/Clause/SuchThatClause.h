@@ -1,21 +1,18 @@
+#pragma once
+
 #include <iostream>
-#include "../Reference/Reference.h"
-enum class RelRef {
-    Modifies,
-    Uses,
-    Parent,
-    ParentT,
-    Follows,
-    FollowsT,
-    Empty
-};
+#include "../../commons/Reference.h"
+
+/*
+ * Class encapsulating the logic of the such that clause.
+ */
 class SuchThatClause
 {
 public:
-    RelRef relationshipType;
+    RelationshipReference relationshipType;
     Reference refLeft;
     Reference refRight;
 
     SuchThatClause();
-    SuchThatClause(RelRef relationshipType, Reference refLeft, Reference refRight);
+    SuchThatClause(RelationshipReference relationshipType, Reference refLeft, Reference refRight);
 };
