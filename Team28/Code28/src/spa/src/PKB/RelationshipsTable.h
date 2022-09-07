@@ -52,6 +52,9 @@ public:
 		return this->leftToRightsMap[left];
 	}
 
+	/*
+	* Retrieves all Lefts associated to a given Right.
+	*/
 	std::unordered_set<Left> retrieveRight(Right right) {
 		return this->rightToLeftsMap[right];
 	}
