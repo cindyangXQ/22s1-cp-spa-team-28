@@ -23,7 +23,7 @@ TEST_CASE("RelationshipsTable can store and retrieve correctly") {
 TEST_CASE("RelationshipsTable can storeLeft and retrieve correctly") {
 	RelationshipsTable<int, int> table;
 
-	table.storeLeft(1, 2);
+	table.storeRightToLeftMap(1, 2);
 
 	// successfully stored 1 item to left map
 	REQUIRE(table.retrieveLeft(1).size() == 1);
@@ -34,7 +34,7 @@ TEST_CASE("RelationshipsTable can storeLeft and retrieve correctly") {
 TEST_CASE("RelationshipsTable can storeRight and retrieve correctly") {
 	RelationshipsTable<int, int> table;
 
-	table.storeRight(1, 2);
+	table.storeLeftToRightMap(1, 2);
 
 	// successfully stored 1 item to right map
 	REQUIRE(table.retrieveRight(1).size() == 1);

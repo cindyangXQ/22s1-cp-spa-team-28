@@ -15,14 +15,14 @@ public:
 	void store(Relationship<Left, Right>* relationship) {
 		Left left = relationship->getLeft();
 		Right right = relationship->getRight();
-		storeLeft(left, right);
-		storeRight(right, left);
+		storeRightToLeftMap(left, right);
+		storeLeftToRightMap(right, left);
 	}
 
 	/*
 	* Stores a Left to RightToLeftsMap.
 	*/
-	void storeRight(Right right, Left left) {
+	void storeLeftToRightMap(Right right, Left left) {
 		auto key = this->rightToLeftsMap.find(right);
 
 		if (key != this->rightToLeftsMap.end()) {
@@ -35,7 +35,7 @@ public:
 	/*
 	* Stores a Right to LeftToRightsMap.
 	*/
-	void storeLeft(Left left, Right right) {
+	void storeRightToLeftMap(Left left, Right right) {
 		auto key = this->leftToRightsMap.find(left);
 
 		if (key != this->leftToRightsMap.end()) {
