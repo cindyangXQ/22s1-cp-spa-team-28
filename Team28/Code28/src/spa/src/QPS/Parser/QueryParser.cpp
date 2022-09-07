@@ -19,49 +19,39 @@ SolvableQuery QueryParser::parse(std::string query) {
 }
 
 Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
-    std::vector<Synonym> syns;
+    std::vector<Synonym> all_syns;
+    std::vector<Synonym> curr_syns;
+    std::vector<std::string> tokens;
+    std::vector<char> special_chars{ ','};
     for (int i = 0; i < clauses.size() - 1; i++) {
-        std::string clause = Utils::removeTrailingSpaces(clauses[i]);
-        syns.push_back(QueryParser::parseSynonym(clause));
+        tokens = Utils::tokenize(clauses[i], special_chars);
+        curr_syns = QueryParser::parseSynonyms(tokens);
+        all_syns.insert(all_syns.end(), curr_syns.begin(), curr_syns.end());
     }
-    return Declaration(syns);
+    if (checkDuplicateSynonymName(all_syns)) {
+        throw ParseError("Duplicate synonym names declared");
+    }
+    return Declaration(all_syns);
 }
 
-Synonym QueryParser::parseSynonym(std::string desc) {
-    std::vector<std::string> tokens = Utils::splitString(desc, ' ');
-    DesignEntity entity;
-    if (tokens[0].compare("procedure") == 0) {
-        entity = DesignEntity::PROCEDURE;
+std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens) {
+    if (tokens.size() % 2 == 1) {
+        throw ParseError("syntax error in declaration clause");
     }
-    else if (tokens[0].compare("stmt") == 0) {
-        entity = DesignEntity::STATEMENT;
+    DesignEntity entity = getDesignEntity(tokens[0]);
+    std::vector<Synonym> syns;
+    for (int i = 1; i < tokens.size(); i++) {
+        if (i % 2 == 1) {
+            if (!checkValidName(tokens[i])) {
+                throw ParseError("Invalid name in declaration clause");
+            }
+            syns.push_back(Synonym(entity, tokens[i]));
+        }
+        else if (tokens[i].compare(",") != 0) {
+            throw ParseError("syntax error in declaration clause");
+        }
     }
-    else if (tokens[0].compare("read") == 0) {
-        entity = DesignEntity::READ;
-    }
-    else if (tokens[0].compare("print") == 0) {
-        entity = DesignEntity::PRINT;
-    }
-    else if (tokens[0].compare("assign") == 0) {
-        entity = DesignEntity::ASSIGN;
-    }
-    else if (tokens[0].compare("call") == 0) {
-        entity = DesignEntity::CALL;
-    }
-    else if (tokens[0].compare("while") == 0) {
-        entity = DesignEntity::WHILE;
-    }
-    else if (tokens[0].compare("if") == 0) {
-        entity = DesignEntity::IF;
-    }
-    else if (tokens[0].compare("variable") == 0) {
-        entity = DesignEntity::VARIABLE;
-    }
-    else if (tokens[0].compare("constant") == 0) {
-        entity = DesignEntity::CONSTANT;
-    }
-    std::string name = tokens[1];
-    return Synonym(entity, name);
+    return syns;
 }
 
 SelectType QueryParser::parseSelectClause(std::string mainClause, std::vector<Synonym> syns) {
@@ -145,6 +135,67 @@ bool QueryParser::isPatternClause(std::vector<std::string> tokens, size_t start)
         }
         else {
             throw ParseError("Syntax error for pattern clause");
+        }
+    }
+    return false;
+}
+
+bool QueryParser::checkValidName(std::string name) {
+    return std::regex_match(name, std::regex("^[a-zA-Z][a-zA-Z0-9]*$"));
+}
+
+DesignEntity QueryParser::getDesignEntity(std::string input) {
+    DesignEntity entity;
+    if (input.compare("procedure") == 0) {
+        entity = DesignEntity::PROCEDURE;
+    }
+    else if (input.compare("stmt") == 0) {
+        entity = DesignEntity::STATEMENT;
+    }
+    else if (input.compare("read") == 0) {
+        entity = DesignEntity::READ;
+    }
+    else if (input.compare("print") == 0) {
+        entity = DesignEntity::PRINT;
+    }
+    else if (input.compare("assign") == 0) {
+        entity = DesignEntity::ASSIGN;
+    }
+    else if (input.compare("call") == 0) {
+        entity = DesignEntity::CALL;
+    }
+    else if (input.compare("while") == 0) {
+        entity = DesignEntity::WHILE;
+    }
+    else if (input.compare("if") == 0) {
+        entity = DesignEntity::IF;
+    }
+    else if (input.compare("variable") == 0) {
+        entity = DesignEntity::VARIABLE;
+    }
+    else if (input.compare("constant") == 0) {
+        entity = DesignEntity::CONSTANT;
+    }
+    else {
+        throw ParseError("Unknown design entity in declaration clause");
+    }
+    return entity;
+}
+
+bool QueryParser::checkDuplicateSynonymName(std::vector<Synonym> syns) {
+    std::vector<std::string> names;
+    int i, j;
+    for (i = 0; i < syns.size(); i++) {
+        names.push_back(syns[i].name);
+    }
+    for (i = 0; i < syns.size(); i++) {
+        for (j = 0; j < syns.size(); j++) {
+            if (i == j) {
+                continue;
+            }
+            else if (syns[i].name == names[j]) {
+                return true;
+            }
         }
     }
     return false;
