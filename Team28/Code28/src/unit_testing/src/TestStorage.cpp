@@ -81,3 +81,51 @@ TEST_CASE("Storage stores and retrieves Procedures correctly") {
 	// Procedure retrieved from ProceduresTable correctly
 	REQUIRE(*procedures->retrieve(test.getName()) == test);
 }
+
+TEST_CASE("Storage stores and retrieves Parent correctly") {
+	Storage storage;
+	ParentTable* parents = (ParentTable*)storage.getTable(TableName::PARENT);
+	Relationship<int, int> test = Relationship(RelationshipReference::Parent, 1, 2);
+
+	parents->store(&test);
+
+	// Relationship stored to ParentTable correctly
+	REQUIRE(parents->retrieveLeft(1).size() == 1);
+	REQUIRE(parents->retrieveRight(2).size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves ParentT correctly") {
+	Storage storage;
+	ParentTTable* parentsT = (ParentTTable*)storage.getTable(TableName::PARENT);
+	Relationship<int, int> test = Relationship(RelationshipReference::ParentT, 1, 2);
+
+	parentsT->store(&test);
+
+	// Relationship stored to ParentTTable correctly
+	REQUIRE(parentsT->retrieveLeft(1).size() == 1);
+	REQUIRE(parentsT->retrieveRight(2).size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves Follows correctly") {
+	Storage storage;
+	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
+	Relationship<int, int> test = Relationship(RelationshipReference::Follows, 1, 2);
+
+	follows->store(&test);
+
+	// Relationship stored to FollowsTable correctly
+	REQUIRE(follows->retrieveLeft(1).size() == 1);
+	REQUIRE(follows->retrieveRight(2).size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves FollowsT correctly") {
+	Storage storage;
+	FollowsTTable* followsT = (FollowsTTable*)storage.getTable(TableName::PARENT);
+	Relationship<int, int> test = Relationship(RelationshipReference::FollowsT, 1, 2);
+
+	followsT->store(&test);
+
+	// Relationship stored to FollowsTTable correctly
+	REQUIRE(followsT->retrieveLeft(1).size() == 1);
+	REQUIRE(followsT->retrieveRight(2).size() == 1);
+}
