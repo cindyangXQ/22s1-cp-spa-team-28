@@ -60,6 +60,9 @@ public:
 		return this->rightToLeftsMap[right];
 	}
 
+	/*
+	* Filters RelationshipsTable based on conditions encapsulated in a given predicateMap.
+	*/
 	RelationshipsTable<Left, Right>* filter(RelationshipPredicateMap<Left, Right>* predicateMap) {
 		if ((*predicateMap).isEmpty()) {
 			RelationshipsTable<Left, Right>* newTable = this;
