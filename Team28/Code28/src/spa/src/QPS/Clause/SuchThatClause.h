@@ -10,10 +10,10 @@
 class SuchThatClause
 {
 public:
-    Relationship relationship;
+    RelationshipType relationship;
     Reference refLeft;
     Reference refRight;
 
     SuchThatClause();
-    SuchThatClause(Relationship relationship, Reference refLeft, Reference refRight);
+    SuchThatClause(RelationshipType relationship, Reference refLeft, Reference refRight);
 };

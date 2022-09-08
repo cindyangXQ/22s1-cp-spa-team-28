@@ -68,10 +68,10 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector
         }
 
         // throw an error if unable to find the relationship from the enum table
-        if (relationshipNameLookup.find(matches[1].str()) == relationshipNameLookup.end()) {
+        if (relationshipMap.find(matches[1].str()) == relationshipMap.end()) {
             throw ParseError("Invalid relationship type");
         }
-        Relationship relationship = relationshipNameLookup.at(matches[1].str());
+        RelationshipType relationship = relationshipMap.at(matches[1].str());
         Reference left = getReference(matches[2].str(), syns);
         Reference right = getReference(matches[3].str(), syns);
 
@@ -109,11 +109,11 @@ PatternClause QueryParser::parsePatternClause(std::string *clause, std::vector<S
 Synonym QueryParser::parseSynonym(std::string desc) {
     std::vector<std::string> tokens = Utils::splitString(desc, ' ');
     EntityName entity;
-    if (entityNameLookup.find(tokens[0]) == entityNameLookup.end()) {
+    if (entityMap.find(tokens[0]) == entityMap.end()) {
         throw ParseError("Invalid design entity name");
     }
     else {
-        entity = entityNameLookup.find(tokens[0])->second;
+        entity = entityMap.find(tokens[0])->second;
     }
     std::string name = tokens[1];
     return Synonym(entity, name);
