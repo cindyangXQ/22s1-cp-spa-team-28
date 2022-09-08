@@ -17,7 +17,7 @@ std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *query
         }
     }
     if (isQueryResultAllTrue == true) {
-        if (queryResult->selectType.entity == DesignEntity::STATEMENT) {
+        if (queryResult->selectType.entity == EntityName::STMT) {
             std::vector<Statement*> statementList = (std::vector<Statement*>)this->queryFacade->getAllStatements();
             std::vector<std::string> result;
             for (int i = 0; i < statementList.size(); i++) {
@@ -25,15 +25,15 @@ std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *query
             }
             return result;
         }
-        else if (queryResult->selectType.entity == DesignEntity::VARIABLE) {
+        else if (queryResult->selectType.entity == EntityName::VARIABLE) {
             std::vector<VariableName> variableList = this->queryFacade->getAllVariables();
             return variableList;
         }
-        else if (queryResult->selectType.entity == DesignEntity::CONSTANT) {
+        else if (queryResult->selectType.entity == EntityName::CONSTANT) {
             std::vector<ConstantName> constantList = this->queryFacade->getAllConstants();
             return constantList;
         }
-        else if (queryResult->selectType.entity == DesignEntity::PROCEDURE) {
+        else if (queryResult->selectType.entity == EntityName::PROCEDURE) {
             std::vector<ProcedureName> procedureList = this->queryFacade->getAllProcedures();
             return procedureList;
         }

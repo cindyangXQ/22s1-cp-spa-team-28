@@ -8,6 +8,20 @@ enum class EntityHeader {
 	NAME
 };
 
+enum class EntityName
+{
+    PROCEDURE,
+    STMT,
+    READ,
+    PRINT,
+    ASSIGN,
+    CALL,
+    WHILE,
+    IF,
+    VARIABLE,
+    CONSTANT,
+};
+
 /*
 * Class encapsulating 1 of the following design entities: Procedure, Constant, Variable.
 */

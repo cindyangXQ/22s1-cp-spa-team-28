@@ -4,6 +4,21 @@
 #include "Reference.h"
 
 /*
+ * Enumerates the different design entity.
+ */
+enum class RelationshipType {
+    FOLLOWS,
+    FOLLOWS_STAR,
+    PARENT,
+    PARENT_STAR,
+    USES,
+    MODIFIES,
+    CALLS,
+    CALLS_STAR,
+    EMPTY
+};
+
+/*
 * A class encapsulating Relationships in SIMPLE.
 */
 template <typename Left, typename Right>

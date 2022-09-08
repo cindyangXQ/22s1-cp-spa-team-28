@@ -15,12 +15,10 @@ TEST_CASE() {
 
 	for (int i = 0; i < token_list.size(); i++) {
 		Token* temp = token_list[i];
-		std::cout << temp->value << endl;
 	}
 
 	ProgramParser parser = ProgramParser(0, token_list);
 	ProgramNode* program = parser.parse();
-	std::cout << program->getProcList().size() << endl;
 	//ProcedureNode* procedure = program->getProcList().at(0);
 	Storage* storage = new Storage();
 	PopulateFacade facade = PopulateFacade(storage);
