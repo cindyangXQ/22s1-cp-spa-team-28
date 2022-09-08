@@ -7,14 +7,14 @@
 #include "../../commons/Relationship.h"
 
 
-typedef std::unordered_map<std::string, EntityName> ENTITY_LOOKUP;
-typedef std::unordered_map<std::string, Relationship> RELATIONSHIP_LOOKUP;
+typedef std::unordered_map<std::string, EntityName> ENTITY_MAP;
+typedef std::unordered_map<std::string, RelationshipType> RELATIONSHIP_MAP;
 
 /*
 * Lookup tables to map unprocessed strings to their respective enum values
 */
 // map string to design entity enum
-const ENTITY_LOOKUP entityNameLookup = {
+const ENTITY_MAP entityMap = {
         {"stmt", EntityName::STMT},
         {"read", EntityName::READ},
         {"print", EntityName::PRINT},
@@ -28,15 +28,15 @@ const ENTITY_LOOKUP entityNameLookup = {
 };
 
 // map string to relationship enum
-const RELATIONSHIP_LOOKUP relationshipNameLookup = {
-        {"Follows", Relationship::FOLLOWS},
-        {"Follows*", Relationship::FOLLOWS_STAR},
-        {"Parent", Relationship::PARENT},
-        {"Parent*", Relationship::PARENT_STAR},
-        {"Uses", Relationship::USES},
-        {"Modifies", Relationship::MODIFIES},
-        {"Calls", Relationship::CALLS},
-        {"Calls*", Relationship::CALLS_STAR}
+const RELATIONSHIP_MAP relationshipMap = {
+        {"Follows", RelationshipType::FOLLOWS},
+        {"Follows*", RelationshipType::FOLLOWS_STAR},
+        {"Parent", RelationshipType::PARENT},
+        {"Parent*", RelationshipType::PARENT_STAR},
+        {"Uses", RelationshipType::USES},
+        {"Modifies", RelationshipType::MODIFIES},
+        {"Calls", RelationshipType::CALLS},
+        {"Calls*", RelationshipType::CALLS_STAR}
 };
 
 /*

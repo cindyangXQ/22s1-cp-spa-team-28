@@ -9,7 +9,7 @@
 using namespace std;
 
 TEST_CASE() {
-	string sourceProgram = "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + 2;\nwest= 9 + east + west;\n}";
+	string sourceProgram = "procedure Bedok {\nx2 = (2 * 1 + 2) / 3;\n}";
 	Tokenizer tokenizer = Tokenizer(sourceProgram);
 	vector<Token*> token_list = tokenizer.tokenize();
 
@@ -22,12 +22,12 @@ TEST_CASE() {
 	//ProcedureNode* procedure = program->getProcList().at(0);
 	Storage* storage = new Storage();
 	PopulateFacade facade = PopulateFacade(storage);
-	DesignExtractor(program, &facade).extractAll();
-	/*vector<Variable*> vars = VariableExtractor(program).extract(facade);
+	//DesignExtractor(program, &facade).extractAll();
+	vector<Variable*> vars = VariableExtractor(program, &facade).extract();
 
 	
 	std::cout << "__________________________" << endl;
 	for (size_t i = 0; i < vars.size(); i++) {
 		std::cout << vars.at(i)->getName();
-	}*/
+	}
 }
