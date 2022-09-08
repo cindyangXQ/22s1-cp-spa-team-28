@@ -41,3 +41,75 @@ TEST_CASE("RelationshipsTable can storeRight and retrieve correctly") {
 	// nothing stored to left map
 	REQUIRE(table.retrieveLeft(2).size() == 0);
 }
+
+TEST_CASE("Empty PredicateMap returns same RelationshipsTable") {
+	RelationshipsTable<int, int> table;
+	Relationship<int, int> test1 = Relationship(RelationshipReference::Follows, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::Follows, 2, 3);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::Follows, 3, 4);
+
+	table.store(&test1);
+	table.store(&test2);
+	table.store(&test3);
+
+	std::map<RelationshipHeader, Relationship<int, int>*> m = {};
+	RelationshipPredicateMap predicateMap = RelationshipPredicateMap(&m);
+	RelationshipsTable<int, int>* filteredTable = table.filter(&predicateMap);
+
+	REQUIRE(filteredTable->getLeftMap().size() == 3);
+	REQUIRE(filteredTable->getRightMap().size() == 3);
+}
+
+TEST_CASE("Successfully filters RelationshipsTable using CHECK_LEFT") {
+	RelationshipsTable<int, int> table;
+	Relationship<int, int> test1 = Relationship(RelationshipReference::Follows, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::Follows, 2, 3);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::Follows, 3, 4);
+
+	table.store(&test1);
+	table.store(&test2);
+	table.store(&test3);
+
+	std::map<RelationshipHeader, Relationship<int, int>*> m = {{RelationshipHeader::CHECK_LEFT, &test1}};
+	RelationshipPredicateMap predicateMap = RelationshipPredicateMap(&m);
+	RelationshipsTable<int, int>* filteredTable = table.filter(&predicateMap);
+
+	REQUIRE(filteredTable->getLeftMap().size() == 1);
+	REQUIRE(filteredTable->getRightMap().size() == 0);
+}
+
+TEST_CASE("Successfully filters RelationshipsTable using CHECK_RIGHT") {
+	RelationshipsTable<int, int> table;
+	Relationship<int, int> test1 = Relationship(RelationshipReference::Follows, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::Follows, 2, 3);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::Follows, 3, 4);
+
+	table.store(&test1);
+	table.store(&test2);
+	table.store(&test3);
+
+	std::map<RelationshipHeader, Relationship<int, int>*> m = {{RelationshipHeader::CHECK_RIGHT, &test1}};
+	RelationshipPredicateMap predicateMap = RelationshipPredicateMap(&m);
+	RelationshipsTable<int, int>* filteredTable = table.filter(&predicateMap);
+
+	REQUIRE(filteredTable->getLeftMap().size() == 0);
+	REQUIRE(filteredTable->getRightMap().size() == 1);
+}
+
+TEST_CASE("Successfully filters RelationshipsTable using both CHECK_LEFT and CHECK_RIGHT") {
+	RelationshipsTable<int, int> table;
+	Relationship<int, int> test1 = Relationship(RelationshipReference::Follows, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::Follows, 2, 3);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::Follows, 3, 4);
+
+	table.store(&test1);
+	table.store(&test2);
+	table.store(&test3);
+
+	std::map<RelationshipHeader, Relationship<int, int>*> m = {{RelationshipHeader::CHECK_LEFT, &test1}, {RelationshipHeader::CHECK_RIGHT, &test2}};
+	RelationshipPredicateMap predicateMap = RelationshipPredicateMap(&m);
+	RelationshipsTable<int, int>* filteredTable = table.filter(&predicateMap);
+
+	REQUIRE(filteredTable->getLeftMap().size() == 1);
+	REQUIRE(filteredTable->getRightMap().size() == 1);
+}
