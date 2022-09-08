@@ -1,5 +1,5 @@
 #pragma once
-#include "DesignEntity.h"
+#include "../../commons/Entity.h"
 #include "../../commons/Reference.h"
 #include "../Utils.h"
 #include <iostream>
@@ -10,8 +10,8 @@
 class Synonym : public Reference
 {
 public:
-	DesignEntity entity;
+	EntityName entity;
 	std::string name;
     Synonym();
-	Synonym(DesignEntity entity, std::string name);
+	Synonym(EntityName entity, std::string name);
 };

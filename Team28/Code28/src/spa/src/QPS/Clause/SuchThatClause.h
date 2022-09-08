@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "../../commons/Reference.h"
+#include "../../commons/Relationship.h"
 
 /*
  * Class encapsulating the logic of the such that clause.
@@ -9,10 +10,10 @@
 class SuchThatClause
 {
 public:
-    RelationshipReference relationshipType;
+    Relationship relationship;
     Reference refLeft;
     Reference refRight;
 
     SuchThatClause();
-    SuchThatClause(RelationshipReference relationshipType, Reference refLeft, Reference refRight);
+    SuchThatClause(Relationship relationship, Reference refLeft, Reference refRight);
 };
