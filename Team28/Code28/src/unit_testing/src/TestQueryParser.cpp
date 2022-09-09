@@ -9,6 +9,28 @@ TEST_CASE("QueryParser is parsing correctly") {
     REQUIRE(solvableQ.selectType.entity == EntityName::VARIABLE);
 }
 
+TEST_CASE("QueryParser can parse declaration correctly") {
+	std::vector<std::string> clauses = { "assign a","constant c", "variable v", "Select v such that Modifies(1, v) pattern a(v, _)" };
+	Declaration declare = QueryParser::parseDeclaration(clauses);
+	REQUIRE(declare.syns.size() == 3);
+
+	std::vector<std::string> multiple_declaration_clauses = { "assign a, b, a2","constant c, constant, yey", "variable v, v2, v3", "Select v such that Modifies(1, v) pattern a(v, _)" };
+	Declaration multiple_declare = QueryParser::parseDeclaration(multiple_declaration_clauses);
+	REQUIRE(multiple_declare.syns.size() == 9);
+
+	std::vector<std::string> syntax_clauses = { "assign a, b, a2,","constant c, constant, yey", "variable v, v2, v3", "Select v such that Modifies(1, v) pattern a(v, _)" };
+	REQUIRE_THROWS(QueryParser::parseDeclaration(syntax_clauses));
+
+	std::vector<std::string> semantic_clauses = { "assign a, b, a2","constant c, constant, b", "variable v, v2, v3", "Select v such that Modifies(1, v) pattern a(v, _)" };
+	REQUIRE_THROWS(QueryParser::parseDeclaration(semantic_clauses));
+
+	std::vector<std::string> invalid_name_start_clauses = { "assign 1, b, a2","constant c, constant, sup", "variable v, v2, v3", "Select v such that Modifies(1, v) pattern a(v, _)" };
+	REQUIRE_THROWS(QueryParser::parseDeclaration(invalid_name_start_clauses));
+
+	std::vector<std::string> invalid_name_special_char_clauses = { "assign a1, b, a2","constant c, constant, z*", "variable v, v2, v3", "Select v such that Modifies(1, v) pattern a(v, _)" };
+	REQUIRE_THROWS(QueryParser::parseDeclaration(invalid_name_special_char_clauses));
+}
+
 TEST_CASE("Parser can parse such that clause") {
 	std::string correct_input = "such that Modifies(1, v)";
 	std::vector<Synonym> syns{ Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a") };

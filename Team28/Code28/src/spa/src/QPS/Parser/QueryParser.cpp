@@ -23,17 +23,19 @@ SolvableQuery QueryParser::parse(std::string query) {
 }
 
 Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
-    std::vector<Synonym> syns;
+    std::vector<Synonym> all_syns;
+    std::vector<Synonym> curr_syns;
+    std::vector<std::string> tokens;
+    std::vector<char> special_chars{ ','};
     for (int i = 0; i < clauses.size() - 1; i++) {
-        std::string clause = Utils::removeTrailingSpaces(clauses[i]);
-        if (std::regex_match(clause, declarationRegex)) {
-            syns.push_back(QueryParser::parseSynonym(clause));
-        }
-        else {
-            throw ParseError("Invalid declaration syntax");
-        }
+        tokens = Utils::tokenize(clauses[i], special_chars);
+        curr_syns = QueryParser::parseSynonyms(tokens);
+        all_syns.insert(all_syns.end(), curr_syns.begin(), curr_syns.end());
     }
-    return Declaration(syns);
+    if (isDuplicateSynonymName(all_syns)) {
+        throw ParseError("Duplicate synonym names declared");
+    }
+    return Declaration(all_syns);
 }
 
 SelectType QueryParser::parseSelectClause(std::string *clause, std::vector<Synonym> syns) {
@@ -82,14 +84,14 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector
     throw ParseError("Expected such that clause");
 }
 
-PatternClause QueryParser::parsePatternClause(std::string *clause, std::vector<Synonym> syns) {
+PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<Synonym> syns) {
     if ((*clause).size() == 0) return PatternClause();
     if (std::regex_search(*clause, std::regex("\\b(pattern)\\b"))) {
         std::smatch matches;
         std::regex_match(*clause, matches, patternClauseRegex);
         std::string patternClause = matches[1];
 
-        std::regex_match(patternClause, matches,patternRegex);
+        std::regex_match(patternClause, matches, patternRegex);
         if (matches.size() != 5) {
             throw ParseError("Invalid pattern clause syntax");
         }
@@ -106,8 +108,10 @@ PatternClause QueryParser::parsePatternClause(std::string *clause, std::vector<S
     throw ParseError("Expected pattern clause");
 }
 
-Synonym QueryParser::parseSynonym(std::string desc) {
-    std::vector<std::string> tokens = Utils::splitString(desc, ' ');
+std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens) {
+    if (tokens.size() % 2 == 1) {
+        throw ParseError("syntax error in declaration clause");
+    }
     EntityName entity;
     if (entityMap.find(tokens[0]) == entityMap.end()) {
         throw ParseError("Invalid design entity name");
@@ -115,8 +119,19 @@ Synonym QueryParser::parseSynonym(std::string desc) {
     else {
         entity = entityMap.find(tokens[0])->second;
     }
-    std::string name = tokens[1];
-    return Synonym(entity, name);
+    std::vector<Synonym> syns;
+    for (int i = 1; i < tokens.size(); i++) {
+        if (i % 2 == 1) {
+            if (!isValidName(tokens[i])) {
+                throw ParseError("Invalid name in declaration clause");
+            }
+            syns.push_back(Synonym(entity, tokens[i]));
+        }
+        else if (tokens[i].compare(",") != 0) {
+            throw ParseError("syntax error in declaration clause");
+        }
+    }
+    return syns;
 }
 
 Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns) {
@@ -147,4 +162,27 @@ Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
         }
     }
     throw ParseError("Synonym not found");
+}
+
+bool QueryParser::isValidName(std::string name) {
+    return std::regex_match(name, std::regex("^[a-zA-Z][a-zA-Z0-9]*$"));
+}
+
+bool QueryParser::isDuplicateSynonymName(std::vector<Synonym> syns) {
+    std::vector<std::string> names;
+    int i, j;
+    for (i = 0; i < syns.size(); i++) {
+        names.push_back(syns[i].name);
+    }
+    for (i = 0; i < syns.size(); i++) {
+        for (j = 0; j < syns.size(); j++) {
+            if (i == j) {
+                continue;
+            }
+            else if (syns[i].name == names[j]) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
