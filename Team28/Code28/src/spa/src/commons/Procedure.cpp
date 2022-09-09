@@ -1,3 +1,3 @@
 #include "Procedure.h"
 
-Procedure::Procedure(ProcedureName name) : Entity<ProcedureName>(name) {};
+Procedure::Procedure(std::string name) : Entity(name) {};

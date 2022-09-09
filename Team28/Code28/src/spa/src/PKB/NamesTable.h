@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include <type_traits>
 #include <unordered_set>
 
@@ -10,15 +11,15 @@
 
 /*
 * Class encapsulating a Table used for storing Procedures/Variables/Constants.
+* TODO: Abstract filter method if possible
 */
-template <typename In, typename T> 
-class NamesTable : public Table<T> {
-	static_assert(std::is_base_of<Entity<In>, T>::value, "T must inherit from Entity");
+template <typename T>
+class NamesTable : public Table<Entity> {
 public:
 	/*
 	* Stores an entity into NamesTable.
 	*/
-	void store(T* entity) {
+	void store(Entity* entity) {
 		this->names.insert(entity->getName());
 		this->nameEntityMap[entity->getName()] = entity;
 		this->tableSize++;
@@ -27,13 +28,13 @@ public:
 	/*
 	* Retrieves an entity from NamesTable by Name.
 	*/
-	T* retrieve(const In& in) {
-		auto key = this->nameEntityMap.find(in);
+	virtual T* retrieve(const std::string& name) {
+		auto key = this->nameEntityMap.find(name);
 
 		if (key == this->nameEntityMap.end()) {
 			return nullptr;
 		}
-		return key->second;
+		return (T*) key->second;
 	};
 
 	/*
@@ -47,24 +48,24 @@ public:
 	* Gets NamedEntityMap for children. 
 	* TODO: Consider removing.
 	*/
-	std::map<In, T*> getNameEntityMap() {
+	std::map<std::string, Entity*> getNameEntityMap() {
 		return this->nameEntityMap;
 	};
 
 	/*
 	* Gets all names from NamesTable.
 	*/
-	std::unordered_set<In> getAll() {
+	std::unordered_set<std::string> getAll() {
 		return this->names;
 	}
 
-private:
+protected:
 	int tableSize = 0;
-	std::unordered_set<In> names;
-	std::map<In, T*> nameEntityMap;
+	std::unordered_set<std::string> names;
+	std::map<std::string, Entity*> nameEntityMap;
 };
 
-class ConstantsTable : public NamesTable<ConstantName, Constant> {
+class ConstantsTable : public NamesTable<Constant> {
 public:
 	/*
 	* Filter table based on the PredicateMap.
@@ -93,7 +94,7 @@ public:
 	};
 };
 
-class VariablesTable : public NamesTable<VariableName, Variable> {
+class VariablesTable : public NamesTable<Variable> {
 public:
 	/*
 	* Filter table based on the PredicateMap.
@@ -122,7 +123,7 @@ public:
 	};
 };
 
-class ProceduresTable : public NamesTable<ProcedureName, Procedure> {
+class ProceduresTable : public NamesTable<Procedure> {
 public:
 	/*
 	* Filter table based on the PredicateMap.

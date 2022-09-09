@@ -1,4 +1,3 @@
-#include "commons/NameDefinitions.h"
 #include "commons/Constant.h"
 #include "commons/Variable.h"
 #include "commons/Procedure.h"
@@ -7,14 +6,14 @@
 
 #include "catch.hpp"
 
-TEST_CASE("NamesTable is initialised correctly") {
-	NamesTable<ConstantName, Constant> table;
+TEST_CASE("ConstantsTable (derived from NamesTable) is initialised correctly") {
+	ConstantsTable table;
 
 	REQUIRE(table.getTableSize() == 0);
 }
 
-TEST_CASE("NamesTable<ConstantName, Constant> can store and retrieve correctly") {
-	NamesTable<ConstantName, Constant> table;
+TEST_CASE("ConstantsTable can store and retrieve correctly") {
+	ConstantsTable table;
 	Constant test = Constant("Test");
 	
 	table.store(&test);
@@ -22,13 +21,13 @@ TEST_CASE("NamesTable<ConstantName, Constant> can store and retrieve correctly")
 	// test is stored and retrieved correctly
 	REQUIRE(*table.retrieve(test.getName()) == test);
 	// invalid index returns a nullptr for retrieve()
-	REQUIRE(table.retrieve((ConstantName)"not test") == nullptr);
+	REQUIRE(table.retrieve("not test") == nullptr);
 	// tableSize updated correctly
 	REQUIRE(table.getTableSize() == 1);
 }
 
-TEST_CASE("NamesTable<VariableName, Variable> can store and retrieve correctly") {
-	NamesTable<VariableName, Variable> table;
+TEST_CASE("VariablesTable can store and retrieve correctly") {
+	VariablesTable table;
 	Variable test = Variable("Test");
 
 	table.store(&test);
@@ -36,13 +35,13 @@ TEST_CASE("NamesTable<VariableName, Variable> can store and retrieve correctly")
 	// test is stored and retrieved correctly
 	REQUIRE(*table.retrieve(test.getName()) == test);
 	// invalid index returns a nullptr for retrieve()
-	REQUIRE(table.retrieve((VariableName)"not test") == nullptr);
+	REQUIRE(table.retrieve("not test") == nullptr);
 	// tableSize updated correctly
 	REQUIRE(table.getTableSize() == 1);
 }
 
-TEST_CASE("NamesTable<ProcedureName, Procedure> can store and retrieve correctly") {
-	NamesTable<ProcedureName, Procedure> table;
+TEST_CASE("ProceduresTable can store and retrieve correctly") {
+	ProceduresTable table;
 	Procedure test = Procedure("Test");
 
 	table.store(&test);
@@ -50,12 +49,12 @@ TEST_CASE("NamesTable<ProcedureName, Procedure> can store and retrieve correctly
 	// test is stored and retrieved correctly
 	REQUIRE(*table.retrieve(test.getName()) == test);
 	// invalid index returns a nullptr for retrieve()
-	REQUIRE(table.retrieve((ProcedureName)"not test") == nullptr);
+	REQUIRE(table.retrieve("not test") == nullptr);
 	// tableSize updated correctly
 	REQUIRE(table.getTableSize() == 1);
 }
 
-TEST_CASE("NamesTable<ConstantName, Constant> can store 10 items correctly") {
+TEST_CASE("ConstantsTable can store 10 items correctly") {
 	ConstantsTable table;
 	Constant a = Constant("a");
 	table.store(&a);
