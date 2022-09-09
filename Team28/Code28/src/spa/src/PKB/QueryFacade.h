@@ -22,32 +22,32 @@ public:
 	/*
 	* Returns all variable names inside the VariablesTable.
 	*/
-	std::vector<VariableName> getAllVariables();
+	std::vector<std::string> getAllVariables();
 
 	/*
 	* Returns variable that matches a given name.
 	*/
-	Variable* getVariableByName(const VariableName& name);
+	Variable* getVariableByName(const std::string& name);
 
 	/*
 	* Returns all constant names inside the ConstantsTable.
 	*/
-	std::vector<ConstantName> getAllConstants();
+	std::vector<std::string> getAllConstants();
 
 	/*
 	* Returns constant that matches a given name.
 	*/
-	Constant* getConstantByName(const ConstantName& name);
+	Constant* getConstantByName(const std::string& name);
 
 	/*
 	* Returns all procedure names inside the ProceduresTable.
 	*/
-	std::vector<ProcedureName> getAllProcedures();
+	std::vector<std::string> getAllProcedures();
 
 	/*
 	* Returns procedure that matches a given name.
 	*/
-	Procedure* getProcedureByName(const ProcedureName& name);
+	Procedure* getProcedureByName(const std::string& name);
 
 private:
 	Storage* storage;
