@@ -79,14 +79,14 @@ public:
 			if (mapToCheck == RelationshipHeader::CHECK_LEFT) {
 				std::unordered_set<Right> set = this->leftToRightsMap[leftValue];
 				if (set.find(rightValue) != set.end()) {
-					newTable->storeRightToLeftMap(leftValue, rightValue);
+					newTable->storeLeftToRightMap(leftValue, rightValue);
 				}
 			}
 
 			if (mapToCheck == RelationshipHeader::CHECK_RIGHT) {
 				std::unordered_set<Left> set = this->rightToLeftsMap[rightValue];
 				if (set.find(leftValue) != set.end()) {
-					newTable->storeLeftToRightMap(rightValue, leftValue);
+					newTable->storeRightToLeftMap(rightValue, leftValue);
 				}
 			}
 		}

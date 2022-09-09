@@ -74,8 +74,8 @@ TEST_CASE("Successfully filters RelationshipsTable using CHECK_LEFT") {
 	RelationshipPredicateMap predicateMap = RelationshipPredicateMap(&m);
 	RelationshipsTable<int, int>* filteredTable = table.filter(&predicateMap);
 
-	REQUIRE(filteredTable->getLeftMap().size() == 1);
-	REQUIRE(filteredTable->getRightMap().size() == 0);
+	REQUIRE(filteredTable->getLeftMap().size() == 0);
+	REQUIRE(filteredTable->getRightMap().size() == 1);
 }
 
 TEST_CASE("Successfully filters RelationshipsTable using CHECK_RIGHT") {
@@ -92,8 +92,8 @@ TEST_CASE("Successfully filters RelationshipsTable using CHECK_RIGHT") {
 	RelationshipPredicateMap predicateMap = RelationshipPredicateMap(&m);
 	RelationshipsTable<int, int>* filteredTable = table.filter(&predicateMap);
 
-	REQUIRE(filteredTable->getLeftMap().size() == 0);
-	REQUIRE(filteredTable->getRightMap().size() == 1);
+	REQUIRE(filteredTable->getLeftMap().size() == 1);
+	REQUIRE(filteredTable->getRightMap().size() == 0);
 }
 
 TEST_CASE("Successfully filters RelationshipsTable using both CHECK_LEFT and CHECK_RIGHT") {
