@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <regex>
 #include "SolvableQuery.h"
 #include "../Utils.h"
 #include "../../commons/Reference.h"
@@ -15,13 +16,13 @@ class QueryParser {
 public:
     static SolvableQuery parse(std::string query);
     static Declaration parseDeclaration(std::vector<std::string> clauses);
-    static Synonym parseSynonym(std::string desc);
     static SelectType parseSelectClause(std::string *clause, std::vector<Synonym> syns);
     static SuchThatClause parseSuchThatClause(std::string *clause, std::vector<Synonym> syns);
     static PatternClause parsePatternClause(std::string *clause, std::vector<Synonym> syns);
 private:
-    static bool isSuchThatClause(std::vector<std::string> tokens, size_t start);
-    static bool isPatternClause(std::vector<std::string> tokens, size_t start);
+    static bool isValidName(std::string name);
+    static std::vector<Synonym> parseSynonyms(std::vector<std::string> tokens);
+    static bool isDuplicateSynonymName(std::vector<Synonym> syns);
     static RelationshipReference getRelationshipReference(std::string input);
     static Reference getReference(std::string input, std::vector<Synonym> syns);
     static Synonym getSynonym(std::string input, std::vector<Synonym> syns);
