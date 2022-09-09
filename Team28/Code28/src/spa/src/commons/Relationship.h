@@ -22,12 +22,13 @@ enum class RelationshipType {
 * A class encapsulating Relationships in SIMPLE.
 */
 template <typename Left, typename Right>
-class Relationship : public Entity<RelationshipReference> {
+class Relationship {
 public:
 	/*
 	* Explicit constructor for Relationship.
 	*/
-	explicit Relationship(RelationshipReference name, Left left, Right right) : Entity<RelationshipReference>(name) {
+	explicit Relationship(RelationshipReference type, Left left, Right right) {
+		this->relType = type;
 		this->left = left;
 		this->right = right;
 	};
@@ -40,7 +41,12 @@ public:
 		return this->right;
 	};
 
+	RelationshipReference getRelationshipType() {
+		return this->relType;
+	}
+	
 private:
+	RelationshipReference relType;
 	Left left;
 	Right right;
 };
