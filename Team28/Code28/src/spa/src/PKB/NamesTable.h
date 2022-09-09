@@ -11,7 +11,9 @@
 
 /*
 * Class encapsulating a Table used for storing Procedures/Variables/Constants.
+* TODO: Abstract filter method if possible
 */
+template <typename T>
 class NamesTable : public Table<Entity> {
 public:
 	/*
@@ -26,7 +28,14 @@ public:
 	/*
 	* Retrieves an entity from NamesTable by Name.
 	*/
-	virtual Entity* retrieve(const std::string& name) = 0;
+	virtual T* retrieve(const std::string& name) {
+		auto key = this->nameEntityMap.find(name);
+
+		if (key == this->nameEntityMap.end()) {
+			return nullptr;
+		}
+		return (T*) key->second;
+	};
 
 	/*
 	* Returns the size of NamesTable.
@@ -56,17 +65,8 @@ protected:
 	std::map<std::string, Entity*> nameEntityMap;
 };
 
-class ConstantsTable : public NamesTable {
+class ConstantsTable : public NamesTable<Constant> {
 public:
-	virtual Constant* retrieve(const std::string& name) {
-		auto key = this->nameEntityMap.find(name);
-
-		if (key == this->nameEntityMap.end()) {
-			return nullptr;
-		}
-		return (Constant*) key->second;
-	};
-
 	/*
 	* Filter table based on the PredicateMap.
 	*/
@@ -94,17 +94,8 @@ public:
 	};
 };
 
-class VariablesTable : public NamesTable {
+class VariablesTable : public NamesTable<Variable> {
 public:
-	virtual Variable* retrieve(const std::string& name) {
-		auto key = this->nameEntityMap.find(name);
-
-		if (key == this->nameEntityMap.end()) {
-			return nullptr;
-		}
-		return (Variable*) key->second;
-	};
-
 	/*
 	* Filter table based on the PredicateMap.
 	*/
@@ -132,16 +123,8 @@ public:
 	};
 };
 
-class ProceduresTable : public NamesTable {
+class ProceduresTable : public NamesTable<Procedure> {
 public:
-	virtual Procedure* retrieve(const std::string& name) {
-		auto key = this->nameEntityMap.find(name);
-
-		if (key == this->nameEntityMap.end()) {
-			return nullptr;
-		}
-		return (Procedure*) key->second;
-	};
 	/*
 	* Filter table based on the PredicateMap.
 	*/
