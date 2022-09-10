@@ -83,13 +83,13 @@ vector<Token*> Tokenizer::tokenize() {
 			// when currType is Name, check if it is keyword
 			if (currType == TokenType::NAME && find(begin(KEYWORD_LIST), end(KEYWORD_LIST), current) != end(KEYWORD_LIST)) {
 				while (index + 1 < input.length()) {
-					if (find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), currChar) != end(WHITESPACE_LIST)) {
+					if (find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), input.at(index+1) )== end(WHITESPACE_LIST)) {
 						break;
 					}
 					index = index + 1;
 				}
 				char temp = input.at(index + 1);
-				if (find(begin(opChar), end(opChar), temp) != end(opChar) && temp != ';') {
+				if (find(begin(opChar), end(opChar), temp) != end(opChar) || temp == ';' || temp == ')' || temp == '{') {
 					tokens.push_back(createToken(TokenType::NAME, current));
 				}
 				else {
@@ -121,6 +121,9 @@ vector<Token*> Tokenizer::tokenize() {
 			}
 		}
 		else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST)) {
+			if (currChar == '(' && find(begin(KEYWORD_LIST), end(KEYWORD_LIST), current) != end(KEYWORD_LIST)) {
+				currType = TokenType::KEYWORD;
+			}
 			if (currType != TokenType::WHITESPACE) {
 				tokens.push_back(createToken(currType, current));
 			}
