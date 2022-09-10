@@ -43,7 +43,8 @@ public:
 	virtual bool isAssign() { return false;  }
 	virtual void getVariablesInto(vector<string>& result) {};
 	virtual void getConstantsInto(vector<string>& result) {};
-	int getLineNumber();
+	int getLineNumber() { return this -> line;  };
+	virtual int getEndLine() { return this->line; }
 };
 
 class ProcedureNode : public EntityNode {
@@ -134,4 +135,14 @@ public:
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
+};
+
+class WhileStatementNode : public StatementNode {
+	vector<StatementNode*> stmtList;
+	ExpressionNode* cond;
+public:
+	WhileStatementNode(vector<StatementNode*> stmtList, ExpressionNode* cond, int line);
+	void getVariablesInto(vector<string>& result);
+	void getConstantsInto(vector<string>& result);
+	int getEndLine();
 };

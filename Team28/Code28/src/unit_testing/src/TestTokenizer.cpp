@@ -9,7 +9,7 @@
 using namespace std;
 
 TEST_CASE() {
-	string sourceProgram = "procedure Bedok {\nx2 = (2 * 1 + 2) / 3;\n}";
+	string sourceProgram = "procedure Bedok {\nx2 = (2 * 1 + 2) / 3;\nwhile((x>=3)&&((1*2)+3< x+4)){\nx = x+1;print x;}\nread x;}";
 	Tokenizer tokenizer = Tokenizer(sourceProgram);
 	vector<Token*> token_list = tokenizer.tokenize();
 

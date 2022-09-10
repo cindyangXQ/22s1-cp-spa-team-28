@@ -38,10 +38,6 @@ int ProcedureNode::getEndline()
 	return stmtList.back()->getLineNumber();
 }
 
-int StatementNode::getLineNumber() {
-	return this->line;
-}
-
 // Statement - findType
 bool ReadStatementNode::isRead() {
 	return true;
@@ -236,4 +232,32 @@ bool VariableNode ::isName() {
 
 bool VariableNode::isConstant() {
 	return false;
+}
+
+WhileStatementNode::WhileStatementNode(vector<StatementNode*> stmtList, ExpressionNode* cond, int line)
+{
+	this->stmtList = stmtList;
+	this->cond = cond;
+	this->line = line;
+}
+
+void WhileStatementNode::getVariablesInto(vector<string>& result)
+{
+	cond->getVariablesInto(result);
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getVariablesInto(result);
+	}
+}
+
+void WhileStatementNode::getConstantsInto(vector<string>& result)
+{
+	cond->getConstantsInto(result);
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getConstantsInto(result);
+	}
+}
+
+
+int WhileStatementNode::getEndLine() {
+	return this->stmtList.back()->getEndLine();
 }
