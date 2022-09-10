@@ -141,9 +141,6 @@ bool CallStatementNode::equals(StatementNode* other) {
 
 bool AssignStatementNode::equals(StatementNode* other) {
 	// Expressions not checked
-	/*std::cout << "isAssign: " << other.isAssign() << endl;
-	std::cout << "this->getVariable: " << this->getVariable() << endl;
-	std::cout << "other.getVariable: " << other.getVariable() << endl;*/
 	return other->isAssign() && this->getVariable() == other->getVariable();
 }
 
