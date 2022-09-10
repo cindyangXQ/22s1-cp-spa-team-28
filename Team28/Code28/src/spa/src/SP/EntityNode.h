@@ -38,11 +38,11 @@ protected:
 	int line;
 public:
 	StatementNode();
-	virtual bool isWhile() { return false; }
 	virtual bool isRead() { return false;  }
 	virtual bool isPrint() { return false;  }
 	virtual bool isCall() { return false;  }
 	virtual bool isAssign() { return false;  }
+	virtual bool isWhile() { return false; }
 	virtual void getVariablesInto(vector<string>& result) {};
 	virtual void getConstantsInto(vector<string>& result) {};
 	int getLineNumber() { return this -> line;  };
@@ -144,15 +144,17 @@ public:
 	void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::ASSIGN)); }
 };
 
+
 class WhileStatementNode : public StatementNode {
 	vector<StatementNode*> stmtList;
 	ExpressionNode* cond;
+
 public:
 	WhileStatementNode(vector<StatementNode*> stmtList, ExpressionNode* cond, int line);
+	bool isWhile() { return true; }
+	int getEndLine();
+	vector<StatementNode*> getStmtList() { return this->stmtList; }
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
-	int getEndLine();
-	bool isWhile() { return true; }
-	vector<StatementNode*> getStmtList() { return this->stmtList; }
 	void getStatementsInto(vector<Statement*>& result);
 };

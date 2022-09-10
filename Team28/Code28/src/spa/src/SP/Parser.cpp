@@ -11,6 +11,7 @@ int Parser::getOffset() {
 	return offset;
 }
 
+// Constructors
 Parser::Parser(int offset, vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
@@ -60,7 +61,15 @@ AssignStmParser::AssignStmParser(int offset, vector<Token*> tokens, int line) {
 	this->line = line;
 }
 
+WhileStmParser::WhileStmParser(int offset, vector<Token*> tokens, int line)
+{
+	this->offset = offset;
+	this->tokens = tokens;
+	this->line = line;
+}
 
+
+// Parse
 ProgramNode* ProgramParser::parse() {
 	vector<Token*> tokenList = this->tokens;
 
@@ -116,33 +125,37 @@ StatementNode* StatementParser::parse() {
 	StatementNode* result;
 
 	Token* firstToken = tokenList.at(offset);
-
-	if (firstToken->equals("read")) {
-		ReadStmParser parser = ReadStmParser(offset, tokenList, line);
-		result = parser.parse();
-		offset = parser.getOffset();
-	}
-	else if (firstToken->equals("print")) {
-		PrintStmParser parser = PrintStmParser(offset, tokenList, line);
-		result = parser.parse();
-		offset = parser.getOffset();
-	}
-	else if (firstToken->equals("call")) {
-		CallStmParser parser = CallStmParser(offset, tokenList, line);
-		result = parser.parse();
-		offset = parser.getOffset();
-	}
-	else if (firstToken->equals("while")) {
-		WhileStmParser parser = WhileStmParser(offset,tokenList, line);
-		result = parser.parse();
-		offset = parser.getOffset();
+	
+	if (firstToken->isKeyword()) {
+		if (firstToken->equals("read")) {
+			ReadStmParser parser = ReadStmParser(offset, tokenList, line);
+			result = parser.parse();
+			offset = parser.getOffset();
+		}
+		else if (firstToken->equals("print")) {
+			PrintStmParser parser = PrintStmParser(offset, tokenList, line);
+			result = parser.parse();
+			offset = parser.getOffset();
+		}
+		else if (firstToken->equals("call")) {
+			CallStmParser parser = CallStmParser(offset, tokenList, line);
+			result = parser.parse();
+			offset = parser.getOffset();
+		}
+		else if (firstToken->equals("while")) {
+			WhileStmParser parser = WhileStmParser(offset, tokenList, line);
+			result = parser.parse();
+			offset = parser.getOffset();
+		}
+		else {
+			throw "statement wrong syntax";
+		}
 	}
 	else {
 		AssignStmParser parser = AssignStmParser(offset, tokenList, line);
 		result = parser.parse();
 		offset = parser.getOffset();
 	} //TODO: Need to change later
-
 
 	return result;
 }
@@ -223,13 +236,6 @@ AssignStatementNode* AssignStmParser::parse() {
 	}
 }
 
-WhileStmParser::WhileStmParser(int offset, vector<Token*> tokens, int line)
-{
-	this->offset = offset;
-	this->tokens = tokens;
-	this->line = line;
-}
-
 WhileStatementNode* WhileStmParser::parse() {
 	Token* firstToken = tokens.at(offset++);
 	Token* secondToken = tokens.at(offset++);
@@ -258,13 +264,13 @@ WhileStatementNode* WhileStmParser::parse() {
 		line++;
 		while (!tokens.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokens, line);
-				StatementNode* temp = parser.parse();
-				line++;
-				stmtList.push_back(temp);
-				offset = parser.getOffset();
-				if (offset >= tokens.size()) {
-					throw "while statement wrong syntax";
-				}
+			StatementNode* temp = parser.parse();
+			line++;
+			stmtList.push_back(temp);
+			offset = parser.getOffset();
+			if (offset >= tokens.size()) {
+				throw "while statement wrong syntax";
+			}
 		}
 		offset++;
 		WhileStatementNode* result = new WhileStatementNode(stmtList, cond, startline);

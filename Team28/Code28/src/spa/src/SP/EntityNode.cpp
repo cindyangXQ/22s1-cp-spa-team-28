@@ -165,6 +165,42 @@ void AssignStatementNode::getConstantsInto(vector<string>& result) {
 	this->expr->getConstantsInto(result);
 }
 
+// While Statement
+WhileStatementNode::WhileStatementNode(vector<StatementNode*> stmtList, ExpressionNode* cond, int line)
+{
+	this->stmtList = stmtList;
+	this->cond = cond;
+	this->line = line;
+}
+
+int WhileStatementNode::getEndLine() {
+	return this->stmtList.back()->getEndLine();
+}
+
+void WhileStatementNode::getVariablesInto(vector<string>& result)
+{
+	cond->getVariablesInto(result);
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getVariablesInto(result);
+	}
+}
+
+void WhileStatementNode::getConstantsInto(vector<string>& result)
+{
+	cond->getConstantsInto(result);
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getConstantsInto(result);
+	}
+}
+
+void WhileStatementNode::getStatementsInto(vector<Statement*>& result)
+{
+	result.push_back(new Statement(line, StatementType::WHILE));
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getStatementsInto(result);
+	}
+}
+
 // Expression
 ExpressionNode::ExpressionNode(Token* token)
 {
@@ -232,40 +268,4 @@ bool VariableNode ::isName() {
 
 bool VariableNode::isConstant() {
 	return false;
-}
-
-WhileStatementNode::WhileStatementNode(vector<StatementNode*> stmtList, ExpressionNode* cond, int line)
-{
-	this->stmtList = stmtList;
-	this->cond = cond;
-	this->line = line;
-}
-
-void WhileStatementNode::getVariablesInto(vector<string>& result)
-{
-	cond->getVariablesInto(result);
-	for (size_t i = 0; i < stmtList.size(); i++) {
-		stmtList.at(i)->getVariablesInto(result);
-	}
-}
-
-void WhileStatementNode::getConstantsInto(vector<string>& result)
-{
-	cond->getConstantsInto(result);
-	for (size_t i = 0; i < stmtList.size(); i++) {
-		stmtList.at(i)->getConstantsInto(result);
-	}
-}
-
-
-int WhileStatementNode::getEndLine() {
-	return this->stmtList.back()->getEndLine();
-}
-
-void WhileStatementNode::getStatementsInto(vector<Statement*>& result)
-{
-	result.push_back(new Statement(line, StatementType::WHILE));
-	for (size_t i = 0; i < stmtList.size(); i++) {
-		stmtList.at(i)->getStatementsInto(result);
-	}
 }
