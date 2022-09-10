@@ -19,10 +19,41 @@ vector<ProcedureNode*> ProgramNode::getProcList() {
 	return this->procList;
 }
 
+bool ProgramNode::equals(ProgramNode other) {
+	vector<ProcedureNode*> procedures = this->getProcList();
+	vector<ProcedureNode*> others = other.getProcList();
+	if (procedures.size() != others.size()) {
+		return false;
+	}
+	for (int i = 0; i < procedures.size(); i++) {
+		if (!procedures[i]->equals(*others[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+
 // Procedure
 ProcedureNode::ProcedureNode(string procName, vector<StatementNode*> stmtList) {
 	this->procName = procName;
 	this->stmtList = stmtList;
+}
+
+bool ProcedureNode::equals(ProcedureNode other) {
+	if (this->getName() != other.getName()) {
+		return false;
+	}
+	vector<StatementNode*> statements = this->getStmtList();
+	vector<StatementNode*> others = other.getStmtList();
+	if (statements.size() != others.size()) {
+		return false;
+	}
+	for (int i = 0; i < statements.size(); i++) {
+		if (!statements[i]->equals(*others[i])) {
+			return false;
+		}
+	}
+	return true;
 }
 
 string ProcedureNode::getName() {
@@ -93,6 +124,27 @@ bool CallStatementNode::isAssign() {
 }
 bool AssignStatementNode::isAssign() {
 	return true;
+}
+
+// Statement - equals
+bool ReadStatementNode::equals(StatementNode other) {
+	return other.isRead() && this->getVariable() == other.getVariable();
+}
+
+bool PrintStatementNode::equals(StatementNode other) {
+	return other.isPrint() && this->getVariable() == other.getVariable();
+}
+
+bool CallStatementNode::equals(StatementNode other) {
+	return other.isCall() && this->getVariable() == other.getVariable();
+}
+
+bool AssignStatementNode::equals(StatementNode other) {
+	// Expressions not checked
+	std::cout << "isAssign: " << other.isAssign() << endl;
+	std::cout << "this->getVariable: " << this->getVariable() << endl;
+	std::cout << "other.getVariable: " << other.getVariable() << endl;
+	return other.isAssign() && this->getVariable() == other.getVariable();
 }
 
 // Read Statement
