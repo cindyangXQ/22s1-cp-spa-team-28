@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Reference/Synonym.h"
+#include "../../commons/Synonym.h"
 #include <iostream>
 #include <vector>
 

@@ -4,7 +4,7 @@
 #include <string>
 #include <regex>
 #include "../../commons/Entity.h"
-#include "../../commons/Relationship.h"
+#include "../../commons/Relationship/Relationship.h"
 
 
 typedef std::unordered_map<std::string, EntityName> ENTITY_MAP;
@@ -42,9 +42,9 @@ const RELATIONSHIP_MAP relationshipMap = {
 /*
 * Regex expressions for primitive types
 */
-const std::regex intRegex("^\\s*0|[1-9]\\d*\\s*$");  // integer: DIGIT+
-const std::regex synRegex("^\\s*[a-zA-Z][a-zA-Z0-9]*\\s*$");  // synonym: LETTER(LETTER|DIGIT)*
-const std::regex nameRegex("^\\s*\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"\\s*$"); // name: LETTER ( LETTER | DIGIT )*
+const std::regex intRegex("\\s*0|[1-9]\\d*\\s*$");  // integer: DIGIT+
+const std::regex synRegex("\\s*[a-zA-Z][a-zA-Z0-9]*\\s*$");  // synonym: LETTER(LETTER|DIGIT)*
+const std::regex nameRegex("\\s*\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"\\s*$"); // name: LETTER ( LETTER | DIGIT )*
 const std::regex wildcardRegex("^\\s*_\\s*$"); // wildcard: _
 
 /*

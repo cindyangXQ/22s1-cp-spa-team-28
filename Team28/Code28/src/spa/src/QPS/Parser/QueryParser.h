@@ -4,9 +4,10 @@
 #include "SolvableQuery.h"
 #include "../Utils.h"
 #include "../../commons/Reference.h"
-#include "../../commons//Variable.h"
-#include "../../commons//Statement.h"
+#include "../../commons/Variable.h"
+#include "../../commons/Statement.h"
 #include "../Error/ParseError.h"
+#include "../Clause/SelectClause.h"
 #include "QueryParserRegex.h"
 
 /*

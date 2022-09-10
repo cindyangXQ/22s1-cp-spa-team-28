@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include "../../commons/Reference.h"
-#include "../../commons/Relationship.h"
+#include "../../commons/Relationship/Relationship.h"
 
 /*
  * Class encapsulating the logic of the such that clause.

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <unordered_set>
 
 #include "TableValue.h"
 
@@ -20,6 +21,23 @@ enum class EntityName
     IF,
     VARIABLE,
     CONSTANT,
+};
+
+typedef std::unordered_set<EntityName> ENTITY_TYPE_MAP;
+const ENTITY_TYPE_MAP stmtRefSet = {
+        EntityName::STMT,
+        EntityName::READ,
+        EntityName::PRINT,
+        EntityName::CALL,
+        EntityName::WHILE,
+        EntityName::IF,
+        EntityName::ASSIGN
+};
+
+const ENTITY_TYPE_MAP entRefSet = {
+        EntityName::VARIABLE,
+        EntityName::CONSTANT,
+        EntityName::PROCEDURE
 };
 
 /*

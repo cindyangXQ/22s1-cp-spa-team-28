@@ -13,10 +13,9 @@ class SolvableQuery
 {
 public:
 	Declaration decl;
-	SelectType selectType;
+	SelectType selectType = Synonym();
 	SuchThatClause suchThatCl;
 	PatternClause patternCl;
 
-    SolvableQuery();
 	SolvableQuery(Declaration decl, SelectType selectType, SuchThatClause suchThatCl, PatternClause patternCl);
 };

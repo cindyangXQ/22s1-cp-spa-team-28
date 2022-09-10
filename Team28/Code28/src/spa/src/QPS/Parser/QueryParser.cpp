@@ -6,8 +6,8 @@ SolvableQuery QueryParser::parse(std::string query) {
 
     Declaration decl;
     SelectType selectType;
-    SuchThatClause suchThatCl = SuchThatClause();
-    PatternClause patternCl = PatternClause();
+    SuchThatClause suchThatCl;
+    PatternClause patternCl;
 
     if (size >= 2) {
         decl = QueryParser::parseDeclaration(clauses);
@@ -136,29 +136,25 @@ std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens)
 
 Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns) {
     if (std::all_of(input.begin(), input.end(), ::isdigit)) {
-        return Statement(atoi(input.c_str()));
+        return Reference(input.c_str());
     }
     if (input[0] == '"' && input[-1] == '"') {
-        return Variable(input);
+        return Reference(input);
     }
-    Synonym selectedSyn;
     for (int i = 0; i < syns.size(); i++) {
-        Synonym s = syns[i];
-        if (input.compare(s.name) == 0) {
-            selectedSyn = s;
-            return selectedSyn;
+        Synonym synonym = syns[i];
+        if (input.compare(synonym.name) == 0) {
+            return Reference(&synonym);
         }
     }
     throw ParseError("Not a number, not a name, not a synonym declared");
 }
 
 Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
-    Synonym selectedSyn;
     for (int i = 0; i < syns.size(); i++) {
-        Synonym s = syns[i];
-        if (input.compare(s.name) == 0) {
-            selectedSyn = s;
-            return selectedSyn;
+        Synonym synonym = syns[i];
+        if (input.compare(synonym.name) == 0) {
+            return synonym;
         }
     }
     throw ParseError("Synonym not found");
