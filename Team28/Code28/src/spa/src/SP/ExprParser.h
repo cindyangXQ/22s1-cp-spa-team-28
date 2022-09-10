@@ -11,15 +11,20 @@ public:
 	ExpressionNode* parse();
 };
 
-class TermParser :public Parser {
+class TermParser : public Parser {
 public:
 	TermParser(int offset, vector<Token*> tokens);
 	ExpressionNode* parse();
 };
 
-class FactorParser :public Parser {
+class FactorParser : public Parser {
 public:
 	FactorParser(int offset, vector<Token*> tokens);
 	ExpressionNode* parse();
 };
 
+class CondParser : public Parser {
+public:
+	CondParser(int offset, vector<Token*> tokens);
+	ExpressionNode* parse();
+};
