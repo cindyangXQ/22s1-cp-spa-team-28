@@ -18,5 +18,5 @@ TEST_CASE("Parser parses program to statements") {
 	string sourceProgram = "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + 2;\nwest = 9 + east + west;\n}";
 	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
 	ProgramNode* program = ProgramParser(0, tokens).parse();
-	std::cout << "TestProgramParser: " << program->equals(&expected) << endl;
+	REQUIRE(program->equals(&expected));
 }
