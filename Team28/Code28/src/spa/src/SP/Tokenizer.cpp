@@ -9,7 +9,7 @@
 
 using namespace std;
 
-string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read", "call" };
+string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read", "call", "then"};
 char SYMBOL_LIST[] = { '(', ')', '{', '}', ';' };
 char WHITESPACE_LIST[] = { ' ' , '\n', '\t' };
 string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=","!=", "!", "&&", "||" };
