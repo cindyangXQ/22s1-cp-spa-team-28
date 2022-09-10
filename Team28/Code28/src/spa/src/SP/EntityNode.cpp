@@ -261,3 +261,11 @@ void WhileStatementNode::getConstantsInto(vector<string>& result)
 int WhileStatementNode::getEndLine() {
 	return this->stmtList.back()->getEndLine();
 }
+
+void WhileStatementNode::getStatementsInto(vector<Statement*>& result)
+{
+	result.push_back(new Statement(line, StatementType::WHILE));
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getStatementsInto(result);
+	}
+}

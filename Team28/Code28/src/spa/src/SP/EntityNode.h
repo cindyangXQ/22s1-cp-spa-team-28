@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include "Token.h"
+#include "../commons/Statement.h"
 #include "../commons/Variable.h"
 #include "../commons/Constant.h"
 
@@ -37,6 +38,7 @@ protected:
 	int line;
 public:
 	StatementNode();
+	virtual bool isWhile() { return false; }
 	virtual bool isRead() { return false;  }
 	virtual bool isPrint() { return false;  }
 	virtual bool isCall() { return false;  }
@@ -45,6 +47,7 @@ public:
 	virtual void getConstantsInto(vector<string>& result) {};
 	int getLineNumber() { return this -> line;  };
 	virtual int getEndLine() { return this->line; }
+	virtual void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::NONE)); }
 };
 
 class ProcedureNode : public EntityNode {
@@ -80,6 +83,7 @@ public:
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
+	void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::READ)); }
 };
 
 class PrintStatementNode : public StatementNode {
@@ -94,6 +98,7 @@ public:
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
+	void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::PRINT)); }
 };
 
 class CallStatementNode : public StatementNode {
@@ -108,6 +113,7 @@ public:
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
+	void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::CALL)); }
 };
 
 
@@ -135,6 +141,7 @@ public:
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
+	void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::ASSIGN)); }
 };
 
 class WhileStatementNode : public StatementNode {
@@ -145,4 +152,7 @@ public:
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
 	int getEndLine();
+	bool isWhile() { return true; }
+	vector<StatementNode*> getStmtList() { return this->stmtList; }
+	void getStatementsInto(vector<Statement*>& result);
 };
