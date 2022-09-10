@@ -73,7 +73,7 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector
         if (relationshipMap.find(matches[1].str()) == relationshipMap.end()) {
             throw ParseError("Invalid relationship type");
         }
-        RelationshipType relationship = relationshipMap.at(matches[1].str());
+        RelationshipReference relationship = relationshipMap.at(matches[1].str());
         Reference left = getReference(matches[2].str(), syns);
         Reference right = getReference(matches[3].str(), syns);
 
@@ -144,7 +144,7 @@ Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns
     for (int i = 0; i < syns.size(); i++) {
         Synonym synonym = syns[i];
         if (input.compare(synonym.name) == 0) {
-            return Reference(&synonym);
+            return Reference(synonym);
         }
     }
     throw ParseError("Not a number, not a name, not a synonym declared");

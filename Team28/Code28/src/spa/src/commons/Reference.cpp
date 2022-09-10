@@ -4,13 +4,13 @@
 Reference::Reference() {
 
 }
-Reference::Reference(Synonym *syn) {
+Reference::Reference(Synonym syn) {
     this->isSynonym = true;
     this->syn = syn;
-    if (entRefSet.count(syn->entity)) {
+    if (entRefSet.count(syn.entity)) {
         this->type = ReferenceType::ENT_REF;
     }
-    else if (stmtRefSet.count(syn->entity)) {
+    else if (stmtRefSet.count(syn.entity)) {
         this->type = ReferenceType::STMT_REF;
     }
     else {

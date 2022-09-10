@@ -7,7 +7,8 @@
  */
 class Modifies : Relationship<Reference, Reference> {
 public:
-    bool isValidRelationship(Reference, Reference) {
-        return false;
+    Modifies(RelationshipReference relRef, Reference left, Reference right) : Relationship(relRef, left, right) {};
+    bool isValid() {
+        return this->getRight().type == ReferenceType::ENT_REF;
     }
 };

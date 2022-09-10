@@ -7,15 +7,13 @@
 /*
  * Enumerates the different design entity.
  */
-enum class RelationshipType {
+enum class RelationshipReference {
     FOLLOWS,
-    FOLLOWS_STAR,
+    FOLLOWS_T,
     PARENT,
-    PARENT_STAR,
+    PARENT_T,
     USES,
     MODIFIES,
-    CALLS,
-    CALLS_STAR,
     EMPTY
 };
 
@@ -28,8 +26,8 @@ public:
     /*
     * Explicit constructor for Relationship.
     */
-    explicit Relationship(RelationshipReference type, Left left, Right right) {
-        this->relType = type;
+    explicit Relationship(RelationshipReference relRef, Left left, Right right) {
+        this->relRef = relRef;
         this->left = left;
         this->right = right;
     };
@@ -44,12 +42,12 @@ public:
         return this->right;
     };
 
-    RelationshipReference getRelationshipType() {
-        return this->relType;
+    RelationshipReference getRelationshipReference() {
+        return this->relRef;
     }
 
 private:
-    RelationshipReference relType;
+    RelationshipReference relRef;
     Left left;
     Right right;
 };

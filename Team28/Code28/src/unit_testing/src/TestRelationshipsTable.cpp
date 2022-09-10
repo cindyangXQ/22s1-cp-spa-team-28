@@ -10,7 +10,7 @@ TEST_CASE("RelationshipsTable can be initialised correctly") {
 
 TEST_CASE("RelationshipsTable can store and retrieve correctly") {
 	RelationshipsTable<int, int> table;
-	Relationship<int, int> test = Relationship(RelationshipReference::Follows, 1, 2);
+	Relationship<int, int> test = Relationship(RelationshipReference::FOLLOWS, 1, 2);
 
 	table.store(&test);
 
