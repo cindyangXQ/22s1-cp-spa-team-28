@@ -3,14 +3,13 @@
 #include <string>
 
 #include "Entity.h"
-#include "NameDefinitions.h"
 
 /*
 * Class encapsulating a SIMPLE procedure.
 */
-class Procedure : public Entity<ProcedureName> {
+class Procedure : public Entity {
 public:
-	explicit Procedure(ProcedureName name);
+	explicit Procedure(std::string name);
 
 	//TODO add representation of StmtLst in a Procedure
 };

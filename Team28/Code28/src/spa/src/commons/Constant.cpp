@@ -1,3 +1,3 @@
 #include "Constant.h"
 
-Constant::Constant(ConstantName name) : Entity<ConstantName>(name) {};
+Constant::Constant(std::string name) : Entity(name) {};

@@ -49,29 +49,9 @@ vector<Statement*> StatementExtractor::extract() {
 	vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
 		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
-		cout << stmtList.size() << endl;
 		for (size_t j = 0; j < stmtList.size(); j++) {
-			StatementType type;
-			//cout << stmtList.at(i) << endl;
-			if (stmtList.at(j)->isRead()) {
-				type = StatementType::READ;
-			}
-			else if (stmtList.at(j)->isPrint()) {
-				type = StatementType::PRINT;
-			}
-			else if (stmtList.at(j)->isAssign()) {
-				type = StatementType::ASSIGN;
-			}
-			else if (stmtList.at(j)->isCall()) {
-				type = StatementType::CALL;
-			}
-			else {
-				type = StatementType::NONE;
-			}
-			//cout << stmtList.at(i).getLineNumber() << endl;
-			//cout << static_cast<int>(type) << endl;
-			Statement* statement = new Statement(stmtList.at(j)->getLineNumber(), type);
-			result.push_back(statement);
+			StatementNode* currStmt = stmtList.at(j);
+			currStmt->getStatementsInto(result);
 		}
 	}
 

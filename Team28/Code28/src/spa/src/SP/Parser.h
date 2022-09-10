@@ -62,3 +62,9 @@ public:
 	AssignStmParser(int offset, vector<Token*> tokens, int line);
 	AssignStatementNode* parse();
 };
+
+class WhileStmParser : public StatementParser {
+public:
+	WhileStmParser(int offset, vector<Token*> tokens, int line);
+	WhileStatementNode* parse();
+};

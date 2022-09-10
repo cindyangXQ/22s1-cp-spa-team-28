@@ -38,5 +38,6 @@ TEST_CASE("Tokenize an extra spacing small program") {
 	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
 	for (int i = 0; i < small_expected->size(); i++) {
 		REQUIRE(tokens[i]->equals(small_expected[i]));
+
 	}
 }

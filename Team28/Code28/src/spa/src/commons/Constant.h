@@ -3,12 +3,11 @@
 #include <string>
 
 #include "Entity.h"
-#include "NameDefinitions.h"
 
 /*
 * Class encapsulating a SIMPLE constant value.
 */
-class Constant : public Entity<ConstantName> {
+class Constant : public Entity {
 public:
-	explicit Constant(ConstantName name);
+	explicit Constant(std::string name);
 };
