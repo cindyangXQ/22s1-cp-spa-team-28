@@ -1,0 +1,25 @@
+1 - SPA retrieves correct statements for Follows(1,s)
+stmt s;
+Select s such that Follows(1,s)
+2
+5000
+2 - SPA retrieves correct statements for Follows(5,s)
+stmt s;
+Select s such that Follows(5,s)
+none
+5000
+3 - SPA retrieves correct statements for Follows(s,4)
+stmt s;
+Select s such that Follows(s,4)
+3
+5000
+4 - SPA retrieves correct statements for Follows*(1,s)
+stmt s;
+Select s such that Follows*(1,s)
+2, 3, 4
+5000
+5 - SPA retrieves correct statements for Follows*(s,3)
+stmt s;
+Select s such that Follows*(s,3)
+1, 2
+5000

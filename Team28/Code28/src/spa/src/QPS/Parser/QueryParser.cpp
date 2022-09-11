@@ -33,7 +33,7 @@ Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
         all_syns.insert(all_syns.end(), curr_syns.begin(), curr_syns.end());
     }
     if (isDuplicateSynonymName(all_syns)) {
-        throw ParseError("Duplicate synonym names declared");
+        throw SyntaxError("Duplicate synonym names declared");
     }
     return Declaration(all_syns);
 }
@@ -46,7 +46,7 @@ SelectType QueryParser::parseSelectClause(std::string *clause, std::vector<Synon
 
         std::regex_match(selectClause, matches,selectRegex);
         if (matches.size() == 0) {
-            throw ParseError("Invalid select clause syntax");
+            throw SyntaxError("Invalid select clause syntax");
         }
         SelectType selectType = QueryParser::getSynonym(matches[1], syns);
 
@@ -54,7 +54,7 @@ SelectType QueryParser::parseSelectClause(std::string *clause, std::vector<Synon
 
         return selectType;
     }
-    throw ParseError("Expected select clause");
+    throw SyntaxError("Expected select clause");
 }
 
 SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector<Synonym> syns) {
@@ -66,12 +66,12 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector
 
         std::regex_match(suchThatClause, matches, suchThatRegex);
         if (matches.size() != 4) {
-            throw ParseError("Invalid such that clause syntax");
+            throw SyntaxError("Invalid such that clause syntax");
         }
 
         // throw an error if unable to find the relationship from the enum table
         if (relationshipMap.find(matches[1].str()) == relationshipMap.end()) {
-            throw ParseError("Invalid relationship type");
+            throw SyntaxError("Invalid relationship type");
         }
         RelationshipReference relationship = relationshipMap.at(matches[1].str());
         Reference left = getReference(matches[2].str(), syns);
@@ -81,7 +81,7 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector
 
         return SuchThatClause(relationship, left, right);
     }
-    throw ParseError("Expected such that clause");
+    throw SyntaxError("Expected such that clause");
 }
 
 PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<Synonym> syns) {
@@ -93,7 +93,7 @@ PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<S
 
         std::regex_match(patternClause, matches, patternRegex);
         if (matches.size() != 5) {
-            throw ParseError("Invalid pattern clause syntax");
+            throw SyntaxError("Invalid pattern clause syntax");
         }
 
         Synonym syn = getSynonym(matches[1].str(), syns);
@@ -105,16 +105,16 @@ PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<S
         return PatternClause(syn, entRef, expression);
 
     }
-    throw ParseError("Expected pattern clause");
+    throw SyntaxError("Expected pattern clause");
 }
 
 std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens) {
     if (tokens.size() % 2 == 1) {
-        throw ParseError("syntax error in declaration clause");
+        throw SyntaxError("syntax error in declaration clause");
     }
     EntityName entity;
     if (entityMap.find(tokens[0]) == entityMap.end()) {
-        throw ParseError("Invalid design entity name");
+        throw SyntaxError("Invalid design entity name");
     }
     else {
         entity = entityMap.find(tokens[0])->second;
@@ -123,12 +123,12 @@ std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens)
     for (int i = 1; i < tokens.size(); i++) {
         if (i % 2 == 1) {
             if (!isValidName(tokens[i])) {
-                throw ParseError("Invalid name in declaration clause");
+                throw SyntaxError("Invalid name in declaration clause");
             }
             syns.push_back(Synonym(entity, tokens[i]));
         }
         else if (tokens[i].compare(",") != 0) {
-            throw ParseError("syntax error in declaration clause");
+            throw SyntaxError("syntax error in declaration clause");
         }
     }
     return syns;
@@ -147,7 +147,7 @@ Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns
             return Reference(synonym);
         }
     }
-    throw ParseError("Not a number, not a name, not a synonym declared");
+    throw SyntaxError("Not a number, not a name, not a synonym declared");
 }
 
 Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
@@ -157,7 +157,7 @@ Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
             return synonym;
         }
     }
-    throw ParseError("Synonym not found");
+    throw SyntaxError("Synonym not found");
 }
 
 bool QueryParser::isValidName(std::string name) {

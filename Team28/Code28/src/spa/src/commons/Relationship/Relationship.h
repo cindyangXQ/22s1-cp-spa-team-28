@@ -18,6 +18,14 @@ enum class RelationshipReference {
 };
 
 /*
+* Enumerates the different headers to filter by.
+*/
+enum class RelationshipHeader {
+	CHECK_LEFT,
+	CHECK_RIGHT
+};
+
+/*
 * A class encapsulating Relationships in SIMPLE.
 */
 template <typename Left, typename Right>
