@@ -6,6 +6,13 @@
 
 using namespace std;
 
+string REL_OP_LIST[] = { ">", "<", "==", "!=", ">=", "<=","&&", "||"};
+
+CondParser::CondParser(int offset, vector<Token*> tokens) {
+	this->offset = offset;
+	this->tokens = tokens;
+}
+
 ExprParser::ExprParser(int offset, vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
@@ -19,6 +26,61 @@ TermParser::TermParser(int offset, vector<Token*> tokens) {
 FactorParser::FactorParser(int offset, vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
+}
+
+ExpressionNode* CondParser::parse() {
+	Token* curr = tokens.at(offset);
+	ExpressionNode* root;
+	if (curr->value == "!") {
+		offset++;
+		root = new ExpressionNode(curr);
+	}
+	ExprParser parser = ExprParser(offset, tokens);
+	ExpressionNode* result = parser.parse();
+	offset = parser.getOffset();
+	if (curr -> value == "!") {
+		root->left = result;
+	}
+	else {
+		root = result;
+	}
+
+	Token* next = tokens.at(offset);
+	while (find(begin(REL_OP_LIST), end(REL_OP_LIST), next->value) != end(REL_OP_LIST) || next->value == "&&" || next->value == "||") {
+		offset++;
+
+		curr = tokens.at(offset);
+		if (curr->value == "!") {
+			offset++;
+			root = new ExpressionNode(curr);
+		}
+		ExpressionNode* cond = new ExpressionNode(next);
+		cond->left = result;
+
+		parser = ExprParser(offset, tokens);
+		result = parser.parse();
+		offset = parser.getOffset();
+
+		cond->right = result;
+
+		if (curr->value == "!") {
+			root->left = cond;
+			result = root;
+		}
+		else {
+			result = cond;
+			root = cond;
+		}
+
+		next = tokens.at(offset);
+	}
+	if (next->value == ";") {
+		offset++;
+		return root;
+	}
+	if (next->value == ")") {
+		return root;
+	}
 }
 
 ExpressionNode* ExprParser::parse() {
@@ -54,7 +116,7 @@ ExpressionNode* ExprParser::parse() {
 		offset ++;
 		return root;
 	}
-	else if (next->value == ")") {
+	else if (next->value == ")" || find(begin(REL_OP_LIST), end(REL_OP_LIST), next->value) != end(REL_OP_LIST)) {
 		//cout << result.index << endl;
 		return root;
 	}
@@ -72,7 +134,6 @@ ExpressionNode* TermParser::parse() {
 	factors.push_back(result);
 	ExpressionNode* root = result;
 
-	offset++;
 	Token* next = tokens.at(offset);
 	while (next->value == "*" || next->value == "/" || next->value == "%") {
 		//continue process as term
@@ -91,11 +152,10 @@ ExpressionNode* TermParser::parse() {
 
 		factors.push_back(term);
 
-		offset++;
 		next = tokens.at(offset);
 	}
 
-	if (next->value == "+" || next->value == "-" || next->value == ";"||next->value == ")") {
+	if (next->value == "+" || next->value == "-" || next->value == ";"||next->value == ")"|| find(begin(REL_OP_LIST), end(REL_OP_LIST), next->value) != end(REL_OP_LIST)) {
 		// term end, return to expression
 		return root;
 	}
@@ -107,16 +167,18 @@ ExpressionNode* TermParser::parse() {
 ExpressionNode* FactorParser::parse() {
 	Token* curr = tokens.at(offset);
 	if (curr->isConstant() || curr->isName()) {
+		offset++;
 		cout << curr->value << endl;
 		ExpressionNode* result = new ExpressionNode(curr);
 		return result;
 	}
 	else if (curr->value == "(") {
 		offset++;
-		ExprParser parser = ExprParser(offset, tokens);
+		CondParser parser = CondParser(offset, tokens);
 		ExpressionNode* factor = parser.parse();
 		offset = parser.getOffset();
 		//if next token is not ")" throw error
+		offset++;
 		return factor;
 	}
 	else {

@@ -1,10 +1,10 @@
 #include "SuchThatClause.h"
 
 SuchThatClause::SuchThatClause() {
-	this->relationship = RelationshipType::EMPTY;
+	this->relationship = RelationshipReference::EMPTY;
 }
-SuchThatClause::SuchThatClause(RelationshipType relationshipType, Reference refLeft, Reference refRight) {
-	this->relationship = relationshipType;
+SuchThatClause::SuchThatClause(RelationshipReference relationshipReference, Reference refLeft, Reference refRight) {
+	this->relationship = relationshipReference;
 	this->refLeft = refLeft;
 	this->refRight = refRight;
 }

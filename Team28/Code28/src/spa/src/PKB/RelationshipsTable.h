@@ -3,7 +3,7 @@
 #include <map>
 #include <unordered_set>
 
-#include "../commons/Relationship.h"
+#include "../commons/Relationship/Relationship.h"
 #include "Table.h"
 #include "RelationshipPredicateMap.h"
 

@@ -10,7 +10,7 @@ TEST_CASE("RelationshipsTable can be initialised correctly") {
 
 TEST_CASE("RelationshipsTable can store and retrieve correctly") {
 	RelationshipsTable<int, int> table;
-	Relationship<int, int> test = Relationship(RelationshipReference::Follows, 1, 2);
+	Relationship<int, int> test = Relationship(RelationshipReference::FOLLOWS, 1, 2);
 
 	table.store(&test);
 
@@ -44,9 +44,9 @@ TEST_CASE("RelationshipsTable can storeRight and retrieve correctly") {
 
 TEST_CASE("Empty PredicateMap returns same RelationshipsTable") {
 	RelationshipsTable<int, int> table;
-	Relationship<int, int> test1 = Relationship(RelationshipReference::Follows, 1, 2);
-	Relationship<int, int> test2 = Relationship(RelationshipReference::Follows, 2, 3);
-	Relationship<int, int> test3 = Relationship(RelationshipReference::Follows, 3, 4);
+	Relationship<int, int> test1 = Relationship(RelationshipReference::FOLLOWS, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::FOLLOWS, 2, 3);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::FOLLOWS, 3, 4);
 
 	table.store(&test1);
 	table.store(&test2);
@@ -62,9 +62,9 @@ TEST_CASE("Empty PredicateMap returns same RelationshipsTable") {
 
 TEST_CASE("Successfully filters RelationshipsTable using CHECK_LEFT") {
 	RelationshipsTable<int, int> table;
-	Relationship<int, int> test1 = Relationship(RelationshipReference::Follows, 1, 2);
-	Relationship<int, int> test2 = Relationship(RelationshipReference::Follows, 2, 3);
-	Relationship<int, int> test3 = Relationship(RelationshipReference::Follows, 3, 4);
+	Relationship<int, int> test1 = Relationship(RelationshipReference::FOLLOWS, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::FOLLOWS, 2, 3);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::FOLLOWS, 3, 4);
 
 	table.store(&test1);
 	table.store(&test2);
@@ -80,9 +80,9 @@ TEST_CASE("Successfully filters RelationshipsTable using CHECK_LEFT") {
 
 TEST_CASE("Successfully filters RelationshipsTable using CHECK_RIGHT") {
 	RelationshipsTable<int, int> table;
-	Relationship<int, int> test1 = Relationship(RelationshipReference::Follows, 1, 2);
-	Relationship<int, int> test2 = Relationship(RelationshipReference::Follows, 2, 3);
-	Relationship<int, int> test3 = Relationship(RelationshipReference::Follows, 3, 4);
+	Relationship<int, int> test1 = Relationship(RelationshipReference::FOLLOWS, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::FOLLOWS, 2, 3);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::FOLLOWS, 3, 4);
 
 	table.store(&test1);
 	table.store(&test2);
@@ -98,9 +98,9 @@ TEST_CASE("Successfully filters RelationshipsTable using CHECK_RIGHT") {
 
 TEST_CASE("Successfully filters RelationshipsTable using both CHECK_LEFT and CHECK_RIGHT") {
 	RelationshipsTable<int, int> table;
-	Relationship<int, int> test1 = Relationship(RelationshipReference::Follows, 1, 2);
-	Relationship<int, int> test2 = Relationship(RelationshipReference::Follows, 2, 3);
-	Relationship<int, int> test3 = Relationship(RelationshipReference::Follows, 3, 4);
+	Relationship<int, int> test1 = Relationship(RelationshipReference::FOLLOWS, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::FOLLOWS, 2, 3);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::FOLLOWS, 3, 4);
 
 	table.store(&test1);
 	table.store(&test2);

@@ -85,7 +85,7 @@ TEST_CASE("Storage stores and retrieves Procedures correctly") {
 TEST_CASE("Storage stores and retrieves Parent correctly") {
 	Storage storage;
 	ParentTable* parents = (ParentTable*)storage.getTable(TableName::PARENT);
-	Relationship<int, int> test = Relationship(RelationshipReference::Parent, 1, 2);
+	Relationship<int, int> test = Relationship(RelationshipReference::PARENT, 1, 2);
 
 	parents->store(&test);
 
@@ -97,7 +97,7 @@ TEST_CASE("Storage stores and retrieves Parent correctly") {
 TEST_CASE("Storage stores and retrieves ParentT correctly") {
 	Storage storage;
 	ParentTTable* parentsT = (ParentTTable*)storage.getTable(TableName::PARENT);
-	Relationship<int, int> test = Relationship(RelationshipReference::ParentT, 1, 2);
+	Relationship<int, int> test = Relationship(RelationshipReference::PARENT_T, 1, 2);
 
 	parentsT->store(&test);
 
@@ -109,7 +109,7 @@ TEST_CASE("Storage stores and retrieves ParentT correctly") {
 TEST_CASE("Storage stores and retrieves Follows correctly") {
 	Storage storage;
 	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
-	Relationship<int, int> test = Relationship(RelationshipReference::Follows, 1, 2);
+	Relationship<int, int> test = Relationship(RelationshipReference::FOLLOWS, 1, 2);
 
 	follows->store(&test);
 
@@ -121,7 +121,7 @@ TEST_CASE("Storage stores and retrieves Follows correctly") {
 TEST_CASE("Storage stores and retrieves FollowsT correctly") {
 	Storage storage;
 	FollowsTTable* followsT = (FollowsTTable*)storage.getTable(TableName::PARENT);
-	Relationship<int, int> test = Relationship(RelationshipReference::FollowsT, 1, 2);
+	Relationship<int, int> test = Relationship(RelationshipReference::FOLLOWS_T, 1, 2);
 
 	followsT->store(&test);
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PredicateMap.h"
-#include "../commons/Relationship.h"
+#include "../commons/Relationship/Relationship.h"
 
 template <typename Left, typename Right>
 class RelationshipPredicateMap : public PredicateMap<Left, Right> {

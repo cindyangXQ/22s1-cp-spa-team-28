@@ -1,7 +1,6 @@
 #pragma once
 
 #include "TableValue.h"
-#include "Reference.h"
 
 /*
 * Enumerates the different kinds of SIMPLE statements.
@@ -24,7 +23,7 @@ enum class StatementHeader {
 /*
 * Class encapsulating a SIMPLE Statement.
 */
-class Statement : public TableValue, public Reference {
+class Statement : public TableValue {
 public:
 	/*
 	* Explicit constructor for a Statement.
