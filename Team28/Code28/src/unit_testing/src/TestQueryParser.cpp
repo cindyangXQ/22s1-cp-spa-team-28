@@ -4,9 +4,9 @@
 #include "catch.hpp"
 
 TEST_CASE("QueryParser is parsing correctly") {
-    SolvableQuery solvableQ = QueryParser::parse("assign a; constant c; variable v; Select v such that Modifies(1, v) pattern a(v, \"x\")");
+    SolvableQuery solvableQ = QueryParser::parse("assign a; constant c; variable v; Select a such that Modifies(1, v) pattern a(v, \"x\")");
 
-    REQUIRE(solvableQ.selectType.entity == EntityName::VARIABLE);
+    REQUIRE(solvableQ.selectType.entity == EntityName::ASSIGN);
 }
 
 TEST_CASE("QueryParser can parse declaration correctly") {

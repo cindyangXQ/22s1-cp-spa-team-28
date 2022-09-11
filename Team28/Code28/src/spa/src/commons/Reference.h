@@ -1,18 +1,24 @@
 #pragma once
 
-/*
- * Enumerates the different type of relationship.
- */
-enum class RelationshipReference {
-    Modifies,
-    Uses,
-    Parent,
-    ParentT,
-    Follows,
-    FollowsT,
-    Empty
+#include "Value.h"
+#include "Synonym.h"
+
+enum class ReferenceType {
+    STMT_REF,
+    ENT_REF,
+    WILDCARD
 };
 
+/*
+ * Class encapsulating Reference used in Relationship.
+ */
 class Reference {
-	public:
+public:
+    ReferenceType type;
+    bool isSynonym;
+    Synonym syn;
+    Value value;
+    explicit Reference();
+    Reference(Synonym syn);
+    Reference(std::string value);
 };

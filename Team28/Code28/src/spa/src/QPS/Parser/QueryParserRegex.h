@@ -4,11 +4,11 @@
 #include <string>
 #include <regex>
 #include "../../commons/Entity.h"
-#include "../../commons/Relationship.h"
+#include "../../commons/Relationship/Relationship.h"
 
 
 typedef std::unordered_map<std::string, EntityName> ENTITY_MAP;
-typedef std::unordered_map<std::string, RelationshipType> RELATIONSHIP_MAP;
+typedef std::unordered_map<std::string, RelationshipReference> RELATIONSHIP_MAP;
 
 /*
 * Lookup tables to map unprocessed strings to their respective enum values
@@ -29,23 +29,21 @@ const ENTITY_MAP entityMap = {
 
 // map string to relationship enum
 const RELATIONSHIP_MAP relationshipMap = {
-        {"Follows", RelationshipType::FOLLOWS},
-        {"Follows*", RelationshipType::FOLLOWS_STAR},
-        {"Parent", RelationshipType::PARENT},
-        {"Parent*", RelationshipType::PARENT_STAR},
-        {"Uses", RelationshipType::USES},
-        {"Modifies", RelationshipType::MODIFIES},
-        {"Calls", RelationshipType::CALLS},
-        {"Calls*", RelationshipType::CALLS_STAR}
+        {"Follows", RelationshipReference::FOLLOWS},
+        {"Follows*", RelationshipReference::FOLLOWS_T},
+        {"Parent", RelationshipReference::PARENT},
+        {"Parent*", RelationshipReference::PARENT_T},
+        {"Uses", RelationshipReference::USES},
+        {"Modifies", RelationshipReference::MODIFIES}
 };
 
 /*
 * Regex expressions for primitive types
 */
-const std::regex intRegex("^\\s*0|[1-9]\\d*\\s*$");  // integer: DIGIT+
-const std::regex synRegex("^\\s*[a-zA-Z][a-zA-Z0-9]*\\s*$");  // synonym: LETTER(LETTER|DIGIT)*
-const std::regex nameRegex("^\\s*\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"\\s*$"); // name: LETTER ( LETTER | DIGIT )*
-const std::regex wildcardRegex("^\\s*_\\s*$"); // wildcard: _
+const std::regex intRegex("\\s*0|[1-9]\\d*\\s*");  // integer: DIGIT+
+const std::regex synRegex("\\s*[a-zA-Z][a-zA-Z0-9]*\\s*");  // synonym: LETTER(LETTER|DIGIT)*
+const std::regex nameRegex("\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"); // name: LETTER ( LETTER | DIGIT )*
+const std::regex wildcardRegex("^\\s*_\\s*"); // wildcard: _
 
 /*
 * Regex expressions for arguments

@@ -1,8 +1,12 @@
 #pragma once
 
-#include "../Reference/Synonym.h"
+#include "../../commons/Synonym.h"
 #include "../../commons/Reference.h"
 
+enum class PatternType {
+    ASSIGN,
+    EMPTY
+};
 typedef std::string Expression;
 /*
  * Class encapsulating the logic of the pattern clause.
@@ -10,7 +14,8 @@ typedef std::string Expression;
 class PatternClause
 {
 public:
-    Synonym syn;
+    Synonym syn = Synonym();
+    PatternType patternType;
     Reference entRef;
     Expression expression;
 	PatternClause();

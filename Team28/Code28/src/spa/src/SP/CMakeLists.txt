@@ -1,6 +1,4 @@
-file(GLOB srcs "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/Clause/*.cpp" 
-"${CMAKE_CURRENT_SOURCE_DIR}/Evaluator/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/Reference/*.cpp")
-file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+file(GLOB srcs "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 add_library(sp ${srcs})
 
