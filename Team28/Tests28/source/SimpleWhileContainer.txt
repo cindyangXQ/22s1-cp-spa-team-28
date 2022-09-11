@@ -1,0 +1,22 @@
+procedure main {
+    read a1;
+    while (a1 < 1000) {
+        a1 = a1 * a1;
+    }
+
+    while (a1 > 500) {
+        a1 = a1 * (a1 - 1) / a1;
+    }
+    call bar;
+}
+
+procedure bar {
+    a2 = 10;
+    while (a1 > 100) {
+        a3 = a2;
+        while (a3 > 0) {
+            a3 = a3 - 1;
+        }
+        a1 = a1 / 2;
+    }
+}

@@ -1,0 +1,10 @@
+procedure main {
+    call bar;
+    print print;
+    read read;
+    r = readgit;
+}
+
+procedure bar {
+    print read;
+}
