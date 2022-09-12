@@ -23,14 +23,14 @@ public:
 
 
 // Extract Entities
-class ProcedureExtractor :public DesignExtractor {
+class ProcedureExtractor : public DesignExtractor {
 public:
 	ProcedureExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
 	vector<Procedure*> extract();
 	void populate();
 };
 
-class StatementExtractor :public DesignExtractor {
+class StatementExtractor : public DesignExtractor {
 public:
 	StatementExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
 	vector<Statement*> extract();
@@ -44,7 +44,7 @@ public:
 	void populate();
 };
 
-class ConstantExtractor :public DesignExtractor {
+class ConstantExtractor : public DesignExtractor {
 public:
 	ConstantExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
 	vector<Constant*> extract();

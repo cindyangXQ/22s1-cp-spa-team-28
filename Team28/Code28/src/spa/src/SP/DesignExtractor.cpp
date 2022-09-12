@@ -92,6 +92,10 @@ vector<Relationship<int, int>*> FollowsExtractor::extract() {
 		ExtractUtils::follows(stmtList, result);
 	}
 
+	for (size_t i = 0; i < result.size(); i++) {
+		printf("check extractor result(%d, %d)\n", result[i]->getLeft(), result[i]->getRight());
+	}
+
 	return result;
 }
 
@@ -114,6 +118,7 @@ void DesignExtractor::extractAll() {
 	VariableExtractor(this->program, this->storage).populate();
 	ConstantExtractor(this->program, this->storage).populate();
 	FollowsExtractor(this->program, this->storage).populate();
+	FollowsExtrT(this->program, this->storage).populate();
 }
 
 void ProcedureExtractor::populate() {

@@ -2,7 +2,6 @@
 #include "SP/Parser.h"
 #include "SP/Tokenizer.h"
 
-#include <iostream>
 #include <vector>
 
 TEST_CASE("Parser parses program to statements") {

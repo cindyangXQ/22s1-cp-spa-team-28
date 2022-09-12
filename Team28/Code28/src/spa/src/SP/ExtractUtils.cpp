@@ -8,7 +8,12 @@ void ExtractUtils::follows(vector<StatementNode*>& stmtList, vector<Relationship
 	}
 	for (size_t i = 1; i < lineNumbers.size(); i++) {
 		Relationship<int, int> temp(RelationshipReference::FOLLOWS, lineNumbers[i - 1], lineNumbers[i]);
+		printf("create follows(%d, %d)\n", temp.getLeft(), temp.getRight());
 		result.push_back(&temp);
+	}
+
+	for (size_t i = 1; i < result.size(); i++) {
+		printf("check util result(%d, %d)\n", result[i]->getLeft(), result[i]->getRight());
 	}
 }
 

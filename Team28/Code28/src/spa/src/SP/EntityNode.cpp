@@ -12,9 +12,7 @@ ProgramNode::ProgramNode(vector<ProcedureNode*> procList) {
 	this->procList = procList;
 }
 
-ProgramNode::ProgramNode()
-{
-}
+ProgramNode::ProgramNode() {}
 
 vector<ProcedureNode*> ProgramNode::getProcList() {
 	return this->procList;
