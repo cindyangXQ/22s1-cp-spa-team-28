@@ -42,51 +42,15 @@ int ProcedureNode::getEndline()
 bool ReadStatementNode::isRead() {
 	return true;
 }
-bool PrintStatementNode::isRead() {
-	return false;
-}
-bool CallStatementNode::isRead() {
-	return false;
-}
-bool AssignStatementNode::isRead() {
-	return false;
-}
 
-bool ReadStatementNode::isPrint() {
-	return false;
-}
 bool PrintStatementNode::isPrint() {
 	return true;
 }
-bool CallStatementNode::isPrint() {
-	return false;
-}
-bool AssignStatementNode::isPrint() {
-	return false;
-}
 
-bool ReadStatementNode::isCall() {
-	return false;
-}
-bool PrintStatementNode::isCall() {
-	return false;
-}
 bool CallStatementNode::isCall() {
 	return true;
 }
-bool AssignStatementNode::isCall() {
-	return false;
-}
 
-bool ReadStatementNode::isAssign() {
-	return false;
-}
-bool PrintStatementNode::isAssign() {
-	return false;
-}
-bool CallStatementNode::isAssign() {
-	return false;
-}
 bool AssignStatementNode::isAssign() {
 	return true;
 }
@@ -198,6 +162,23 @@ void WhileStatementNode::getStatementsInto(vector<Statement*>& result)
 	result.push_back(new Statement(line, StatementType::WHILE));
 	for (size_t i = 0; i < stmtList.size(); i++) {
 		stmtList.at(i)->getStatementsInto(result);
+	}
+}
+
+void WhileStatementNode::getFollowsInto(vector<Relationship<int, int>*>& result) {
+	vector<StatementNode*> stmtList = this->getStmtList();
+	int prevLine = 0;
+	int currLine = 0;
+	for (size_t j = 0; j < stmtList.size() - 1; j++) {
+		stmtList.at(j)->getFollowsInto(&result);
+		if (j == 0) {
+			prevLine = stmtList.at(j)->getLineNumber();
+			continue;
+		}
+		currLine = stmtList.at(j)->getLineNumber();
+		Relationship<int, int> temp(RelationshipReference::FOLLOWS, prevLine, currLine);
+		prevLine = currLine;
+		result.push_back(&temp);
 	}
 }
 

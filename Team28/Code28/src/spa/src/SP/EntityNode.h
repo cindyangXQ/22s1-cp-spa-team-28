@@ -6,7 +6,8 @@
 #include "../commons/Statement.h"
 #include "../commons/Variable.h"
 #include "../commons/Constant.h"
-
+#include "../commons/Statement.h"
+#include "../commons/Relationship/Relationship.h"
 
 using namespace std;
 
@@ -45,9 +46,10 @@ public:
 	virtual bool isWhile() { return false; }
 	virtual void getVariablesInto(vector<string>& result) {};
 	virtual void getConstantsInto(vector<string>& result) {};
+	virtual void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::NONE)); }
+	virtual void getFollowsInto(vector<Relationship<int, int>*>* result) {};
 	int getLineNumber() { return this -> line;  };
 	virtual int getEndLine() { return this->line; }
-	virtual void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::NONE)); }
 };
 
 class ProcedureNode : public EntityNode {
@@ -77,9 +79,6 @@ class ReadStatementNode : public StatementNode {
 public:
 	ReadStatementNode(VariableNode variable, int line);
 	bool isRead();
-	bool isPrint();
-	bool isCall();
-	bool isAssign();
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
@@ -91,10 +90,7 @@ class PrintStatementNode : public StatementNode {
 
 public:
 	PrintStatementNode(VariableNode variable, int line);
-	bool isRead();
 	bool isPrint();
-	bool isCall();
-	bool isAssign();
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
@@ -106,10 +102,7 @@ class CallStatementNode : public StatementNode {
 
 public:
 	CallStatementNode(VariableNode variable, int line);
-	bool isRead();
-	bool isPrint();
 	bool isCall();
-	bool isAssign();
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
@@ -134,9 +127,6 @@ class AssignStatementNode : public StatementNode {
 
 public:
 	AssignStatementNode(VariableNode variable, ExpressionNode* expression, int line);
-	bool isRead();
-	bool isPrint();
-	bool isCall();
 	bool isAssign();
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
@@ -157,4 +147,5 @@ public:
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
 	void getStatementsInto(vector<Statement*>& result);
+	void getFollowsInto(vector<Relationship<int, int>*>& result);
 };

@@ -12,26 +12,6 @@ DesignExtractor::DesignExtractor(ProgramNode* program, PopulateFacade* storage) 
 
 DesignExtractor::DesignExtractor() {}
 
-ProcedureExtractor::ProcedureExtractor(ProgramNode* program, PopulateFacade* storage) {
-	this->program = program;
-	this->storage = storage;
-}
-
-StatementExtractor::StatementExtractor(ProgramNode* program, PopulateFacade* storage) {
-	this->program = program;
-	this->storage = storage;
-}
-
-VariableExtractor::VariableExtractor(ProgramNode* program, PopulateFacade* storage) {
-	this->program = program;
-	this->storage = storage;
-}
-
-ConstantExtractor::ConstantExtractor(ProgramNode* program, PopulateFacade* storage) {
-	this->program = program;
-	this->storage = storage;
-}
-
 vector<Procedure*> ProcedureExtractor::extract() {
 	vector<Procedure*> result;
 
@@ -102,12 +82,37 @@ vector<Constant*> ConstantExtractor::extract() {
 	return result;
 }
 
+vector<Relationship<int, int>*> FollowsExtractor::extract() {
+	vector<Relationship<int, int>*> result;
+
+	vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		int prevLine = 0;
+		int currLine = 0;
+		for (size_t j = 0; j < stmtList.size() - 1; j++) {
+			stmtList.at(j)->getFollowsInto(&result);
+			if (j == 0) {
+				prevLine = stmtList.at(j)->getLineNumber();
+				continue;
+			}
+			currLine = stmtList.at(j)->getLineNumber();
+			Relationship<int, int> temp(RelationshipReference::FOLLOWS, prevLine, currLine);
+			prevLine = currLine;
+			result.push_back(&temp);
+		}
+	}
+
+	return result;
+}
+
 
 void DesignExtractor::extractAll() {
 	ProcedureExtractor(this->program, this->storage).populate();
 	StatementExtractor(this->program, this->storage).populate();
 	VariableExtractor(this->program, this->storage).populate();
 	ConstantExtractor(this->program, this->storage).populate();
+	FollowsExtractor(this->program, this->storage).populate();
 }
 
 void ProcedureExtractor::populate() {
@@ -128,4 +133,9 @@ void VariableExtractor::populate() {
 void ConstantExtractor::populate() {
 	vector<Constant*> constants = this->extract();
 	this->storage->storeConstants(&constants);
+}
+
+void FollowsExtractor::populate() {
+	vector<Relationship<int, int>*> follows = this->extract();
+	//this->storage->storeFollows(&follows);
 }
