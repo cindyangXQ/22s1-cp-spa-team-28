@@ -27,7 +27,7 @@ public:
 		auto key = this->rightToLeftsMap.find(right);
 
 		if (key != this->rightToLeftsMap.end()) {
-			key->second.insert(right);
+			key->second.insert(left);
 		} else {
 			rightToLeftsMap[right] = { left };
 		}
@@ -40,7 +40,7 @@ public:
 		auto key = this->leftToRightsMap.find(left);
 
 		if (key != this->leftToRightsMap.end()) {
-			key->second.insert(left);
+			key->second.insert(right);
 		} else {
 			leftToRightsMap[left] = { right };
 		}

@@ -42,6 +42,23 @@ TEST_CASE("RelationshipsTable can storeRight and retrieve correctly") {
 	REQUIRE(table.retrieveLeft(2).size() == 0);
 }
 
+TEST_CASE("ModifiesSTable can store multiple Rights to the same Left and retrieve correctly") {
+	ModifiesSTable modifiesSTable;
+
+	modifiesSTable.storeRightToLeftMap(1, "x1");
+	modifiesSTable.storeRightToLeftMap(1, "read");
+	modifiesSTable.storeRightToLeftMap(1, "B99");
+
+	// successfully stored 1 item to right map
+	REQUIRE(modifiesSTable.retrieveLeft(1).size() == 3);
+	// all items are stored
+	REQUIRE(modifiesSTable.retrieveLeft(1).find("x1") != modifiesSTable.retrieveLeft(1).end());
+	REQUIRE(modifiesSTable.retrieveLeft(1).find("read") != modifiesSTable.retrieveLeft(1).end());
+	REQUIRE(modifiesSTable.retrieveLeft(1).find("B99") != modifiesSTable.retrieveLeft(1).end());
+	// nothing stored to left map
+	REQUIRE(modifiesSTable.retrieveRight("x1").size() == 0);
+}
+
 TEST_CASE("Empty PredicateMap returns same RelationshipsTable") {
 	RelationshipsTable<int, int> table;
 	Relationship<int, int> test1 = Relationship(RelationshipReference::FOLLOWS, 1, 2);
