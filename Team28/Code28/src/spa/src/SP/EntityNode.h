@@ -38,15 +38,17 @@ protected:
 	int line;
 public:
 	StatementNode();
-	virtual bool isRead() { return false;  }
-	virtual bool isPrint() { return false;  }
-	virtual bool isCall() { return false;  }
-	virtual bool isAssign() { return false;  }
+	virtual bool isRead() { return false; }
+	virtual bool isPrint() { return false; }
+	virtual bool isCall() { return false; }
+	virtual bool isAssign() { return false; }
 	virtual bool isWhile() { return false; }
+	virtual bool equals(StatementNode* other) { return false; };
+	virtual string getVariable() { return ""; };
+  int getLineNumber() { return this -> line;  };
+	virtual int getEndLine() { return this->line; }
 	virtual void getVariablesInto(vector<string>& result) {};
 	virtual void getConstantsInto(vector<string>& result) {};
-	int getLineNumber() { return this -> line;  };
-	virtual int getEndLine() { return this->line; }
 	virtual void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::NONE)); }
 };
 
@@ -56,6 +58,7 @@ class ProcedureNode : public EntityNode {
 
 public:
 	ProcedureNode(string procName, vector<StatementNode*> stmtList);
+	bool equals(ProcedureNode* other);
 	string getName();
 	vector<StatementNode*> getStmtList();
 	int getEndline();
@@ -67,6 +70,7 @@ class ProgramNode : public EntityNode {
 public:
 	ProgramNode(vector<ProcedureNode*> procList);
 	ProgramNode();
+	bool equals(ProgramNode* other);
 	vector<ProcedureNode*> getProcList();
 };
 
@@ -80,6 +84,7 @@ public:
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
+	bool equals(StatementNode* other);
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
@@ -95,6 +100,7 @@ public:
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
+	bool equals(StatementNode* other);
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
@@ -110,6 +116,7 @@ public:
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
+	bool equals(StatementNode* other);
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
@@ -138,6 +145,7 @@ public:
 	bool isPrint();
 	bool isCall();
 	bool isAssign();
+	bool equals(StatementNode* other);
 	string getVariable();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
