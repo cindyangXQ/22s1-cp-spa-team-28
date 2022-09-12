@@ -26,3 +26,27 @@ void ExtractUtils::followsT(vector<StatementNode*>& stmtList, vector<Relationshi
 		
 	}
 }
+
+bool ExtractUtils::compareStmtList(vector<StatementNode*>& list1, vector<StatementNode*>& list2) {
+	if (list1.size() != list2.size()) {
+		return false;
+	}
+	for (int i = 0; i < list1.size(); i++) {
+		if (!list1[i]->equals(list2[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+//DRY
+bool ExtractUtils::compareProcList(vector<ProcedureNode*>& list1, vector<ProcedureNode*>& list2) {
+	if (list1.size() != list2.size()) {
+		return false;
+	}
+	for (int i = 0; i < list1.size(); i++) {
+		if (!list1[i]->equals(list2[i])) {
+			return false;
+		}
+	}
+	return true;
+}
