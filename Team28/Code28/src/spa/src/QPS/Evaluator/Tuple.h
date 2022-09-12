@@ -42,8 +42,14 @@ public:
 		return std::vector<Tuple>{Tuple(first), Tuple(second)};
 	}
 
-	/*
-	int hash();
-	static combineSubTuple(Tuple tuple1, Tuple tuple2, Tuple tuple3); // tuple1 is the common sub-tuple
-	*/
+	static Tuple combineSubTuples(std::vector<Tuple> subTuples) {
+		std::vector<Value> new_values;
+		int i, j;
+		for (i = 0; i < subTuples.size(); i++) {
+			for (j = 0; j < subTuples[i].values.size(); j++) {
+				new_values.push_back(subTuples[i].values[j]);
+			}
+		}
+		return Tuple(new_values);
+	}
 };

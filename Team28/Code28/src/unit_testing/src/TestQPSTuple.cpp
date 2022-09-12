@@ -20,3 +20,15 @@ TEST_CASE("Tuple can be split into sub-tuples correctly") {
 	REQUIRE(first.values[1].value == "2");
 	REQUIRE(second.size() == 2);
 }
+
+TEST_CASE("Tuple can be combine sub-tuples correctly") {
+	Value v1 = Value(ValueType::VAR_NAME, "foo");
+	Value v2 = Value(ValueType::STMT_NUM, "5");
+	Value v3 = Value(ValueType::VAR_NAME, "bar");
+	Value v4 = Value(ValueType::STMT_NUM, "2");
+	Tuple t1 = Tuple(std::vector<Value>{ v1, v2 });
+	Tuple t2 = Tuple(std::vector<Value>{ v3, v4 });
+	std::vector<Tuple> subTuples = std::vector<Tuple>{t1, t2});
+	Tuple new_tuple = Tuple::combineSubTuples(subTuples);
+	REQUIRE(new_tuple.size() == 4);
+}
