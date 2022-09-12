@@ -52,9 +52,9 @@ TEST_CASE("ModifiesSTable can store multiple Rights to the same Left and retriev
 	// successfully stored 1 item to right map
 	REQUIRE(modifiesSTable.retrieveLeft(1).size() == 3);
 	// all items are stored
-	REQUIRE(modifiesSTable.retrieveLeft(1).find("x1") != modifiesSTable.retrieveLeft(1).end());
-	REQUIRE(modifiesSTable.retrieveLeft(1).find("read") != modifiesSTable.retrieveLeft(1).end());
-	REQUIRE(modifiesSTable.retrieveLeft(1).find("B99") != modifiesSTable.retrieveLeft(1).end());
+	REQUIRE(modifiesSTable.retrieveLeft(1).count("x1") == 1);
+	REQUIRE(modifiesSTable.retrieveLeft(1).count("read") == 1);
+	REQUIRE(modifiesSTable.retrieveLeft(1).count("B99") == 1);
 	// nothing stored to left map
 	REQUIRE(modifiesSTable.retrieveRight("x1").size() == 0);
 }
