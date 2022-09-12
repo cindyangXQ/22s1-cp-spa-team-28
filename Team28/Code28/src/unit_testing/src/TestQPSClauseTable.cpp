@@ -38,10 +38,12 @@ TEST_CASE("ClauseTable can get indices of common headers from a tables") {
 	Synonym syn2 = Synonym(EntityName::ASSIGN, "a");
 	Synonym syn3 = Synonym(EntityName::STMT, "s");
 	std::vector<Synonym> header1{ syn1, syn2, syn3 };
-	std::vector<Synonym> common_header{ syn2, syn3 };
+	std::vector<Synonym> common_header{ syn3, syn1 };
 	ClauseTable table1 = ClauseTable(header1);
 	std::vector<int> indices = table1.getIndices(common_header);
 	REQUIRE(indices.size() == 2);
+	REQUIRE(indices[0] == 2);
+	REQUIRE(indices[1] ==0);
 }
 
 TEST_CASE("ClauseTable can create new table from two input table") {

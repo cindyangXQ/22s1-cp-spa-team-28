@@ -7,10 +7,10 @@ ClauseTable::ClauseTable(std::vector<Synonym> header) {
 std::vector<int> ClauseTable::getIndices(std::vector<Synonym> common_headers) {
 	std::vector<int> indices;
 	int i, j;
-	for (i = 0; i < header.size(); i++) {
-		for (j = 0; j < common_headers.size(); j++) {
-			if (header[i].name == common_headers[j].name) {
-				indices.push_back(i);
+	for (i = 0; i < common_headers.size(); i++) {
+		for (j = 0; j < header.size(); j++) {
+			if (header[j].name == common_headers[i].name) {
+				indices.push_back(j);
 			}
 		}
 	}
