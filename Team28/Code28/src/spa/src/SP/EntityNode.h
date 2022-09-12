@@ -47,7 +47,8 @@ public:
 	virtual void getVariablesInto(vector<string>& result) {};
 	virtual void getConstantsInto(vector<string>& result) {};
 	virtual void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::NONE)); }
-	virtual void getFollowsInto(vector<Relationship<int, int>*>* result) {};
+	virtual void getFollowsInto(vector<Relationship<int, int>*>& result) {};
+	virtual void getFollowsTInto(vector<Relationship<int, int>*>& result) {};
 	int getLineNumber() { return this -> line;  };
 	virtual int getEndLine() { return this->line; }
 };
@@ -148,4 +149,5 @@ public:
 	void getConstantsInto(vector<string>& result);
 	void getStatementsInto(vector<Statement*>& result);
 	void getFollowsInto(vector<Relationship<int, int>*>& result);
+	void getFollowsTInto(vector<Relationship<int, int>*>& result);
 };

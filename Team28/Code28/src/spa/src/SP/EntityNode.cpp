@@ -1,4 +1,5 @@
 #include "EntityNode.h"
+#include "ExtractUtils.h"
 #include <vector>
 
 using namespace std;
@@ -166,20 +167,11 @@ void WhileStatementNode::getStatementsInto(vector<Statement*>& result)
 }
 
 void WhileStatementNode::getFollowsInto(vector<Relationship<int, int>*>& result) {
-	vector<StatementNode*> stmtList = this->getStmtList();
-	int prevLine = 0;
-	int currLine = 0;
-	for (size_t j = 0; j < stmtList.size() - 1; j++) {
-		stmtList.at(j)->getFollowsInto(&result);
-		if (j == 0) {
-			prevLine = stmtList.at(j)->getLineNumber();
-			continue;
-		}
-		currLine = stmtList.at(j)->getLineNumber();
-		Relationship<int, int> temp(RelationshipReference::FOLLOWS, prevLine, currLine);
-		prevLine = currLine;
-		result.push_back(&temp);
-	}
+	ExtractUtils::follows(this->getStmtList(), result);
+}
+
+void WhileStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result) {
+	ExtractUtils::followsT(this->getStmtList(), result);
 }
 
 // Expression

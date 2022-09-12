@@ -59,3 +59,10 @@ public:
 	vector<Relationship<int, int>*> extract();
 	void populate();
 };
+
+class FollowsExtrT : public DesignExtractor {
+public:
+	FollowsExtrT(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
+	vector<Relationship<int, int>*> extract();
+	void populate();
+};

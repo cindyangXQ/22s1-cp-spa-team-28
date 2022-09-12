@@ -1,5 +1,6 @@
 #include "DesignExtractor.h"
 #include "EntityNode.h"
+#include "ExtractUtils.h"
 #include <vector>
 #include <algorithm>
 
@@ -88,19 +89,19 @@ vector<Relationship<int, int>*> FollowsExtractor::extract() {
 	vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
 		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
-		int prevLine = 0;
-		int currLine = 0;
-		for (size_t j = 0; j < stmtList.size() - 1; j++) {
-			stmtList.at(j)->getFollowsInto(&result);
-			if (j == 0) {
-				prevLine = stmtList.at(j)->getLineNumber();
-				continue;
-			}
-			currLine = stmtList.at(j)->getLineNumber();
-			Relationship<int, int> temp(RelationshipReference::FOLLOWS, prevLine, currLine);
-			prevLine = currLine;
-			result.push_back(&temp);
-		}
+		ExtractUtils::follows(stmtList, result);
+	}
+
+	return result;
+}
+
+vector<Relationship<int, int>*> FollowsExtrT::extract() {
+	vector<Relationship<int, int>*> result;
+
+	vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		ExtractUtils::followsT(stmtList, result);
 	}
 
 	return result;
@@ -137,5 +138,10 @@ void ConstantExtractor::populate() {
 
 void FollowsExtractor::populate() {
 	vector<Relationship<int, int>*> follows = this->extract();
-	//this->storage->storeFollows(&follows);
+	this->storage->storeFollows(&follows);
+}
+
+void FollowsExtrT::populate() {
+	vector<Relationship<int, int>*> followsT = this->extract();
+	this->storage->storeFollowsT(&followsT);
 }
