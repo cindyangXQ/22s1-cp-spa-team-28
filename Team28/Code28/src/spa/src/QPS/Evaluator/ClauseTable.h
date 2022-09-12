@@ -12,6 +12,7 @@ public:
 	std::vector<Tuple> rows;
 
 	ClauseTable(std::vector<Synonym> header);
+
 	/*
 	* Given a list of synonyms, get the indices they correspond to
 	*/
@@ -37,5 +38,8 @@ public:
 	*/
 	static ClauseTable ConstructTable(ClauseTable table1, ClauseTable table2);
 
+	/*
+	* Given two tables, Joins the tables
+	*/
 	static ClauseTable joinTables(ClauseTable table1, ClauseTable table2);
 };

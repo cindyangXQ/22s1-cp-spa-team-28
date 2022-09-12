@@ -56,6 +56,9 @@ TEST_CASE("ClauseTable can create new table from two input table") {
 	ClauseTable table2 = ClauseTable(header2);
 	ClauseTable tableJoin = ClauseTable::ConstructTable(table1, table2);
 	REQUIRE(tableJoin.header.size() == 3);
+	REQUIRE(tableJoin.header[0].name == syn2.name);
+	REQUIRE(tableJoin.header[1].name == syn1.name);
+	REQUIRE(tableJoin.header[2].name == syn3.name);
 }
 
 TEST_CASE("ClauseTable can join two tables with common headers") {
@@ -75,6 +78,9 @@ TEST_CASE("ClauseTable can join two tables with common headers") {
 	ClauseTable result = ClauseTable::joinTables(table1, table2);
 	REQUIRE(result.size() == 2);
 	REQUIRE(result.header.size() == 3);
+	REQUIRE(result.header[0].name == syn2.name);
+	REQUIRE(result.header[1].name == syn1.name);
+	REQUIRE(result.header[2].name == syn3.name);
 }
 
 TEST_CASE("ClauseTable can join two tables with no common headers") {
@@ -95,4 +101,8 @@ TEST_CASE("ClauseTable can join two tables with no common headers") {
 	ClauseTable result = ClauseTable::joinTables(table1, table2);
 	REQUIRE(result.size() == 9);
 	REQUIRE(result.header.size() == 4);
+	REQUIRE(result.header[0].name == syn1.name);
+	REQUIRE(result.header[1].name == syn2.name);
+	REQUIRE(result.header[2].name == syn3.name);
+	REQUIRE(result.header[3].name == syn4.name);
 }
