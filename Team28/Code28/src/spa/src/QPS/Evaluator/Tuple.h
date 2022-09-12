@@ -52,4 +52,17 @@ public:
 		}
 		return Tuple(new_values);
 	}
+
+	bool operator == (Tuple t) {
+		if (this->size() != t.size()) {
+			return false;
+		} else {
+			for (int i = 0; i < this->size(); i++) {
+				if (this->values[i].value != t.values[i].value) {
+					return false;
+				}
+			}
+			return true;
+		} 
+	}
 };
