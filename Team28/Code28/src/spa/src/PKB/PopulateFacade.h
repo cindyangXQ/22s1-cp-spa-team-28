@@ -34,7 +34,47 @@ public:
 	*/
 	void storeProcedures(std::vector<Procedure*> *procedures);
 
+	// TODO relook storage into RelationshipsTables, do we need so many repeats?
+
+	/*
+	* Stores the given follows relations in a FollowsTable.
+	*/
 	void storeFollows(std::vector<Relationship<int, int>*>* follows);
+
+	/*
+	* Stores the given followsT relations in a FollowsTable.
+	*/
+	void storeFollowsT(std::vector<Relationship<int, int>*>* followsT);
+
+	/*
+	* Stores the given parent relations in a FollowsTable.
+	*/
+	void storeParent(std::vector<Relationship<int, int>*>* parents);
+
+	/*
+	* Stores the given parentT relations in a FollowsTable.
+	*/
+	void storeParentT(std::vector<Relationship<int, int>*>* parentsT);
+
+	/*
+	* Stores the given modifiesS relations in a FollowsTable.
+	*/
+	void storeModifiesS(std::vector<Relationship<int, std::string>*>* modifiesS);
+
+	/*
+	* Stores the given modifiesP relations in a FollowsTable.
+	*/
+	void storeModifiesP(std::vector<Relationship<std::string, std::string>*>* modifiesP);
+
+	/*
+	* Stores the given usesS relations in a FollowsTable.
+	*/
+	void storeUsesS(std::vector<Relationship<int, std::string>*>* usesS);
+
+	/*
+	* Stores the given modifiesP relations in a FollowsTable.
+	*/
+	void storeUsesP(std::vector<Relationship<std::string, std::string>*>* usesT);
 
 private:
 	Storage *storage;

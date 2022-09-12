@@ -140,3 +140,122 @@ TEST_CASE("storeFollows stores Relationship<int, int> objects correctly") {
 	REQUIRE(followsTable->getLeftMap().size() == 3);
 	REQUIRE(followsTable->getRightMap().size() == 3);
 }
+
+TEST_CASE("storeFollowsT stores Relationship<int, int> objects correctly") {
+	Storage storage;
+	PopulateFacade facade = PopulateFacade(&storage);
+	Relationship<int, int> test1 = Relationship(RelationshipReference::FOLLOWS_T, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::FOLLOWS_T, 2, 17);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::FOLLOWS_T, 5, 23);
+	std::vector<Relationship<int, int>*> followsT = { &test1, &test2, &test3 };
+
+	facade.storeFollowsT(&followsT);
+
+	FollowsTTable* followsTTable = (FollowsTTable*)storage.getTable(TableName::FOLLOWS_T);
+
+	// Relationship is stored correctly
+	REQUIRE(followsTTable->getLeftMap().size() == 3);
+	REQUIRE(followsTTable->getRightMap().size() == 3);
+}
+
+TEST_CASE("storeParent stores Relationship<int, int> objects correctly") {
+	Storage storage;
+	PopulateFacade facade = PopulateFacade(&storage);
+	Relationship<int, int> test1 = Relationship(RelationshipReference::PARENT, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::PARENT, 2, 3);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::PARENT, 3, 4);
+	std::vector<Relationship<int, int>*> parents = { &test1, &test2, &test3 };
+
+	facade.storeParent(&parents);
+
+	ParentTable* parentTable = (ParentTable*)storage.getTable(TableName::PARENT);
+
+	// Relationship is stored correctly
+	REQUIRE(parentTable->getLeftMap().size() == 3);
+	REQUIRE(parentTable->getRightMap().size() == 3);
+}
+
+TEST_CASE("storeParentT stores Relationship<int, int> objects correctly") {
+	Storage storage;
+	PopulateFacade facade = PopulateFacade(&storage);
+	Relationship<int, int> test1 = Relationship(RelationshipReference::PARENT_T, 1, 2);
+	Relationship<int, int> test2 = Relationship(RelationshipReference::PARENT_T, 2, 17);
+	Relationship<int, int> test3 = Relationship(RelationshipReference::PARENT_T, 5, 23);
+	std::vector<Relationship<int, int>*> parentsT = { &test1, &test2, &test3 };
+
+	facade.storeParentT(&parentsT);
+
+	FollowsTTable* followsTable = (FollowsTTable*)storage.getTable(TableName::PARENT_T);
+
+	// Relationship is stored correctly
+	REQUIRE(followsTable->getLeftMap().size() == 3);
+	REQUIRE(followsTable->getRightMap().size() == 3);
+}
+
+TEST_CASE("storeModifiesS stores Relationship<int, std::string> objects correctly") {
+	Storage storage;
+	PopulateFacade facade = PopulateFacade(&storage);
+	Relationship<int, std::string> test1 = Relationship(RelationshipReference::MODIFIES, 1, std::string("a"));
+	Relationship<int, std::string> test2 = Relationship(RelationshipReference::MODIFIES, 2, std::string("b"));
+	Relationship<int, std::string> test3 = Relationship(RelationshipReference::MODIFIES, 3, std::string("c"));
+	std::vector<Relationship<int, std::string>*> modifiesS = { &test1, &test2, &test3 };
+
+	facade.storeModifiesS(&modifiesS);
+
+	ModifiesSTable* modifiesSTable = (ModifiesSTable*)storage.getTable(TableName::MODIFIES_S);
+
+	// Relationship is stored correctly
+	REQUIRE(modifiesSTable->getLeftMap().size() == 3);
+	REQUIRE(modifiesSTable->getRightMap().size() == 3);
+}
+
+TEST_CASE("storeModifiesP stores Relationship<std::string, std::string> objects correctly") {
+	Storage storage;
+	PopulateFacade facade = PopulateFacade(&storage);
+	Relationship<std::string, std::string> test1 = Relationship(RelationshipReference::MODIFIES, std::string("x"), std::string("a"));
+	Relationship<std::string, std::string> test2 = Relationship(RelationshipReference::MODIFIES, std::string("y"), std::string("b"));
+	Relationship<std::string, std::string> test3 = Relationship(RelationshipReference::MODIFIES, std::string("z"), std::string("c"));
+	std::vector<Relationship<std::string, std::string>*> modifiesP = { &test1, &test2, &test3 };
+
+	facade.storeModifiesP(&modifiesP);
+
+	ModifiesPTable* modifiesPTable = (ModifiesPTable*)storage.getTable(TableName::MODIFIES_P);
+
+	// Relationship is stored correctly
+	REQUIRE(modifiesPTable->getLeftMap().size() == 3);
+	REQUIRE(modifiesPTable->getRightMap().size() == 3);
+}
+
+TEST_CASE("storeUsesS stores Relationship<int, std::string> objects correctly") {
+	Storage storage;
+	PopulateFacade facade = PopulateFacade(&storage);
+	Relationship<int, std::string> test1 = Relationship(RelationshipReference::USES, 1, std::string("a"));
+	Relationship<int, std::string> test2 = Relationship(RelationshipReference::USES, 2, std::string("b"));
+	Relationship<int, std::string> test3 = Relationship(RelationshipReference::USES, 3, std::string("c"));
+	std::vector<Relationship<int, std::string>*> usesS = { &test1, &test2, &test3 };
+
+	facade.storeUsesS(&usesS);
+
+	UsesSTable* usesSTable = (UsesSTable*)storage.getTable(TableName::USES_S);
+
+	// Relationship is stored correctly
+	REQUIRE(usesSTable->getLeftMap().size() == 3);
+	REQUIRE(usesSTable->getRightMap().size() == 3);
+}
+
+TEST_CASE("storeUsesP stores Relationship<std::string, std::string> objects correctly") {
+	Storage storage;
+	PopulateFacade facade = PopulateFacade(&storage);
+	Relationship<std::string, std::string> test1 = Relationship(RelationshipReference::USES, std::string("x"), std::string("a"));
+	Relationship<std::string, std::string> test2 = Relationship(RelationshipReference::USES, std::string("y"), std::string("b"));
+	Relationship<std::string, std::string> test3 = Relationship(RelationshipReference::USES, std::string("z"), std::string("c"));
+	std::vector<Relationship<std::string, std::string>*> usesP = { &test1, &test2, &test3 };
+
+	facade.storeUsesP(&usesP);
+
+	UsesPTable* usesPTable = (UsesPTable*)storage.getTable(TableName::USES_P);
+
+	// Relationship is stored correctly
+	REQUIRE(usesPTable->getLeftMap().size() == 3);
+	REQUIRE(usesPTable->getRightMap().size() == 3);
+}
