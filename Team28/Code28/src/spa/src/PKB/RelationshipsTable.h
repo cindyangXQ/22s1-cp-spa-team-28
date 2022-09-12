@@ -27,7 +27,7 @@ public:
 		auto key = this->rightToLeftsMap.find(right);
 
 		if (key != this->rightToLeftsMap.end()) {
-			key->second.insert(right);
+			key->second.insert(left);
 		} else {
 			rightToLeftsMap[right] = { left };
 		}
@@ -40,7 +40,7 @@ public:
 		auto key = this->leftToRightsMap.find(left);
 
 		if (key != this->leftToRightsMap.end()) {
-			key->second.insert(left);
+			key->second.insert(right);
 		} else {
 			leftToRightsMap[left] = { right };
 		}
@@ -127,3 +127,18 @@ class FollowsTTable : public RelationshipsTable<int, int> {
 
 };
 
+class ModifiesSTable : public RelationshipsTable<int, std::string> {
+
+};
+
+class ModifiesPTable : public RelationshipsTable<std::string, std::string> {
+
+};
+
+class UsesSTable : public RelationshipsTable<int, std::string> {
+
+};
+
+class UsesPTable : public RelationshipsTable<std::string, std::string> {
+
+};
