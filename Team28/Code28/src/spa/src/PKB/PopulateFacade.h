@@ -34,6 +34,8 @@ public:
 	*/
 	void storeProcedures(std::vector<Procedure*> *procedures);
 
+	void storeFollows(std::vector<Relationship<int, int>*>* follows);
+
 private:
 	Storage *storage;
 };

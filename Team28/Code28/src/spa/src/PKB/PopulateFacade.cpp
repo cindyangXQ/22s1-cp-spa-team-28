@@ -32,3 +32,10 @@ void PopulateFacade::storeProcedures(std::vector<Procedure*> *procedures) {
 		proceduresTable->store(procedure);
 	}
 };
+
+void PopulateFacade::storeFollows(std::vector<Relationship<int, int>*>* follows) {
+	FollowsTable* followsTable = (FollowsTable*)this->storage->getTable(TableName::FOLLOWS);
+	for (Relationship<int, int>* follow : *follows) {
+		followsTable->store(follow);
+	}
+}
