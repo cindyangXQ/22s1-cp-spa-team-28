@@ -65,3 +65,8 @@ ClauseTable ClauseTable::ConstructTable(ClauseTable table1, ClauseTable table2) 
 	}
 	return ClauseTable(headers);
 }
+/*
+ClauseTable ClauseTable::joinTables(ClauseTable table1, ClauseTable table2) {
+	return 
+}
+*/

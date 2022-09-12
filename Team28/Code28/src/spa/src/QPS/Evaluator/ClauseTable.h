@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "../../commons/Synonym.h"
-#include "../../commons/Tuple.h"
+#include "Tuple.h"
 
 /*
 * Encapsulate a table for storing synonyms and possible values the synonyms can be
@@ -36,4 +36,6 @@ public:
 	* Given two tables, construct a new table with all the unique headers from both tables
 	*/
 	static ClauseTable ConstructTable(ClauseTable table1, ClauseTable table2);
+
+	// static ClauseTable joinTables(ClauseTable table1, ClauseTable table2);
 };

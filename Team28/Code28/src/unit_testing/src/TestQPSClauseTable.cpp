@@ -1,6 +1,6 @@
 #include "QPS/Evaluator/ClauseTable.h"
 #include "Commons/Synonym.h"
-#include "Commons/Tuple.h"
+#include "QPS/Evaluator/Tuple.h"
 #include <vector>
 
 #include "catch.hpp"
