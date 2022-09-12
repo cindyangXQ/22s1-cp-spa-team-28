@@ -36,7 +36,7 @@ public:
 				}
 			}
 			if (!inIndices) {
-				second.push_back(this->values[indices[i]]);
+				second.push_back(this->values[i]);
 			}
 		}
 		return std::vector<Tuple>{Tuple(first), Tuple(second)};

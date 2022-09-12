@@ -65,8 +65,34 @@ ClauseTable ClauseTable::ConstructTable(ClauseTable table1, ClauseTable table2) 
 	}
 	return ClauseTable(headers);
 }
-/*
+
 ClauseTable ClauseTable::joinTables(ClauseTable table1, ClauseTable table2) {
-	return 
+	std::vector<Synonym> common_headers = ClauseTable::getCommonHeaders(table1, table2);
+	
+	if (common_headers.empty()) {
+		ClauseTable result = ClauseTable::ConstructTable(table1, table2);
+		for (int i = 0; i < table1.size(); i++) {
+			for (int j = 0; j < table2.size(); j++) {
+				result.insert(Tuple::combineSubTuples(std::vector<Tuple>{table1.rows[i], table2.rows[j]}));
+			}
+		}
+		return result;
+	}
+	else {
+		ClauseTable result = ClauseTable::ConstructTable(table1, table2);
+		std::vector<int> table1Indices = table1.getIndices(common_headers);
+		std::vector<int> table2Indices = table2.getIndices(common_headers);
+		for (int i = 0; i < table1.size(); i++) {
+			for (int j = 0; j < table2.size(); j++) {
+				Tuple t1 = table1.rows[i];
+				Tuple t2 = table2.rows[j];
+				std::vector<Tuple> subTuple1 = t1.splitTuple(table1Indices);
+				std::vector<Tuple> subTuple2 = t2.splitTuple(table2Indices);
+				if (subTuple1[0] == subTuple2[0]) {
+					result.insert(Tuple::combineSubTuples(std::vector<Tuple>{subTuple1[0], subTuple1[1], subTuple2[1]}));
+				}				
+			}
+		}
+		return result;
+	}
 }
-*/

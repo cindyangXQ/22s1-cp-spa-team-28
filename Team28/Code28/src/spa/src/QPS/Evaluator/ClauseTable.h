@@ -37,5 +37,5 @@ public:
 	*/
 	static ClauseTable ConstructTable(ClauseTable table1, ClauseTable table2);
 
-	// static ClauseTable joinTables(ClauseTable table1, ClauseTable table2);
+	static ClauseTable joinTables(ClauseTable table1, ClauseTable table2);
 };
