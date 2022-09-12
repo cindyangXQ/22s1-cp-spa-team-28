@@ -127,3 +127,18 @@ class FollowsTTable : public RelationshipsTable<int, int> {
 
 };
 
+class ModifiesSTable : public RelationshipsTable<int, std::string> {
+
+};
+
+class ModifiesPTable : public RelationshipsTable<std::string, std::string> {
+
+};
+
+class UsesSTable : public RelationshipsTable<int, std::string> {
+
+};
+
+class UsesPTable : public RelationshipsTable<std::string, std::string> {
+
+};

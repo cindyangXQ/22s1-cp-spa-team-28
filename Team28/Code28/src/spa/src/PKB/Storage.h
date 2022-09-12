@@ -27,7 +27,11 @@ enum class TableName {
 	FOLLOWS,
 	FOLLOWS_T,
 	PARENT,
-	PARENT_T
+	PARENT_T,
+	MODIFIES_S,
+	MODIFIES_P,
+	USES_S,
+	USES_P
 };
 
 /*
@@ -44,6 +48,10 @@ public:
 		ParentTTable* parentsT = new ParentTTable();
 		FollowsTable* follows = new FollowsTable();
 		FollowsTTable* followsT = new FollowsTTable();
+		ModifiesSTable* modifiesS = new ModifiesSTable();
+		ModifiesPTable* modifiesP = new ModifiesPTable();
+		UsesSTable* usesS = new UsesSTable();
+		UsesPTable* usesP = new UsesPTable();
 
 		/*
 		* TODO relook typecasting
@@ -56,6 +64,10 @@ public:
 		this->tables[TableName::PARENT_T] = (Table<TableValue>*) parentsT;
 		this->tables[TableName::FOLLOWS] = (Table<TableValue>*) follows;
 		this->tables[TableName::FOLLOWS_T] = (Table<TableValue>*) followsT;
+		this->tables[TableName::MODIFIES_S] = (Table<TableValue>*) modifiesS;
+		this->tables[TableName::MODIFIES_P] = (Table<TableValue>*) modifiesP;
+		this->tables[TableName::USES_S] = (Table<TableValue>*) usesS;
+		this->tables[TableName::USES_P] = (Table<TableValue>*) usesP;
 	};
 
 	Table<TableValue>* getTable(TableName name) {
