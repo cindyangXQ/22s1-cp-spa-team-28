@@ -92,10 +92,6 @@ vector<Relationship<int, int>*> FollowsExtractor::extract() {
 		ExtractUtils::follows(stmtList, result);
 	}
 
-	for (size_t i = 0; i < result.size(); i++) {
-		printf("check extractor result(%d, %d)\n", result[i]->getLeft(), result[i]->getRight());
-	}
-
 	return result;
 }
 

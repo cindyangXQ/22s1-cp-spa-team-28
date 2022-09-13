@@ -55,9 +55,31 @@ TEST_CASE("extract follows small program") {
 
 	REQUIRE(expected.size() == extracted.size());
 	for (int i = 0; i < expected.size(); i++) {
-		printf("left %d right %d\n", extracted[i]->getLeft(), extracted[i]->getRight());
-		/*REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+		REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
 		REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
-		REQUIRE(expected[i]->getRelationshipReference() == extracted[i]->getRelationshipReference());*/
+		REQUIRE(expected[i]->getRelationshipReference() == extracted[i]->getRelationshipReference());
+	}
+}
+
+TEST_CASE("extract followsT small program") {
+	vector<Relationship<int, int>*> expected;
+	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 1, 2));
+	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 1, 3));
+	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 2, 3));
+	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 1, 4));
+	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 2, 4));
+	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 3, 4));
+
+	string sourceProgram = "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + 2;\nwest = 9 + east + west;\n}";
+	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+	FollowsExtrT extr(program, NULL);
+	vector<Relationship<int, int>*> extracted = extr.extract();
+
+	REQUIRE(expected.size() == extracted.size());
+	for (int i = 0; i < expected.size(); i++) {
+		REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+		REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+		REQUIRE(expected[i]->getRelationshipReference() == extracted[i]->getRelationshipReference());
 	}
 }
