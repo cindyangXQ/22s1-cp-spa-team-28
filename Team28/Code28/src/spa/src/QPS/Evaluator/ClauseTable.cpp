@@ -13,12 +13,10 @@ std::vector<int> ClauseTable::getIndices(std::vector<Synonym> common_headers) {
 			}
 		}
 	}
-	_ASSERT(indices.size() == common_headers.size());
 	return indices;
 }
 
 void ClauseTable::insert(Tuple row) {
-	_ASSERT(row.size() == this->header.size());
 	this->rows.push_back(row);
 }
 
@@ -88,7 +86,7 @@ ClauseTable ClauseTable::joinTables(ClauseTable table1, ClauseTable table2) {
 			Tuple t2 = table2.rows[j];
 			std::vector<Tuple> subTuple1 = t1.splitTuple(table1Indices);
 			std::vector<Tuple> subTuple2 = t2.splitTuple(table2Indices);
-			if (subTuple1[0] == subTuple2[0]) {
+			if (subTuple1[0].equal(subTuple2[0])) {
 				result.insert(Tuple::combineSubTuples(std::vector<Tuple>{subTuple1[0], subTuple1[1], subTuple2[1]}));
 			}				
 		}
