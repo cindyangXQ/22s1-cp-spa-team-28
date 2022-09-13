@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_set>
 
-#include "../commons/Relationship/Relationship.h"
+#include "../commons/Relationship.h"
 #include "Table.h"
 #include "StatementsTable.h"
 #include "RelationshipPredicateMap.h"
