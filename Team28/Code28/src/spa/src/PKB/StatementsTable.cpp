@@ -73,6 +73,14 @@ std::vector<Statement*> StatementsTable::getAll() {
 	return this->statements;
 }
 
+std::vector<int> StatementsTable::getAllLineNumbers() {
+	std::vector<Statement*> statements = this->statements;
+	std::vector<int> lineNumbers;
+	std::transform(statements.begin(), statements.end(), 
+		std::back_inserter(lineNumbers), Statement::getLineNumberFromStatement);
+	return lineNumbers;
+}
+
 std::vector<int> StatementsTable::getStatementsByType(StatementType type) {
 	return this->statementTypeIndexes[type];
 }

@@ -49,6 +49,26 @@ public:
 	*/
 	Procedure* getProcedureByName(const std::string& name);
 
+	/*
+	* Returns true if relationship holds between leftReference and rightReference.
+	*/
+	bool validate(RelationshipReference relType, Reference leftRef, Reference rightRef);
+
+	/*
+	* Returns list of possible values that the right synonym can be based on their relationship.
+	*/
+	std::vector<Value> solveRight(RelationshipReference relType, Reference leftRef, EntityName rightSynonym);
+
+	/*
+	* Returns list of possible values that the left synonym can be based on their relationship.
+	*/
+	std::vector<Value> solveLeft(RelationshipReference relType, Reference rightRef, EntityName leftSynonym);
+	
+	/*
+	* Returns list of possible (Value, Value) that the pair of synonyms can be based on their relationship.
+	*/
+	std::vector<std::pair<Value, Value>> solveBoth(RelationshipReference relType, EntityName leftSynonym, EntityName rightSynonym);
+	
 private:
 	Storage* storage;
 };

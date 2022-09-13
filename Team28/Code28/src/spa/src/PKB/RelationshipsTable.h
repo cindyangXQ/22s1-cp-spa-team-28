@@ -1,10 +1,12 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include <unordered_set>
 
 #include "../commons/Relationship/Relationship.h"
 #include "Table.h"
+#include "StatementsTable.h"
 #include "RelationshipPredicateMap.h"
 
 template <typename Left, typename Right>
@@ -106,24 +108,82 @@ public:
 		return this->rightToLeftsMap;
 	}
 
-private:
+protected:
 	std::map<Left, std::unordered_set<Right>> leftToRightsMap;
 	std::map<Right, std::unordered_set<Left>> rightToLeftsMap;
 };
 
-class ParentTable : public RelationshipsTable<int, int> {
+class StmtToStmtRelationshipsTable : public RelationshipsTable<int, int> {
+public:
+	/*
+	* Returns true if the relationship holds between leftReference and rightReference.
+	*/
+	bool validate(Reference leftRef, Reference rightRef) {
+		// TODO: Better way to handle wildcards
+		if (leftRef.isWildcard() && rightRef.isWildcard()) {
+			return !leftToRightsMap.empty();
+		}
+		int left = std::stoi(leftRef.value.value);
+		int right = std::stoi(rightRef.value.value);
+		if (leftRef.isWildcard()) {
+			return !rightToLeftsMap[right].empty();
+		}
+		if (rightRef.isWildcard()) {
+			return !leftToRightsMap[left].empty();
+		}
+		return leftToRightsMap[left].count(right) == 1;
+	};
+
+	/*
+	* Returns list of possible values that the right synonym can be.
+	*/
+	std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym, StatementsTable* statements) {
+		// Validate rightSynonym is a statement. TODO: throw error if not
+		if (stmtRefSet.count(rightSynonym) == 0) {
+			return std::vector<Value>();
+		}
+		std::vector<int> possibleRights;
+		if (rightSynonym == EntityName::STMT) {
+			possibleRights = statements->getAllLineNumbers();
+		} else {
+			StatementType statementType = Statement::getStmtTypeFromEntityName(rightSynonym);
+			possibleRights = statements->getStatementsByType(statementType);
+		}
+		std::vector<Value> result;
+		if (leftRef.isWildcard()) {
+			for (int right : possibleRights) {
+				if (rightToLeftsMap[right].size() != 0) {
+					// todo
+					// result.insert()
+				}		
+			}
+		}
+	};
+
+	/*
+	* Returns list of possible values that the left synonym can be.
+	*/
+	std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym, StatementsTable* statements);
+	
+	/*
+	* Returns list of possible (Value, Value) that the pair of synonyms can be.
+	*/
+	std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym, EntityName rightSynonym);
+};
+
+class ParentTable : public StmtToStmtRelationshipsTable {
 
 };
 
-class ParentTTable : public RelationshipsTable<int, int> {
+class ParentTTable : public StmtToStmtRelationshipsTable {
 
 };
 
-class FollowsTable : public RelationshipsTable<int, int> {
+class FollowsTable : public StmtToStmtRelationshipsTable {
 
 };
 
-class FollowsTTable : public RelationshipsTable<int, int> {
+class FollowsTTable : public StmtToStmtRelationshipsTable {
 
 };
 

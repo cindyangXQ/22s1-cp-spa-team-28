@@ -36,3 +36,10 @@ Reference::Reference(std::string value) {
         throw SemanticError("Invalid reference format");
     }
 }
+
+bool Reference::isWildcard() {
+    if (this->isSynonym) {
+        return false;
+    }
+    return this->value.type == ValueType::WILDCARD;
+}
