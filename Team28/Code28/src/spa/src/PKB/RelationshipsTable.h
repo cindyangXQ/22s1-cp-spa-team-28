@@ -153,22 +153,59 @@ public:
 		if (leftRef.isWildcard()) {
 			for (int right : possibleRights) {
 				if (rightToLeftsMap[right].size() != 0) {
-					// todo
-					// result.insert()
+					result.push_back(Value(ValueType::STMT_NUM, std::to_string(right)));
+				}		
+			}
+		} else {
+			int left = std::stoi(leftRef.value.value);
+			for (int right : possibleRights) {
+				if (rightToLeftsMap[right].count(left) == 1) {
+					result.push_back(Value(ValueType::STMT_NUM, std::to_string(right)));
 				}		
 			}
 		}
+		return result;
 	};
 
 	/*
 	* Returns list of possible values that the left synonym can be.
 	*/
-	std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym, StatementsTable* statements);
+	std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym, StatementsTable* statements) {
+		// Validate leftSynonym is a statement. TODO: throw error if not
+		if (stmtRefSet.count(leftSynonym) == 0) {
+			return std::vector<Value>();
+		}
+		std::vector<int> possibleLefts;
+		if (leftSynonym == EntityName::STMT) {
+			possibleLefts = statements->getAllLineNumbers();
+		} else {
+			StatementType statementType = Statement::getStmtTypeFromEntityName(leftSynonym);
+			possibleLefts = statements->getStatementsByType(statementType);
+		}
+		std::vector<Value> result;
+		if (rightRef.isWildcard()) {
+			for (int left : possibleLefts) {
+				if (rightToLeftsMap[left].size() != 0) {
+					result.push_back(Value(ValueType::STMT_NUM, std::to_string(left)));
+				}		
+			}
+		} else {
+			int right = std::stoi(rightRef.value.value);
+			for (int left : possibleLefts) {
+				if (rightToLeftsMap[left].count(right) == 1) {
+					result.push_back(Value(ValueType::STMT_NUM, std::to_string(left)));
+				}		
+			}
+		}
+		return result;
+	};
 	
 	/*
 	* Returns list of possible (Value, Value) that the pair of synonyms can be.
 	*/
-	std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym, EntityName rightSynonym);
+	std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym, EntityName rightSynonym) {
+		
+	}
 };
 
 class ParentTable : public StmtToStmtRelationshipsTable {
