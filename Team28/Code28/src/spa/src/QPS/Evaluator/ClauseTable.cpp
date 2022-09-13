@@ -44,8 +44,8 @@ ClauseTable ClauseTable::ConstructTable(ClauseTable table1, ClauseTable table2) 
 	std::vector<Synonym> headers = ClauseTable::getCommonHeaders(table1, table2);
 	std::vector<int> indices1 = table1.getIndices(headers);
 	std::vector<int> indices2 = table2.getIndices(headers);
-	int j = 0;
-	for (int i = 0; i < table1.header.size(); i++) {
+
+	for (int i = 0, j = 0; i < table1.header.size(); i++) {
 		if (j < indices1.size() && i == indices1[j]) {
 			j++;
 		}
@@ -53,8 +53,8 @@ ClauseTable ClauseTable::ConstructTable(ClauseTable table1, ClauseTable table2) 
 			headers.push_back(table1.header[i]);
 		}
 	}
-	int k = 0;
-	for (int i = 0; i < table2.header.size(); i++) {
+
+	for (int i = 0, k = 0; i < table2.header.size(); i++) {
 		if (k < indices2.size() && i == indices2[k]) {
 			k++;
 		}
