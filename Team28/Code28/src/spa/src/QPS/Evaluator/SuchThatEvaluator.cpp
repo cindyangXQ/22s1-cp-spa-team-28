@@ -10,23 +10,36 @@ ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
         RelationshipReference relRef = suchThatCl->relationship;
 
         if (!left.isSynonym && !right.isSynonym) {
-            return ClauseResult(queryFacade->validate(relRef, left, right));
+            // the boolean argument is isEmpty, if validate returns true, isEmpty should be false.
+            return ClauseResult(!queryFacade->validate(relRef, left, right));
         }
         else if (left.isSynonym && !right.isSynonym) {
+            ClauseResult clauseResult = ClauseResult(std::vector{ left.syn });
             EntityName leftName = left.syn.entity;
             std::vector<Value> result = queryFacade->solveLeft(relRef, right, leftName);
-            return ClauseResult(false);
+            for (int i = 0; i < result.size(); i++) {
+                clauseResult.insert(Tuple(std::vector{ result[i] }));
+            }
+            return clauseResult;
         }
         else if (!left.isSynonym && right.isSynonym) {
+            ClauseResult clauseResult = ClauseResult(std::vector{ right.syn });
             EntityName rightName = right.syn.entity;
             std::vector<Value> result = queryFacade->solveRight(relRef, left, rightName);
-            return ClauseResult(false);
+            for (int i = 0; i < result.size(); i++) {
+                clauseResult.insert(Tuple(std::vector{ result[i] }));
+            }
+            return clauseResult;
         }
         else if (left.isSynonym && right.isSynonym) {
+            ClauseResult clauseResult = ClauseResult(std::vector{ left.syn, right.syn });
             EntityName leftName = left.syn.entity;
             EntityName rightName = right.syn.entity;
             std::vector< std::pair<Value, Value> > result = queryFacade->solveBoth(relRef, leftName, rightName);
-            return ClauseResult(false);
+            for (int i = 0; i < result.size(); i++) {
+                clauseResult.insert(Tuple(std::vector{ result[i].first, result[i].second}));
+            }
+            return clauseResult;
         }
     }
 }
