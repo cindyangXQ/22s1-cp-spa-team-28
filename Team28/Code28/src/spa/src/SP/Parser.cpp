@@ -28,18 +28,31 @@ ProgramNode* ProgramParser::parse() {
 	vector<ProcedureNode*> procList;
 	int line = 1;
 
+	vector<string> procNames;
+	vector<ProcedureParser*> allProcCalls;
+
 	while (offset < tokenList.size()) {
-		ProcedureParser parser = ProcedureParser(offset, tokenList, line);
-		ProcedureNode* temp = parser.parse();
-		for (size_t i = 0; i < procList.size(); i++) {
-			if (procList[i]->getName() == temp->getName()) {
+		ProcedureParser* parser = new ProcedureParser(offset, tokenList, line);
+		ProcedureNode* temp = parser->parse();
+
+		// Check if procedures have unique names. 
+		for (size_t i = 0; i < procNames.size(); i++) {
+			if (temp->getName() == procNames[i]) {
 				throw "procedure of same name is not allowed";
 			}
 		}
+		procNames.push_back(temp->getName());
+		allProcCalls.push_back(parser);
+
 		procList.push_back(temp);
 
 		line = temp->getEndline() + 1;
-		offset = parser.getOffset();
+		offset = parser->getOffset();
+	}
+
+	// Check if all call statements call existing procedures.
+	for (size_t i = 0; i < allProcCalls.size(); i++) {
+		allProcCalls[i]->checkCalls(procNames);
 	}
 
 	return new ProgramNode(procList);
@@ -66,6 +79,7 @@ ProcedureNode* ProcedureParser::parse() {
 				if (temp->getVariable() == secondToken->getValue()) {
 					throw "recursive call is not allowed";
 				}
+				this->allCalls.push_back(temp->getVariable());
 			}
 			stmtList.push_back(temp);
 
@@ -82,6 +96,22 @@ ProcedureNode* ProcedureParser::parse() {
 
 	offset++;
 	return new ProcedureNode(secondToken->getValue(), stmtList);
+}
+
+bool ProcedureParser::checkCalls(const vector<string>& procNames) {
+	for (size_t i = 0; i < allCalls.size(); i++) {
+		string temp = allCalls[i];
+		bool isCallValid = false;
+		for (size_t j = 0; j < procNames.size(); j++) {
+			if (temp == procNames[j]) {
+				isCallValid = true;
+				break;
+			}
+		}
+		if (!isCallValid) {
+			throw "calling undeclared procedure is not allowed";
+		}
+	}
 }
 
 StatementNode* StatementParser::parse() {

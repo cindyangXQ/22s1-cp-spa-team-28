@@ -23,10 +23,12 @@ public:
 
 class ProcedureParser : public Parser {
 	int startline;
+	vector<string> allCalls;
 
 public:
 	ProcedureParser(int offset, vector<Token*> tokens, int startline);
 	ProcedureNode* parse();
+	bool checkCalls(const vector<string>& procNames);
 };
 
 class StatementParser : public Parser {
