@@ -7,9 +7,9 @@ void ExtractUtils::follows(vector<StatementNode*>& stmtList, vector<Relationship
 		lineNumbers.push_back(stmtList[i]->getLineNumber());
 	}
 	for (size_t i = 1; i < lineNumbers.size(); i++) {
-		Relationship<int, int> temp(RelationshipReference::FOLLOWS, lineNumbers[i - 1], lineNumbers[i]);
-		printf("create follows(%d, %d)\n", temp.getLeft(), temp.getRight());
-		result.push_back(&temp);
+		Relationship<int, int>* temp = new Relationship<int, int>(RelationshipReference::FOLLOWS, lineNumbers[i - 1], lineNumbers[i]);
+		printf("create follows(%d, %d)\n", temp->getLeft(), temp->getRight());
+		result.push_back(temp);
 	}
 
 	for (size_t i = 1; i < result.size(); i++) {
@@ -25,8 +25,8 @@ void ExtractUtils::followsT(vector<StatementNode*>& stmtList, vector<Relationshi
 	}
 	for (size_t i = 1; i < lineNumbers.size(); i++) {
 		for (size_t j = 0; j < i; j++) {
-			Relationship<int, int> temp(RelationshipReference::FOLLOWS_T, lineNumbers[j], lineNumbers[i]);
-			result.push_back(&temp);
+			Relationship<int, int>* temp = new Relationship<int,int>(RelationshipReference::FOLLOWS_T, lineNumbers[j], lineNumbers[i]);
+			result.push_back(temp);
 		}
 		
 	}
