@@ -51,12 +51,12 @@ public:
 		return Tuple(new_values);
 	}
 
-	bool operator == (Tuple t) {
-		if (this->size() != t.size()) {
+	bool equal(Tuple rhs) {
+		if (this->size() != rhs.size()) {
 			return false;
 		} else {
 			for (int i = 0; i < this->size(); i++) {
-				if (this->values[i].value != t.values[i].value) {
+				if (this->values[i].value != rhs.values[i].value) {
 					return false;
 				}
 			}
