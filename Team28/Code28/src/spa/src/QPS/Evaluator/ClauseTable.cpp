@@ -18,7 +18,6 @@ std::vector<int> ClauseTable::getIndices(std::vector<Synonym> common_headers) {
 }
 
 void ClauseTable::insert(Tuple row) {
-	_ASSERT(row.size() == this->header.size());
 	this->rows.push_back(row);
 }
 
