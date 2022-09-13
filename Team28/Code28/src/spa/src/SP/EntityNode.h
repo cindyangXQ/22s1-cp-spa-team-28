@@ -82,7 +82,7 @@ class ReadStatementNode : public StatementNode {
 	VariableNode var;
 
 public:
-	ReadStatementNode(VariableNode& variable, int line);
+	ReadStatementNode(const VariableNode& variable, int line);
 	bool isRead() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
@@ -94,7 +94,7 @@ class PrintStatementNode : public StatementNode {
 	VariableNode var;
 
 public:
-	PrintStatementNode(VariableNode& variable, int line);
+	PrintStatementNode(const VariableNode& variable, int line);
 	bool isPrint() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
@@ -106,7 +106,7 @@ class CallStatementNode : public StatementNode {
 	VariableNode var;
 
 public:
-	CallStatementNode(VariableNode& variable, int line);
+	CallStatementNode(const VariableNode& variable, int line);
 	bool isCall() { return true; };
 	bool equals(StatementNode* other);
 	void getStatementsInto(vector<Statement*>& result);
@@ -129,7 +129,7 @@ class AssignStatementNode : public StatementNode {
 	ExpressionNode* expr;
 
 public:
-	AssignStatementNode(VariableNode& variable, ExpressionNode* expression, int line);
+	AssignStatementNode(const VariableNode& variable, ExpressionNode* expression, int line);
 	bool isAssign() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
@@ -144,7 +144,7 @@ class WhileStatementNode : public StatementNode {
 	ExpressionNode* cond;
 
 public:
-	WhileStatementNode(vector<StatementNode*>& stmtList, ExpressionNode* cond, int line);
+	WhileStatementNode(const vector<StatementNode*>& stmtList, ExpressionNode* cond, int line);
 	bool isWhile() { return true; };
 	bool equals(StatementNode* other);
 	int getEndLine();

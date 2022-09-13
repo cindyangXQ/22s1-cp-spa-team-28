@@ -171,7 +171,7 @@ ReadStatementNode* ReadStmParser::parse() {
 			&& firstToken->equals("read")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		ReadStatementNode* result = new ReadStatementNode(VariableNode (secondToken->value), line);
+		ReadStatementNode* result = new ReadStatementNode(VariableNode(secondToken->value), line);
 		return result;
 	}
 	else {
@@ -190,7 +190,7 @@ PrintStatementNode* PrintStmParser::parse() {
 			&& firstToken->equals("print")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		PrintStatementNode* result = new PrintStatementNode(VariableNode (secondToken->value), line);
+		PrintStatementNode* result = new PrintStatementNode(VariableNode(secondToken->value), line);
 		return result;
 	}
 	else {
@@ -209,7 +209,7 @@ CallStatementNode* CallStmParser::parse() {
 			&& firstToken->equals("call")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		CallStatementNode* result = new CallStatementNode(VariableNode (secondToken->value), line);
+		CallStatementNode* result = new CallStatementNode(VariableNode(secondToken->value), line);
 		return result;
 	}
 	else {
@@ -228,7 +228,7 @@ AssignStatementNode* AssignStmParser::parse() {
 		ExpressionNode* expr = parser.parse();
 		offset = parser.getOffset();
 
-		AssignStatementNode* result = new AssignStatementNode(VariableNode (firstToken->value), expr, line);
+		AssignStatementNode* result = new AssignStatementNode(VariableNode(firstToken->value), expr, line);
 		return result;
 	}
 	else {
