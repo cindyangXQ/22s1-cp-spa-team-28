@@ -59,3 +59,15 @@ TEST_CASE("read read; print print") {
 	ProgramNode* program = ProgramParser(0, tokens).parse();
 	REQUIRE(program->equals(&expected));
 }
+
+/*TEST_CASE("recursive call is not allowed") {
+	string sourceProgram = "procedure Bedok {\ncall Bedok;\n}";
+	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+}*/
+
+/*TEST_CASE("procedure of same name is not allowed") {
+	string sourceProgram = "procedure Bedok {\nread a;\n}\n\nprocedure Bedok {\nprint b;\n}";
+	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+}*/

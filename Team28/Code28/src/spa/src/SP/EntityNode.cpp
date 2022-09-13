@@ -118,6 +118,10 @@ CallStatementNode::CallStatementNode(VariableNode& VariableNode, int line ) {
 	this->line = line;
 }
 
+string CallStatementNode::getVariable() {
+	return this->var.getValue();
+}
+
 void CallStatementNode::getStatementsInto(vector<Statement*>& result) { 
 	result.push_back(new Statement(line, StatementType::CALL)); 
 }

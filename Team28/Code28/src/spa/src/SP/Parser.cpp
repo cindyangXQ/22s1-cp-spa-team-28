@@ -31,12 +31,18 @@ ProgramNode* ProgramParser::parse() {
 	while (offset < tokenList.size()) {
 		ProcedureParser parser = ProcedureParser(offset, tokenList, line);
 		ProcedureNode* temp = parser.parse();
+		for (size_t i = 0; i < procList.size(); i++) {
+			if (procList[i]->getName() == temp->getName()) {
+				throw "procedure of same name is not allowed";
+			}
+		}
 		procList.push_back(temp);
+
 		line = temp->getEndline() + 1;
 		offset = parser.getOffset();
 	}
-	ProgramNode* result = new ProgramNode(procList);
-	return result;
+
+	return new ProgramNode(procList);
 }
 
 ProcedureNode* ProcedureParser::parse() {
@@ -56,8 +62,14 @@ ProcedureNode* ProcedureParser::parse() {
 		while (!tokenList.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokenList, line);
 			StatementNode* temp = parser.parse();
-			line = temp->getEndLine() + 1;
+			if (temp->isCall()) {
+				if (temp->getVariable() == secondToken->getValue()) {
+					throw "recursive call is not allowed";
+				}
+			}
 			stmtList.push_back(temp);
+
+			line = temp->getEndLine() + 1;
 			offset = parser.getOffset();
 			if (offset >= tokenList.size()) {
 				throw "procedure wrong syntax";
@@ -67,9 +79,9 @@ ProcedureNode* ProcedureParser::parse() {
 	else {
 		throw "procedure wrong syntax";
 	}
+
 	offset++;
-	ProcedureNode* result = new ProcedureNode(secondToken->getValue(), stmtList);
-	return result;
+	return new ProcedureNode(secondToken->getValue(), stmtList);
 }
 
 StatementNode* StatementParser::parse() {
@@ -123,8 +135,7 @@ ReadStatementNode* ReadStmParser::parse() {
 			&& firstToken->equals("read")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		ReadStatementNode* result = new ReadStatementNode(VariableNode (secondToken->value), line);
-		return result;
+		return new ReadStatementNode(VariableNode (secondToken->value), line);
 	}
 	else {
 		throw "read statement wrong syntax";
@@ -142,8 +153,7 @@ PrintStatementNode* PrintStmParser::parse() {
 			&& firstToken->equals("print")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		PrintStatementNode* result = new PrintStatementNode(VariableNode (secondToken->value), line);
-		return result;
+		return new PrintStatementNode(VariableNode (secondToken->value), line);
 	}
 	else {
 		throw "print statement wrong syntax";
@@ -161,8 +171,7 @@ CallStatementNode* CallStmParser::parse() {
 			&& firstToken->equals("call")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		CallStatementNode* result = new CallStatementNode(VariableNode (secondToken->value), line);
-		return result;
+		return new CallStatementNode(VariableNode (secondToken->value), line);
 	}
 	else {
 		throw "call statement wrong syntax";
@@ -180,8 +189,7 @@ AssignStatementNode* AssignStmParser::parse() {
 		ExpressionNode* expr = parser.parse();
 		offset = parser.getOffset();
 
-		AssignStatementNode* result = new AssignStatementNode(VariableNode (firstToken->value), expr, line);
-		return result;
+		return new AssignStatementNode(VariableNode (firstToken->value), expr, line);
 	}
 	else {
 		throw "assignment statement wrong syntax";
@@ -225,8 +233,7 @@ WhileStatementNode* WhileStmParser::parse() {
 			}
 		}
 		offset++;
-		WhileStatementNode* result = new WhileStatementNode(stmtList, cond, startline);
-		return result;
+		return new WhileStatementNode(stmtList, cond, startline);
 	}
 	else {
 		throw "while statement wrong syntax";

@@ -22,8 +22,8 @@ public:
 };
 
 class ProcedureParser : public Parser {
-protected:
 	int startline;
+
 public:
 	ProcedureParser(int offset, vector<Token*> tokens, int startline);
 	ProcedureNode* parse();
@@ -32,6 +32,7 @@ public:
 class StatementParser : public Parser {
 protected:
 	int line;
+
 public:
 	StatementParser(int offset, vector<Token*> tokens, int line);
 	StatementNode* parse();
