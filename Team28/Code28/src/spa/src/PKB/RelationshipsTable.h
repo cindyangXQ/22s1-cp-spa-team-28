@@ -5,6 +5,7 @@
 #include <unordered_set>
 
 #include "../commons/Relationship.h"
+#include "../commons/Reference.h"
 #include "Table.h"
 #include "StatementsTable.h"
 #include "RelationshipPredicateMap.h"

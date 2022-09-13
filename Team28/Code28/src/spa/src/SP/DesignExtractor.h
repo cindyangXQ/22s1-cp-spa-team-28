@@ -3,7 +3,6 @@
 #include "../commons/Statement.h"
 #include "../commons/Variable.h"
 #include "../commons/Constant.h"
-#include "../commons/Relationship/Follows.h"
 #include "../PKB/PopulateFacade.h"
 
 #include <vector>

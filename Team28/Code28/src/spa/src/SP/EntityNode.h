@@ -7,7 +7,7 @@
 #include "../commons/Variable.h"
 #include "../commons/Constant.h"
 #include "../commons/Statement.h"
-#include "../commons/Relationship/Relationship.h"
+#include "../commons/Relationship.h"
 
 using namespace std;
 
