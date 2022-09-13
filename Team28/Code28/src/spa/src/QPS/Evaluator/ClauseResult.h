@@ -1,8 +1,12 @@
 #pragma once
-
+#include "ClauseTable.h"
 class ClauseResult {
 public:
-    bool isTrue;
+    ClauseTable table;
+    bool isEmpty;
     ClauseResult();
-    explicit ClauseResult(bool isTrue) : isTrue(isTrue) {};
+    ClauseResult(bool empty) {
+        this->isEmpty = empty;
+    }
+    explicit ClauseResult(std::vector<Synonym> headers) : table(ClauseTable(headers)) {};
 };
