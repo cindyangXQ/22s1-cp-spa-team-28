@@ -119,9 +119,59 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType, Refere
 }
 
 std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType, Reference rightRef, EntityName leftSynonym) {
+	if (rightRef.isSynonym) {
+		// TODO: throw error or remove if we can assume ref passed is always correct
+		return std::vector<Value>();
+	}
+	StatementsTable* statements = (StatementsTable*)this->storage->getTable(TableName::STATEMENTS);
 
+	switch(relType) {
+		case RelationshipReference::FOLLOWS: {
+			FollowsTable* follows = (FollowsTable*)this->storage->getTable(TableName::FOLLOWS);
+			return follows->solveRight(rightRef, leftSynonym, statements);
+		}
+		case RelationshipReference::FOLLOWS_T: {
+			FollowsTTable* followsT = (FollowsTTable*)this->storage->getTable(TableName::FOLLOWS_T);
+			return followsT->solveRight(rightRef, leftSynonym, statements);
+		}
+		case RelationshipReference::PARENT: {
+			ParentTable* parent = (ParentTable*)this->storage->getTable(TableName::PARENT);
+			return parent->solveRight(rightRef, leftSynonym, statements);
+		}
+		case RelationshipReference::PARENT_T: {
+			ParentTTable* parentT = (ParentTTable*)this->storage->getTable(TableName::PARENT_T);
+			return parentT->solveRight(rightRef, leftSynonym, statements);	
+		}
+		default: {
+			// TODO: throw error instead of return false
+			return std::vector<Value>();
+		}
+	}
 }
 	
 std::vector<std::pair<Value, Value>> QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym, EntityName rightSynonym) {
+	StatementsTable* statements = (StatementsTable*)this->storage->getTable(TableName::STATEMENTS);
 
+	switch(relType) {
+		case RelationshipReference::FOLLOWS: {
+			FollowsTable* follows = (FollowsTable*)this->storage->getTable(TableName::FOLLOWS);
+			return follows->solveBoth(leftSynonym, rightSynonym, statements);
+		}
+		case RelationshipReference::FOLLOWS_T: {
+			FollowsTTable* followsT = (FollowsTTable*)this->storage->getTable(TableName::FOLLOWS_T);
+			return followsT->solveBoth(leftSynonym, rightSynonym, statements);
+		}
+		case RelationshipReference::PARENT: {
+			ParentTable* parent = (ParentTable*)this->storage->getTable(TableName::PARENT);
+			return parent->solveBoth(leftSynonym, rightSynonym, statements);
+		}
+		case RelationshipReference::PARENT_T: {
+			ParentTTable* parentT = (ParentTTable*)this->storage->getTable(TableName::PARENT_T);
+			return parentT->solveBoth(leftSynonym, rightSynonym, statements);	
+		}
+		default: {
+			// TODO: throw error instead of return false
+			return std::vector<std::pair<Value, Value>>();
+		}
+	}
 }

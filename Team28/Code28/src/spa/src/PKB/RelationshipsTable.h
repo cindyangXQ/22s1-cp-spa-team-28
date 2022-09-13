@@ -203,8 +203,38 @@ public:
 	/*
 	* Returns list of possible (Value, Value) that the pair of synonyms can be.
 	*/
-	std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym, EntityName rightSynonym) {
-		
+	std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym, EntityName rightSynonym, StatementsTable* statements) {
+		// Validate leftSynonym is a statement. TODO: throw error if not
+		if (stmtRefSet.count(leftSynonym) == 0 || stmtRefSet.count(rightSynonym) == 0) {
+			return std::vector<std::pair<Value, Value>>();
+		}
+		std::vector<int> possibleLefts;
+		std::vector<int> possibleRights;
+		if (leftSynonym == EntityName::STMT) {
+			possibleLefts = statements->getAllLineNumbers();
+		} else {
+			StatementType statementType = Statement::getStmtTypeFromEntityName(leftSynonym);
+			possibleLefts = statements->getStatementsByType(statementType);
+		}
+		if (rightSynonym == EntityName::STMT) {
+			possibleRights = statements->getAllLineNumbers();
+		} else {
+			StatementType statementType = Statement::getStmtTypeFromEntityName(rightSynonym);
+			possibleRights = statements->getStatementsByType(statementType);
+		}
+
+		std::vector<std::pair<Value,Value>> result;
+		for (int left : possibleLefts) {
+			for (int right : possibleRights) {
+				if (rightToLeftsMap[left].count(right) == 1) {
+					Value leftValue = Value(ValueType::STMT_NUM, std::to_string(left));
+					Value rightValue = Value(ValueType::STMT_NUM, std::to_string(right));
+					result.push_back(std::make_pair(leftValue, rightValue));
+				}	
+			}	
+		}
+
+		return result;
 	}
 };
 
