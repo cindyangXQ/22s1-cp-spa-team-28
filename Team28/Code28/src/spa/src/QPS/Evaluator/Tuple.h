@@ -21,16 +21,15 @@ public:
 	* second tuple contains the remaining values.
 	*/
 	std::vector<Tuple> splitTuple(std::vector<int> indices) {
-		int i, j;
 		std::vector<Value> first;
 		std::vector<Value> second;
-		for (i = 0; i < indices.size(); i++) {
+		for (int i = 0; i < indices.size(); i++) {
 			first.push_back(this->values[indices[i]]);
 		}
 		bool inIndices;
-		for (i = 0; i < this->values.size(); i++) {
+		for (int i = 0; i < this->values.size(); i++) {
 			inIndices = false;
-			for (j = 0; j < indices.size(); j++) {
+			for (int j = 0; j < indices.size(); j++) {
 				if (i == j) {
 					inIndices = true;
 				}
@@ -44,9 +43,8 @@ public:
 
 	static Tuple combineSubTuples(std::vector<Tuple> subTuples) {
 		std::vector<Value> new_values;
-		int i, j;
-		for (i = 0; i < subTuples.size(); i++) {
-			for (j = 0; j < subTuples[i].values.size(); j++) {
+		for (int i = 0; i < subTuples.size(); i++) {
+			for (int j = 0; j < subTuples[i].values.size(); j++) {
 				new_values.push_back(subTuples[i].values[j]);
 			}
 		}
