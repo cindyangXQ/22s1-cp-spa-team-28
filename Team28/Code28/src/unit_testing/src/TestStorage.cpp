@@ -96,7 +96,7 @@ TEST_CASE("Storage stores and retrieves Parent correctly") {
 
 TEST_CASE("Storage stores and retrieves ParentT correctly") {
 	Storage storage;
-	ParentTTable* parentsT = (ParentTTable*)storage.getTable(TableName::PARENT);
+	ParentTTable* parentsT = (ParentTTable*)storage.getTable(TableName::PARENT_T);
 	Relationship<int, int> test = Relationship(RelationshipReference::PARENT_T, 1, 2);
 
 	parentsT->store(&test);
@@ -120,7 +120,7 @@ TEST_CASE("Storage stores and retrieves Follows correctly") {
 
 TEST_CASE("Storage stores and retrieves FollowsT correctly") {
 	Storage storage;
-	FollowsTTable* followsT = (FollowsTTable*)storage.getTable(TableName::PARENT);
+	FollowsTTable* followsT = (FollowsTTable*)storage.getTable(TableName::FOLLOWS_T);
 	Relationship<int, int> test = Relationship(RelationshipReference::FOLLOWS_T, 1, 2);
 
 	followsT->store(&test);
@@ -128,4 +128,56 @@ TEST_CASE("Storage stores and retrieves FollowsT correctly") {
 	// Relationship stored to FollowsTTable correctly
 	REQUIRE(followsT->retrieveLeft(1).size() == 1);
 	REQUIRE(followsT->retrieveRight(2).size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves ModifiesS correctly") {
+	Storage storage;
+	ModifiesSTable* modifiesS = (ModifiesSTable*)storage.getTable(TableName::MODIFIES_S);
+	Relationship<int, std::string> test = Relationship(RelationshipReference::MODIFIES, 1, std::string("v"));
+
+	modifiesS->store(&test);
+
+	// Relationship stored to ModifiesS correctly
+	REQUIRE(modifiesS->retrieveLeft(1).size() == 1);
+	REQUIRE(modifiesS->retrieveRight("v").size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves ModifiesP correctly") {
+	Storage storage;
+	ModifiesPTable* modifiesP = (ModifiesPTable*)storage.getTable(TableName::MODIFIES_P);
+	Relationship<std::string, std::string> test = Relationship(
+		RelationshipReference::MODIFIES, std::string("main"), std::string("v")
+	);
+
+	modifiesP->store(&test);
+
+	// Relationship stored to ModifiesS correctly
+	REQUIRE(modifiesP->retrieveLeft("main").size() == 1);
+	REQUIRE(modifiesP->retrieveRight("v").size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves UsesS correctly") {
+	Storage storage;
+	UsesSTable* usesS = (UsesSTable*)storage.getTable(TableName::USES_S);
+	Relationship<int, std::string> test = Relationship(RelationshipReference::USES, 1, std::string("v"));
+
+	usesS->store(&test);
+
+	// Relationship stored to ModifiesS correctly
+	REQUIRE(usesS->retrieveLeft(1).size() == 1);
+	REQUIRE(usesS->retrieveRight("v").size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves UsesP correctly") {
+	Storage storage;
+	UsesPTable* usesP = (UsesPTable*)storage.getTable(TableName::USES_P);
+	Relationship<std::string, std::string> test = Relationship(
+		RelationshipReference::USES, std::string("main"), std::string("v")
+	);
+
+	usesP->store(&test);
+
+	// Relationship stored to ModifiesS correctly
+	REQUIRE(usesP->retrieveLeft("main").size() == 1);
+	REQUIRE(usesP->retrieveRight("v").size() == 1);
 }
