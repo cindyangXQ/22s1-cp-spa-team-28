@@ -21,4 +21,5 @@ public:
     explicit Reference();
     Reference(Synonym syn);
     Reference(std::string value);
+    bool isWildcard();
 };

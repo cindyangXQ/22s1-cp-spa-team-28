@@ -45,6 +45,11 @@ public:
 	std::vector<Statement*> getAll();
 
 	/*
+	* Gets all line numbers in StatementsTable.
+	*/
+	std::vector<int> getAllLineNumbers();
+
+	/*
 	* Gets all statements of the specified type from StatementsTable.
 	*/
 	std::vector<int> getStatementsByType(StatementType type);
