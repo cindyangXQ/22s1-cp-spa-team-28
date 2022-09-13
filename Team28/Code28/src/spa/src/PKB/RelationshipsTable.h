@@ -1,10 +1,12 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include <unordered_set>
 
 #include "../commons/Relationship/Relationship.h"
 #include "Table.h"
+#include "StatementsTable.h"
 #include "RelationshipPredicateMap.h"
 
 template <typename Left, typename Right>
@@ -106,24 +108,152 @@ public:
 		return this->rightToLeftsMap;
 	}
 
-private:
+protected:
 	std::map<Left, std::unordered_set<Right>> leftToRightsMap;
 	std::map<Right, std::unordered_set<Left>> rightToLeftsMap;
 };
 
-class ParentTable : public RelationshipsTable<int, int> {
+class StmtToStmtRelationshipsTable : public RelationshipsTable<int, int> {
+public:
+	/*
+	* Returns true if the relationship holds between leftReference and rightReference.
+	*/
+	bool validate(Reference leftRef, Reference rightRef) {
+		// TODO: Better way to handle wildcards
+		if (leftRef.isWildcard() && rightRef.isWildcard()) {
+			return !leftToRightsMap.empty();
+		}
+
+		if (leftRef.isWildcard()) {
+			int right = std::stoi(rightRef.value.value);
+			return !rightToLeftsMap[right].empty();
+		}
+		if (rightRef.isWildcard()) {
+			int left = std::stoi(leftRef.value.value);
+			return !leftToRightsMap[left].empty();
+		}		
+		int left = std::stoi(leftRef.value.value);
+		int right = std::stoi(rightRef.value.value);
+		return leftToRightsMap[left].count(right) == 1;
+	};
+
+	/*
+	* Returns list of possible values that the right synonym can be.
+	*/
+	std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym, StatementsTable* statements) {
+		// Validate rightSynonym is a statement. TODO: throw error if not
+		if (stmtRefSet.count(rightSynonym) == 0) {
+			return std::vector<Value>();
+		}
+		std::vector<int> possibleRights;
+		if (rightSynonym == EntityName::STMT) {
+			possibleRights = statements->getAllLineNumbers();
+		} else {
+			StatementType statementType = Statement::getStmtTypeFromEntityName(rightSynonym);
+			possibleRights = statements->getStatementsByType(statementType);
+		}
+		std::vector<Value> result;
+		if (leftRef.isWildcard()) {
+			for (int right : possibleRights) {
+				if (rightToLeftsMap[right].size() != 0) {
+					result.push_back(Value(ValueType::STMT_NUM, std::to_string(right)));
+				}		
+			}
+		} else {
+			int left = std::stoi(leftRef.value.value);
+			for (int right : possibleRights) {
+				if (rightToLeftsMap[right].count(left) == 1) {
+					result.push_back(Value(ValueType::STMT_NUM, std::to_string(right)));
+				}		
+			}
+		}
+		return result;
+	};
+
+	/*
+	* Returns list of possible values that the left synonym can be.
+	*/
+	std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym, StatementsTable* statements) {
+		// Validate leftSynonym is a statement. TODO: throw error if not
+		if (stmtRefSet.count(leftSynonym) == 0) {
+			return std::vector<Value>();
+		}
+		std::vector<int> possibleLefts;
+		if (leftSynonym == EntityName::STMT) {
+			possibleLefts = statements->getAllLineNumbers();
+		} else {
+			StatementType statementType = Statement::getStmtTypeFromEntityName(leftSynonym);
+			possibleLefts = statements->getStatementsByType(statementType);
+		}
+		std::vector<Value> result;
+		if (rightRef.isWildcard()) {
+			for (int left : possibleLefts) {
+				if (leftToRightsMap[left].size() != 0) {
+					result.push_back(Value(ValueType::STMT_NUM, std::to_string(left)));
+				}		
+			}
+		} else {
+			int right = std::stoi(rightRef.value.value);
+			for (int left : possibleLefts) {
+				if (leftToRightsMap[left].count(right) == 1) {
+					result.push_back(Value(ValueType::STMT_NUM, std::to_string(left)));
+				}		
+			}
+		}
+		return result;
+	};
+	
+	/*
+	* Returns list of possible (Value, Value) that the pair of synonyms can be.
+	*/
+	std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym, EntityName rightSynonym, StatementsTable* statements) {
+		// Validate leftSynonym is a statement. TODO: throw error if not
+		if (stmtRefSet.count(leftSynonym) == 0 || stmtRefSet.count(rightSynonym) == 0) {
+			return std::vector<std::pair<Value, Value>>();
+		}
+		std::vector<int> possibleLefts;
+		std::vector<int> possibleRights;
+		if (leftSynonym == EntityName::STMT) {
+			possibleLefts = statements->getAllLineNumbers();
+		} else {
+			StatementType statementType = Statement::getStmtTypeFromEntityName(leftSynonym);
+			possibleLefts = statements->getStatementsByType(statementType);
+		}
+		if (rightSynonym == EntityName::STMT) {
+			possibleRights = statements->getAllLineNumbers();
+		} else {
+			StatementType statementType = Statement::getStmtTypeFromEntityName(rightSynonym);
+			possibleRights = statements->getStatementsByType(statementType);
+		}
+
+		std::vector<std::pair<Value,Value>> result;
+		for (int left : possibleLefts) {
+			for (int right : possibleRights) {
+				if (leftToRightsMap[left].count(right) == 1) {
+					Value leftValue = Value(ValueType::STMT_NUM, std::to_string(left));
+					Value rightValue = Value(ValueType::STMT_NUM, std::to_string(right));
+					result.push_back(std::make_pair(leftValue, rightValue));
+				}	
+			}	
+		}
+
+		return result;
+	}
+};
+
+class ParentTable : public StmtToStmtRelationshipsTable {
 
 };
 
-class ParentTTable : public RelationshipsTable<int, int> {
+class ParentTTable : public StmtToStmtRelationshipsTable {
 
 };
 
-class FollowsTable : public RelationshipsTable<int, int> {
+class FollowsTable : public StmtToStmtRelationshipsTable {
 
 };
 
-class FollowsTTable : public RelationshipsTable<int, int> {
+class FollowsTTable : public StmtToStmtRelationshipsTable {
 
 };
 

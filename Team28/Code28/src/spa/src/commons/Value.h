@@ -16,4 +16,6 @@ public:
     std::string value;
     explicit Value();
     explicit Value(ValueType type, std::string value) : type(type), value(value) {};
+
+    bool operator==(const Value& other) const;
 };
