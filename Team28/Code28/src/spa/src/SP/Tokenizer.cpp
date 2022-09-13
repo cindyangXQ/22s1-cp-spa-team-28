@@ -26,7 +26,6 @@ enum class TokenType {
 
 
 Token* Tokenizer::createToken(TokenType type, string value) {
-	cout << static_cast<int>(type) << " " << value << endl;
 	switch (type) {
 	case TokenType::CONSTANT: return new ConstantNode(value);
 	case TokenType::NAME: return new VariableNode(value);

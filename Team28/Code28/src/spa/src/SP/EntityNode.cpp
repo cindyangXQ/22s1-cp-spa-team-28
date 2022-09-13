@@ -1,4 +1,5 @@
 #include "EntityNode.h"
+#include "ExtractUtils.h"
 #include <vector>
 
 using namespace std;
@@ -11,9 +12,7 @@ ProgramNode::ProgramNode(vector<ProcedureNode*> procList) {
 	this->procList = procList;
 }
 
-ProgramNode::ProgramNode()
-{
-}
+ProgramNode::ProgramNode() {}
 
 vector<ProcedureNode*> ProgramNode::getProcList() {
 	return this->procList;
@@ -22,15 +21,7 @@ vector<ProcedureNode*> ProgramNode::getProcList() {
 bool ProgramNode::equals(ProgramNode* other) {
 	vector<ProcedureNode*> procedures = this->getProcList();
 	vector<ProcedureNode*> others = other->getProcList();
-	if (procedures.size() != others.size()) {
-		return false;
-	}
-	for (int i = 0; i < procedures.size(); i++) {
-		if (!procedures[i]->equals(others[i])) {
-			return false;
-		}
-	}
-	return true;
+	return ExtractUtils::compareProcList(procedures, others);
 }
 
 // Procedure
@@ -45,15 +36,7 @@ bool ProcedureNode::equals(ProcedureNode* other) {
 	}
 	vector<StatementNode*> statements = this->getStmtList();
 	vector<StatementNode*> others = other->getStmtList();
-	if (statements.size() != others.size()) {
-		return false;
-	}
-	for (int i = 0; i < statements.size(); i++) {
-		if (!statements[i]->equals(others[i])) {
-			return false;
-		}
-	}
-	return true;
+	return ExtractUtils::compareStmtList(statements, others);
 }
 
 string ProcedureNode::getName() {
@@ -69,58 +52,6 @@ int ProcedureNode::getEndline()
 	return stmtList.back()->getLineNumber();
 }
 
-// Statement - findType
-bool ReadStatementNode::isRead() {
-	return true;
-}
-bool PrintStatementNode::isRead() {
-	return false;
-}
-bool CallStatementNode::isRead() {
-	return false;
-}
-bool AssignStatementNode::isRead() {
-	return false;
-}
-
-bool ReadStatementNode::isPrint() {
-	return false;
-}
-bool PrintStatementNode::isPrint() {
-	return true;
-}
-bool CallStatementNode::isPrint() {
-	return false;
-}
-bool AssignStatementNode::isPrint() {
-	return false;
-}
-
-bool ReadStatementNode::isCall() {
-	return false;
-}
-bool PrintStatementNode::isCall() {
-	return false;
-}
-bool CallStatementNode::isCall() {
-	return true;
-}
-bool AssignStatementNode::isCall() {
-	return false;
-}
-
-bool ReadStatementNode::isAssign() {
-	return false;
-}
-bool PrintStatementNode::isAssign() {
-	return false;
-}
-bool CallStatementNode::isAssign() {
-	return false;
-}
-bool AssignStatementNode::isAssign() {
-	return true;
-}
 
 // Statement - equals
 bool ReadStatementNode::equals(StatementNode* other) {
@@ -140,8 +71,13 @@ bool AssignStatementNode::equals(StatementNode* other) {
 	return other->isAssign() && this->getVariable() == other->getVariable();
 }
 
+bool WhileStatementNode::equals(StatementNode* other) {
+	// Conditional and Statements not checked
+	return other->isWhile();
+}
+
 // Read Statement
-ReadStatementNode::ReadStatementNode(VariableNode VariableNode, int line) {
+ReadStatementNode::ReadStatementNode(VariableNode& VariableNode, int line) {
 	this->var = VariableNode ;
 	this->line = line;
 }
@@ -154,12 +90,12 @@ void ReadStatementNode::getVariablesInto(vector<string>& result) {
 	result.push_back(this->getVariable());
 }
 
-void ReadStatementNode::getConstantsInto(vector<string>& result) {
-	return;
+void ReadStatementNode::getStatementsInto(vector<Statement*>& result) { 
+	result.push_back(new Statement(line, StatementType::READ)); 
 }
 
 // Print Statement
-PrintStatementNode::PrintStatementNode(VariableNode VariableNode, int line ) {
+PrintStatementNode::PrintStatementNode(VariableNode& VariableNode, int line ) {
 	this->var = VariableNode ;
 	this->line = line;
 }
@@ -172,30 +108,22 @@ void PrintStatementNode::getVariablesInto(vector<string>& result) {
 	result.push_back(this->getVariable());
 }
 
-void PrintStatementNode::getConstantsInto(vector<string>& result) {
-	return;
+void PrintStatementNode::getStatementsInto(vector<Statement*>& result) {
+	result.push_back(new Statement(line, StatementType::PRINT)); 
 }
 
 // Call Statement
-CallStatementNode::CallStatementNode(VariableNode VariableNode, int line ) {
+CallStatementNode::CallStatementNode(VariableNode& VariableNode, int line ) {
 	this->var = VariableNode ;
 	this->line = line;
 }
 
-string CallStatementNode::getVariable() {
-	return "";
-}
-
-void CallStatementNode::getVariablesInto(vector<string>& result) {
-	return;
-}
-
-void CallStatementNode::getConstantsInto(vector<string>& result) {
-	return;
+void CallStatementNode::getStatementsInto(vector<Statement*>& result) { 
+	result.push_back(new Statement(line, StatementType::CALL)); 
 }
 
 // Assignment Statement
-AssignStatementNode::AssignStatementNode(VariableNode VariableNode , ExpressionNode* expression, int line) {
+AssignStatementNode::AssignStatementNode(VariableNode& VariableNode , ExpressionNode* expression, int line) {
 	var = VariableNode ;
 	expr = expression;
 	this->line = line;
@@ -214,8 +142,12 @@ void AssignStatementNode::getConstantsInto(vector<string>& result) {
 	this->expr->getConstantsInto(result);
 }
 
+void AssignStatementNode::getStatementsInto(vector<Statement*>& result) { 
+	result.push_back(new Statement(line, StatementType::ASSIGN)); 
+}
+
 // While Statement
-WhileStatementNode::WhileStatementNode(vector<StatementNode*> stmtList, ExpressionNode* cond, int line)
+WhileStatementNode::WhileStatementNode(vector<StatementNode*>& stmtList, ExpressionNode* cond, int line)
 {
 	this->stmtList = stmtList;
 	this->cond = cond;
@@ -249,6 +181,15 @@ void WhileStatementNode::getStatementsInto(vector<Statement*>& result)
 		stmtList.at(i)->getStatementsInto(result);
 	}
 }
+
+void WhileStatementNode::getFollowsInto(vector<Relationship<int, int>*>& result) {
+	ExtractUtils::follows(this->getStmtList(), result);
+}
+
+void WhileStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result) {
+	ExtractUtils::followsT(this->getStmtList(), result);
+}
+
 
 // Expression
 ExpressionNode::ExpressionNode(Token* token)
