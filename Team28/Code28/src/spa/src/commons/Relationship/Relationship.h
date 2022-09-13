@@ -3,6 +3,7 @@
 #include "../Entity.h"
 #include "../Reference.h"
 #include "../../QPS/Error/SemanticError.h"
+#include "../../QPS/Evaluator/ClauseResult.h"
 
 /*
  * Enumerates the different design entity.

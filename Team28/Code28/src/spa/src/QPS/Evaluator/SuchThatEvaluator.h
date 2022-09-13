@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../../PKB/QueryFacade.h"
+#include "../../commons/Relationship/Follows.h"
+#include "../../commons/Relationship/Modifies.h"
 #include "../Clause/SuchThatClause.h"
 #include "ClauseResult.h"
 

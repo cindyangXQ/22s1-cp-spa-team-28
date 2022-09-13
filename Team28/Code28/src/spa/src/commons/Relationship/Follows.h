@@ -14,4 +14,7 @@ public:
         }
         return (this->getLeft().type == ReferenceType::STMT_REF && this->getRight().type == ReferenceType::STMT_REF);
     }
+    ClauseResult evaluate() {
+        return ClauseResult(false);
+    }
 };

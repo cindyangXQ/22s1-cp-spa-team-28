@@ -14,4 +14,7 @@ public:
         }
         return this->getRight().type == ReferenceType::ENT_REF;
     }
+    ClauseResult evaluate() {
+        return ClauseResult(false);
+    }
 };
