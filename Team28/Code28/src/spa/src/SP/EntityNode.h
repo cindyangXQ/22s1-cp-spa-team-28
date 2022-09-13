@@ -20,18 +20,16 @@ public:
 class ConstantNode : public Token, public EntityNode {
 public:
 	ConstantNode(string s);
-	bool isName();
-	bool isKeyword();
-	bool isConstant();
+	bool isConstant() { return true; }
+	bool equals(Token* other) { return other->isConstant() && other->value == this->value; }
 };
 
 class VariableNode : public Token, public EntityNode {
 public:
 	VariableNode(string s);
 	VariableNode();
-	bool isName();
-	bool isKeyword();
-	bool isConstant();
+	bool isName() { return true; }
+	bool equals(Token* other) { return other->isName() && other->value == this->value; }
 };
 
 class StatementNode : public EntityNode {
@@ -123,6 +121,7 @@ public:
 	ExpressionNode();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
+	bool equals(ExpressionNode* other);
 };
 
 class AssignStatementNode : public StatementNode {
@@ -164,7 +163,7 @@ class IfStatementNode : public StatementNode {
 	ExpressionNode* cond;
 
 public:
-	IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond);
+	IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line);
 	bool isIf() { return true; }
 	bool equals(StatementNode* other);
 	int getEndLine();

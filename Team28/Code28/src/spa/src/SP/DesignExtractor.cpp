@@ -71,11 +71,13 @@ vector<Constant*> ConstantExtractor::extract() {
 		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			StatementNode* currStmt = stmtList.at(j);
-			if (currStmt->isAssign()) {
-				currStmt->getConstantsInto(preresult);
-			}
+			currStmt->getConstantsInto(preresult);
 		}
 	}
+
+	sort(preresult.begin(), preresult.end());
+	preresult.erase(unique(preresult.begin(), preresult.end()), preresult.end());
+
 	for (size_t i = 0; i < preresult.size(); i++) {
 		result.push_back(new Constant(preresult[i]));
 	}

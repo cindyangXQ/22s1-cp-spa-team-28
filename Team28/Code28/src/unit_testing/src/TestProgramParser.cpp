@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "SP/Parser.h"
 #include "SP/Tokenizer.h"
+#include "SP/ExprParser.h"
 
 #include <vector>
 
@@ -58,4 +59,106 @@ TEST_CASE("read read; print print") {
 	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
 	ProgramNode* program = ProgramParser(0, tokens).parse();
 	REQUIRE(program->equals(&expected));
+}
+
+
+TEST_CASE("Test Conditional Parser") {
+	VariableNode var1("a"), var2("b");
+	ConstantNode c1("2"), c2("3"), c3("5");
+	Operator op1("!"), op2("+"), op3("*"), op4(">="), op5("&&"), op6("!=");
+	
+	ExpressionNode plus(&op2);
+	plus.left = new ExpressionNode(&c1);
+	plus.right = new ExpressionNode(&c2);
+
+	ExpressionNode mul(&op3);
+	mul.left = &plus;
+	mul.right = new ExpressionNode(&c1);
+
+	ExpressionNode gte(&op4);
+	gte.left = &mul;
+	gte.right = new ExpressionNode(&c3);
+
+	ExpressionNode inverse(&op1);
+	inverse.left = &gte;
+	
+	ExpressionNode mul2(&op3);
+	mul2.left = new ExpressionNode(&var1);
+	mul2.right = new ExpressionNode(&var2);
+
+	ExpressionNode nte(&op6);
+	nte.left = &mul2;
+	nte.right = new ExpressionNode(&c2);
+
+	ExpressionNode and(&op5);
+	and .left = &inverse;
+	and .right = &nte;
+
+	ExpressionNode* expected = &and;
+
+	string statement = "((!((2+3)*2 >= 5)) && (a*b != 3))";
+	vector<Token*> tokens = Tokenizer(statement).tokenize();
+	CondParser parser = CondParser(1, tokens);
+	ExpressionNode* cond = parser.parse();
+
+	REQUIRE(cond->equals(expected));
+}
+
+
+TEST_CASE("While Statement Parser") {
+	VariableNode var1("a"), var2("b");
+	ConstantNode c1("2"), c2("3"), c3("5");
+	Operator op1("!"), op2("+"), op3("*"), op4(">="), op5("&&"), op6("!=");
+	vector<StatementNode*> stmtList = {};
+
+	ExpressionNode mul2(&op3);
+	mul2.left = new ExpressionNode(&var1);
+	mul2.right = new ExpressionNode(&var2);
+
+	ExpressionNode nte(&op6);
+	nte.left = &mul2;
+	nte.right = new ExpressionNode(&c2);
+
+	AssignStatementNode a(var1, new ExpressionNode(&c2), 2);
+	ReadStatementNode r(var2, 3);
+	WhileStatementNode w1(stmtList, &nte, 4);
+	vector<StatementNode*> stmtList2 = { &a, &r, &w1 };
+
+	WhileStatementNode expected(stmtList2, &nte, 1);
+
+	string statement = "while(a*b != 3) {a = 3; read b;while(a*b!=3){}}";
+	vector<Token*> tokens = Tokenizer(statement).tokenize();	
+	WhileStatementNode* result = WhileStmParser(0, tokens, 1).parse();
+
+	REQUIRE(result->equals(&expected));
+}
+
+TEST_CASE("If Statement Parser") {
+	VariableNode var1("a"), var2("b");
+	ConstantNode c1("2"), c2("3"), c3("5");
+	Operator op1("!"), op2("+"), op3("*"), op4(">="), op5("&&"), op6("!=");
+
+	ExpressionNode mul2(&op3);
+	mul2.left = new ExpressionNode(&var1);
+	mul2.right = new ExpressionNode(&var2);
+
+	ExpressionNode nte(&op6);
+	nte.left = &mul2;
+	nte.right = new ExpressionNode(&c2);
+
+	AssignStatementNode a1(var1, new ExpressionNode(&c2), 2);
+	AssignStatementNode a2(var1, new ExpressionNode(&c1), 4);
+	ReadStatementNode r(var2, 4);
+	vector<StatementNode*> stmt1 = { &a2 };
+	WhileStatementNode w1(stmt1, &nte, 3);
+	vector<StatementNode*> stmt2 = { &a1, &w1 };
+	vector<StatementNode*> stmt3 = { &r };
+
+	IfStatementNode expected(stmt2, stmt3, &nte, 1);
+
+	string statement = "if(a*b!=3) then {a=3; while(a*b!=3){a=2;}} else{read b;}";
+	vector<Token*> tokens = Tokenizer(statement).tokenize();
+	IfStatementNode* result = IfStmParser(0, tokens, 1).parse();
+
+	REQUIRE(result->equals(&expected));
 }

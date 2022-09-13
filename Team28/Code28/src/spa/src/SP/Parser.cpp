@@ -147,6 +147,11 @@ StatementNode* StatementParser::parse() {
 			result = parser.parse();
 			offset = parser.getOffset();
 		}
+		else if (firstToken->equals("if")) {
+			IfStmParser parser = IfStmParser(offset, tokenList, line);
+			result = parser.parse();
+			offset = parser.getOffset();
+		}
 		else {
 			throw "statement wrong syntax";
 		}
@@ -333,9 +338,9 @@ IfStatementNode* IfStmParser::parse() {
 	if (!tokens.at(offset++)->equals("else") || !tokens.at(offset++)->equals("{")) {
 		throw "if statement wrong syntax";
 	}
-
+	line++;
 	while (!tokens.at(offset)->equals("}")) {
-		StatementParser parser = StatementParser(offset, tokens, line);
+			StatementParser parser = StatementParser(offset, tokens, line);
 			StatementNode* temp = parser.parse();
 			line++;
 			elseStmtList.push_back(temp);
@@ -345,4 +350,6 @@ IfStatementNode* IfStmParser::parse() {
 			}
 	}
 	offset++;
+	IfStatementNode* result = new IfStatementNode(ifStmtList, elseStmtList, cond, startline);
+	return result;
 }
