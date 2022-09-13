@@ -13,7 +13,6 @@ std::vector<int> ClauseTable::getIndices(std::vector<Synonym> common_headers) {
 			}
 		}
 	}
-	_ASSERT(indices.size() == common_headers.size());
 	return indices;
 }
 
