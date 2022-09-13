@@ -77,7 +77,7 @@ bool WhileStatementNode::equals(StatementNode* other) {
 }
 
 // Read Statement
-ReadStatementNode::ReadStatementNode(VariableNode& VariableNode, int line) {
+ReadStatementNode::ReadStatementNode(const VariableNode& VariableNode, int line) {
 	this->var = VariableNode ;
 	this->line = line;
 }
@@ -95,7 +95,7 @@ void ReadStatementNode::getStatementsInto(vector<Statement*>& result) {
 }
 
 // Print Statement
-PrintStatementNode::PrintStatementNode(VariableNode& VariableNode, int line ) {
+PrintStatementNode::PrintStatementNode(const VariableNode& VariableNode, int line ) {
 	this->var = VariableNode ;
 	this->line = line;
 }
@@ -113,7 +113,7 @@ void PrintStatementNode::getStatementsInto(vector<Statement*>& result) {
 }
 
 // Call Statement
-CallStatementNode::CallStatementNode(VariableNode& VariableNode, int line ) {
+CallStatementNode::CallStatementNode(const VariableNode& VariableNode, int line ) {
 	this->var = VariableNode ;
 	this->line = line;
 }
@@ -123,7 +123,7 @@ void CallStatementNode::getStatementsInto(vector<Statement*>& result) {
 }
 
 // Assignment Statement
-AssignStatementNode::AssignStatementNode(VariableNode& VariableNode , ExpressionNode* expression, int line) {
+AssignStatementNode::AssignStatementNode(const VariableNode& VariableNode , ExpressionNode* expression, int line) {
 	var = VariableNode ;
 	expr = expression;
 	this->line = line;
@@ -147,7 +147,7 @@ void AssignStatementNode::getStatementsInto(vector<Statement*>& result) {
 }
 
 // While Statement
-WhileStatementNode::WhileStatementNode(vector<StatementNode*>& stmtList, ExpressionNode* cond, int line)
+WhileStatementNode::WhileStatementNode(const vector<StatementNode*>& stmtList, ExpressionNode* cond, int line)
 {
 	this->stmtList = stmtList;
 	this->cond = cond;
