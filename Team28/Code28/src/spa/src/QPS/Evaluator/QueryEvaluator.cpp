@@ -8,15 +8,15 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
 }
 
 std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
-    bool isQueryResultAllTrue = true;
+    bool anyClauseResultEmpty = false;
     std::vector<ClauseResult> clauseResultList = queryResult->clauseResultList;
     for (int i = 0; i < clauseResultList.size(); i++) {
-        if (clauseResultList[i].isTrue == false) {
-            isQueryResultAllTrue = false;
+        if (clauseResultList[i].isEmpty) {
+            anyClauseResultEmpty = true;
             break;
         }
     }
-    if (isQueryResultAllTrue == true) {
+    if (!anyClauseResultEmpty) {
         if (queryResult->selectType.entity == EntityName::STMT) {
             std::vector<Statement*> statementList = (std::vector<Statement*>)this->queryFacade->getAllStatements();
             std::vector<std::string> result;
@@ -38,4 +38,5 @@ std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *query
             return procedureList;
         }
     }
+    return std::vector<std::string>{};
 }

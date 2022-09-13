@@ -10,7 +10,7 @@ class ClauseTable {
 public:
 	std::vector<Synonym> header;
 	std::vector<Tuple> rows;
-
+	ClauseTable() {};
 	ClauseTable(std::vector<Synonym> header);
 
 	/*
