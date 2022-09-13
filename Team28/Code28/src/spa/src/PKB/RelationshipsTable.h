@@ -123,14 +123,17 @@ public:
 		if (leftRef.isWildcard() && rightRef.isWildcard()) {
 			return !leftToRightsMap.empty();
 		}
-		int left = std::stoi(leftRef.value.value);
-		int right = std::stoi(rightRef.value.value);
+
 		if (leftRef.isWildcard()) {
+			int right = std::stoi(rightRef.value.value);
 			return !rightToLeftsMap[right].empty();
 		}
 		if (rightRef.isWildcard()) {
+			int left = std::stoi(leftRef.value.value);
 			return !leftToRightsMap[left].empty();
-		}
+		}		
+		int left = std::stoi(leftRef.value.value);
+		int right = std::stoi(rightRef.value.value);
 		return leftToRightsMap[left].count(right) == 1;
 	};
 
@@ -185,14 +188,14 @@ public:
 		std::vector<Value> result;
 		if (rightRef.isWildcard()) {
 			for (int left : possibleLefts) {
-				if (rightToLeftsMap[left].size() != 0) {
+				if (leftToRightsMap[left].size() != 0) {
 					result.push_back(Value(ValueType::STMT_NUM, std::to_string(left)));
 				}		
 			}
 		} else {
 			int right = std::stoi(rightRef.value.value);
 			for (int left : possibleLefts) {
-				if (rightToLeftsMap[left].count(right) == 1) {
+				if (leftToRightsMap[left].count(right) == 1) {
 					result.push_back(Value(ValueType::STMT_NUM, std::to_string(left)));
 				}		
 			}
@@ -226,7 +229,7 @@ public:
 		std::vector<std::pair<Value,Value>> result;
 		for (int left : possibleLefts) {
 			for (int right : possibleRights) {
-				if (rightToLeftsMap[left].count(right) == 1) {
+				if (leftToRightsMap[left].count(right) == 1) {
 					Value leftValue = Value(ValueType::STMT_NUM, std::to_string(left));
 					Value rightValue = Value(ValueType::STMT_NUM, std::to_string(right));
 					result.push_back(std::make_pair(leftValue, rightValue));

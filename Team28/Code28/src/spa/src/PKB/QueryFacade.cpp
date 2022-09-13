@@ -128,19 +128,19 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType, Referen
 	switch(relType) {
 		case RelationshipReference::FOLLOWS: {
 			FollowsTable* follows = (FollowsTable*)this->storage->getTable(TableName::FOLLOWS);
-			return follows->solveRight(rightRef, leftSynonym, statements);
+			return follows->solveLeft(rightRef, leftSynonym, statements);
 		}
 		case RelationshipReference::FOLLOWS_T: {
 			FollowsTTable* followsT = (FollowsTTable*)this->storage->getTable(TableName::FOLLOWS_T);
-			return followsT->solveRight(rightRef, leftSynonym, statements);
+			return followsT->solveLeft(rightRef, leftSynonym, statements);
 		}
 		case RelationshipReference::PARENT: {
 			ParentTable* parent = (ParentTable*)this->storage->getTable(TableName::PARENT);
-			return parent->solveRight(rightRef, leftSynonym, statements);
+			return parent->solveLeft(rightRef, leftSynonym, statements);
 		}
 		case RelationshipReference::PARENT_T: {
 			ParentTTable* parentT = (ParentTTable*)this->storage->getTable(TableName::PARENT_T);
-			return parentT->solveRight(rightRef, leftSynonym, statements);	
+			return parentT->solveLeft(rightRef, leftSynonym, statements);	
 		}
 		default: {
 			// TODO: throw error instead of return false
