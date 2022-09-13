@@ -4,11 +4,11 @@
 #include "ValidatorInterface.h"
 
 /*
- * Class encapsulating Follows relationship.
+ * Class encapsulating Parent relationship.
  */
-class Follows : Relationship<Reference, Reference>, ValidatorInterface {
+class Parent : Relationship<Reference, Reference>, ValidatorInterface {
 public:
-    Follows(RelationshipReference relRef, Reference left, Reference right) : Relationship(relRef, left, right) {};
+    Parent(RelationshipReference relRef, Reference left, Reference right) : Relationship(relRef, left, right) {};
     bool isValid() {
         return (this->getLeft().type == ReferenceType::STMT_REF && this->getRight().type == ReferenceType::STMT_REF);
     }

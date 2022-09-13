@@ -4,6 +4,7 @@
 #include "../../commons/Relationship/Follows.h"
 #include "../../commons/Relationship/Modifies.h"
 #include "../Clause/SuchThatClause.h"
+#include "RelationshipEvaluator.h"
 #include "ClauseResult.h"
 
 /*
@@ -12,7 +13,10 @@
 class SuchThatEvaluator {
 private:
     QueryFacade *queryFacade;
+    RelationshipEvaluator relationshipEvaluator;
 public:
-    explicit SuchThatEvaluator(QueryFacade *queryFacade) : queryFacade(queryFacade) {};
+    explicit SuchThatEvaluator(QueryFacade *queryFacade) : 
+    queryFacade(queryFacade),
+    relationshipEvaluator(queryFacade) {};
     ClauseResult evaluate(SuchThatClause *suchThatCl);
 };

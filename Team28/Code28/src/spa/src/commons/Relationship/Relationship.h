@@ -41,8 +41,6 @@ public:
         this->right = right;
     };
 
-    // virtual bool isValidRelationship(Left, Right);
-
     Left getLeft() {
         return this->left;
     };
