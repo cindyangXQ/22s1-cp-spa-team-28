@@ -6,65 +6,17 @@
 
 using namespace std;
 
-
-int Parser::getOffset() {
-	return offset;
-}
-
 // Constructors
 Parser::Parser(int offset, vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
 }
 
-Parser::Parser(){}
-StatementParser::StatementParser(){}
-
-ProgramParser::ProgramParser(int offset, vector<Token*> tokens) {
-	this->offset = offset;
-	this->tokens = tokens;
-}
-
-ProcedureParser::ProcedureParser(int offset, vector<Token*> tokens, int startline) {
-	this->offset = offset;
-	this->tokens = tokens;
+ProcedureParser::ProcedureParser(int offset, vector<Token*> tokens, int startline) : Parser(offset, tokens) {
 	this->startline = startline;
 }
 
-StatementParser::StatementParser(int offset, vector<Token*> tokens, int line) {
-	this->offset = offset;
-	this->tokens = tokens;
-	this->line = line;
-}
-
-ReadStmParser::ReadStmParser(int offset, vector<Token*> tokens, int line) {
-	this->offset = offset;
-	this->tokens = tokens;
-	this->line = line;
-}
-
-PrintStmParser::PrintStmParser(int offset, vector<Token*> tokens, int line) {
-	this->offset = offset;
-	this->tokens = tokens;
-	this->line = line;
-}
-
-CallStmParser::CallStmParser(int offset, vector<Token*> tokens, int line) {
-	this->offset = offset;
-	this->tokens = tokens;
-	this->line = line;
-}
-
-AssignStmParser::AssignStmParser(int offset, vector<Token*> tokens, int line) {
-	this->offset = offset;
-	this->tokens = tokens;
-	this->line = line;
-}
-
-WhileStmParser::WhileStmParser(int offset, vector<Token*> tokens, int line)
-{
-	this->offset = offset;
-	this->tokens = tokens;
+StatementParser::StatementParser(int offset, vector<Token*> tokens, int line) : Parser(offset, tokens) {
 	this->line = line;
 }
 

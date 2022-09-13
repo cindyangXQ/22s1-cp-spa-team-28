@@ -8,26 +8,6 @@ using namespace std;
 
 string REL_OP_LIST[] = { ">", "<", "==", "!=", ">=", "<=","&&", "||"};
 
-CondParser::CondParser(int offset, vector<Token*> tokens) {
-	this->offset = offset;
-	this->tokens = tokens;
-}
-
-ExprParser::ExprParser(int offset, vector<Token*> tokens) {
-	this->offset = offset;
-	this->tokens = tokens;
-}
-
-TermParser::TermParser(int offset, vector<Token*> tokens) {
-	this->offset = offset;
-	this->tokens = tokens;
-}
-
-FactorParser::FactorParser(int offset, vector<Token*> tokens) {
-	this->offset = offset;
-	this->tokens = tokens;
-}
-
 ExpressionNode* CondParser::parse() {
 	Token* curr = tokens.at(offset);
 	ExpressionNode* root;
@@ -84,7 +64,6 @@ ExpressionNode* CondParser::parse() {
 }
 
 ExpressionNode* ExprParser::parse() {
-	//cout << "______________________" << endl;
 	TermParser parser = TermParser(offset, tokens);
 	ExpressionNode* result = parser.parse();
 	offset = parser.getOffset();

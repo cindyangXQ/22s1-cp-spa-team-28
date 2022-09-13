@@ -7,24 +7,24 @@ using namespace std;
 
 class ExprParser : public Parser {
 public:
-	ExprParser(int offset, vector<Token*> tokens);
+	ExprParser(int offset, vector<Token*> tokens) : Parser(offset, tokens) {};
 	ExpressionNode* parse();
 };
 
 class TermParser : public Parser {
 public:
-	TermParser(int offset, vector<Token*> tokens);
+	TermParser(int offset, vector<Token*> tokens) : Parser(offset, tokens) {};
 	ExpressionNode* parse();
 };
 
 class FactorParser : public Parser {
 public:
-	FactorParser(int offset, vector<Token*> tokens);
+	FactorParser(int offset, vector<Token*> tokens) : Parser(offset, tokens) {};
 	ExpressionNode* parse();
 };
 
 class CondParser : public Parser {
 public:
-	CondParser(int offset, vector<Token*> tokens);
+	CondParser(int offset, vector<Token*> tokens) : Parser(offset, tokens) {};
 	ExpressionNode* parse();
 };
