@@ -281,3 +281,68 @@ WhileStatementNode* WhileStmParser::parse() {
 	}
 
 }
+
+IfStmParser::IfStmParser(int offset, vector<Token*> tokens, int line)
+{
+	this->offset = offset;
+	this->tokens = tokens;
+	this->line = line;
+}
+
+
+IfStatementNode* IfStmParser::parse() {
+	Token* firstToken = tokens.at(offset++);
+	Token* secondToken = tokens.at(offset++);
+	ExpressionNode* cond;
+	int startline = this->line;
+
+	if (secondToken->equals("(")) {
+		CondParser parser = CondParser(offset, tokens);
+		cond = parser.parse();
+		offset = parser.getOffset();
+		if (!tokens.at(offset++)->equals(")")||!tokens.at(offset++)->equals("then")) {
+			throw "if statement wrong syntax";
+		}
+	}
+	else {
+		throw "if statement wrong syntax";
+	}
+
+	Token* curr = tokens.at(offset++);
+	vector<StatementNode*> ifStmtList;
+	vector<StatementNode*> elseStmtList;
+
+	if (curr->equals("{")) {
+		line++;
+		while (!tokens.at(offset)->equals("}")) {
+			StatementParser parser = StatementParser(offset, tokens, line);
+			StatementNode* temp = parser.parse();
+			line++;
+			ifStmtList.push_back(temp);
+			offset = parser.getOffset();
+			if (offset >= tokens.size()) {
+				throw "if statement wrong syntax";
+			}
+		}
+		offset++;
+	}
+	else {
+		throw "while statement wrong syntax";
+	}
+
+	if (!tokens.at(offset++)->equals("else") || !tokens.at(offset++)->equals("{")) {
+		throw "if statement wrong syntax";
+	}
+
+	while (!tokens.at(offset)->equals("}")) {
+		StatementParser parser = StatementParser(offset, tokens, line);
+			StatementNode* temp = parser.parse();
+			line++;
+			elseStmtList.push_back(temp);
+			offset = parser.getOffset();
+			if (offset >= tokens.size()) {
+				throw "while statement wrong syntax";
+			}
+	}
+	offset++;
+}

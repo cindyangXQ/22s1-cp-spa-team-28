@@ -259,3 +259,79 @@ bool VariableNode ::isName() {
 bool VariableNode::isConstant() {
 	return false;
 }
+
+
+// If Statement
+IfStatementNode::IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond)
+{
+	this->ifBlock = ifBlock;
+	this->elseBlock = elseBlock;
+	this->cond = cond;
+}
+
+int IfStatementNode::getEndLine()
+{
+	if (elseBlock.size() > 0) {
+		return elseBlock.back()->getLineNumber();
+	}
+	else {
+		return ifBlock.back()->getLineNumber();
+	}
+}
+
+vector<StatementNode*> IfStatementNode::getStmtList()
+{
+	vector<StatementNode*> stmtList;
+	for (size_t i = 0; i < ifBlock.size(); i++) {
+		stmtList.push_back(ifBlock.at(i));
+	}
+
+	for (size_t i = 0; i < elseBlock.size(); i++) {
+		stmtList.push_back(elseBlock.at(i));
+	}
+
+	return stmtList;
+}
+
+void IfStatementNode::getVariablesInto(vector<string>& result)
+{
+	vector<StatementNode*> stmtList = this->getStmtList();
+
+	cond->getVariablesInto(result);
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getVariablesInto(result);
+	}
+}
+
+void IfStatementNode::getConstantsInto(vector<string>& result)
+{
+	vector<StatementNode*> stmtList = this->getStmtList();
+
+	cond->getConstantsInto(result);
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getConstantsInto(result);
+	}
+}
+
+void IfStatementNode::getStatementsInto(vector<Statement*>& result)
+{
+	vector<StatementNode*> stmtList = this->getStmtList();
+	result.push_back(new Statement(line, StatementType::IF));
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getStatementsInto(result);
+	}
+}
+
+bool IfStatementNode::equals(StatementNode* other) {
+	// Conditional and Statements not checked
+	return other->isIf();
+}
+
+void IfStatementNode::getFollowsInto(vector<Relationship<int, int>*>& result) {
+	ExtractUtils::follows(this->getStmtList(), result);
+}
+
+void IfStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result) {
+	ExtractUtils::followsT(this->getStmtList(), result);
+}
+

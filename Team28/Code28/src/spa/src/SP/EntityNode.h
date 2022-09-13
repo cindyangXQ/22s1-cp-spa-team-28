@@ -44,6 +44,7 @@ public:
 	virtual bool isCall() { return false; }
 	virtual bool isAssign() { return false; }
 	virtual bool isWhile() { return false; }
+	virtual bool isIf() { return false; }
 	virtual bool equals(StatementNode* other) { return false; };
 	virtual string getVariable() { return ""; };
   	int getLineNumber() { return this -> line;  };
@@ -149,6 +150,25 @@ public:
 	bool equals(StatementNode* other);
 	int getEndLine();
 	vector<StatementNode*> getStmtList() { return this->stmtList; };
+	void getVariablesInto(vector<string>& result);
+	void getConstantsInto(vector<string>& result);
+	void getStatementsInto(vector<Statement*>& result);
+	void getFollowsInto(vector<Relationship<int, int>*>& result);
+	void getFollowsTInto(vector<Relationship<int, int>*>& result);
+};
+
+
+class IfStatementNode : public StatementNode {
+	vector<StatementNode*> ifBlock;
+	vector<StatementNode*> elseBlock;
+	ExpressionNode* cond;
+
+public:
+	IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond);
+	bool isIf() { return true; }
+	bool equals(StatementNode* other);
+	int getEndLine();
+	vector<StatementNode*> getStmtList();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
 	void getStatementsInto(vector<Statement*>& result);
