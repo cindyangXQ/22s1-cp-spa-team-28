@@ -206,7 +206,7 @@ public:
 	*/
 	std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym, EntityName rightSynonym, StatementsTable* statements, VariablesTable* variables) {
 		// Validate leftSynonym is a statement. TODO: throw error if not
-		if (stmtRefSet.count(leftSynonym) == 0 || stmtRefSet.count(rightSynonym) == 0) {
+		if (stmtRefSet.count(leftSynonym) == 0 || rightSynonym != EntityName::VARIABLE) {
 			return std::vector<std::pair<Value, Value>>();
 		}
 		std::vector<int> possibleLefts;
@@ -294,8 +294,8 @@ public:
 	* Returns list of possible values that the left synonym can be.
 	*/
 	std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym, ProceduresTable* procedures) {
-		// Validate leftSynonym is a statement. TODO: throw error if not
-		if (stmtRefSet.count(leftSynonym) == 0) {
+		// Validate leftSynonym is a procedure. TODO: throw error if not
+		if (leftSynonym != EntityName::PROCEDURE) {
 			return std::vector<Value>();
 		}
 		// TODO: iterate through set don't convert to vector
@@ -327,7 +327,7 @@ public:
 	*/
 	std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym, EntityName rightSynonym, ProceduresTable* procedures, VariablesTable* variables) {
 		// Validate leftSynonym is a statement. TODO: throw error if not
-		if (stmtRefSet.count(leftSynonym) == 0 || stmtRefSet.count(rightSynonym) == 0) {
+		if (leftSynonym != EntityName::PROCEDURE || rightSynonym != EntityName::VARIABLE) {
 			return std::vector<std::pair<Value, Value>>();
 		}
 		// TODO: iterate through set don't convert to vector
