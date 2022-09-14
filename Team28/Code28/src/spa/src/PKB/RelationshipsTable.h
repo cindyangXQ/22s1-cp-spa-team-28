@@ -140,8 +140,8 @@ public:
 	* Returns list of possible values that the right synonym can be.
 	*/
 	std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym, VariablesTable* variables) {
-		// Validate rightSynonym is a statement. TODO: throw error if not
-		if (stmtRefSet.count(rightSynonym) == 0) {
+		// Validate rightSynonym is a variable. TODO: throw error if not
+		if (rightSynonym != EntityName::VARIABLE) {
 			return std::vector<Value>();
 		}
 		// TODO: iterate through set don't convert to vector
@@ -264,8 +264,8 @@ public:
 	* Returns list of possible values that the right synonym can be.
 	*/
 	std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym, VariablesTable* variables) {
-		// Validate rightSynonym is a statement. TODO: throw error if not
-		if (stmtRefSet.count(rightSynonym) == 0) {
+		// Validate rightSynonym is a variable. TODO: throw error if not
+		if (rightSynonym != EntityName::VARIABLE) {
 			return std::vector<Value>();
 		}
 		// TODO: iterate through set don't convert to vector
