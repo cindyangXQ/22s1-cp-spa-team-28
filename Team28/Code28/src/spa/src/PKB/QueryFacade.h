@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Storage.h"
+#include "StatementPredicateMap.h"
 
 /*
 * A Facade class for QPS->PKB interactions.
@@ -17,6 +18,14 @@ public:
 	*/
 	std::vector<Statement*> getAllStatements();
 
+	/*
+	* Returns all statements inside the StatementsTable.
+	*/
+	std::vector<Statement*> getAllStatementsByType(StatementType type);
+
+	/*
+	* Returns statement with the given line number.
+	*/
 	Statement* getStatementByLineNo(const int& lineNo);
 
 	/*

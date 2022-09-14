@@ -20,6 +20,31 @@ TEST_CASE("getAllStatements returns all statements correctly") {
 	REQUIRE(*facade.getAllStatements().at(1) == test2);
 }
 
+
+TEST_CASE("getAllStatementByType returns all While statements correctly") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
+	Statement test1 = Statement(1, StatementType::ASSIGN);
+	Statement test2 = Statement(2, StatementType::ASSIGN);
+	Statement test3 = Statement(3, StatementType::WHILE);
+	Statement test4 = Statement(3, StatementType::IF);
+	Statement test5 = Statement(3, StatementType::WHILE);
+
+	statements->store(&test1);
+	statements->store(&test2);
+	statements->store(&test3);
+	statements->store(&test4);
+	statements->store(&test5);
+
+	// returned number of statements is equal to number stored
+	REQUIRE(facade.getAllStatementsByType(StatementType::WHILE).size() == 2);
+	// first statement is test1
+	REQUIRE(*facade.getAllStatementsByType(StatementType::WHILE).at(0) == test3);
+	// second statement is test2
+	REQUIRE(*facade.getAllStatementsByType(StatementType::WHILE).at(1) == test5);
+}
+
 TEST_CASE("getAllVariables returns all variables correctly") {
 	Storage storage;
 	QueryFacade facade = QueryFacade(&storage);

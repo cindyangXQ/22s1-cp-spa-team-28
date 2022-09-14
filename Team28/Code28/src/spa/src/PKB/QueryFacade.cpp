@@ -10,6 +10,17 @@ std::vector<Statement*> QueryFacade::getAllStatements() {
 	return statements->getAll();
 }
 
+std::vector<Statement*> QueryFacade::getAllStatementsByType(StatementType type) {
+	StatementsTable* statements = (StatementsTable*)this->storage->getTable(TableName::STATEMENTS);
+	std::map<StatementHeader, Statement*> m = {
+		{StatementHeader::STATEMENT_TYPE, new Statement(1, type)}
+	};
+	StatementPredicateMap predicateMap = StatementPredicateMap(&m);
+	StatementsTable *singleTypeStatements = statements->filter(&predicateMap);
+	
+	return singleTypeStatements->getAll();
+}
+
 Statement* QueryFacade::getStatementByLineNo(const int& lineNo) {
 	StatementsTable* statements = (StatementsTable*)this->storage->getTable(TableName::STATEMENTS);
 
