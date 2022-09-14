@@ -114,7 +114,7 @@ protected:
 	std::map<Right, std::unordered_set<Left>> rightToLeftsMap;
 };
 
-class StmtToNameRelationshipsTable : public RelationshipsTable<int, std::string> {
+class StmtToVarRelationshipsTable : public RelationshipsTable<int, std::string> {
 public:
 	/*
 	* Returns true if the relationship holds between leftReference and rightReference.
@@ -236,7 +236,7 @@ public:
 	}
 };
 
-class NameToNameRelationshipsTable : public RelationshipsTable<std::string, std::string> {
+class ProcToVarRelationshipsTable : public RelationshipsTable<std::string, std::string> {
 	/*
 	* Returns true if the relationship holds between leftReference and rightReference.
 	*/
@@ -483,7 +483,7 @@ typedef StmtToStmtRelationshipsTable ParentTable;
 typedef StmtToStmtRelationshipsTable ParentTTable;
 typedef StmtToStmtRelationshipsTable FollowsTable;
 typedef StmtToStmtRelationshipsTable FollowsTTable;
-typedef StmtToNameRelationshipsTable ModifiesSTable;
-typedef StmtToNameRelationshipsTable UsesSTable;
-typedef NameToNameRelationshipsTable ModifiesPTable;
-typedef NameToNameRelationshipsTable UsesPTable;
+typedef StmtToVarRelationshipsTable ModifiesSTable;
+typedef StmtToVarRelationshipsTable UsesSTable;
+typedef ProcToVarRelationshipsTable ModifiesPTable;
+typedef ProcToVarRelationshipsTable UsesPTable;
