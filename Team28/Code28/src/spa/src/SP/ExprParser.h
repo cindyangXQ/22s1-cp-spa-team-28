@@ -6,20 +6,23 @@
 using namespace std;
 
 class ExprParser : public Parser {
+	bool iscond;
 public:
-	ExprParser(int offset, vector<Token*> tokens);
+	ExprParser(int offset, vector<Token*> tokens, bool iscond);
 	ExpressionNode* parse();
 };
 
 class TermParser : public Parser {
+	bool iscond;
 public:
-	TermParser(int offset, vector<Token*> tokens);
+	TermParser(int offset, vector<Token*> tokens, bool iscond);
 	ExpressionNode* parse();
 };
 
 class FactorParser : public Parser {
+	bool iscond;
 public:
-	FactorParser(int offset, vector<Token*> tokens);
+	FactorParser(int offset, vector<Token*> tokens, bool iscond);
 	ExpressionNode* parse();
 };
 
