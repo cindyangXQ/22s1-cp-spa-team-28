@@ -1,9 +1,5 @@
 #pragma once
 
-#include "../Entity.h"
-#include "../Reference.h"
-#include "../../QPS/Error/SemanticError.h"
-
 /*
  * Enumerates the different design entity.
  */
@@ -39,8 +35,6 @@ public:
         this->left = left;
         this->right = right;
     };
-
-    // virtual bool isValidRelationship(Left, Right);
 
     Left getLeft() {
         return this->left;

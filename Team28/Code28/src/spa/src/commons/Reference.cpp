@@ -1,5 +1,6 @@
 #include "Reference.h"
 #include "../QPS/Parser/QueryParserRegex.h"
+#include "../QPS/Error/SemanticError.h"
 
 Reference::Reference() {
 

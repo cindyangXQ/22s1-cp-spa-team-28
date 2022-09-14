@@ -2,9 +2,7 @@
 
 #include "QPS/Parser/QueryParser.h"
 #include "QPS/Parser/SolvableQuery.h"
-#include "commons/Relationship/Relationship.h"
-#include "commons/Relationship/Follows.h"
-#include "commons/Relationship/Modifies.h"
+#include "commons/Relationship.h"
 
 TEST_CASE("Relationship can be initialised correctly") {
 	Relationship<int, int> test = Relationship(RelationshipReference::PARENT, 1, 1);
@@ -26,13 +24,4 @@ TEST_CASE("Relationship can be parsed correctly") {
 TEST_CASE("Relationship can be validated") {
     Reference stmtRef = Reference("1");
     Reference entRef = Reference("a");
-    Modifies modifiesValid = Modifies(RelationshipReference::MODIFIES, entRef, entRef);
-    Modifies modifiesInvalid = Modifies(RelationshipReference::MODIFIES, stmtRef, stmtRef);
-    Follows followsValid = Follows(RelationshipReference::FOLLOWS, stmtRef, stmtRef);
-    Follows followsInvalid = Follows(RelationshipReference::FOLLOWS, entRef, entRef);
-
-    REQUIRE(modifiesValid.isValid() == true);
-    REQUIRE(modifiesInvalid.isValid() == false);
-    REQUIRE(followsValid.isValid() == true);
-    REQUIRE(followsInvalid.isValid() == false);
 }
