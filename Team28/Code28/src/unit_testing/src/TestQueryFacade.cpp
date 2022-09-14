@@ -131,7 +131,7 @@ TEST_CASE("getVariableByName retrieves procedure correctly") {
 	REQUIRE(*facade.getVariableByName(test.getName()) == test);
 }
 
-TEST_CASE("Validate Follows(1, 2) returns True") {
+TEST_CASE("StmtToStmt: Validate returns correct results") {
 	Storage storage;
 	QueryFacade facade = QueryFacade(&storage);
 	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
@@ -142,15 +142,26 @@ TEST_CASE("Validate Follows(1, 2) returns True") {
 	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
 	Reference leftRef = Reference("1");
 	Reference rightRef = Reference("2");
+	Reference wildcardRef = Reference("_");
 
 	statements->store(&line1);
 	statements->store(&line2);
 	follows->store(&rs);
 
+	// Queries where relationships do exist
 	REQUIRE(facade.validate(RelationshipReference::FOLLOWS, leftRef, rightRef));
+	REQUIRE(facade.validate(RelationshipReference::FOLLOWS, leftRef, wildcardRef));
+	REQUIRE(facade.validate(RelationshipReference::FOLLOWS, wildcardRef, rightRef));
+	REQUIRE(facade.validate(RelationshipReference::FOLLOWS, wildcardRef, wildcardRef));
+
+	// Queries where relationships do not exist
+	REQUIRE(!facade.validate(RelationshipReference::FOLLOWS, rightRef, rightRef));
+	REQUIRE(!facade.validate(RelationshipReference::FOLLOWS, leftRef, leftRef));
+	REQUIRE(!facade.validate(RelationshipReference::FOLLOWS, rightRef, wildcardRef));
+	REQUIRE(!facade.validate(RelationshipReference::FOLLOWS, wildcardRef, leftRef));
 }
 
-TEST_CASE("Validate Follows(1, _) returns True") {
+TEST_CASE("StmtToStmt: SolveRight queries for Follows(1, 2) return correct results") {
 	Storage storage;
 	QueryFacade facade = QueryFacade(&storage);
 	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
@@ -159,76 +170,46 @@ TEST_CASE("Validate Follows(1, _) returns True") {
 	Statement line1 = Statement(1, StatementType::ASSIGN);
 	Statement line2 = Statement(2, StatementType::ASSIGN);
 	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	Reference leftRef = Reference("1");
-	Reference rightRef = Reference("_");
-
 	statements->store(&line1);
 	statements->store(&line2);
 	follows->store(&rs);
 
-	REQUIRE(facade.validate(RelationshipReference::FOLLOWS, leftRef, rightRef));
-}
-
-TEST_CASE("Validate Follows(_, 2) returns True") {
-	Storage storage;
-	QueryFacade facade = QueryFacade(&storage);
-	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
-	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
+	Reference leftRef;
+	EntityName rightEntityName;
+	std::vector<Value> expectedResult;
+	std::vector<Value> output;
 	
-	Statement line1 = Statement(1, StatementType::ASSIGN);
-	Statement line2 = Statement(2, StatementType::ASSIGN);
-	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	Reference leftRef = Reference("_");
-	Reference rightRef = Reference("2");
+	// SolveRight(Follows, 1, Assign) returns {'2'}
+	leftRef = Reference("1");
+	rightEntityName = EntityName::ASSIGN;
+	expectedResult = {Value(ValueType::STMT_NUM, "2")};
+	output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef, rightEntityName);
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 
-	statements->store(&line1);
-	statements->store(&line2);
-	follows->store(&rs);
+	// SolveRight(Follows, 2, Assign) returns {}
+	leftRef = Reference("2");
+	rightEntityName = EntityName::ASSIGN;
+	expectedResult = {};
+	output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef, rightEntityName);
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 
-	REQUIRE(facade.validate(RelationshipReference::FOLLOWS, leftRef, rightRef));
-}
+	// SolveRight(Follows, 1, Print) returns {}
+	leftRef = Reference("1");
+	rightEntityName = EntityName::PRINT;
+	expectedResult = {};
+	output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef, rightEntityName);
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 
-TEST_CASE("Validate Follows(_, _) returns True") {
-	Storage storage;
-	QueryFacade facade = QueryFacade(&storage);
-	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
-	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
-	
-	Statement line1 = Statement(1, StatementType::ASSIGN);
-	Statement line2 = Statement(2, StatementType::ASSIGN);
-	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	Reference leftRef = Reference("_");
-	Reference rightRef = Reference("_");
-
-	statements->store(&line1);
-	statements->store(&line2);
-	follows->store(&rs);
-
-	REQUIRE(facade.validate(RelationshipReference::FOLLOWS, leftRef, rightRef));
-}
-
-TEST_CASE("SolveRight(Follows, 1, Assign) for Follows(1, 2) returns {'2'}") {
-	Storage storage;
-	QueryFacade facade = QueryFacade(&storage);
-	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
-	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
-	
-	Statement line1 = Statement(1, StatementType::ASSIGN);
-	Statement line2 = Statement(2, StatementType::ASSIGN);
-	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	Reference leftRef = Reference("1");
-	EntityName rightEntityName = EntityName::ASSIGN;
-
-	statements->store(&line1);
-	statements->store(&line2);
-	follows->store(&rs);
-
-	std::vector<Value> expectedResult = {Value(ValueType::STMT_NUM, "2")};
-	std::vector<Value> output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef, rightEntityName);
+	// SolveRight(Follows, _, Assign) returns {'2'}
+	leftRef = Reference("_");
+	rightEntityName = EntityName::ASSIGN;
+	expectedResult = {Value(ValueType::STMT_NUM, "2")};
+	output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef, rightEntityName);
 	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 }
 
-TEST_CASE("SolveRight(Follows, 1, Print) for Follows(1, 2) returns {}") {
+
+TEST_CASE("StmtToStmt: SolveLeft queries for Follows(1, 2) return correct results") {
 	Storage storage;
 	QueryFacade facade = QueryFacade(&storage);
 	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
@@ -237,19 +218,46 @@ TEST_CASE("SolveRight(Follows, 1, Print) for Follows(1, 2) returns {}") {
 	Statement line1 = Statement(1, StatementType::ASSIGN);
 	Statement line2 = Statement(2, StatementType::ASSIGN);
 	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	Reference leftRef = Reference("1");
-	EntityName rightEntityName = EntityName::PRINT;
-
 	statements->store(&line1);
 	statements->store(&line2);
 	follows->store(&rs);
 
-	std::vector<Value> expectedResult = {};
-	std::vector<Value> output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef, rightEntityName);
+	Reference rightRef;
+	EntityName leftEntityName;
+	std::vector<Value> expectedResult;
+	std::vector<Value> output;
+
+	// SolveLeft(Follows, 2, Assign) for Follows(1, 2) returns {'1'}
+	rightRef = Reference("2");
+	leftEntityName = EntityName::ASSIGN;
+	expectedResult = {Value(ValueType::STMT_NUM, "1")};
+	output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef, leftEntityName);
 	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+
+	// SolveLeft(Follows, 1, Assign) for Follows(1, 2) returns {}
+	rightRef = Reference("1");
+	leftEntityName = EntityName::ASSIGN;
+	expectedResult = {};
+	output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef, leftEntityName);
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+
+	// SolveLeft(Follows, 2, Print) for Follows(1, 2) returns {}
+	rightRef = Reference("2");
+	leftEntityName = EntityName::PRINT;
+	expectedResult = {};
+	output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef, leftEntityName);
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+
+	// SolveLeft(Follows, _, Assign) for Follows(1, 2) returns {'1'}
+	rightRef = Reference("_");
+	leftEntityName = EntityName::ASSIGN;
+	expectedResult = {Value(ValueType::STMT_NUM, "1")};
+	output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef, leftEntityName);
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+
 }
 
-TEST_CASE("SolveRight(Follows, _, Assign) for Follows(1, 2) returns {'2'}") {
+TEST_CASE("StmtToStmt: SolveBoth queries for Follows(1, 2) return correct results") {
 	Storage storage;
 	QueryFacade facade = QueryFacade(&storage);
 	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
@@ -258,144 +266,58 @@ TEST_CASE("SolveRight(Follows, _, Assign) for Follows(1, 2) returns {'2'}") {
 	Statement line1 = Statement(1, StatementType::ASSIGN);
 	Statement line2 = Statement(2, StatementType::ASSIGN);
 	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	Reference leftRef = Reference("_");
-	EntityName rightEntityName = EntityName::ASSIGN;
-
 	statements->store(&line1);
 	statements->store(&line2);
 	follows->store(&rs);
-
-	std::vector<Value> expectedResult = {Value(ValueType::STMT_NUM, "2")};
-	std::vector<Value> output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef, rightEntityName);
-	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
-}
-
-TEST_CASE("SolveLeft(Follows, 2, Assign) for Follows(1, 2) returns {'1'}") {
-	Storage storage;
-	QueryFacade facade = QueryFacade(&storage);
-	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
-	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
-	
-	Statement line1 = Statement(1, StatementType::ASSIGN);
-	Statement line2 = Statement(2, StatementType::ASSIGN);
-	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	Reference rightRef = Reference("2");
-	EntityName leftEntityName = EntityName::ASSIGN;
-
-	statements->store(&line1);
-	statements->store(&line2);
-	follows->store(&rs);
-
-	std::vector<Value> expectedResult = {Value(ValueType::STMT_NUM, "1")};
-	std::vector<Value> output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef, leftEntityName);
-	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
-}
-
-TEST_CASE("SolveLeft(Follows, 2, Print) for Follows(1, 2) returns {}") {
-	Storage storage;
-	QueryFacade facade = QueryFacade(&storage);
-	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
-	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
-	
-	Statement line1 = Statement(1, StatementType::ASSIGN);
-	Statement line2 = Statement(2, StatementType::ASSIGN);
-	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	Reference rightRef = Reference("2");
-	EntityName leftEntityName = EntityName::PRINT;
-
-	statements->store(&line1);
-	statements->store(&line2);
-	follows->store(&rs);
-
-	std::vector<Value> expectedResult = {};
-	std::vector<Value> output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef, leftEntityName);
-	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
-}
-
-TEST_CASE("SolveLeft(Follows, _, Assign) for Follows(1, 2) returns {'1'}") {
-	Storage storage;
-	QueryFacade facade = QueryFacade(&storage);
-	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
-	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
-	
-	Statement line1 = Statement(1, StatementType::ASSIGN);
-	Statement line2 = Statement(2, StatementType::ASSIGN);
-	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	Reference rightRef = Reference("_");
-	EntityName leftEntityName = EntityName::ASSIGN;
-
-	statements->store(&line1);
-	statements->store(&line2);
-	follows->store(&rs);
-
-	std::vector<Value> expectedResult = {Value(ValueType::STMT_NUM, "1")};
-	std::vector<Value> output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef, leftEntityName);
-	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
-}
-
-TEST_CASE("SolveBoth(Follows, Stmt, Stmt) for Follows(1, 2) returns {('1', '2')}") {
-	Storage storage;
-	QueryFacade facade = QueryFacade(&storage);
-	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
-	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
-	
-	Statement line1 = Statement(1, StatementType::ASSIGN);
-	Statement line2 = Statement(2, StatementType::ASSIGN);
-	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	EntityName leftEntityName = EntityName::STMT;
-	EntityName rightEntityName = EntityName::STMT;
-
-	statements->store(&line1);
-	statements->store(&line2);
-	follows->store(&rs);
-
 	Value value1 = Value(ValueType::STMT_NUM, "1");
 	Value value2 = Value(ValueType::STMT_NUM, "2");
-	std::vector<std::pair<Value,Value>> expectedResult = {std::make_pair(value1, value2)};
-	std::vector<std::pair<Value,Value>> output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName, rightEntityName);
+
+	EntityName leftEntityName;
+	EntityName rightEntityName;
+	std::vector<std::pair<Value,Value>> expectedResult;
+	std::vector<std::pair<Value,Value>> output;
+
+	// SolveBoth(Follows, Stmt, Stmt) for Follows(1, 2) returns {('1', '2')}
+	leftEntityName = EntityName::STMT;
+	rightEntityName = EntityName::STMT;
+	expectedResult = {std::make_pair(value1, value2)};
+	output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName, rightEntityName);
 	REQUIRE(expectedResult.size() == output.size());
 	REQUIRE(expectedResult[0].first == output[0].first);
 	REQUIRE(expectedResult[0].second == output[0].second);
-}
 
-TEST_CASE("SolveBoth(Follows, Stmt, Print) for Follows(1, 2) returns {}") {
-	Storage storage;
-	QueryFacade facade = QueryFacade(&storage);
-	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
-	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
-	
-	Statement line1 = Statement(1, StatementType::ASSIGN);
-	Statement line2 = Statement(2, StatementType::ASSIGN);
-	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	EntityName leftEntityName = EntityName::STMT;
-	EntityName rightEntityName = EntityName::PRINT;
+	// SolveBoth(Follows, Stmt, Print) for Follows(1, 2) returns {}
+	leftEntityName = EntityName::STMT;
+	rightEntityName = EntityName::PRINT;
+	expectedResult = {};
+	output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName, rightEntityName);
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 
-	statements->store(&line1);
-	statements->store(&line2);
-	follows->store(&rs);
-
-	std::vector<std::pair<Value,Value>> expectedResult = {};
-	std::vector<std::pair<Value,Value>> output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName, rightEntityName);
+	// SolveBoth(Follows, Call, Stmt) for Follows(1, 2) returns {}
+	leftEntityName = EntityName::CALL;
+	rightEntityName = EntityName::STMT;
+	expectedResult = {};
+	output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName, rightEntityName);
 	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 }
 
-TEST_CASE("SolveBoth(Follows, Call, Stmt) for Follows(1, 2) returns {}") {
-	Storage storage;
-	QueryFacade facade = QueryFacade(&storage);
-	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
-	FollowsTable* follows = (FollowsTable*)storage.getTable(TableName::FOLLOWS);
+// TEST_CASE("StmtToVar: Validate returns correct results") {
+// 	Storage storage;
+// 	QueryFacade facade = QueryFacade(&storage);
+// 	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
+// 	ModifiesSTable* follows = (ModifiesSTable*)storage.getTable(TableName::MODIFIES_S);
 	
-	Statement line1 = Statement(1, StatementType::ASSIGN);
-	Statement line2 = Statement(2, StatementType::ASSIGN);
-	Relationship<int, int> rs = Relationship(RelationshipReference::FOLLOWS, 1, 2);
-	EntityName leftEntityName = EntityName::CALL;
-	EntityName rightEntityName = EntityName::STMT;
+// 	Statement line1 = Statement(1, StatementType::ASSIGN);
+// 	Relationship<int, std::string> rs = Relationship(
+// 		RelationshipReference::MODIFIES, 1, std::string("a")
+// 	);
+// 	Reference leftRef = Reference("1");
+// 	Reference rightRef = Reference("a");
 
-	statements->store(&line1);
-	statements->store(&line2);
-	follows->store(&rs);
+// 	statements->store(&line1);
+// 	follows->store(&rs);
 
-	std::vector<std::pair<Value,Value>> expectedResult = {};
-	std::vector<std::pair<Value,Value>> output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName, rightEntityName);
-	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
-}
+// 	REQUIRE(facade.validate(RelationshipReference::MODIFIES, leftRef, rightRef));
+// 	REQUIRE(!facade.validate(RelationshipReference::MODIFIES, Reference("2"), rightRef));
+// 	REQUIRE(!facade.validate(RelationshipReference::MODIFIES, leftRef, Reference("x")));
+// }
