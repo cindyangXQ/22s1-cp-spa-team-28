@@ -237,6 +237,7 @@ public:
 };
 
 class ProcToVarRelationshipsTable : public RelationshipsTable<std::string, std::string> {
+public:
 	/*
 	* Returns true if the relationship holds between leftReference and rightReference.
 	*/
