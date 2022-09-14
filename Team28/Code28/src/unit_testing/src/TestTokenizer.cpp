@@ -11,7 +11,8 @@ string small_expected[] = { "procedure", "Bedok", "{", "west", "=", "9", "+", "e
 
 TEST_CASE("Tokenize a normal spacing small program") {
 	string sourceProgram = "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + 2;\nwest= 9 + east + west;\n}";
-	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	Tokenizer tokenizer = Tokenizer(sourceProgram);
+	vector<Token*> tokens = tokenizer.tokenize();
 	for (int i = 0; i < small_expected->size(); i++) {
 		REQUIRE(tokens[i]->equals(small_expected[i]));
 	}

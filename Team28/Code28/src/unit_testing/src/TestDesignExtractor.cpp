@@ -83,3 +83,60 @@ TEST_CASE("extract followsT small program") {
 		REQUIRE(expected[i]->getRelationshipReference() == extracted[i]->getRelationshipReference());
 	}
 }
+
+TEST_CASE("Extract program with if else statements") {
+	// Follow relationship
+	vector<Relationship<int, int>*> expected;
+	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 3, 4));
+	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 1, 2));
+	
+	string sourceProgram = "procedure Bedok{print c; if(a*b!=4) then {a=3; while(a*b!=3){a=2;}} else{read c;}}";
+	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramParser parser = ProgramParser(0, tokens);
+	ProgramNode* program = parser.parse();
+	FollowsExtrT extr(program, NULL);
+	vector<Relationship<int, int>*> extracted = extr.extract();
+
+	REQUIRE(expected.size() == extracted.size());
+	for (int i = 0; i < expected.size(); i++) {
+		REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+		REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+		REQUIRE(expected[i]->getRelationshipReference() == extracted[i]->getRelationshipReference());
+	}
+
+	// Variable extr
+	vector<string> varexpected = { "a", "b", "c"};
+	vector<Variable*> varresult = VariableExtractor(program, NULL).extract();
+
+	REQUIRE(varexpected.size() == varresult.size());
+	for (int i = 0; i < varresult.size(); i++) {
+		REQUIRE(find(begin(varexpected), end(varexpected), varresult.at(i)->getName()) != end(varexpected));
+	}
+
+	// Constant extr
+	vector<string> constexpected = { "2", "3", "4"};
+	ConstantExtractor extractor(program, NULL);
+	vector<Constant*> constresult = extractor.extract();
+
+	REQUIRE(constexpected.size() == constresult.size());
+
+	for (int i = 0; i < constresult.size(); i++) {
+		REQUIRE(find(begin(constexpected), end(constexpected), constresult.at(i)->getName()) != end(constexpected));
+	}
+
+	// Statement exty
+	vector<Statement*> stmtExpected;
+	stmtExpected.push_back(new Statement(1, StatementType::PRINT));
+	stmtExpected.push_back(new Statement(2, StatementType::IF));
+	stmtExpected.push_back(new Statement(3, StatementType::ASSIGN));
+	stmtExpected.push_back(new Statement(4, StatementType::WHILE));
+	stmtExpected.push_back(new Statement(5, StatementType::ASSIGN));
+	stmtExpected.push_back(new Statement(6, StatementType::READ));
+
+	vector<Statement*> stmtExtracted = StatementExtractor(program, NULL).extract();
+	REQUIRE(stmtExpected.size() == stmtExtracted.size());
+	for (int i = 0; i < stmtExpected.size(); i++) {
+		REQUIRE(stmtExpected[i]->isLineNumberEqual(stmtExtracted[i]));
+		REQUIRE(stmtExpected[i]->isStatementTypeEqual(stmtExtracted[i]));
+	}
+}

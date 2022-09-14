@@ -15,6 +15,15 @@ class Tokenizer {
 private:
 	string input;
 	Token* createToken(TokenType type, string value);
+	TokenType currType;
+	long index;
+	vector<Token*> tokens;
+
+	void handleDigit();
+	void handleAlpha();
+	void handleOperator();
+	void handleSymbol();
+	void skipWhitespace();
 public:
 	Tokenizer(string sourceProg);
 	vector<Token*> tokenize();
