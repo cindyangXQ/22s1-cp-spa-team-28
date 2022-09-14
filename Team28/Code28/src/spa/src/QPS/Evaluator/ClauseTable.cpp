@@ -24,6 +24,26 @@ size_t ClauseTable::size() {
 	return this->rows.size();
 }
 
+std::vector<Value> ClauseTable::getValues(Synonym select) {
+	int column = -1;
+	for (int i = 0; i < this->header.size(); i++) {
+		if (this->header[i].name == select.name) {
+			column = i;
+			break;
+		}
+	}
+	if (column == -1) {
+		return std::vector<Value>{};
+	}
+	else {
+		std::vector<Value> values;
+		for (int j = 0; j < this->rows.size(); j++) {
+			values.push_back(this->rows[j].getValue(column));
+		}
+		return values;
+	}
+}
+
 std::vector<Synonym> ClauseTable::getCommonHeaders(ClauseTable table1, ClauseTable table2) {
 	std::vector<Synonym> header1 = table1.header;
 	std::vector<Synonym> header2 = table2.header;
