@@ -63,4 +63,8 @@ public:
 			return true;
 		} 
 	}
+
+	Value getValue(int index) {
+		return this->values[index];
+	}
 };
