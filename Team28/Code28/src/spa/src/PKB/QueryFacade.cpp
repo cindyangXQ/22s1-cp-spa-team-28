@@ -224,42 +224,28 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType, Referen
 			return parentT->solveLeft(rightRef, leftSynonym, statements);	
 		}
 		case RelationshipReference::MODIFIES: {
-			if (rightRef.type == ReferenceType::STMT_REF) {
+			if (stmtRefSet.count(leftSynonym) == 1) {
 				ModifiesSTable* modifiesS = (ModifiesSTable*)this->storage->getTable(TableName::MODIFIES_S);
 				return modifiesS->solveLeft(rightRef, leftSynonym, statements);
 			}
-			if (rightRef.type == ReferenceType::ENT_REF) {
+			if (leftSynonym == EntityName::PROCEDURE) {
 				ModifiesPTable* modifiesP = (ModifiesPTable*)this->storage->getTable(TableName::MODIFIES_P);
 				return modifiesP->solveLeft(rightRef, leftSynonym, procedures);
 			}
-			if (rightRef.type == ReferenceType::WILDCARD) {
-				ModifiesSTable* modifiesS = (ModifiesSTable*)this->storage->getTable(TableName::MODIFIES_S);
-				ModifiesPTable* modifiesP = (ModifiesPTable*)this->storage->getTable(TableName::MODIFIES_P);
-				std::vector<Value> stmtRes = modifiesS->solveLeft(rightRef, leftSynonym, statements);
-				std::vector<Value> procRes = modifiesP->solveLeft(rightRef, leftSynonym, procedures);
-				std::vector<Value> result(stmtRes);
-				result.insert(result.end(), procRes.begin(), procRes.end());
-				return result;
-			}
+			// TODO: throw error instead of returning empty list
+			return std::vector<Value>();
 		}
 		case RelationshipReference::USES: {
-			if (rightRef.type == ReferenceType::STMT_REF) {
+			if (stmtRefSet.count(leftSynonym) == 1) {
 				UsesSTable* usesS = (UsesSTable*)this->storage->getTable(TableName::USES_S);
 				return usesS->solveLeft(rightRef, leftSynonym, statements);
 			}
-			if (rightRef.type == ReferenceType::ENT_REF) {
+			if (leftSynonym == EntityName::PROCEDURE) {
 				UsesPTable* usesP = (UsesPTable*)this->storage->getTable(TableName::USES_P);
 				return usesP->solveLeft(rightRef, leftSynonym, procedures);
 			}
-			if (rightRef.type == ReferenceType::WILDCARD) {
-				UsesSTable* usesS = (UsesSTable*)this->storage->getTable(TableName::USES_S);
-				UsesPTable* usesP = (UsesPTable*)this->storage->getTable(TableName::USES_P);
-				std::vector<Value> stmtRes = usesS->solveLeft(rightRef, leftSynonym, statements);
-				std::vector<Value> procRes = usesP->solveLeft(rightRef, leftSynonym, procedures);
-				std::vector<Value> result(stmtRes);
-				result.insert(result.end(), procRes.begin(), procRes.end());
-				return result;
-			}
+			// TODO: throw error instead of returning empty list
+			return std::vector<Value>();
 		}
 		default: {
 			// TODO: throw error instead of return false
@@ -270,6 +256,8 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType, Referen
 	
 std::vector<std::pair<Value, Value>> QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym, EntityName rightSynonym) {
 	StatementsTable* statements = (StatementsTable*)this->storage->getTable(TableName::STATEMENTS);
+	ProceduresTable* procedures = (ProceduresTable*)this->storage->getTable(TableName::PROCEDURES);
+	VariablesTable* variables = (VariablesTable*)this->storage->getTable(TableName::VARIABLES);
 
 	switch(relType) {
 		case RelationshipReference::FOLLOWS: {
@@ -287,6 +275,30 @@ std::vector<std::pair<Value, Value>> QueryFacade::solveBoth(RelationshipReferenc
 		case RelationshipReference::PARENT_T: {
 			ParentTTable* parentT = (ParentTTable*)this->storage->getTable(TableName::PARENT_T);
 			return parentT->solveBoth(leftSynonym, rightSynonym, statements);	
+		}
+		case RelationshipReference::MODIFIES: {
+			if (stmtRefSet.count(leftSynonym) == 1) {
+				ModifiesSTable* modifiesS = (ModifiesSTable*)this->storage->getTable(TableName::MODIFIES_S);
+				return modifiesS->solveBoth(leftSynonym, rightSynonym, statements, variables);
+			}
+			if (leftSynonym == EntityName::PROCEDURE) {
+				ModifiesPTable* modifiesP = (ModifiesPTable*)this->storage->getTable(TableName::MODIFIES_P);
+				return modifiesP->solveBoth(leftSynonym, rightSynonym, procedures, variables);
+			}
+			// TODO: throw error instead of returning empty list
+			return std::vector<std::pair<Value, Value>>();
+		}
+		case RelationshipReference::USES: {
+			if (stmtRefSet.count(leftSynonym) == 1) {
+				UsesSTable* usesS = (UsesSTable*)this->storage->getTable(TableName::USES_S);
+				return usesS->solveBoth(leftSynonym, rightSynonym, statements, variables);
+			}
+			if (leftSynonym == EntityName::PROCEDURE) {
+				UsesPTable* usesP = (UsesPTable*)this->storage->getTable(TableName::USES_P);
+				return usesP->solveBoth(leftSynonym, rightSynonym, procedures, variables);
+			}
+			// TODO: throw error instead of returning empty list
+			return std::vector<std::pair<Value, Value>>();
 		}
 		default: {
 			// TODO: throw error instead of return false
