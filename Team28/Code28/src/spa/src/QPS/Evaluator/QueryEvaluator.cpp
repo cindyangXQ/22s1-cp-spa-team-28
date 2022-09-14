@@ -8,15 +8,20 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
 }
 
 std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
-    bool anyClauseResultEmpty = false;
+    bool allClauseResultEmpty = true;
     std::vector<ClauseResult> clauseResultList = queryResult->clauseResultList;
     for (int i = 0; i < clauseResultList.size(); i++) {
         if (clauseResultList[i].isEmpty) {
-            anyClauseResultEmpty = true;
-            break;
+            // std::cout << "One of the clause result empty, return empty string" << std::endl;
+            return std::vector<std::string>{};
+        }
+        if (clauseResultList[i].table.size() > 0) {
+            allClauseResultEmpty = false;
         }
     }
-    if (!anyClauseResultEmpty) {
+
+    if (allClauseResultEmpty || clauseResultList.size() == 0) {
+        // std::cout << "Got no clause result, return all value for synonym" << std::endl;
         if (queryResult->selectType.entity == EntityName::STMT) {
             std::vector<Statement*> statementList = (std::vector<Statement*>)this->queryFacade->getAllStatements();
             std::vector<std::string> result;
@@ -38,5 +43,47 @@ std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *query
             return procedureList;
         }
     }
-    return std::vector<std::string>{};
+    ClauseTable result = clauseResultList[0].table;
+    for (int i = 1; i < clauseResultList.size(); i++) {
+        result = ClauseTable::joinTables(result, clauseResultList[i].table);
+    }
+    if (result.size() == 0) {
+        // std::cout << "result table empty, return empty string" << std::endl;
+        return std::vector<std::string>{};
+    }
+    else {
+        // std::cout << "synonym not in result table, return all value for synonym" << std::endl;
+        std::vector<Value> selectValues = result.getValues(queryResult->selectType);
+        if (selectValues.size() == 0) {
+            if (queryResult->selectType.entity == EntityName::STMT) {
+                std::vector<Statement*> statementList = (std::vector<Statement*>)this->queryFacade->getAllStatements();
+                std::vector<std::string> result;
+                for (int i = 0; i < statementList.size(); i++) {
+                    result.push_back(std::to_string(statementList[i]->getLineNumber()));
+                }
+                return result;
+            }
+            else if (queryResult->selectType.entity == EntityName::VARIABLE) {
+                std::vector<std::string> variableList = this->queryFacade->getAllVariables();
+                return variableList;
+            }
+            else if (queryResult->selectType.entity == EntityName::CONSTANT) {
+                std::vector<std::string> constantList = this->queryFacade->getAllConstants();
+                return constantList;
+            }
+            else if (queryResult->selectType.entity == EntityName::PROCEDURE) {
+                std::vector<std::string> procedureList = this->queryFacade->getAllProcedures();
+                return procedureList;
+            }
+        }
+        else {
+            // std::cout << "synonym in result table, return all value in table for synonym" << std::endl;
+            std::vector<std::string> output;
+            for (int k = 0; k < selectValues.size(); k++) {
+                output.push_back(selectValues[k].value);
+            }
+            return output;
+        }
+    }
+
 }
