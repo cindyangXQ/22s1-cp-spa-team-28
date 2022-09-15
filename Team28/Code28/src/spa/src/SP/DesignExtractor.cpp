@@ -135,6 +135,20 @@ vector<Relationship<int, int>*> ParentExtrT::extract() {
 	return result;
 }
 
+vector<Relationship<int, string>*> UsesSExtractor::extract() {
+	vector<Relationship<int, string>*> result;
+
+	vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		for (size_t j = 0; j < stmtList.size(); j++) {
+			stmtList[j]->getUsesInto(result);
+		}
+	}
+
+	return result;
+}
+
 
 void DesignExtractor::extractAll() {
 	ProcedureExtractor(this->program, this->storage).populate();
@@ -184,5 +198,10 @@ void ParentExtractor::populate() {
 
 void ParentExtrT::populate() {
 	vector<Relationship<int, int>*> parentT = this->extract();
-	this->storage->storeParent(&parentT);
+	this->storage->storeParentT(&parentT);
+}
+
+void UsesSExtractor::populate() {
+	vector<Relationship<int, string>*> usesS = this->extract();
+	this->storage->storeUsesS(&usesS);
 }

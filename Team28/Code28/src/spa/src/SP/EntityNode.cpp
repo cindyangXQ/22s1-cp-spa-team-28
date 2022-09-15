@@ -81,6 +81,25 @@ bool WhileStatementNode::equals(StatementNode* other) {
 	}
 }
 
+bool IfStatementNode::equals(StatementNode* other) {
+	if (other->isIf()) {
+		IfStatementNode* temp = static_cast<IfStatementNode*>(other);
+		if (this->cond->equals(temp->cond) && this->ifBlock.size() == temp->ifBlock.size() && this->elseBlock.size() == temp->elseBlock.size()) {
+			vector<StatementNode*> stmtList1 = this->getStmtList();
+			vector<StatementNode*> stmtList2 = this->getStmtList();
+
+			return ExtractUtils::compareStmtList(stmtList1, stmtList2);
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
+
 // Read Statement
 ReadStatementNode::ReadStatementNode(VariableNode* VariableNode, int line) {
 	this->var = VariableNode;
@@ -115,6 +134,17 @@ void PrintStatementNode::getVariablesInto(vector<string>& result) {
 
 void PrintStatementNode::getStatementsInto(vector<Statement*>& result) {
 	result.push_back(new Statement(line, StatementType::PRINT)); 
+}
+
+vector<string>* PrintStatementNode::getUsesInto(vector<Relationship<int, string>*>& result) {
+	string variable = this->getVariable();
+	Relationship<int, string>* temp = new Relationship<int, string>(
+		RelationshipReference::USES, this->getLineNumber(), variable);
+	result.push_back(temp);
+	
+	vector<string> used;
+	used.push_back(variable);
+	return &used;
 }
 
 // Call Statement
@@ -153,6 +183,22 @@ void AssignStatementNode::getConstantsInto(vector<string>& result) {
 
 void AssignStatementNode::getStatementsInto(vector<Statement*>& result) { 
 	result.push_back(new Statement(line, StatementType::ASSIGN)); 
+}
+
+vector<string>* AssignStatementNode::getUsesInto(vector<Relationship<int, string>*>& result) {
+	int lineNo = this->getLineNumber();
+	vector<string> used;
+
+	vector<string> variables;
+	this->expr->getVariablesInto(variables);
+	for (size_t i = 0; i < variables.size(); i++) {
+		Relationship<int, string>* variable = new Relationship<int, string>(
+			RelationshipReference::USES, lineNo, variables[i]);
+		result.push_back(variable);
+		used.push_back(variables[i]);
+	}
+
+	return &used;
 }
 
 // While Statement
@@ -199,6 +245,32 @@ void WhileStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result
 	ExtractUtils::followsT(this->getStmtList(), result);
 }
 
+vector<string>* WhileStatementNode::getUsesInto(vector<Relationship<int, string>*>& result) {
+	int lineNo = this->getLineNumber();
+
+	vector<string> condVars;
+	this->cond->getVariablesInto(condVars);
+	for (size_t i = 0; i < condVars.size(); i++) {
+		Relationship<int, string>* condVar = new Relationship<int, string>(
+			RelationshipReference::USES, lineNo, condVars[i]);
+		result.push_back(condVar);
+	}
+
+	vector<string> descendants;
+	vector<StatementNode*> stmts = this->getStmtList();
+	for (size_t i = 0; i < stmts.size(); i++) {
+		vector<string>* usedVars = stmts[i]->getUsesInto(result);
+		for (size_t j = 0; j < usedVars->size(); j++) {
+			Relationship<int, string>* usedVar = new Relationship<int, string>(
+				RelationshipReference::USES, lineNo, usedVars->at(j));
+			result.push_back(usedVar);
+			descendants.push_back(usedVars->at(j));
+		}
+	}
+
+	return &descendants;
+}
+
 // If Statement
 IfStatementNode::IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line)
 {
@@ -230,24 +302,6 @@ vector<StatementNode*> IfStatementNode::getStmtList()
 	}
 
 	return stmtList;
-}
-
-bool IfStatementNode::equals(StatementNode* other) {
-	if (other->isIf()) {
-		IfStatementNode* temp = static_cast<IfStatementNode*>(other);
-		if (this->cond->equals(temp->cond) && this->ifBlock.size() == temp->ifBlock.size() && this->elseBlock.size() == temp->elseBlock.size()) {
-			vector<StatementNode*> stmtList1 = this->getStmtList();
-			vector<StatementNode*> stmtList2 = this->getStmtList();
-
-			return ExtractUtils::compareStmtList(stmtList1, stmtList2);
-		}
-		else {
-			return false;
-		}
-	}
-	else {
-		return false;
-	}
 }
 
 void IfStatementNode::getVariablesInto(vector<string>& result) {
@@ -284,6 +338,32 @@ void IfStatementNode::getFollowsInto(vector<Relationship<int, int>*>& result) {
 void IfStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result) {
 	ExtractUtils::followsT(this->ifBlock, result);
 	ExtractUtils::followsT(this->elseBlock, result);
+}
+
+vector<string>* IfStatementNode::getUsesInto(vector<Relationship<int, string>*>& result) {
+	int lineNo = this->getLineNumber();
+
+	vector<string> condVars;
+	this->cond->getVariablesInto(condVars);
+	for (size_t i = 0; i < condVars.size(); i++) {
+		Relationship<int, string>* condVar = new Relationship<int, string>(
+			RelationshipReference::USES, lineNo, condVars[i]);
+		result.push_back(condVar);
+	}
+
+	vector<string> descendants;
+	vector<StatementNode*> stmts = this->getStmtList();
+	for (size_t i = 0; i < stmts.size(); i++) {
+		vector<string>* usedVars = stmts[i]->getUsesInto(result);
+		for (size_t j = 0; j < usedVars->size(); j++) {
+			Relationship<int, string>* usedVar = new Relationship<int, string>(
+				RelationshipReference::USES, lineNo, usedVars->at(j));
+			result.push_back(usedVar);
+			descendants.push_back(usedVars->at(j));
+		}
+	}
+
+	return &descendants;
 }
 
 

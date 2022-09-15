@@ -42,7 +42,6 @@ void ExtractUtils::parent(StatementNode* parentNode, vector<Relationship<int, in
 	}
 }
 
-
 vector<int>* ExtractUtils::parentT(StatementNode* parentNode, vector<Relationship<int, int>*>& result) {
 	int parentLineNo = parentNode->getLineNumber();
 	vector<StatementNode*> children = parentNode->getStmtList();
@@ -67,6 +66,8 @@ vector<int>* ExtractUtils::parentT(StatementNode* parentNode, vector<Relationshi
 
 	return &descendants;
 }
+
+
 
 bool ExtractUtils::compareStmtList(const vector<StatementNode*>& list1, const vector<StatementNode*>& list2) {
 	if (list1.size() != list2.size()) {

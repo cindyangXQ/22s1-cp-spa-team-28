@@ -17,7 +17,6 @@ protected:
 
 public:
 	DesignExtractor(ProgramNode* program, PopulateFacade* storage);
-	DesignExtractor();
 	void extractAll();
 };
 
@@ -80,3 +79,11 @@ public:
 	vector<Relationship<int, int>*> extract();
 	void populate();
 };
+
+class UsesSExtractor : public DesignExtractor {
+public:
+	UsesSExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
+	vector<Relationship<int, string>*> extract();
+	void populate();
+};
+
