@@ -229,7 +229,7 @@ AssignStatementNode* AssignStmParser::parse() {
 	Token* secondToken = tokenList.at(offset++);
 
 	if (firstToken->isName() && secondToken->equals("=")) {
-		ExprParser parser = ExprParser(offset, tokenList);
+		ExprParser parser = ExprParser(offset, tokenList, false);
 		ExpressionNode* expr = parser.parse();
 		offset = parser.getOffset();
 

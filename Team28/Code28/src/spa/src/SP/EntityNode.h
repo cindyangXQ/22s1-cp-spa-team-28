@@ -119,6 +119,7 @@ public:
 	ExpressionNode* right;
 	ExpressionNode(Token* token);
 	ExpressionNode();
+	Token* getToken() { return this->token; }
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
 	bool equals(ExpressionNode* other);
