@@ -29,6 +29,11 @@ public:
 	size_t size();
 
 	/*
+	* Get list of values of synonym header
+	*/
+	std::vector<Value> getValues(Synonym select);
+
+	/*
 	* Given two tables, find the common headers
 	*/
 	static std::vector<Synonym> getCommonHeaders(ClauseTable table1, ClauseTable table2);

@@ -2,30 +2,28 @@
 #include "ExtractUtils.h"
 #include <vector>
 
-using namespace std;
-
 EntityNode::EntityNode(){}
 StatementNode::StatementNode() { this->line = 0; }
 
 // Program
-ProgramNode::ProgramNode(vector<ProcedureNode*> procList) {
+ProgramNode::ProgramNode(std::vector<ProcedureNode*> procList) {
 	this->procList = procList;
 }
 
 ProgramNode::ProgramNode() {}
 
-vector<ProcedureNode*> ProgramNode::getProcList() {
+std::vector<ProcedureNode*> ProgramNode::getProcList() {
 	return this->procList;
 }
 
 bool ProgramNode::equals(ProgramNode* other) {
-	vector<ProcedureNode*> procedures = this->getProcList();
-	vector<ProcedureNode*> others = other->getProcList();
+	std::vector<ProcedureNode*> procedures = this->getProcList();
+	std::vector<ProcedureNode*> others = other->getProcList();
 	return ExtractUtils::compareProcList(procedures, others);
 }
 
 // Procedure
-ProcedureNode::ProcedureNode(string procName, vector<StatementNode*> stmtList) {
+ProcedureNode::ProcedureNode(std::string procName, std::vector<StatementNode*> stmtList) {
 	this->procName = procName;
 	this->stmtList = stmtList;
 }
@@ -34,22 +32,22 @@ bool ProcedureNode::equals(ProcedureNode* other) {
 	if (this->getName() != other->getName()) {
 		return false;
 	}
-	vector<StatementNode*> statements = this->getStmtList();
-	vector<StatementNode*> others = other->getStmtList();
+	std::vector<StatementNode*> statements = this->getStmtList();
+	std::vector<StatementNode*> others = other->getStmtList();
 	return ExtractUtils::compareStmtList(statements, others);
 }
 
-string ProcedureNode::getName() {
+std::string ProcedureNode::getName() {
 	return this->procName;
 }
 
-vector<StatementNode*> ProcedureNode::getStmtList() {
+std::vector<StatementNode*> ProcedureNode::getStmtList() {
 	return this->stmtList;
 }
 
 int ProcedureNode::getEndline()
 {
-	return stmtList.back()->getLineNumber();
+	return stmtList.back()->getEndLine();
 }
 
 
@@ -91,11 +89,11 @@ string ReadStatementNode::getVariable() {
 	return this->var->getValue();
 }
 
-void ReadStatementNode::getVariablesInto(vector<string>& result) {
+void ReadStatementNode::getVariablesInto(std::vector<std::string>& result) {
 	result.push_back(this->getVariable());
 }
 
-void ReadStatementNode::getStatementsInto(vector<Statement*>& result) { 
+void ReadStatementNode::getStatementsInto(std::vector<Statement*>& result) { 
 	result.push_back(new Statement(line, StatementType::READ)); 
 }
 
@@ -109,11 +107,11 @@ string PrintStatementNode::getVariable() {
 	return this->var->getValue();
 }
 
-void PrintStatementNode::getVariablesInto(vector<string>& result) {
+void PrintStatementNode::getVariablesInto(std::vector<std::string>& result) {
 	result.push_back(this->getVariable());
 }
 
-void PrintStatementNode::getStatementsInto(vector<Statement*>& result) {
+void PrintStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 	result.push_back(new Statement(line, StatementType::PRINT)); 
 }
 
@@ -142,21 +140,21 @@ string AssignStatementNode::getVariable() {
 	return this->var->getValue();
 }
 
-void AssignStatementNode::getVariablesInto(vector<string>& result) {
+void AssignStatementNode::getVariablesInto(std::vector<std::string>& result) {
 	result.push_back(this->getVariable());
 	this->expr->getVariablesInto(result);
 }
 
-void AssignStatementNode::getConstantsInto(vector<string>& result) {
+void AssignStatementNode::getConstantsInto(std::vector<std::string>& result) {
 	this->expr->getConstantsInto(result);
 }
 
-void AssignStatementNode::getStatementsInto(vector<Statement*>& result) { 
+void AssignStatementNode::getStatementsInto(std::vector<Statement*>& result) { 
 	result.push_back(new Statement(line, StatementType::ASSIGN)); 
 }
 
 // While Statement
-WhileStatementNode::WhileStatementNode(const vector<StatementNode*>& stmtList, ExpressionNode* cond, int line)
+WhileStatementNode::WhileStatementNode(const std::vector<StatementNode*>& stmtList, ExpressionNode* cond, int line)
 {
 	this->stmtList = stmtList;
 	this->cond = cond;
@@ -167,7 +165,7 @@ int WhileStatementNode::getEndLine() {
 	return this->stmtList.back()->getEndLine();
 }
 
-void WhileStatementNode::getVariablesInto(vector<string>& result)
+void WhileStatementNode::getVariablesInto(std::vector<std::string>& result)
 {
 	cond->getVariablesInto(result);
 	for (size_t i = 0; i < stmtList.size(); i++) {
@@ -175,7 +173,7 @@ void WhileStatementNode::getVariablesInto(vector<string>& result)
 	}
 }
 
-void WhileStatementNode::getConstantsInto(vector<string>& result)
+void WhileStatementNode::getConstantsInto(std::vector<std::string>& result)
 {
 	cond->getConstantsInto(result);
 	for (size_t i = 0; i < stmtList.size(); i++) {
@@ -183,7 +181,7 @@ void WhileStatementNode::getConstantsInto(vector<string>& result)
 	}
 }
 
-void WhileStatementNode::getStatementsInto(vector<Statement*>& result)
+void WhileStatementNode::getStatementsInto(std::vector<Statement*>& result)
 {
 	result.push_back(new Statement(line, StatementType::WHILE));
 	for (size_t i = 0; i < stmtList.size(); i++) {
@@ -191,11 +189,11 @@ void WhileStatementNode::getStatementsInto(vector<Statement*>& result)
 	}
 }
 
-void WhileStatementNode::getFollowsInto(vector<Relationship<int, int>*>& result) {
+void WhileStatementNode::getFollowsInto(std::vector<Relationship<int, int>*>& result) {
 	ExtractUtils::follows(this->getStmtList(), result);
 }
 
-void WhileStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result) {
+void WhileStatementNode::getFollowsTInto(std::vector<Relationship<int, int>*>& result) {
 	ExtractUtils::followsT(this->getStmtList(), result);
 }
 
@@ -207,7 +205,9 @@ ExpressionNode::ExpressionNode(Token* token) {
 	this->right = NULL;
 }
 
-void ExpressionNode::getVariablesInto(vector<string>& result) {
+ExpressionNode::ExpressionNode() {};
+
+void ExpressionNode::getVariablesInto(std::vector<std::string>& result) {
 	if (this->token->isName()) {
 		result.push_back(this->token->getValue());
 	}
@@ -218,7 +218,7 @@ void ExpressionNode::getVariablesInto(vector<string>& result) {
 	}
 }
 
-void ExpressionNode::getConstantsInto(vector<string>& result) {
+void ExpressionNode::getConstantsInto(std::vector<std::string>& result) {
 	if (this->token->isConstant()) {
 		result.push_back(this->token->getValue());
 	}
@@ -248,12 +248,12 @@ bool ExpressionNode::equals(ExpressionNode* other)
 
 
 // Constant
-ConstantNode ::ConstantNode (string s) {
+ConstantNode ::ConstantNode (std::string s) {
 	this->value = s;
 }
 
 // Variable
-VariableNode ::VariableNode (string s) {
+VariableNode ::VariableNode (std::string s) {
 	this->value = s;
 }
 
@@ -261,7 +261,7 @@ VariableNode ::VariableNode () {}
 
 
 // If Statement
-IfStatementNode::IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line)
+IfStatementNode::IfStatementNode(std::vector<StatementNode*>& ifBlock, std::vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line)
 {
 	this->ifBlock = ifBlock;
 	this->elseBlock = elseBlock;
@@ -279,9 +279,9 @@ int IfStatementNode::getEndLine()
 	}
 }
 
-vector<StatementNode*> IfStatementNode::getStmtList()
+std::vector<StatementNode*> IfStatementNode::getStmtList()
 {
-	vector<StatementNode*> stmtList;
+	std::vector<StatementNode*> stmtList;
 	for (size_t i = 0; i < ifBlock.size(); i++) {
 		stmtList.push_back(ifBlock.at(i));
 	}
@@ -293,9 +293,9 @@ vector<StatementNode*> IfStatementNode::getStmtList()
 	return stmtList;
 }
 
-void IfStatementNode::getVariablesInto(vector<string>& result)
+void IfStatementNode::getVariablesInto(std::vector<std::string>& result)
 {
-	vector<StatementNode*> stmtList = this->getStmtList();
+	std::vector<StatementNode*> stmtList = this->getStmtList();
 
 	cond->getVariablesInto(result);
 	for (size_t i = 0; i < stmtList.size(); i++) {
@@ -303,9 +303,9 @@ void IfStatementNode::getVariablesInto(vector<string>& result)
 	}
 }
 
-void IfStatementNode::getConstantsInto(vector<string>& result)
+void IfStatementNode::getConstantsInto(std::vector<std::string>& result)
 {
-	vector<StatementNode*> stmtList = this->getStmtList();
+	std::vector<StatementNode*> stmtList = this->getStmtList();
 
 	cond->getConstantsInto(result);
 	for (size_t i = 0; i < stmtList.size(); i++) {
@@ -313,9 +313,9 @@ void IfStatementNode::getConstantsInto(vector<string>& result)
 	}
 }
 
-void IfStatementNode::getStatementsInto(vector<Statement*>& result)
+void IfStatementNode::getStatementsInto(std::vector<Statement*>& result)
 {
-	vector<StatementNode*> stmtList = this->getStmtList();
+	std::vector<StatementNode*> stmtList = this->getStmtList();
 	result.push_back(new Statement(line, StatementType::IF));
 	for (size_t i = 0; i < stmtList.size(); i++) {
 		stmtList.at(i)->getStatementsInto(result);
@@ -326,8 +326,8 @@ bool IfStatementNode::equals(StatementNode* other) {
 	if (other->isIf()) {
 		IfStatementNode* temp = static_cast<IfStatementNode*>(other);
 		if (this->cond->equals(temp->cond) && this->ifBlock.size() == temp->ifBlock.size() && this->elseBlock.size() == temp->elseBlock.size()) {
-			vector<StatementNode*> stmtList1 = this->getStmtList();
-			vector<StatementNode*> stmtList2 = this->getStmtList();
+			std::vector<StatementNode*> stmtList1 = this->getStmtList();
+			std::vector<StatementNode*> stmtList2 = this->getStmtList();
 
 			return ExtractUtils::compareStmtList(stmtList1, stmtList2);
 		}
@@ -340,12 +340,12 @@ bool IfStatementNode::equals(StatementNode* other) {
 	}
 }
 
-void IfStatementNode::getFollowsInto(vector<Relationship<int, int>*>& result) {
+void IfStatementNode::getFollowsInto(std::vector<Relationship<int, int>*>& result) {
 	ExtractUtils::follows(this->ifBlock, result);
 	ExtractUtils::follows(this->elseBlock, result);
 }
 
-void IfStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result) {
+void IfStatementNode::getFollowsTInto(std::vector<Relationship<int, int>*>& result) {
 	ExtractUtils::followsT(this->ifBlock, result);
 	ExtractUtils::followsT(this->elseBlock, result);
 }

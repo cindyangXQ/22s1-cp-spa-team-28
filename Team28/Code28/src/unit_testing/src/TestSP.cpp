@@ -5,8 +5,8 @@
 #include <iostream>
 #include <vector>
 
-string source1 = "../../../../Tests28/NoEntities.txt";
-string source2 = "../../../../Tests28/AllEntities.txt";
+std::string source1 = "../../../../Tests28/NoEntities.txt";
+std::string source2 = "../../../../Tests28/AllEntities.txt";
 
 TEST_CASE() {
 	Storage storage;
