@@ -138,9 +138,12 @@ Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns
     if (std::all_of(input.begin(), input.end(), ::isdigit)) {
         return Reference(input.c_str());
     }
-    if (input[0] == '"' && input[-1] == '"') {
-        return Reference(input);
+    if (input[0] == '\"' && input.back() == '\"') {
+        return Reference(input.substr(1, input.size() - 2));
     }
+    if (input == "_") {
+        return Reference(input);
+    }    
     for (int i = 0; i < syns.size(); i++) {
         Synonym synonym = syns[i];
         if (input.compare(synonym.name) == 0) {

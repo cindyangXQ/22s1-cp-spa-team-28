@@ -32,22 +32,73 @@ TEST_CASE("QueryParser can parse declaration correctly") {
 }
 
 TEST_CASE("Parser can parse such that clause") {
-	std::string correct_input = "such that Modifies(1, v)";
 	std::vector<Synonym> syns{ Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a") };
-	SuchThatClause clause = QueryParser::parseSuchThatClause(&correct_input, syns);
-	/*
-	// correct relationship type extracted
-	REQUIRE(clause.relationshipType == RelRef::Modifies);
-	// correct left operand extracted
-	REQUIRE(clause.refLeft.stmtNum == 1);
-	// correct relationship type extracted
-	REQUIRE(clause.refRight.name ==  "v");
-	*/
+	std::string correct_input_num_syn = "such that Modifies(1, v)";
+	SuchThatClause clause1 = QueryParser::parseSuchThatClause(&correct_input_num_syn, syns);
+	REQUIRE(clause1.relationship == RelationshipReference::MODIFIES);
+	REQUIRE(clause1.refLeft.isSynonym == false);
+	REQUIRE(clause1.refLeft.value.value == "1");
+	REQUIRE(clause1.refRight.isSynonym == true);
+	REQUIRE(clause1.refRight.syn.name == "v");
+	
+	std::string correct_input_syn_name = "such that Modifies(a, \"yey\")";
+	SuchThatClause clause2 = QueryParser::parseSuchThatClause(&correct_input_syn_name, syns);
+	REQUIRE(clause2.relationship == RelationshipReference::MODIFIES);
+	REQUIRE(clause2.refLeft.isSynonym == true);
+	REQUIRE(clause2.refLeft.syn.name == "a");
+	REQUIRE(clause2.refRight.isSynonym == false);
+	REQUIRE(clause2.refRight.value.value == "yey");
+	
+	std::string correct_input_num_name = "such that Modifies(1, \"yey\")";
+	SuchThatClause clause3 = QueryParser::parseSuchThatClause(&correct_input_num_name, syns);
+	REQUIRE(clause3.relationship == RelationshipReference::MODIFIES);
+	REQUIRE(clause3.refLeft.isSynonym == false);
+	REQUIRE(clause3.refLeft.value.value == "1");
+	REQUIRE(clause3.refRight.isSynonym == false);
+	REQUIRE(clause3.refRight.value.value == "yey");
+
+	std::string correct_input_syn_syn = "such that Modifies(a, v)";
+	SuchThatClause clause4 = QueryParser::parseSuchThatClause(&correct_input_syn_syn, syns);
+	REQUIRE(clause4.relationship == RelationshipReference::MODIFIES);
+	REQUIRE(clause4.refLeft.isSynonym == true);
+	REQUIRE(clause4.refLeft.syn.name == "a");
+	REQUIRE(clause4.refRight.isSynonym == true);
+	REQUIRE(clause4.refRight.syn.name == "v");
+
+	std::string correct_input_syn_wildcard = "such that Modifies(a, _)";
+	SuchThatClause clause5 = QueryParser::parseSuchThatClause(&correct_input_syn_wildcard, syns);
+	REQUIRE(clause5.relationship == RelationshipReference::MODIFIES);
+	REQUIRE(clause5.refLeft.isSynonym == true);
+	REQUIRE(clause5.refLeft.syn.name == "a");
+	REQUIRE(clause5.refRight.isSynonym == false);
+	REQUIRE(clause5.refRight.value.value == "_");
+
+	std::string correct_input_wildcard_syn = "such that Follows(_, a)";
+	SuchThatClause clause6 = QueryParser::parseSuchThatClause(&correct_input_wildcard_syn, syns);
+	REQUIRE(clause6.relationship == RelationshipReference::FOLLOWS);
+	REQUIRE(clause6.refLeft.isSynonym == false);
+	REQUIRE(clause6.refLeft.value.value == "_");
+	REQUIRE(clause6.refRight.isSynonym == true);
+	REQUIRE(clause6.refRight.syn.name == "a");
+
+	std::string correct_input_wildcard_syn_star = "such that Follows*(_, a)";
+	SuchThatClause clause7 = QueryParser::parseSuchThatClause(&correct_input_wildcard_syn_star, syns);
+	REQUIRE(clause7.relationship == RelationshipReference::FOLLOWS_T);
+	REQUIRE(clause7.refLeft.isSynonym == false);
+	REQUIRE(clause7.refLeft.value.value == "_");
+	REQUIRE(clause7.refRight.isSynonym == true);
+	REQUIRE(clause7.refRight.syn.name == "a");
+	
 	std::string extra_bracket = "such that Modifies((1, v)";
 	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&extra_bracket, syns));
 
 	std::string undeclared_syn = "such that Modifies(1, p)";
 	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&undeclared_syn, syns));
+	/*
+	* TODO: check for wildcard in Modifies first argument
+	std::string modify_wildcard = "such that Modifies(_, v)";
+	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&modify_wildcard, syns));
+	*/
 }
 
 TEST_CASE("Parser can parse pattern clause") {
