@@ -9,8 +9,6 @@
 #include "../commons/Statement.h"
 #include "../commons/Relationship.h"
 
-using namespace std;
-
 class EntityNode {
 public:
 	EntityNode();
@@ -19,14 +17,14 @@ public:
 
 class ConstantNode : public Token, public EntityNode {
 public:
-	ConstantNode(string s);
+	ConstantNode(std::string s);
 	bool isConstant() { return true; }
 	bool equals(Token* other) { return other->isConstant() && other->value == this->value; }
 };
 
 class VariableNode : public Token, public EntityNode {
 public:
-	VariableNode(string s);
+	VariableNode(std::string s);
 	VariableNode();
 	bool isName() { return true; }
 	bool equals(Token* other) { return other->isName() && other->value == this->value; }
@@ -44,36 +42,36 @@ public:
 	virtual bool isWhile() { return false; }
 	virtual bool isIf() { return false; }
 	virtual bool equals(StatementNode* other) { return false; };
-	virtual string getVariable() { return ""; };
+	virtual std::string getVariable() { return ""; };
   	int getLineNumber() { return this -> line;  };
 	virtual int getEndLine() { return this->line; }
-	virtual void getVariablesInto(vector<string>& result) {};
-	virtual void getConstantsInto(vector<string>& result) {};
-	virtual void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::NONE)); }
-	virtual void getFollowsInto(vector<Relationship<int, int>*>& result) {};
-	virtual void getFollowsTInto(vector<Relationship<int, int>*>& result) {};
+	virtual void getVariablesInto(std::vector<std::string>& result) {};
+	virtual void getConstantsInto(std::vector<std::string>& result) {};
+	virtual void getStatementsInto(std::vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::NONE)); }
+	virtual void getFollowsInto(std::vector<Relationship<int, int>*>& result) {};
+	virtual void getFollowsTInto(std::vector<Relationship<int, int>*>& result) {};
 };
 
 class ProcedureNode : public EntityNode {
-	string procName;
-	vector<StatementNode*> stmtList;
+	std::string procName;
+	std::vector<StatementNode*> stmtList;
 
 public:
-	ProcedureNode(string procName, vector<StatementNode*> stmtList);
+	ProcedureNode(std::string procName, std::vector<StatementNode*> stmtList);
 	bool equals(ProcedureNode* other);
-	string getName();
-	vector<StatementNode*> getStmtList();
+	std::string getName();
+	std::vector<StatementNode*> getStmtList();
 	int getEndline();
 };
 
 class ProgramNode : public EntityNode {
-	vector<ProcedureNode*> procList;
+	std::vector<ProcedureNode*> procList;
 
 public:
-	ProgramNode(vector<ProcedureNode*> procList);
+	ProgramNode(std::vector<ProcedureNode*> procList);
 	ProgramNode();
 	bool equals(ProgramNode* other);
-	vector<ProcedureNode*> getProcList();
+	std::vector<ProcedureNode*> getProcList();
 };
 
 
@@ -84,9 +82,9 @@ public:
 	ReadStatementNode(const VariableNode& variable, int line);
 	bool isRead() { return true; };
 	bool equals(StatementNode* other);
-	string getVariable();
-	void getVariablesInto(vector<string>& result);
-	void getStatementsInto(vector<Statement*>& result);
+	std::string getVariable();
+	void getVariablesInto(std::vector<std::string>& result);
+	void getStatementsInto(std::vector<Statement*>& result);
 };
 
 class PrintStatementNode : public StatementNode {
@@ -96,9 +94,9 @@ public:
 	PrintStatementNode(const VariableNode& variable, int line);
 	bool isPrint() { return true; };
 	bool equals(StatementNode* other);
-	string getVariable();
-	void getVariablesInto(vector<string>& result);
-	void getStatementsInto(vector<Statement*>& result);
+	std::string getVariable();
+	void getVariablesInto(std::vector<std::string>& result);
+	void getStatementsInto(std::vector<Statement*>& result);
 };
 
 class CallStatementNode : public StatementNode {
@@ -108,7 +106,7 @@ public:
 	CallStatementNode(const VariableNode& variable, int line);
 	bool isCall() { return true; };
 	bool equals(StatementNode* other);
-	void getStatementsInto(vector<Statement*>& result);
+	void getStatementsInto(std::vector<Statement*>& result);
 };
 
 
@@ -120,8 +118,8 @@ public:
 	ExpressionNode(Token* token);
 	ExpressionNode();
 	Token* getToken() { return this->token; }
-	void getVariablesInto(vector<string>& result);
-	void getConstantsInto(vector<string>& result);
+	void getVariablesInto(std::vector<std::string>& result);
+	void getConstantsInto(std::vector<std::string>& result);
 	bool equals(ExpressionNode* other);
 };
 
@@ -133,45 +131,45 @@ public:
 	AssignStatementNode(const VariableNode& variable, ExpressionNode* expression, int line);
 	bool isAssign() { return true; };
 	bool equals(StatementNode* other);
-	string getVariable();
-	void getVariablesInto(vector<string>& result);
-	void getConstantsInto(vector<string>& result);
-	void getStatementsInto(vector<Statement*>& result);
+	std::string getVariable();
+	void getVariablesInto(std::vector<std::string>& result);
+	void getConstantsInto(std::vector<std::string>& result);
+	void getStatementsInto(std::vector<Statement*>& result);
 };
 
 
 class WhileStatementNode : public StatementNode {
-	vector<StatementNode*> stmtList;
+	std::vector<StatementNode*> stmtList;
 	ExpressionNode* cond;
 
 public:
-	WhileStatementNode(const vector<StatementNode*>& stmtList, ExpressionNode* cond, int line);
+	WhileStatementNode(const std::vector<StatementNode*>& stmtList, ExpressionNode* cond, int line);
 	bool isWhile() { return true; };
 	bool equals(StatementNode* other);
 	int getEndLine();
-	vector<StatementNode*> getStmtList() { return this->stmtList; };
-	void getVariablesInto(vector<string>& result);
-	void getConstantsInto(vector<string>& result);
-	void getStatementsInto(vector<Statement*>& result);
-	void getFollowsInto(vector<Relationship<int, int>*>& result);
-	void getFollowsTInto(vector<Relationship<int, int>*>& result);
+	std::vector<StatementNode*> getStmtList() { return this->stmtList; };
+	void getVariablesInto(std::vector<std::string>& result);
+	void getConstantsInto(std::vector<std::string>& result);
+	void getStatementsInto(std::vector<Statement*>& result);
+	void getFollowsInto(std::vector<Relationship<int, int>*>& result);
+	void getFollowsTInto(std::vector<Relationship<int, int>*>& result);
 };
 
 
 class IfStatementNode : public StatementNode {
-	vector<StatementNode*> ifBlock;
-	vector<StatementNode*> elseBlock;
+	std::vector<StatementNode*> ifBlock;
+	std::vector<StatementNode*> elseBlock;
 	ExpressionNode* cond;
 
 public:
-	IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line);
+	IfStatementNode(std::vector<StatementNode*>& ifBlock, std::vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line);
 	bool isIf() { return true; }
 	bool equals(StatementNode* other);
 	int getEndLine();
-	vector<StatementNode*> getStmtList();
-	void getVariablesInto(vector<string>& result);
-	void getConstantsInto(vector<string>& result);
-	void getStatementsInto(vector<Statement*>& result);
-	void getFollowsInto(vector<Relationship<int, int>*>& result);
-	void getFollowsTInto(vector<Relationship<int, int>*>& result);
+	std::vector<StatementNode*> getStmtList();
+	void getVariablesInto(std::vector<std::string>& result);
+	void getConstantsInto(std::vector<std::string>& result);
+	void getStatementsInto(std::vector<Statement*>& result);
+	void getFollowsInto(std::vector<Relationship<int, int>*>& result);
+	void getFollowsTInto(std::vector<Relationship<int, int>*>& result);
 };

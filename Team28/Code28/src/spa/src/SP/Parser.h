@@ -8,17 +8,17 @@
 class Parser {
 protected:
 	int offset;
-	vector<Token*> tokens;
+	std::vector<Token*> tokens;
 
 public:
-	Parser(int offset, vector<Token*> tokens);
+	Parser(int offset, std::vector<Token*> tokens);
 	Parser();
 	int getOffset();
 };
 
 class ProgramParser : public Parser {
 public:
-	ProgramParser(int offset, vector<Token*> tokens);
+	ProgramParser(int offset, std::vector<Token*> tokens);
 	ProgramNode* parse();
 };
 
@@ -26,7 +26,7 @@ class ProcedureParser : public Parser {
 protected:
 	int startline;
 public:
-	ProcedureParser(int offset, vector<Token*> tokens, int startline);
+	ProcedureParser(int offset, std::vector<Token*> tokens, int startline);
 	ProcedureNode* parse();
 };
 
@@ -35,42 +35,42 @@ protected:
 	int line;
 public:
 	StatementParser();
-	StatementParser(int offset, vector<Token*> tokens, int line);
+	StatementParser(int offset, std::vector<Token*> tokens, int line);
 	StatementNode* parse();
 };
 
 class ReadStmParser : public StatementParser {
 public:
-	ReadStmParser(int offset, vector<Token*> tokens, int line);
+	ReadStmParser(int offset, std::vector<Token*> tokens, int line);
 	ReadStatementNode* parse();
 };
 
 class PrintStmParser : public StatementParser {
 public:
-	PrintStmParser(int offset, vector<Token*> tokens, int line);
+	PrintStmParser(int offset, std::vector<Token*> tokens, int line);
 	PrintStatementNode* parse();
 };
 
 class CallStmParser : public StatementParser {
 public:
-	CallStmParser(int offset, vector<Token*> tokens, int line);
+	CallStmParser(int offset, std::vector<Token*> tokens, int line);
 	CallStatementNode* parse();
 };
 
 class AssignStmParser : public StatementParser {
 public:
-	AssignStmParser(int offset, vector<Token*> tokens, int line);
+	AssignStmParser(int offset, std::vector<Token*> tokens, int line);
 	AssignStatementNode* parse();
 };
 
 class WhileStmParser : public StatementParser {
 public:
-	WhileStmParser(int offset, vector<Token*> tokens, int line);
+	WhileStmParser(int offset, std::vector<Token*> tokens, int line);
 	WhileStatementNode* parse();
 };
 
 class IfStmParser : public StatementParser {
 public:
-	IfStmParser(int offset, vector<Token*> tokens, int line);
+	IfStmParser(int offset, std::vector<Token*> tokens, int line);
 	IfStatementNode* parse();
 };

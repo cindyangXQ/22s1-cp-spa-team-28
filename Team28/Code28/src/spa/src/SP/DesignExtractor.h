@@ -7,8 +7,6 @@
 
 #include <vector>
 
-using namespace std;
-
 class DesignExtractor {
 protected:
 	ProgramNode* program;
@@ -25,28 +23,28 @@ public:
 class ProcedureExtractor : public DesignExtractor {
 public:
 	ProcedureExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
-	vector<Procedure*> extract();
+	std::vector<Procedure*> extract();
 	void populate();
 };
 
 class StatementExtractor : public DesignExtractor {
 public:
 	StatementExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
-	vector<Statement*> extract();
+	std::vector<Statement*> extract();
 	void populate();
 };
 
 class VariableExtractor : public DesignExtractor {
 public:
 	VariableExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
-	vector<Variable*> extract();
+	std::vector<Variable*> extract();
 	void populate();
 };
 
 class ConstantExtractor : public DesignExtractor {
 public:
 	ConstantExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
-	vector<Constant*> extract();
+	std::vector<Constant*> extract();
 	void populate();
 };
 
@@ -55,13 +53,13 @@ public:
 class FollowsExtractor : public DesignExtractor {
 public:
 	FollowsExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
-	vector<Relationship<int, int>*> extract();
+	std::vector<Relationship<int, int>*> extract();
 	void populate();
 };
 
 class FollowsExtrT : public DesignExtractor {
 public:
 	FollowsExtrT(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
-	vector<Relationship<int, int>*> extract();
+	std::vector<Relationship<int, int>*> extract();
 	void populate();
 };

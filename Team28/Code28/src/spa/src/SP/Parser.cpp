@@ -4,15 +4,14 @@
 #include "ExprParser.h"
 #include <vector>
 
-using namespace std;
-
+std::string REL_LIST[] = { "!", ">", "<", "==", "!=", ">=", "<=","&&", "||" };
 
 int Parser::getOffset() {
 	return offset;
 }
 
 // Constructors
-Parser::Parser(int offset, vector<Token*> tokens) {
+Parser::Parser(int offset, std::vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
 }
@@ -20,48 +19,48 @@ Parser::Parser(int offset, vector<Token*> tokens) {
 Parser::Parser(){}
 StatementParser::StatementParser(){}
 
-ProgramParser::ProgramParser(int offset, vector<Token*> tokens) {
+ProgramParser::ProgramParser(int offset, std::vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
 }
 
-ProcedureParser::ProcedureParser(int offset, vector<Token*> tokens, int startline) {
+ProcedureParser::ProcedureParser(int offset, std::vector<Token*> tokens, int startline) {
 	this->offset = offset;
 	this->tokens = tokens;
 	this->startline = startline;
 }
 
-StatementParser::StatementParser(int offset, vector<Token*> tokens, int line) {
+StatementParser::StatementParser(int offset, std::vector<Token*> tokens, int line) {
 	this->offset = offset;
 	this->tokens = tokens;
 	this->line = line;
 }
 
-ReadStmParser::ReadStmParser(int offset, vector<Token*> tokens, int line) {
+ReadStmParser::ReadStmParser(int offset, std::vector<Token*> tokens, int line) {
 	this->offset = offset;
 	this->tokens = tokens;
 	this->line = line;
 }
 
-PrintStmParser::PrintStmParser(int offset, vector<Token*> tokens, int line) {
+PrintStmParser::PrintStmParser(int offset, std::vector<Token*> tokens, int line) {
 	this->offset = offset;
 	this->tokens = tokens;
 	this->line = line;
 }
 
-CallStmParser::CallStmParser(int offset, vector<Token*> tokens, int line) {
+CallStmParser::CallStmParser(int offset, std::vector<Token*> tokens, int line) {
 	this->offset = offset;
 	this->tokens = tokens;
 	this->line = line;
 }
 
-AssignStmParser::AssignStmParser(int offset, vector<Token*> tokens, int line) {
+AssignStmParser::AssignStmParser(int offset, std::vector<Token*> tokens, int line) {
 	this->offset = offset;
 	this->tokens = tokens;
 	this->line = line;
 }
 
-WhileStmParser::WhileStmParser(int offset, vector<Token*> tokens, int line)
+WhileStmParser::WhileStmParser(int offset, std::vector<Token*> tokens, int line)
 {
 	this->offset = offset;
 	this->tokens = tokens;
@@ -71,9 +70,9 @@ WhileStmParser::WhileStmParser(int offset, vector<Token*> tokens, int line)
 
 // Parse
 ProgramNode* ProgramParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
-	vector<ProcedureNode*> procList;
+	std::vector<ProcedureNode*> procList;
 	int line = 1;
 
 	while (offset < tokenList.size()) {
@@ -89,9 +88,9 @@ ProgramNode* ProgramParser::parse() {
 
 ProcedureNode* ProcedureParser::parse() {
 	int line = this->startline;
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
-	vector<StatementNode*> stmtList;
+	std::vector<StatementNode*> stmtList;
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
@@ -121,7 +120,7 @@ ProcedureNode* ProcedureParser::parse() {
 }
 
 StatementNode* StatementParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 	StatementNode* result;
 
 	Token* firstToken = tokenList.at(offset);
@@ -166,7 +165,7 @@ StatementNode* StatementParser::parse() {
 }
 
 ReadStatementNode* ReadStmParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
@@ -185,7 +184,7 @@ ReadStatementNode* ReadStmParser::parse() {
 }
 
 PrintStatementNode* PrintStmParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
@@ -204,7 +203,7 @@ PrintStatementNode* PrintStmParser::parse() {
 }
 
 CallStatementNode* CallStmParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
@@ -223,7 +222,7 @@ CallStatementNode* CallStmParser::parse() {
 }
 
 AssignStatementNode* AssignStmParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
@@ -250,6 +249,9 @@ WhileStatementNode* WhileStmParser::parse() {
 	if (secondToken->equals("(")) {
 		CondParser parser = CondParser(offset, tokens);
  		cond = parser.parse();
+		if (std::find(std::begin(REL_LIST), std::end(REL_LIST), cond->getToken()->value) == std::end(REL_LIST)) {
+			throw "invalid cond expression";
+		}
 		offset = parser.getOffset();
 		if (tokens.at(offset)->equals(")")) {
 			offset++;
@@ -263,14 +265,14 @@ WhileStatementNode* WhileStmParser::parse() {
 	}
 
 	Token* curr = tokens.at(offset++);
-	vector<StatementNode*> stmtList;
+	std::vector<StatementNode*> stmtList;
 
 	if (curr->equals("{") ){
 		line++;
 		while (!tokens.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokens, line);
 			StatementNode* temp = parser.parse();
-			line++;
+			line = temp->getEndLine() + 1;
 			stmtList.push_back(temp);
 			offset = parser.getOffset();
 			if (offset >= tokens.size()) {
@@ -287,7 +289,7 @@ WhileStatementNode* WhileStmParser::parse() {
 
 }
 
-IfStmParser::IfStmParser(int offset, vector<Token*> tokens, int line)
+IfStmParser::IfStmParser(int offset, std::vector<Token*> tokens, int line)
 {
 	this->offset = offset;
 	this->tokens = tokens;
@@ -304,6 +306,9 @@ IfStatementNode* IfStmParser::parse() {
 	if (secondToken->equals("(")) {
 		CondParser parser = CondParser(offset, tokens);
 		cond = parser.parse();
+		if (std::find(std::begin(REL_LIST), std::end(REL_LIST), cond->getToken()->value) == std::end(REL_LIST)) {
+			throw "invalid cond expression";
+		}
 		offset = parser.getOffset();
 		if (!tokens.at(offset++)->equals(")")||!tokens.at(offset++)->equals("then")) {
 			throw "if statement wrong syntax";
@@ -314,15 +319,15 @@ IfStatementNode* IfStmParser::parse() {
 	}
 
 	Token* curr = tokens.at(offset++);
-	vector<StatementNode*> ifStmtList;
-	vector<StatementNode*> elseStmtList;
+	std::vector<StatementNode*> ifStmtList;
+	std::vector<StatementNode*> elseStmtList;
 
 	if (curr->equals("{")) {
 		line++;
 		while (!tokens.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokens, line);
 			StatementNode* temp = parser.parse();
-			line++;
+			line = temp->getEndLine() + 1;
 			ifStmtList.push_back(temp);
 			offset = parser.getOffset();
 			if (offset >= tokens.size()) {
@@ -338,11 +343,10 @@ IfStatementNode* IfStmParser::parse() {
 	if (!tokens.at(offset++)->equals("else") || !tokens.at(offset++)->equals("{")) {
 		throw "if statement wrong syntax";
 	}
-	line++;
 	while (!tokens.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokens, line);
 			StatementNode* temp = parser.parse();
-			line++;
+			line = temp->getEndLine() + 1;
 			elseStmtList.push_back(temp);
 			offset = parser.getOffset();
 			if (offset >= tokens.size()) {
