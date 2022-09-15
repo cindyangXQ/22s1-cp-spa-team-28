@@ -13,3 +13,8 @@ target_link_libraries(spa commons)
 target_link_libraries(spa pkb)
 target_link_libraries(spa qps)
 target_link_libraries(spa sp)
+target_compile_options(spa PRIVATE 
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
+        -Werror -Wall -Wextra -Wconversion -Wsign-conversion -pedantic-errors>
+    $<$<CXX_COMPILER_ID:MSVC>:
+        /W4 /WX>)

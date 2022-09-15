@@ -23,13 +23,15 @@ public:
 	std::vector<Tuple> splitTuple(std::vector<int> indices) {
 		std::vector<Value> first;
 		std::vector<Value> second;
-		for (int i = 0; i < indices.size(); i++) {
-			first.push_back(this->values[indices[i]]);
+		for (unsigned int i = 0; i < indices.size(); i++) {
+			size_t index = (size_t) indices[i];
+			Value v = values[index];
+			first.push_back(v);
 		}
 		bool inIndices;
-		for (int i = 0; i < this->values.size(); i++) {
+		for (unsigned int i = 0; i < this->values.size(); i++) {
 			inIndices = false;
-			for (int j = 0; j < indices.size(); j++) {
+			for (unsigned int j = 0; j < indices.size(); j++) {
 				if (i == j) {
 					inIndices = true;
 				}
@@ -43,8 +45,8 @@ public:
 
 	static Tuple combineSubTuples(std::vector<Tuple> subTuples) {
 		std::vector<Value> new_values;
-		for (int i = 0; i < subTuples.size(); i++) {
-			for (int j = 0; j < subTuples[i].values.size(); j++) {
+		for (unsigned int i = 0; i < subTuples.size(); i++) {
+			for (unsigned int j = 0; j < subTuples[i].values.size(); j++) {
 				new_values.push_back(subTuples[i].values[j]);
 			}
 		}
@@ -55,7 +57,7 @@ public:
 		if (this->size() != rhs.size()) {
 			return false;
 		} else {
-			for (int i = 0; i < this->size(); i++) {
+			for (unsigned int i = 0; i < this->size(); i++) {
 				if (this->values[i].value != rhs.values[i].value) {
 					return false;
 				}
