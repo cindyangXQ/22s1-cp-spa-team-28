@@ -46,6 +46,9 @@ std::vector<StatementNode*> ProcedureNode::getStmtList() {
 }
 
 int ProcedureNode::getEndline() {
+	if (stmtList.size() == 0) {
+		return -1;
+	}
 	return stmtList.back()->getEndLine();
 }
 
@@ -161,6 +164,9 @@ WhileStatementNode::WhileStatementNode(const std::vector<StatementNode*>& stmtLi
 }
 
 int WhileStatementNode::getEndLine() {
+	if (stmtList.size() == 0) {
+		return this->line;
+	}
 	return this->stmtList.back()->getEndLine();
 }
 
@@ -273,8 +279,11 @@ int IfStatementNode::getEndLine()
 	if (elseBlock.size() > 0) {
 		return elseBlock.back()->getEndLine();
 	}
-	else {
+	else if (ifBlock.size() > 0){
 		return ifBlock.back()->getEndLine();
+	}
+	else{
+		return line;
 	}
 }
 

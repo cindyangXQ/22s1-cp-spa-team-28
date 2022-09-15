@@ -83,7 +83,13 @@ ProcedureNode* ProcedureParser::parse() {
 			}
 			stmtList.push_back(temp);
 
-			line = temp->getEndLine() + 1;
+			if (temp->getEndLine() == -1) {
+				line++;
+			}
+			else {
+				line = temp->getEndLine() + 1;
+			}
+
 			offset = parser.getOffset();
 			if (offset >= tokenList.size()) {
 				throw "procedure wrong syntax";
