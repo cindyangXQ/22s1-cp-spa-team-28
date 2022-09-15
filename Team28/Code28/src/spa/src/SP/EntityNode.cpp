@@ -72,12 +72,17 @@ bool AssignStatementNode::equals(StatementNode* other) {
 }
 
 bool WhileStatementNode::equals(StatementNode* other) {
-	// Conditional and Statements not checked
-	return other->isWhile();
+	if (other->isWhile()) {
+		WhileStatementNode* temp = static_cast<WhileStatementNode*>(other);
+		return this->cond->equals(temp->cond) && ExtractUtils::compareStmtList(this->getStmtList(), temp->getStmtList());
+	}
+	else {
+		return false;
+	}
 }
 
 // Read Statement
-ReadStatementNode::ReadStatementNode(VariableNode& VariableNode, int line) {
+ReadStatementNode::ReadStatementNode(const VariableNode& VariableNode, int line) {
 	this->var = VariableNode ;
 	this->line = line;
 }
@@ -95,7 +100,7 @@ void ReadStatementNode::getStatementsInto(vector<Statement*>& result) {
 }
 
 // Print Statement
-PrintStatementNode::PrintStatementNode(VariableNode& VariableNode, int line ) {
+PrintStatementNode::PrintStatementNode(const VariableNode& VariableNode, int line ) {
 	this->var = VariableNode ;
 	this->line = line;
 }
@@ -113,7 +118,7 @@ void PrintStatementNode::getStatementsInto(vector<Statement*>& result) {
 }
 
 // Call Statement
-CallStatementNode::CallStatementNode(VariableNode& VariableNode, int line ) {
+CallStatementNode::CallStatementNode(const VariableNode& VariableNode, int line ) {
 	this->var = VariableNode ;
 	this->line = line;
 }
@@ -127,7 +132,7 @@ void CallStatementNode::getStatementsInto(vector<Statement*>& result) {
 }
 
 // Assignment Statement
-AssignStatementNode::AssignStatementNode(VariableNode& VariableNode , ExpressionNode* expression, int line) {
+AssignStatementNode::AssignStatementNode(const VariableNode& VariableNode , ExpressionNode* expression, int line) {
 	var = VariableNode ;
 	expr = expression;
 	this->line = line;
@@ -151,7 +156,7 @@ void AssignStatementNode::getStatementsInto(vector<Statement*>& result) {
 }
 
 // While Statement
-WhileStatementNode::WhileStatementNode(vector<StatementNode*>& stmtList, ExpressionNode* cond, int line)
+WhileStatementNode::WhileStatementNode(const vector<StatementNode*>& stmtList, ExpressionNode* cond, int line)
 {
 	this->stmtList = stmtList;
 	this->cond = cond;
@@ -227,22 +232,27 @@ void ExpressionNode::getConstantsInto(vector<string>& result) {
 	}
 }
 
+bool ExpressionNode::equals(ExpressionNode* other)
+{
+	if (this->left == NULL && this->right == NULL) {
+		return other->left == NULL && other->right == NULL && this->token->equals(other->token);
+	}
+	else if (this->right == NULL) {
+		if (other->left == NULL) return false;
+		return this->token->equals(other->token) && this->left->equals(other->left);
+	}
+	else {
+		if (other->left == NULL || other->right == NULL) { return false; }
+		return this->token->equals(other->token) && this->left->equals(other->left) && this->right->equals(other->right);
+	}
+
+	
+}
+
 
 // Constant
 ConstantNode ::ConstantNode (string s) {
 	this->value = s;
-}
-
-bool ConstantNode::isKeyword() {
-	return false;
-}
-
-bool ConstantNode ::isName() {
-	return false;
-}
-
-bool ConstantNode::isConstant() {
-	return true;
 }
 
 // Variable
@@ -252,14 +262,94 @@ VariableNode ::VariableNode (string s) {
 
 VariableNode ::VariableNode () {}
 
-bool VariableNode ::isKeyword() {
-	return false;
+
+// If Statement
+IfStatementNode::IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line)
+{
+	this->ifBlock = ifBlock;
+	this->elseBlock = elseBlock;
+	this->cond = cond;
+	this->line = line;
 }
 
-bool VariableNode ::isName() {
-	return true;
+int IfStatementNode::getEndLine()
+{
+	if (elseBlock.size() > 0) {
+		return elseBlock.back()->getEndLine();
+	}
+	else {
+		return ifBlock.back()->getEndLine();
+	}
 }
 
-bool VariableNode::isConstant() {
-	return false;
+vector<StatementNode*> IfStatementNode::getStmtList()
+{
+	vector<StatementNode*> stmtList;
+	for (size_t i = 0; i < ifBlock.size(); i++) {
+		stmtList.push_back(ifBlock.at(i));
+	}
+
+	for (size_t i = 0; i < elseBlock.size(); i++) {
+		stmtList.push_back(elseBlock.at(i));
+	}
+
+	return stmtList;
 }
+
+void IfStatementNode::getVariablesInto(vector<string>& result)
+{
+	vector<StatementNode*> stmtList = this->getStmtList();
+
+	cond->getVariablesInto(result);
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getVariablesInto(result);
+	}
+}
+
+void IfStatementNode::getConstantsInto(vector<string>& result)
+{
+	vector<StatementNode*> stmtList = this->getStmtList();
+
+	cond->getConstantsInto(result);
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getConstantsInto(result);
+	}
+}
+
+void IfStatementNode::getStatementsInto(vector<Statement*>& result)
+{
+	vector<StatementNode*> stmtList = this->getStmtList();
+	result.push_back(new Statement(line, StatementType::IF));
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getStatementsInto(result);
+	}
+}
+
+bool IfStatementNode::equals(StatementNode* other) {
+	if (other->isIf()) {
+		IfStatementNode* temp = static_cast<IfStatementNode*>(other);
+		if (this->cond->equals(temp->cond) && this->ifBlock.size() == temp->ifBlock.size() && this->elseBlock.size() == temp->elseBlock.size()) {
+			vector<StatementNode*> stmtList1 = this->getStmtList();
+			vector<StatementNode*> stmtList2 = this->getStmtList();
+
+			return ExtractUtils::compareStmtList(stmtList1, stmtList2);
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
+void IfStatementNode::getFollowsInto(vector<Relationship<int, int>*>& result) {
+	ExtractUtils::follows(this->ifBlock, result);
+	ExtractUtils::follows(this->elseBlock, result);
+}
+
+void IfStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result) {
+	ExtractUtils::followsT(this->ifBlock, result);
+	ExtractUtils::followsT(this->elseBlock, result);
+}
+

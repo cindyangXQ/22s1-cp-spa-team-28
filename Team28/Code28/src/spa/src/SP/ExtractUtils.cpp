@@ -1,6 +1,6 @@
 #include "ExtractUtils.h"
 
-void ExtractUtils::follows(vector<StatementNode*>& stmtList, vector<Relationship<int, int>*>& result) {
+void ExtractUtils::follows(const vector<StatementNode*>& stmtList, vector<Relationship<int, int>*>& result) {
 	vector<int> lineNumbers;
 	for (size_t i = 0; i < stmtList.size(); i++) {
 		stmtList[i]->getFollowsInto(result);
@@ -12,7 +12,7 @@ void ExtractUtils::follows(vector<StatementNode*>& stmtList, vector<Relationship
 	}
 }
 
-void ExtractUtils::followsT(vector<StatementNode*>& stmtList, vector<Relationship<int, int>*>& result) {
+void ExtractUtils::followsT(const vector<StatementNode*>& stmtList, vector<Relationship<int, int>*>& result) {
 	vector<int> lineNumbers;
 	for (size_t i = 0; i < stmtList.size(); i++) {
 		stmtList[i]->getFollowsTInto(result);
@@ -27,7 +27,7 @@ void ExtractUtils::followsT(vector<StatementNode*>& stmtList, vector<Relationshi
 	}
 }
 
-bool ExtractUtils::compareStmtList(vector<StatementNode*>& list1, vector<StatementNode*>& list2) {
+bool ExtractUtils::compareStmtList(const vector<StatementNode*>& list1, const vector<StatementNode*>& list2) {
 	if (list1.size() != list2.size()) {
 		return false;
 	}

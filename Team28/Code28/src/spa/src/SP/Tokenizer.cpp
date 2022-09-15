@@ -39,102 +39,120 @@ Token* Tokenizer::createToken(TokenType type, string value) {
 
 Tokenizer::Tokenizer(string sourceProg) {
 	this->input = sourceProg;
+	this->currType = TokenType::WHITESPACE;
+	this->index = 0;
 }
 
-vector<Token*> Tokenizer::tokenize() {
-	vector<Token*> tokens;
-	TokenType currType = TokenType::WHITESPACE;
 
+void Tokenizer::handleDigit() {
+	string constant = "";
+	char currChar = input.at(index);
+
+	while (isdigit(currChar)) {
+		constant.append(1, currChar);
+		
+		if (++index >= input.length()) break;
+		else currChar = input.at(index);
+	}
+
+	tokens.push_back(createToken(TokenType::CONSTANT, constant));
+}
+
+
+void Tokenizer::handleAlpha() {
+	string name = "";
+	char currChar = input.at(index);
+	TokenType type = TokenType::NAME;
+
+	while (isalpha(currChar) || isdigit(currChar)) {
+		name.append(1, currChar);
+		
+		if (++index >= input.length()) break;
+		else currChar = input.at(index);
+	}
+
+	if (index < input.length() && find(begin(KEYWORD_LIST), end(KEYWORD_LIST), name) != end(KEYWORD_LIST)) {
+		skipWhitespace();
+		if (index < input.length()) {
+			currChar = input.at(index);
+
+			if (currChar == '{') {
+				if (tokens.back()->isKeyword()) type = TokenType::NAME;
+				else type = TokenType::KEYWORD;
+			}
+			else if (find(begin(opChar), end(opChar), currChar) != end(opChar) || currChar == ';' || currChar == ')') {
+				type = TokenType::NAME;
+			}
+			else {
+				type = TokenType::KEYWORD;
+			}
+		}
+	}
+
+	tokens.push_back(createToken(type, name));
+}
+
+
+void Tokenizer::handleOperator() {
+	string op = "";
+	char currChar = input.at(index);
+	
+	while (find(begin(opChar), end(opChar), currChar) != end(opChar)) {
+		op.append(1, currChar);
+
+		if (++index >= input.length()) break;
+		else currChar = input.at(index);
+	}
+
+	if (find(begin(OPERATOR_LIST), end(OPERATOR_LIST), op) == end(OPERATOR_LIST)) {
+		throw "invalid operator";
+	}
+
+	tokens.push_back(createToken(TokenType::OPERATOR, op));
+}
+
+
+void Tokenizer::handleSymbol() {
+	string sym = "";
+	sym.append(1, input.at(index));
+	tokens.push_back(createToken(TokenType::SYMBOL, sym));
+	index++;
+}
+
+void Tokenizer::skipWhitespace() {
+	char currChar = input.at(index);
+
+	while (index < input.length() && find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), input.at(index)) != end(WHITESPACE_LIST)) index++;
+}
+
+
+vector<Token*> Tokenizer::tokenize() {
 	string current = ""; // store current Token value
 	char currChar;
-	long index = 0;
 
 	// Iterate throught every char in the source program
 	while (index < input.length()) {
 		currChar = input.at(index);
 
 		if (isdigit(currChar)) {
-			if (currType == TokenType::WHITESPACE) {
-				currType = TokenType::CONSTANT;
-				current = "";
-			}
-			else if (currType != TokenType::CONSTANT && currType != TokenType::NAME) {
-				tokens.push_back(createToken(currType, current));
-				currType = TokenType::CONSTANT;
-				current = "";
-			}
-
-			current.append(1, currChar);
+			handleDigit();
 		}
 		else if (isalpha(currChar)) {
-			if (currType == TokenType::WHITESPACE) {
-				currType = TokenType::NAME;
-				current = "";
-			}
-			else if (currType != TokenType::NAME) {
-				tokens.push_back(createToken(currType, current));
-				currType = TokenType::NAME;
-				current = "";
-			}
-			current.append(1, currChar);
+			handleAlpha();
 		}
-		else if (currChar == ' ') {
-			// when currType is Name, check if it is keyword
-			if (currType == TokenType::NAME && find(begin(KEYWORD_LIST), end(KEYWORD_LIST), current) != end(KEYWORD_LIST)) {
-				while (index + 1 < input.length()) {
-					if (find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), input.at(index+1) )== end(WHITESPACE_LIST)) {
-						break;
-					}
-					index = index + 1;
-				}
-				char temp = input.at(index + 1);
-				if (find(begin(opChar), end(opChar), temp) != end(opChar) || temp == ';' || temp == ')' || temp == '{') {
-					tokens.push_back(createToken(TokenType::NAME, current));
-				}
-				else {
-					tokens.push_back(createToken(TokenType::KEYWORD, current));
-				}
-			}
-			else {
-				if (currType != TokenType::WHITESPACE) {
-					tokens.push_back(createToken(currType, current));
-				}
-			}
-			current = "";
-			currType = TokenType::WHITESPACE;
+		else if (find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), currChar) != end(WHITESPACE_LIST)) {
+			skipWhitespace();
 		}
 		else if (find(begin(opChar), end(opChar), currChar) != end(opChar)) {
-			if (currType == TokenType::WHITESPACE) {
-				current = "";
-				currType = TokenType::OPERATOR;
-			}
-
-			if (currType == TokenType::OPERATOR) {
-				current.append(1, currChar);
-			}
-			else {
-				tokens.push_back(createToken(currType, current));
-				current = "";
-				current.append(1, currChar);
-				currType = TokenType::OPERATOR;
-			}
+			handleOperator();
 		}
 		else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST)) {
-			if (currChar == '(' && find(begin(KEYWORD_LIST), end(KEYWORD_LIST), current) != end(KEYWORD_LIST)) {
-				currType = TokenType::KEYWORD;
-			}
-			if (currType != TokenType::WHITESPACE) {
-				tokens.push_back(createToken(currType, current));
-			}
-			currType = TokenType::SYMBOL;
-			current = "";
-			current.push_back(currChar);
+			handleSymbol();
 		}
-		index = index + 1;
+		else {
+			throw "invalid character";
+		}
 	}
 
-	if(currType != TokenType::WHITESPACE) {
-		tokens.push_back(createToken(currType, current));
-	}
-	return tokens;
+	return this->tokens;
 }

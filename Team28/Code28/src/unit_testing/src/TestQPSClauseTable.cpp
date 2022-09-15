@@ -1,5 +1,5 @@
 #include "QPS/Evaluator/ClauseTable.h"
-#include "Commons/Synonym.h"
+#include "commons/Synonym.h"
 #include "QPS/Evaluator/Tuple.h"
 #include <vector>
 

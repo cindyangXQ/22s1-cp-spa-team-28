@@ -69,3 +69,9 @@ public:
 	WhileStmParser(int offset, vector<Token*> tokens, int line) : StatementParser(offset, tokens, line) {};
 	WhileStatementNode* parse();
 };
+
+class IfStmParser : public StatementParser {
+public:
+	IfStmParser(int offset, vector<Token*> tokens, int line);
+	IfStatementNode* parse();
+};
