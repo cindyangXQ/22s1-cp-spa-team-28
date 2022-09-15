@@ -12,7 +12,6 @@ std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *query
     std::vector<ClauseResult> clauseResultList = queryResult->clauseResultList;
     for (int i = 0; i < clauseResultList.size(); i++) {
         if (clauseResultList[i].isEmpty) {
-            // std::cout << "One of the clause result empty, return empty string" << std::endl;
             return std::vector<std::string>{};
         }
         if (clauseResultList[i].table.size() > 0) {
@@ -21,7 +20,6 @@ std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *query
     }
 
     if (allClauseResultEmpty || clauseResultList.size() == 0) {
-        // std::cout << "Got no clause result, return all value for synonym" << std::endl;
         if (queryResult->selectType.entity == EntityName::STMT) {
             std::vector<Statement*> statementList = (std::vector<Statement*>)this->queryFacade->getAllStatements();
             std::vector<std::string> result;
@@ -48,11 +46,9 @@ std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *query
         result = ClauseTable::joinTables(result, clauseResultList[i].table);
     }
     if (result.size() == 0) {
-        // std::cout << "result table empty, return empty string" << std::endl;
         return std::vector<std::string>{};
     }
     else {
-        // std::cout << "synonym not in result table, return all value for synonym" << std::endl;
         std::vector<Value> selectValues = result.getValues(queryResult->selectType);
         if (selectValues.size() == 0) {
             if (queryResult->selectType.entity == EntityName::STMT) {
@@ -77,7 +73,6 @@ std::vector<std::string> QueryEvaluator::interpretQueryResult(QueryResult *query
             }
         }
         else {
-            // std::cout << "synonym in result table, return all value in table for synonym" << std::endl;
             std::vector<std::string> output;
             for (int k = 0; k < selectValues.size(); k++) {
                 output.push_back(selectValues[k].value);

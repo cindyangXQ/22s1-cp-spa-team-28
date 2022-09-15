@@ -84,6 +84,12 @@ ClauseTable ClauseTable::ConstructTable(ClauseTable table1, ClauseTable table2) 
 }
 
 ClauseTable ClauseTable::joinTables(ClauseTable table1, ClauseTable table2) {
+	if (table1.header.size() == 0) {
+		return table2;
+	}
+	if (table2.header.size() == 0) {
+		return table1;
+	}
 	std::vector<Synonym> common_headers = ClauseTable::getCommonHeaders(table1, table2);
 	/*
 	if (common_headers.empty()) {
