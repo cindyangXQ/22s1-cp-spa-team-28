@@ -9,7 +9,6 @@ DesignExtractor::DesignExtractor(ProgramNode* program, PopulateFacade* storage) 
 	this->storage = storage;
 }
 
-DesignExtractor::DesignExtractor() {}
 
 std::vector<Procedure*> ProcedureExtractor::extract() {
 	std::vector<Procedure*> result;

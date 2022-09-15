@@ -26,6 +26,6 @@ public:
 
 class CondParser : public Parser {
 public:
-	CondParser(int offset, std::vector<Token*> tokens);
+	CondParser(int offset, std::vector<Token*> tokens) : Parser(offset, tokens) {};
 	ExpressionNode* parse();
 };

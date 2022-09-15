@@ -106,6 +106,7 @@ public:
 	CallStatementNode(VariableNode* variable, int line);
 	bool isCall() { return true; };
 	bool equals(StatementNode* other);
+	std::string getVariable();
 	void getStatementsInto(std::vector<Statement*>& result);
 };
 

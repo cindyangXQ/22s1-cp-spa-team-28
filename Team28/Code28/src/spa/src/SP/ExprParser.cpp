@@ -6,26 +6,15 @@
 
 std::string REL_OP_LIST[] = { "!", ">", "<", "==", "!=", ">=", "<=","&&", "||" };
 
-CondParser::CondParser(int offset, std::vector<Token*> tokens) {
-	this->offset = offset;
-	this->tokens = tokens;
-}
-
-ExprParser::ExprParser(int offset, std::vector<Token*> tokens, bool iscond) {
-	this->offset = offset;
-	this->tokens = tokens;
+ExprParser::ExprParser(int offset, std::vector<Token*> tokens, bool iscond) : Parser(offset, tokens) {
 	this->iscond = iscond;
 }
 
-TermParser::TermParser(int offset, std::vector<Token*> tokens, bool iscond) {
-	this->offset = offset;
-	this->tokens = tokens;
+TermParser::TermParser(int offset, std::vector<Token*> tokens, bool iscond) : Parser(offset, tokens) {
 	this->iscond = iscond;
 }
 
-FactorParser::FactorParser(int offset, std::vector<Token*> tokens, bool iscond) {
-	this->offset = offset;
-	this->tokens = tokens;
+FactorParser::FactorParser(int offset, std::vector<Token*> tokens, bool iscond) : Parser(offset, tokens) {
 	this->iscond = iscond;
 }
 

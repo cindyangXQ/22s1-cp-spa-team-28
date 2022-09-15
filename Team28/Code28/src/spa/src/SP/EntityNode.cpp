@@ -45,8 +45,7 @@ std::vector<StatementNode*> ProcedureNode::getStmtList() {
 	return this->stmtList;
 }
 
-int ProcedureNode::getEndline()
-{
+int ProcedureNode::getEndline() {
 	return stmtList.back()->getEndLine();
 }
 
@@ -85,7 +84,7 @@ ReadStatementNode::ReadStatementNode(VariableNode* VariableNode, int line) {
 	this->line = line;
 }
 
-string ReadStatementNode::getVariable() {
+std::string ReadStatementNode::getVariable() {
 	return this->var->getValue();
 }
 
@@ -103,7 +102,7 @@ PrintStatementNode::PrintStatementNode(VariableNode* VariableNode, int line ) {
 	this->line = line;
 }
 
-string PrintStatementNode::getVariable() {
+std::string PrintStatementNode::getVariable() {
 	return this->var->getValue();
 }
 
@@ -121,11 +120,11 @@ CallStatementNode::CallStatementNode(VariableNode* VariableNode, int line ) {
 	this->line = line;
 }
 
-string CallStatementNode::getVariable() {
+std::string CallStatementNode::getVariable() {
 	return this->var->getValue();
 }
 
-void CallStatementNode::getStatementsInto(vector<Statement*>& result) { 
+void CallStatementNode::getStatementsInto(std::vector<Statement*>& result) { 
 	result.push_back(new Statement(line, StatementType::CALL)); 
 }
 
@@ -136,7 +135,7 @@ AssignStatementNode::AssignStatementNode(VariableNode* VariableNode , Expression
 	this->line = line;
 }
 
-string AssignStatementNode::getVariable() {
+std::string AssignStatementNode::getVariable() {
 	return this->var->getValue();
 }
 

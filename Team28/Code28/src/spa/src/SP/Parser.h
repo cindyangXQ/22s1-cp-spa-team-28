@@ -23,12 +23,12 @@ public:
 
 class ProcedureParser : public Parser {
 	int startline;
-	vector<string> allCalls;
+	std::vector<std::string> allCalls;
 
 public:
 	ProcedureParser(int offset, std::vector<Token*> tokens, int startline);
 	ProcedureNode* parse();
-	bool checkCalls(const vector<string>& procNames);
+	bool checkCalls(const std::vector<std::string>& procNames);
 };
 
 class StatementParser : public Parser {

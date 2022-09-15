@@ -28,8 +28,8 @@ ProgramNode* ProgramParser::parse() {
 	std::vector<ProcedureNode*> procList;
 	int line = 1;
 
-	vector<string> procNames;
-	vector<ProcedureParser*> allProcCalls;
+	std::vector<std::string> procNames;
+	std::vector<ProcedureParser*> allProcCalls;
 
 	while (offset < tokenList.size()) {
 		ProcedureParser* parser = new ProcedureParser(offset, tokenList, line);
@@ -98,9 +98,9 @@ ProcedureNode* ProcedureParser::parse() {
 	return new ProcedureNode(secondToken->getValue(), stmtList);
 }
 
-bool ProcedureParser::checkCalls(const vector<string>& procNames) {
+bool ProcedureParser::checkCalls(const std::vector<std::string>& procNames) {
 	for (size_t i = 0; i < allCalls.size(); i++) {
-		string temp = allCalls[i];
+		std::string temp = allCalls[i];
 		bool isCallValid = false;
 		for (size_t j = 0; j < procNames.size(); j++) {
 			if (temp == procNames[j]) {
