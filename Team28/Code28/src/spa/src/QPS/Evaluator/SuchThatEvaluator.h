@@ -13,5 +13,4 @@ private:
 public:
     explicit SuchThatEvaluator(QueryFacade *queryFacade) : queryFacade(queryFacade) {};
     ClauseResult evaluate(SuchThatClause *suchThatCl);
-    bool validate(SuchThatClause *suchThatCl);
 };

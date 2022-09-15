@@ -79,13 +79,10 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector
         }
         RelationshipReference relationship = relationshipMap.at(matches[1].str());
         Reference left = getReference(matches[2].str(), syns);
-        if (relationship == RelationshipReference::MODIFIES || relationship == RelationshipReference::USES) {
-            if (left.type == ReferenceType::WILDCARD) {
-                throw SemanticError("First argument cannot be wildcard");
-            }
-        }
-
         Reference right = getReference(matches[3].str(), syns);
+        if (!isValidSuchThatClause(relationship, left, right)) {
+            throw SemanticError("Invalid relationship arguments");
+        }
 
         *clause = Utils::removeString(*clause, suchThatClause);
 
@@ -108,7 +105,7 @@ PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<S
 
         Synonym syn = getSynonym(matches[1].str(), syns);
         Reference entRef = getReference(matches[2].str(), syns);
-        Expression expression = matches[3].str();
+        Expression expression = matches[4].str();
 
         *clause = Utils::removeString(*clause, patternClause);
 
@@ -175,6 +172,24 @@ Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
 
 bool QueryParser::isValidName(std::string name) {
     return std::regex_match(name, std::regex("^[a-zA-Z][a-zA-Z0-9]*$"));
+}
+
+bool QueryParser::isValidSuchThatClause(RelationshipReference relRef, Reference left, Reference right) {
+    if (relRef == RelationshipReference::EMPTY) {
+        return true;
+    }
+    else if (relRef == RelationshipReference::FOLLOWS 
+        || relRef == RelationshipReference::FOLLOWS_T 
+        || relRef == RelationshipReference::PARENT 
+        || relRef == RelationshipReference::PARENT_T) {
+        return (left.type != ReferenceType::ENT_REF && right.type != ReferenceType::ENT_REF);
+    }
+    else if (relRef == RelationshipReference::USES || relRef == RelationshipReference::MODIFIES) {
+        if (left.type == ReferenceType::WILDCARD) {
+            return false;
+        }
+        return (right.type != ReferenceType::STMT_REF);
+    }
 }
 
 bool QueryParser::isDuplicateSynonymName(std::vector<Synonym> syns) {

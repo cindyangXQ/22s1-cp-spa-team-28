@@ -31,6 +31,21 @@ TEST_CASE("QueryParser can parse declaration correctly") {
 	REQUIRE_THROWS(QueryParser::parseDeclaration(invalid_name_special_char_clauses));
 }
 
+TEST_CASE("QueryParser can parse select clause") {
+	std::vector<Synonym> syns{ Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a") };
+
+	std::string correct = "Select v";
+	SelectType selectedSynonym = QueryParser::parseSelectClause(&correct, syns);
+	REQUIRE(selectedSynonym.entity == EntityName::VARIABLE);
+	REQUIRE(selectedSynonym.name == "v");
+
+	std::string misspelled = "Selct v";
+	REQUIRE_THROWS(QueryParser::parseSelectClause(&misspelled, syns));
+
+	std::string missing_synonym = "Select";
+	REQUIRE_THROWS(QueryParser::parseSelectClause(&missing_synonym, syns));
+}
+
 TEST_CASE("Parser can parse such that clause") {
 	std::vector<Synonym> syns{ Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a") };
 	std::string correct_input_num_syn = "such that Modifies(1, v)";
@@ -101,16 +116,52 @@ TEST_CASE("Parser can parse such that clause") {
 	std::string uses_wildcard = "such that Uses(_, v)";
 	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&uses_wildcard, syns));
 	
+	std::string missing_bracket = "such that Modifies(1, v";
+	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&missing_bracket, syns));
+
+	std::string misspelled = "suxh that Modifies(1, v)";
+	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&misspelled, syns));
+
+	std::string too_many_arguments = "such that Modifies(1, v, d)";
+	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&too_many_arguments, syns));
+
+	std::string too_few_arguments = "such that Modifies(1)";
+	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&too_few_arguments, syns));
+
+	std::string missing_relationship_name = "such that (1, v)";
+	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&missing_relationship_name, syns));
 }
 
 TEST_CASE("Parser can parse pattern clause") {
-    std::string correct_input = "pattern a(v, \"x\")";
+    std::string correct_input = "pattern a(v, _\"x\"_)";
     std::vector<Synonym> syns{ Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a") };
     PatternClause clause = QueryParser::parsePatternClause(&correct_input, syns);
+	REQUIRE(clause.entRef.isSynonym == true);
+	REQUIRE(clause.entRef.syn.name == "v");
+	REQUIRE(clause.entRef.syn.entity == EntityName::VARIABLE);
+	REQUIRE(clause.syn.name == "a");
+	REQUIRE(clause.syn.entity == EntityName::ASSIGN);
+	REQUIRE(clause.expression == "_\"x\"_");
 
     std::string extra_bracket = "pattern a((v, \"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&extra_bracket, syns));
 
     std::string undeclared_syn = "pattern a(p, \"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&undeclared_syn, syns));
+
+	std::string misspelled = "pattrn a(v, _)";
+	REQUIRE_THROWS(QueryParser::parsePatternClause(&misspelled, syns));
+
+	std::string too_many_arguments = "pattern a(v, _, c)";
+	REQUIRE_THROWS(QueryParser::parsePatternClause(&too_many_arguments, syns));
+
+	std::string too_few_arguments = "pattern a(c)";
+	REQUIRE_THROWS(QueryParser::parsePatternClause(&too_few_arguments, syns));
+
+	std::string missing_quotation = "pattern a(c, \"x)";
+	REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_quotation, syns));
+
+	std::string missing_underscore = "pattern a(c, _\"x\")";
+	REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_underscore, syns));
+
 }

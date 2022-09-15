@@ -1,7 +1,7 @@
 #include "SuchThatEvaluator.h"
 
 ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
-    if (suchThatCl->relationship == RelationshipReference::EMPTY || !validate(suchThatCl)) {
+    if (suchThatCl->relationship == RelationshipReference::EMPTY) {
         return ClauseResult(false);
     }
     else {
@@ -41,24 +41,5 @@ ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
             }
             return clauseResult;
         }
-    }
-}
-
-bool SuchThatEvaluator::validate(SuchThatClause *suchThatCl) {
-    RelationshipReference relRef = suchThatCl->relationship;
-    if (relRef == RelationshipReference::EMPTY) {
-        return true;
-    }
-    else if (relRef == RelationshipReference::FOLLOWS 
-        || relRef == RelationshipReference::FOLLOWS_T 
-        || relRef == RelationshipReference::PARENT 
-        || relRef == RelationshipReference::PARENT_T) {
-        return (suchThatCl->refLeft.type != ReferenceType::ENT_REF && suchThatCl->refRight.type != ReferenceType::ENT_REF);
-    }
-    else if (relRef == RelationshipReference::USES || relRef == RelationshipReference::MODIFIES) {
-        if (suchThatCl->refLeft.type == ReferenceType::WILDCARD) {
-            return false;
-        }
-        return (suchThatCl->refRight.type == ReferenceType::ENT_REF);
     }
 }
