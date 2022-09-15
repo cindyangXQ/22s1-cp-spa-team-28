@@ -6,8 +6,9 @@
 #include "../../commons/Reference.h"
 #include "../../commons/Variable.h"
 #include "../../commons/Statement.h"
-#include "../Error/SyntaxError.h"
 #include "../Clause/SelectClause.h"
+#include "../Error/SyntaxError.h"
+#include "../Error/SemanticError.h"
 #include "QueryParserRegex.h"
 
 /*
@@ -22,6 +23,7 @@ public:
     static PatternClause parsePatternClause(std::string *clause, std::vector<Synonym> syns);
 private:
     static bool isValidName(std::string name);
+    static bool isValidSuchThatClause(RelationshipReference relRef, Reference left, Reference right);
     static std::vector<Synonym> parseSynonyms(std::vector<std::string> tokens);
     static bool isDuplicateSynonymName(std::vector<Synonym> syns);
     static RelationshipReference getRelationshipReference(std::string input);

@@ -4,7 +4,7 @@
 #include <string>
 #include <regex>
 #include "../../commons/Entity.h"
-#include "../../commons/Relationship/Relationship.h"
+#include "../../commons/Relationship.h"
 
 
 typedef std::unordered_map<std::string, EntityName> ENTITY_MAP;
