@@ -45,8 +45,10 @@ public:
 	virtual bool isIf() { return false; }
 	virtual bool equals(StatementNode* other) { return false; };
 	virtual string getVariable() { return ""; };
+	virtual vector<StatementNode*> getStmtList() { return vector<StatementNode*>(); };
   	int getLineNumber() { return this -> line;  };
 	virtual int getEndLine() { return this->line; }
+
 	virtual void getVariablesInto(vector<string>& result) {};
 	virtual void getConstantsInto(vector<string>& result) {};
 	virtual void getStatementsInto(vector<Statement*>& result) { result.push_back(new Statement(line, StatementType::NONE)); }
@@ -85,6 +87,7 @@ public:
 	bool isRead() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
+
 	void getVariablesInto(vector<string>& result);
 	void getStatementsInto(vector<Statement*>& result);
 };
@@ -97,6 +100,7 @@ public:
 	bool isPrint() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
+
 	void getVariablesInto(vector<string>& result);
 	void getStatementsInto(vector<Statement*>& result);
 };
@@ -109,6 +113,7 @@ public:
 	bool isCall() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
+
 	void getStatementsInto(vector<Statement*>& result);
 };
 
@@ -120,9 +125,10 @@ public:
 	ExpressionNode* right;
 	ExpressionNode(Token* token);
 	ExpressionNode();
+	bool equals(ExpressionNode* other);
+
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
-	bool equals(ExpressionNode* other);
 };
 
 class AssignStatementNode : public StatementNode {
@@ -134,6 +140,7 @@ public:
 	bool isAssign() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
+
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
 	void getStatementsInto(vector<Statement*>& result);
@@ -150,6 +157,7 @@ public:
 	bool equals(StatementNode* other);
 	int getEndLine();
 	vector<StatementNode*> getStmtList() { return this->stmtList; };
+
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
 	void getStatementsInto(vector<Statement*>& result);
@@ -159,9 +167,9 @@ public:
 
 
 class IfStatementNode : public StatementNode {
+	ExpressionNode* cond;
 	vector<StatementNode*> ifBlock;
 	vector<StatementNode*> elseBlock;
-	ExpressionNode* cond;
 
 public:
 	IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line);
@@ -169,6 +177,7 @@ public:
 	bool equals(StatementNode* other);
 	int getEndLine();
 	vector<StatementNode*> getStmtList();
+
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
 	void getStatementsInto(vector<Statement*>& result);

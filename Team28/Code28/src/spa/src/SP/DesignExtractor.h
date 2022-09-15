@@ -66,3 +66,17 @@ public:
 	vector<Relationship<int, int>*> extract();
 	void populate();
 };
+
+class ParentExtractor : public DesignExtractor {
+public:
+	ParentExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
+	vector<Relationship<int, int>*> extract();
+	void populate();
+};
+
+class ParentExtrT : public DesignExtractor {
+public:
+	ParentExtrT(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
+	vector<Relationship<int, int>*> extract();
+	void populate();
+};

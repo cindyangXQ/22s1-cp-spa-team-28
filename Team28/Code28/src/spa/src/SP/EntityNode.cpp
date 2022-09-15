@@ -199,6 +199,93 @@ void WhileStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result
 	ExtractUtils::followsT(this->getStmtList(), result);
 }
 
+// If Statement
+IfStatementNode::IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line)
+{
+	this->ifBlock = ifBlock;
+	this->elseBlock = elseBlock;
+	this->cond = cond;
+	this->line = line;
+}
+
+int IfStatementNode::getEndLine()
+{
+	if (elseBlock.size() > 0) {
+		return elseBlock.back()->getEndLine();
+	}
+	else {
+		return ifBlock.back()->getEndLine();
+	}
+}
+
+vector<StatementNode*> IfStatementNode::getStmtList()
+{
+	vector<StatementNode*> stmtList;
+	for (size_t i = 0; i < ifBlock.size(); i++) {
+		stmtList.push_back(ifBlock.at(i));
+	}
+
+	for (size_t i = 0; i < elseBlock.size(); i++) {
+		stmtList.push_back(elseBlock.at(i));
+	}
+
+	return stmtList;
+}
+
+bool IfStatementNode::equals(StatementNode* other) {
+	if (other->isIf()) {
+		IfStatementNode* temp = static_cast<IfStatementNode*>(other);
+		if (this->cond->equals(temp->cond) && this->ifBlock.size() == temp->ifBlock.size() && this->elseBlock.size() == temp->elseBlock.size()) {
+			vector<StatementNode*> stmtList1 = this->getStmtList();
+			vector<StatementNode*> stmtList2 = this->getStmtList();
+
+			return ExtractUtils::compareStmtList(stmtList1, stmtList2);
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
+void IfStatementNode::getVariablesInto(vector<string>& result) {
+	vector<StatementNode*> stmtList = this->getStmtList();
+
+	cond->getVariablesInto(result);
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getVariablesInto(result);
+	}
+}
+
+void IfStatementNode::getConstantsInto(vector<string>& result) {
+	vector<StatementNode*> stmtList = this->getStmtList();
+
+	cond->getConstantsInto(result);
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getConstantsInto(result);
+	}
+}
+
+void IfStatementNode::getStatementsInto(vector<Statement*>& result) {
+	vector<StatementNode*> stmtList = this->getStmtList();
+	result.push_back(new Statement(line, StatementType::IF));
+	for (size_t i = 0; i < stmtList.size(); i++) {
+		stmtList.at(i)->getStatementsInto(result);
+	}
+}
+
+void IfStatementNode::getFollowsInto(vector<Relationship<int, int>*>& result) {
+	ExtractUtils::follows(this->ifBlock, result);
+	ExtractUtils::follows(this->elseBlock, result);
+}
+
+void IfStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result) {
+	ExtractUtils::followsT(this->ifBlock, result);
+	ExtractUtils::followsT(this->elseBlock, result);
+}
+
 
 // Expression
 ExpressionNode::ExpressionNode(Token* token) {
@@ -258,95 +345,3 @@ VariableNode ::VariableNode (string s) {
 }
 
 VariableNode ::VariableNode () {}
-
-
-// If Statement
-IfStatementNode::IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line)
-{
-	this->ifBlock = ifBlock;
-	this->elseBlock = elseBlock;
-	this->cond = cond;
-	this->line = line;
-}
-
-int IfStatementNode::getEndLine()
-{
-	if (elseBlock.size() > 0) {
-		return elseBlock.back()->getEndLine();
-	}
-	else {
-		return ifBlock.back()->getEndLine();
-	}
-}
-
-vector<StatementNode*> IfStatementNode::getStmtList()
-{
-	vector<StatementNode*> stmtList;
-	for (size_t i = 0; i < ifBlock.size(); i++) {
-		stmtList.push_back(ifBlock.at(i));
-	}
-
-	for (size_t i = 0; i < elseBlock.size(); i++) {
-		stmtList.push_back(elseBlock.at(i));
-	}
-
-	return stmtList;
-}
-
-void IfStatementNode::getVariablesInto(vector<string>& result)
-{
-	vector<StatementNode*> stmtList = this->getStmtList();
-
-	cond->getVariablesInto(result);
-	for (size_t i = 0; i < stmtList.size(); i++) {
-		stmtList.at(i)->getVariablesInto(result);
-	}
-}
-
-void IfStatementNode::getConstantsInto(vector<string>& result)
-{
-	vector<StatementNode*> stmtList = this->getStmtList();
-
-	cond->getConstantsInto(result);
-	for (size_t i = 0; i < stmtList.size(); i++) {
-		stmtList.at(i)->getConstantsInto(result);
-	}
-}
-
-void IfStatementNode::getStatementsInto(vector<Statement*>& result)
-{
-	vector<StatementNode*> stmtList = this->getStmtList();
-	result.push_back(new Statement(line, StatementType::IF));
-	for (size_t i = 0; i < stmtList.size(); i++) {
-		stmtList.at(i)->getStatementsInto(result);
-	}
-}
-
-bool IfStatementNode::equals(StatementNode* other) {
-	if (other->isIf()) {
-		IfStatementNode* temp = static_cast<IfStatementNode*>(other);
-		if (this->cond->equals(temp->cond) && this->ifBlock.size() == temp->ifBlock.size() && this->elseBlock.size() == temp->elseBlock.size()) {
-			vector<StatementNode*> stmtList1 = this->getStmtList();
-			vector<StatementNode*> stmtList2 = this->getStmtList();
-
-			return ExtractUtils::compareStmtList(stmtList1, stmtList2);
-		}
-		else {
-			return false;
-		}
-	}
-	else {
-		return false;
-	}
-}
-
-void IfStatementNode::getFollowsInto(vector<Relationship<int, int>*>& result) {
-	ExtractUtils::follows(this->ifBlock, result);
-	ExtractUtils::follows(this->elseBlock, result);
-}
-
-void IfStatementNode::getFollowsTInto(vector<Relationship<int, int>*>& result) {
-	ExtractUtils::followsT(this->ifBlock, result);
-	ExtractUtils::followsT(this->elseBlock, result);
-}
-

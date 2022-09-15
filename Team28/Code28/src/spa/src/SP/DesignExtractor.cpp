@@ -11,8 +11,6 @@ DesignExtractor::DesignExtractor(ProgramNode* program, PopulateFacade* storage) 
 	this->storage = storage;
 }
 
-DesignExtractor::DesignExtractor() {}
-
 vector<Procedure*> ProcedureExtractor::extract() {
 	vector<Procedure*> result;
 
@@ -109,6 +107,34 @@ vector<Relationship<int, int>*> FollowsExtrT::extract() {
 	return result;
 }
 
+vector<Relationship<int, int>*> ParentExtractor::extract() {
+	vector<Relationship<int, int>*> result;
+
+	vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		for (size_t j = 0; j < stmtList.size(); j++) {
+			ExtractUtils::parent(stmtList[j], result);
+		}
+	}
+
+	return result;
+}
+
+vector<Relationship<int, int>*> ParentExtrT::extract() {
+	vector<Relationship<int, int>*> result;
+
+	vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		for (size_t j = 0; j < stmtList.size(); j++) {
+			ExtractUtils::parentT(stmtList[j], result);
+		}
+	}
+
+	return result;
+}
+
 
 void DesignExtractor::extractAll() {
 	ProcedureExtractor(this->program, this->storage).populate();
@@ -117,6 +143,8 @@ void DesignExtractor::extractAll() {
 	ConstantExtractor(this->program, this->storage).populate();
 	FollowsExtractor(this->program, this->storage).populate();
 	FollowsExtrT(this->program, this->storage).populate();
+	ParentExtractor(this->program, this->storage).populate();
+	ParentExtrT(this->program, this->storage).populate();
 }
 
 void ProcedureExtractor::populate() {
@@ -147,4 +175,14 @@ void FollowsExtractor::populate() {
 void FollowsExtrT::populate() {
 	vector<Relationship<int, int>*> followsT = this->extract();
 	this->storage->storeFollowsT(&followsT);
+}
+
+void ParentExtractor::populate() {
+	vector<Relationship<int, int>*> parent = this->extract();
+	this->storage->storeParent(&parent);
+}
+
+void ParentExtrT::populate() {
+	vector<Relationship<int, int>*> parentT = this->extract();
+	this->storage->storeParent(&parentT);
 }
