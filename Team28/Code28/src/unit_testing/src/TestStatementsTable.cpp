@@ -9,6 +9,20 @@ TEST_CASE("StatementsTable is initialised correctly") {
 	REQUIRE(table.getTableSize() == 0);
 }
 
+TEST_CASE("StatementsTable store container statements correctly") {
+	StatementsTable table;
+	Statement whileStmt = Statement(1, StatementType::WHILE);
+	Statement ifStmt = Statement(2, StatementType::IF);
+
+	table.store(&whileStmt);
+	table.store(&ifStmt);
+
+	REQUIRE(table.getTableSize() == 2);
+	REQUIRE(table.getStatementType(whileStmt.getLineNumber()) == StatementType:: WHILE);
+	REQUIRE(table.getStatementType(ifStmt.getLineNumber()) == StatementType:: IF);
+
+}
+
 TEST_CASE("StatementsTable can store and retrieve a statement of type not NONE") {
 	StatementsTable table;
 	Statement test = Statement(1, StatementType::ASSIGN);
@@ -68,7 +82,7 @@ TEST_CASE("Successfully filters StatementsTable using StatementType") {
 	REQUIRE(filteredTable->getTableSize() == 2);
 }
 
-TEST_CASE("Successfully filters StatementsTable using Index") {
+TEST_CASE("Successfully filters StatementsTable using Line Number") {
 	StatementsTable table;
 	Statement statement1 = Statement(1, StatementType::ASSIGN);
 	Statement statement2 = Statement(2, StatementType::PRINT);

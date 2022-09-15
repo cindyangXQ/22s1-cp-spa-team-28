@@ -9,32 +9,28 @@ public:
 	Token();
 	Token(string s);
 	bool equals(string other);
+	virtual bool equals(Token* other) { return false; }
 	string getValue();
-	virtual bool isName() = 0;
-	virtual bool isKeyword() = 0;
-	virtual bool isConstant() = 0;
+	virtual bool isName() { return false; };
+	virtual bool isKeyword() { return false; };
+	virtual bool isConstant() { return false; };
 };
 
 class Keyword : public Token {
 public:
 	Keyword(string s);
-	bool isName();
-	bool isKeyword();
-	bool isConstant();
+	bool isKeyword() { return true; };
+	bool equals(Token* other) { return other->isKeyword() && other->value == this->value; }
 };
 
 class Operator : public Token {
 public:
 	Operator(string s);
-	bool isName();
-	bool isKeyword();
-	bool isConstant();
+	bool equals(Token* other) { return other->value == this->value; }
 };
 
 class Symbol : public Token {
 public:
 	Symbol(string s);
-	bool isName();
-	bool isKeyword();
-	bool isConstant();
+	bool equals(Token* other) { return other->value == this->value; }
 };

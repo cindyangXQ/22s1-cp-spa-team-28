@@ -8,6 +8,7 @@
 #include "../commons/Reference.h"
 #include "Table.h"
 #include "StatementsTable.h"
+#include "NamesTable.h"
 #include "RelationshipPredicateMap.h"
 
 template <typename Left, typename Right>
@@ -112,6 +113,244 @@ public:
 protected:
 	std::map<Left, std::unordered_set<Right>> leftToRightsMap;
 	std::map<Right, std::unordered_set<Left>> rightToLeftsMap;
+};
+
+class StmtToVarRelationshipsTable : public RelationshipsTable<int, std::string> {
+public:
+	/*
+	* Returns true if the relationship holds between leftReference and rightReference.
+	*/
+	bool validate(Reference leftRef, Reference rightRef) {
+		if (leftRef.isWildcard() && rightRef.isWildcard()) {
+			return !leftToRightsMap.empty();
+		}
+		if (leftRef.isWildcard()) {
+			std::string right = rightRef.value.value;
+			return !rightToLeftsMap[right].empty();
+		}
+		if (rightRef.isWildcard()) {
+			int left = std::stoi(leftRef.value.value);
+			return !leftToRightsMap[left].empty();
+		}
+		int left = std::stoi(leftRef.value.value);
+		std::string right = rightRef.value.value;
+		return leftToRightsMap[left].count(right) == 1;
+	}
+
+	/*
+	* Returns list of possible values that the right synonym can be.
+	*/
+	std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym, VariablesTable* variables) {
+		// Validate rightSynonym is a variable. TODO: throw error if not
+		if (rightSynonym != EntityName::VARIABLE) {
+			return std::vector<Value>();
+		}
+		// TODO: iterate through set don't convert to vector
+		std::unordered_set<std::string> possibleRightsSet = variables->getAll();
+		std::vector<std::string> possibleRights = std::vector<std::string>(possibleRightsSet.begin(), possibleRightsSet.end());
+		std::vector<Value> result;
+		if (leftRef.isWildcard()) {
+			for (std::string right : possibleRights) {
+				if (rightToLeftsMap[right].size() != 0) {
+					result.push_back(Value(ValueType::VAR_NAME, right));
+				}
+			}
+		}
+		else {
+			int left = std::stoi(leftRef.value.value);
+			for (std::string right : possibleRights) {
+				if (rightToLeftsMap[right].count(left) == 1) {
+					result.push_back(Value(ValueType::VAR_NAME, right));
+				}
+			}
+		}
+		return result;
+	};
+
+	/*
+	* Returns list of possible values that the left synonym can be.
+	*/
+	std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym, StatementsTable* statements) {
+		// Validate leftSynonym is a statement. TODO: throw error if not
+		if (stmtRefSet.count(leftSynonym) == 0) {
+			return std::vector<Value>();
+		}
+		std::vector<int> possibleLefts;
+		if (leftSynonym == EntityName::STMT) {
+			possibleLefts = statements->getAllLineNumbers();
+		}
+		else {
+			StatementType statementType = Statement::getStmtTypeFromEntityName(leftSynonym);
+			possibleLefts = statements->getStatementsByType(statementType);
+		}
+		std::vector<Value> result;
+		if (rightRef.isWildcard()) {
+			for (int left : possibleLefts) {
+				if (leftToRightsMap[left].size() != 0) {
+					result.push_back(Value(ValueType::STMT_NUM, std::to_string(left)));
+				}
+			}
+		}
+		else {
+			std::string right = rightRef.value.value;
+			for (int left : possibleLefts) {
+				if (leftToRightsMap[left].count(right) == 1) {
+					result.push_back(Value(ValueType::STMT_NUM, std::to_string(left)));
+				}
+			}
+		}
+		return result;
+	};
+
+	/*
+	* Returns list of possible (Value, Value) that the pair of synonyms can be.
+	*/
+	std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym, EntityName rightSynonym, StatementsTable* statements, VariablesTable* variables) {
+		// Validate leftSynonym is a statement. TODO: throw error if not
+		if (stmtRefSet.count(leftSynonym) == 0 || rightSynonym != EntityName::VARIABLE) {
+			return std::vector<std::pair<Value, Value>>();
+		}
+		std::vector<int> possibleLefts;
+		// TODO: iterate through set don't convert to vector
+		std::unordered_set<std::string> possibleRightsSet = variables->getAll();
+		std::vector<std::string> possibleRights = std::vector<std::string>(possibleRightsSet.begin(), possibleRightsSet.end());
+		if (leftSynonym == EntityName::STMT) {
+			possibleLefts = statements->getAllLineNumbers();
+		}
+		else {
+			StatementType statementType = Statement::getStmtTypeFromEntityName(leftSynonym);
+			possibleLefts = statements->getStatementsByType(statementType);
+		}
+
+		std::vector<std::pair<Value, Value>> result;
+		for (int left : possibleLefts) {
+			for (std::string right : possibleRights) {
+				if (leftToRightsMap[left].count(right) == 1) {
+					Value leftValue = Value(ValueType::STMT_NUM, std::to_string(left));
+					Value rightValue = Value(ValueType::VAR_NAME, right);
+					result.push_back(std::make_pair(leftValue, rightValue));
+				}
+			}
+		}
+
+		return result;
+	}
+};
+
+class ProcToVarRelationshipsTable : public RelationshipsTable<std::string, std::string> {
+public:
+	/*
+	* Returns true if the relationship holds between leftReference and rightReference.
+	*/
+	bool validate(Reference leftRef, Reference rightRef) {
+		// TODO: Better way to handle wildcards
+		if (leftRef.isWildcard() && rightRef.isWildcard()) {
+			return !leftToRightsMap.empty();
+		}
+
+		if (leftRef.isWildcard()) {
+			std::string right = rightRef.value.value;
+			return !rightToLeftsMap[right].empty();
+		}
+		if (rightRef.isWildcard()) {
+			std::string left =leftRef.value.value;
+			return !leftToRightsMap[left].empty();
+		}
+		std::string left = leftRef.value.value;
+		std::string right = rightRef.value.value;
+		return leftToRightsMap[left].count(right) == 1;
+	};
+
+	/*
+	* Returns list of possible values that the right synonym can be.
+	*/
+	std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym, VariablesTable* variables) {
+		// Validate rightSynonym is a variable. TODO: throw error if not
+		if (rightSynonym != EntityName::VARIABLE) {
+			return std::vector<Value>();
+		}
+		// TODO: iterate through set don't convert to vector
+		std::unordered_set<std::string> possibleRightsSet = variables->getAll();
+		std::vector<std::string> possibleRights = std::vector<std::string>(possibleRightsSet.begin(), possibleRightsSet.end());
+		std::vector<Value> result;
+		if (leftRef.isWildcard()) {
+			for (std::string right : possibleRights) {
+				if (rightToLeftsMap[right].size() != 0) {
+					result.push_back(Value(ValueType::VAR_NAME, right));
+				}
+			}
+		}
+		else {
+			std::string left = leftRef.value.value;
+			for (std::string right : possibleRights) {
+				if (rightToLeftsMap[right].count(left) == 1) {
+					result.push_back(Value(ValueType::VAR_NAME, right));
+				}
+			}
+		}
+		return result;
+	};
+
+	/*
+	* Returns list of possible values that the left synonym can be.
+	*/
+	std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym, ProceduresTable* procedures) {
+		// Validate leftSynonym is a procedure. TODO: throw error if not
+		if (leftSynonym != EntityName::PROCEDURE) {
+			return std::vector<Value>();
+		}
+		// TODO: iterate through set don't convert to vector
+		std::unordered_set<std::string> possibleLeftsSet = procedures->getAll();
+		std::vector<std::string> possibleLefts = std::vector<std::string>(possibleLeftsSet.begin(), possibleLeftsSet.end());
+		std::vector<Value> result;
+		if (rightRef.isWildcard()) {
+			for (std::string left : possibleLefts) {
+				if (leftToRightsMap[left].size() != 0) {
+					// not sure if this is the same as procedure name
+					result.push_back(Value(ValueType::VAR_NAME, left));
+				}
+			}
+		}
+		else {
+			std::string right = rightRef.value.value;
+			for (std::string left : possibleLefts) {
+				if (leftToRightsMap[left].count(right) == 1) {
+					// not sure if this is the same as procedure name
+					result.push_back(Value(ValueType::VAR_NAME, left));
+				}
+			}
+		}
+		return result;
+	};
+
+	/*
+	* Returns list of possible (Value, Value) that the pair of synonyms can be.
+	*/
+	std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym, EntityName rightSynonym, ProceduresTable* procedures, VariablesTable* variables) {
+		// Validate leftSynonym is a statement. TODO: throw error if not
+		if (leftSynonym != EntityName::PROCEDURE || rightSynonym != EntityName::VARIABLE) {
+			return std::vector<std::pair<Value, Value>>();
+		}
+		// TODO: iterate through set don't convert to vector
+		std::unordered_set<std::string> possibleLeftsSet = procedures->getAll();
+		std::vector<std::string> possibleLefts = std::vector<std::string>(possibleLeftsSet.begin(), possibleLeftsSet.end());
+		std::unordered_set<std::string> possibleRightsSet = variables->getAll();
+		std::vector<std::string> possibleRights = std::vector<std::string>(possibleRightsSet.begin(), possibleRightsSet.end());
+
+		std::vector<std::pair<Value, Value>> result;
+		for (std::string left : possibleLefts) {
+			for (std::string right : possibleRights) {
+				if (leftToRightsMap[left].count(right) == 1) {
+					// not sure if this is the same as procedure name
+					Value leftValue = Value(ValueType::VAR_NAME, left);
+					Value rightValue = Value(ValueType::VAR_NAME, right);
+					result.push_back(std::make_pair(leftValue, rightValue));
+				}
+			}
+		}
+
+		return result;
+	}
 };
 
 class StmtToStmtRelationshipsTable : public RelationshipsTable<int, int> {
@@ -242,34 +481,11 @@ public:
 	}
 };
 
-class ParentTable : public StmtToStmtRelationshipsTable {
-
-};
-
-class ParentTTable : public StmtToStmtRelationshipsTable {
-
-};
-
-class FollowsTable : public StmtToStmtRelationshipsTable {
-
-};
-
-class FollowsTTable : public StmtToStmtRelationshipsTable {
-
-};
-
-class ModifiesSTable : public RelationshipsTable<int, std::string> {
-
-};
-
-class ModifiesPTable : public RelationshipsTable<std::string, std::string> {
-
-};
-
-class UsesSTable : public RelationshipsTable<int, std::string> {
-
-};
-
-class UsesPTable : public RelationshipsTable<std::string, std::string> {
-
-};
+typedef StmtToStmtRelationshipsTable ParentTable;
+typedef StmtToStmtRelationshipsTable ParentTTable;
+typedef StmtToStmtRelationshipsTable FollowsTable;
+typedef StmtToStmtRelationshipsTable FollowsTTable;
+typedef StmtToVarRelationshipsTable ModifiesSTable;
+typedef StmtToVarRelationshipsTable UsesSTable;
+typedef ProcToVarRelationshipsTable ModifiesPTable;
+typedef ProcToVarRelationshipsTable UsesPTable;

@@ -27,7 +27,7 @@ void ExtractUtils::followsT(const vector<StatementNode*>& stmtList, vector<Relat
 	}
 }
 
-bool ExtractUtils::compareStmtList(vector<StatementNode*>& list1, vector<StatementNode*>& list2) {
+bool ExtractUtils::compareStmtList(const vector<StatementNode*>& list1, const vector<StatementNode*>& list2) {
 	if (list1.size() != list2.size()) {
 		return false;
 	}

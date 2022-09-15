@@ -20,18 +20,16 @@ public:
 class ConstantNode : public Token, public EntityNode {
 public:
 	ConstantNode(string s);
-	bool isName();
-	bool isKeyword();
-	bool isConstant();
+	bool isConstant() { return true; }
+	bool equals(Token* other) { return other->isConstant() && other->value == this->value; }
 };
 
 class VariableNode : public Token, public EntityNode {
 public:
 	VariableNode(string s);
 	VariableNode();
-	bool isName();
-	bool isKeyword();
-	bool isConstant();
+	bool isName() { return true; }
+	bool equals(Token* other) { return other->isName() && other->value == this->value; }
 };
 
 class StatementNode : public EntityNode {
@@ -44,6 +42,7 @@ public:
 	virtual bool isCall() { return false; }
 	virtual bool isAssign() { return false; }
 	virtual bool isWhile() { return false; }
+	virtual bool isIf() { return false; }
 	virtual bool equals(StatementNode* other) { return false; };
 	virtual string getVariable() { return ""; };
   	int getLineNumber() { return this -> line;  };
@@ -122,6 +121,7 @@ public:
 	ExpressionNode();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
+	bool equals(ExpressionNode* other);
 };
 
 class AssignStatementNode : public StatementNode {
@@ -149,6 +149,25 @@ public:
 	bool equals(StatementNode* other);
 	int getEndLine();
 	vector<StatementNode*> getStmtList() { return this->stmtList; };
+	void getVariablesInto(vector<string>& result);
+	void getConstantsInto(vector<string>& result);
+	void getStatementsInto(vector<Statement*>& result);
+	void getFollowsInto(vector<Relationship<int, int>*>& result);
+	void getFollowsTInto(vector<Relationship<int, int>*>& result);
+};
+
+
+class IfStatementNode : public StatementNode {
+	vector<StatementNode*> ifBlock;
+	vector<StatementNode*> elseBlock;
+	ExpressionNode* cond;
+
+public:
+	IfStatementNode(vector<StatementNode*>& ifBlock, vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line);
+	bool isIf() { return true; }
+	bool equals(StatementNode* other);
+	int getEndLine();
+	vector<StatementNode*> getStmtList();
 	void getVariablesInto(vector<string>& result);
 	void getConstantsInto(vector<string>& result);
 	void getStatementsInto(vector<Statement*>& result);

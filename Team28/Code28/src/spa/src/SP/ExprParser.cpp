@@ -97,7 +97,6 @@ ExpressionNode* ExprParser::parse() {
 		offset++;
 
 		ExpressionNode* expr = new ExpressionNode(next);
-		cout << next->value << endl;
 		expr->left = terms.back();
 		root = expr;
 
@@ -140,7 +139,6 @@ ExpressionNode* TermParser::parse() {
 		offset++;
 
 		ExpressionNode* term = new ExpressionNode(next);
-		cout << next->value << endl;
 		term->left = factors.back();
 		root = term;
 
@@ -168,7 +166,6 @@ ExpressionNode* FactorParser::parse() {
 	Token* curr = tokens.at(offset);
 	if (curr->isConstant() || curr->isName()) {
 		offset++;
-		cout << curr->value << endl;
 		ExpressionNode* result = new ExpressionNode(curr);
 		return result;
 	}
