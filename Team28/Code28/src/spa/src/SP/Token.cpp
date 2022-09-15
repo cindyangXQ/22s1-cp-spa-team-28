@@ -2,19 +2,17 @@
 #include <string>
 #include <iostream>
 
-using namespace std;
-
 Token::Token() {}
 
-Token::Token(string s) {
+Token::Token(std::string s) {
 	this->value = s;
 }
 
-string Token::getValue() {
+std::string Token::getValue() {
 	return this->value;
 }
 
-bool Token::equals(string other) {
+bool Token::equals(std::string other) {
 	if (value.compare(other) == 0) {
 		return true;
 	}
@@ -23,14 +21,14 @@ bool Token::equals(string other) {
 	}
 }
 
-Keyword::Keyword(string s) {
+Keyword::Keyword(std::string s) {
 	this->value = s;
 }
 
-Operator::Operator(string s) {
+Operator::Operator(std::string s) {
 	this->value = s;
 }
 
-Symbol::Symbol(string s) {
+Symbol::Symbol(std::string s) {
 	this->value = s;
 }

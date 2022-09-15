@@ -1,16 +1,14 @@
 #pragma once
 #include <string>
 
-using namespace std;
-
 class Token {
 public:
-	string value;
+	std::string value;
 	Token();
-	Token(string s);
-	bool equals(string other);
+	Token(std::string s);
+	bool equals(std::string other);
 	virtual bool equals(Token* other) { return false; }
-	string getValue();
+	std::string getValue();
 	virtual bool isName() { return false; };
 	virtual bool isKeyword() { return false; };
 	virtual bool isConstant() { return false; };
@@ -18,19 +16,19 @@ public:
 
 class Keyword : public Token {
 public:
-	Keyword(string s);
+	Keyword(std::string s);
 	bool isKeyword() { return true; };
 	bool equals(Token* other) { return other->isKeyword() && other->value == this->value; }
 };
 
 class Operator : public Token {
 public:
-	Operator(string s);
+	Operator(std::string s);
 	bool equals(Token* other) { return other->value == this->value; }
 };
 
 class Symbol : public Token {
 public:
-	Symbol(string s);
+	Symbol(std::string s);
 	bool equals(Token* other) { return other->value == this->value; }
 };

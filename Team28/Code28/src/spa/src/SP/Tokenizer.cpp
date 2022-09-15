@@ -7,12 +7,10 @@
 #include <iostream>
 #include <algorithm>
 
-using namespace std;
-
-string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read", "call", "then"};
+std::string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read", "call", "then"};
 char SYMBOL_LIST[] = { '(', ')', '{', '}', ';' };
 char WHITESPACE_LIST[] = { ' ' , '\n', '\t' };
-string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=","!=", "!", "&&", "||" };
+std::string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=","!=", "!", "&&", "||" };
 char opChar[] = { '+', '-', '=', '*', '/', '%', '>', '<', '!', '&', '|' };
 
 enum class TokenType {
@@ -25,7 +23,7 @@ enum class TokenType {
 };
 
 
-Token* Tokenizer::createToken(TokenType type, string value) {
+Token* Tokenizer::createToken(TokenType type, std::string value) {
 	switch (type) {
 	case TokenType::CONSTANT: return new ConstantNode(value);
 	case TokenType::NAME: return new VariableNode(value);
@@ -37,7 +35,7 @@ Token* Tokenizer::createToken(TokenType type, string value) {
 }
 
 
-Tokenizer::Tokenizer(string sourceProg) {
+Tokenizer::Tokenizer(std::string sourceProg) {
 	this->input = sourceProg;
 	this->currType = TokenType::WHITESPACE;
 	this->index = 0;
@@ -45,7 +43,7 @@ Tokenizer::Tokenizer(string sourceProg) {
 
 
 void Tokenizer::handleDigit() {
-	string constant = "";
+	std::string constant = "";
 	char currChar = input.at(index);
 
 	while (isdigit(currChar)) {
@@ -60,7 +58,7 @@ void Tokenizer::handleDigit() {
 
 
 void Tokenizer::handleAlpha() {
-	string name = "";
+	std::string name = "";
 	char currChar = input.at(index);
 	TokenType type = TokenType::NAME;
 
@@ -80,7 +78,7 @@ void Tokenizer::handleAlpha() {
 				if (tokens.back()->isKeyword()) type = TokenType::NAME;
 				else type = TokenType::KEYWORD;
 			}
-			else if (find(begin(opChar), end(opChar), currChar) != end(opChar) || currChar == ';' || currChar == ')') {
+			else if (std::find(std::begin(opChar), std::end(opChar), currChar) != std::end(opChar) || currChar == ';' || currChar == ')') {
 				type = TokenType::NAME;
 			}
 			else {
@@ -94,10 +92,10 @@ void Tokenizer::handleAlpha() {
 
 
 void Tokenizer::handleOperator() {
-	string op = "";
+	std::string op = "";
 	char currChar = input.at(index);
 	
-	while (find(begin(opChar), end(opChar), currChar) != end(opChar)) {
+	while (std::find(std::begin(opChar), std::end(opChar), currChar) != std::end(opChar)) {
 		op.append(1, currChar);
 
 		if (++index >= input.length()) break;
@@ -113,7 +111,7 @@ void Tokenizer::handleOperator() {
 
 
 void Tokenizer::handleSymbol() {
-	string sym = "";
+	std::string sym = "";
 	sym.append(1, input.at(index));
 	tokens.push_back(createToken(TokenType::SYMBOL, sym));
 	index++;
@@ -122,12 +120,12 @@ void Tokenizer::handleSymbol() {
 void Tokenizer::skipWhitespace() {
 	char currChar = input.at(index);
 
-	while (index < input.length() && find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), input.at(index)) != end(WHITESPACE_LIST)) index++;
+	while (index < input.length() && std::find(std::begin(WHITESPACE_LIST), std::end(WHITESPACE_LIST), input.at(index)) != std::end(WHITESPACE_LIST)) index++;
 }
 
 
-vector<Token*> Tokenizer::tokenize() {
-	string current = ""; // store current Token value
+std::vector<Token*> Tokenizer::tokenize() {
+	std::string current = ""; // store current Token value
 	char currChar;
 
 	// Iterate throught every char in the source program
@@ -140,13 +138,13 @@ vector<Token*> Tokenizer::tokenize() {
 		else if (isalpha(currChar)) {
 			handleAlpha();
 		}
-		else if (find(begin(WHITESPACE_LIST), end(WHITESPACE_LIST), currChar) != end(WHITESPACE_LIST)) {
+		else if (std::find(std::begin(WHITESPACE_LIST), std::end(WHITESPACE_LIST), currChar) != std::end(WHITESPACE_LIST)) {
 			skipWhitespace();
 		}
-		else if (find(begin(opChar), end(opChar), currChar) != end(opChar)) {
+		else if (std::find(std::begin(opChar), std::end(opChar), currChar) != std::end(opChar)) {
 			handleOperator();
 		}
-		else if (find(begin(SYMBOL_LIST), end(SYMBOL_LIST), currChar) != end(SYMBOL_LIST)) {
+		else if (std::find(std::begin(SYMBOL_LIST), std::end(SYMBOL_LIST), currChar) != std::end(SYMBOL_LIST)) {
 			handleSymbol();
 		}
 		else {

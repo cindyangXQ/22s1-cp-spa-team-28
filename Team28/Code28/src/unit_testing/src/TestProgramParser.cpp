@@ -10,13 +10,13 @@ TEST_CASE("Parser parses program to statements") {
 	Operator op("+");
 	ExpressionNode expr(&op);
 	AssignStatementNode stmt1(var1, &expr, 1), stmt2(var2, &expr, 2), stmt3(var3, &expr, 3), stmt4(var4, &expr, 4);
-	vector<StatementNode*> stmt_list = { &stmt1, &stmt2, &stmt3, &stmt4 };
+	std::vector<StatementNode*> stmt_list = { &stmt1, &stmt2, &stmt3, &stmt4 };
 	ProcedureNode procedure1("Bedok", stmt_list);
-	vector<ProcedureNode*> proc_list = { &procedure1 };
+	std::vector<ProcedureNode*> proc_list = { &procedure1 };
 	ProgramNode expected = ProgramNode(proc_list);
 
-	string sourceProgram = "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + 2;\nwest = 9 + east + west;\n}";
-	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	std::string sourceProgram = "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + 2;\nwest = 9 + east + west;\n}";
+	std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
 	ProgramNode* program = ProgramParser(0, tokens).parse();
 	REQUIRE(program->equals(&expected));
 }
@@ -31,13 +31,13 @@ TEST_CASE("keyword as assignment LHS") {
 	AssignStatementNode stmt4(var4, &expr, 4);
 	AssignStatementNode stmt5(var5, &expr, 5);
 	AssignStatementNode stmt6(var6, &expr, 6);
-	vector<StatementNode*> stmt_list = { &stmt1, &stmt2, &stmt3, &stmt4, &stmt5, &stmt6 };
+	std::vector<StatementNode*> stmt_list = { &stmt1, &stmt2, &stmt3, &stmt4, &stmt5, &stmt6 };
 	ProcedureNode procedure1("Bedok", stmt_list);
-	vector<ProcedureNode*> proc_list = { &procedure1 };
+	std::vector<ProcedureNode*> proc_list = { &procedure1 };
 	ProgramNode expected = ProgramNode(proc_list);
 
-	string sourceProgram = "procedure Bedok {\nwest = 9 + east;\nread a;\nprint b;\nread = c;\nprint = d;\ncall = e;\n}";
-	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	std::string sourceProgram = "procedure Bedok {\nwest = 9 + east;\nread a;\nprint b;\nread = c;\nprint = d;\ncall = e;\n}";
+	std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
 	ProgramNode* program = ProgramParser(0, tokens).parse();
 	REQUIRE(program->equals(&expected));
 }
@@ -50,13 +50,13 @@ TEST_CASE("read read; print print") {
 	PrintStatementNode stmt2(var2, 2);
 	ReadStatementNode stmt3(var3, 3);
 	PrintStatementNode stmt4(var3, 4);
-	vector<StatementNode*> stmt_list = { &stmt1, &stmt2, &stmt3, &stmt4 };
+	std::vector<StatementNode*> stmt_list = { &stmt1, &stmt2, &stmt3, &stmt4 };
 	ProcedureNode procedure1("Bedok", stmt_list);
-	vector<ProcedureNode*> proc_list = { &procedure1 };
+	std::vector<ProcedureNode*> proc_list = { &procedure1 };
 	ProgramNode expected = ProgramNode(proc_list);
 
-	string sourceProgram = "procedure Bedok {\nread read;\nprint print;\nread call;\nprint call;\n}";
-	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	std::string sourceProgram = "procedure Bedok {\nread read;\nprint print;\nread call;\nprint call;\n}";
+	std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
 	ProgramNode* program = ProgramParser(0, tokens).parse();
 	REQUIRE(program->equals(&expected));
 }
@@ -96,8 +96,8 @@ TEST_CASE("Test Conditional Parser") {
 
 	ExpressionNode* expected = &andNode;
 
-	string statement = "((!((2+3)*2 >= 5)) && (a*b != 3))";
-	vector<Token*> tokens = Tokenizer(statement).tokenize();
+	std::string statement = "((!((2+3)*2 >= 5)) && (a*b != 3))";
+	std::vector<Token*> tokens = Tokenizer(statement).tokenize();
 	CondParser parser = CondParser(1, tokens);
 	ExpressionNode* cond = parser.parse();
 
@@ -109,7 +109,7 @@ TEST_CASE("While Statement Parser") {
 	VariableNode var1("a"), var2("b");
 	ConstantNode c1("2"), c2("3"), c3("5");
 	Operator op1("!"), op2("+"), op3("*"), op4(">="), op5("&&"), op6("!=");
-	vector<StatementNode*> stmtList = {};
+	std::vector<StatementNode*> stmtList = {};
 
 	ExpressionNode mul2(&op3);
 	mul2.left = new ExpressionNode(&var1);
@@ -122,12 +122,12 @@ TEST_CASE("While Statement Parser") {
 	AssignStatementNode a(var1, new ExpressionNode(&c2), 2);
 	ReadStatementNode r(var2, 3);
 	WhileStatementNode w1(stmtList, &nte, 4);
-	vector<StatementNode*> stmtList2 = { &a, &r, &w1 };
+	std::vector<StatementNode*> stmtList2 = { &a, &r, &w1 };
 
 	WhileStatementNode expected(stmtList2, &nte, 1);
 
-	string statement = "while(a*b != 3) {a = 3; read b;while(a*b!=3){}}";
-	vector<Token*> tokens = Tokenizer(statement).tokenize();	
+	std::string statement = "while(a*b != 3) {a = 3; read b;while(a*b!=3){}}";
+	std::vector<Token*> tokens = Tokenizer(statement).tokenize();	
 	WhileStatementNode* result = WhileStmParser(0, tokens, 1).parse();
 
 	REQUIRE(result->equals(&expected));
@@ -149,15 +149,15 @@ TEST_CASE("If Statement Parser") {
 	AssignStatementNode a1(var1, new ExpressionNode(&c2), 2);
 	AssignStatementNode a2(var1, new ExpressionNode(&c1), 4);
 	ReadStatementNode r(var2, 4);
-	vector<StatementNode*> stmt1 = { &a2 };
+	std::vector<StatementNode*> stmt1 = { &a2 };
 	WhileStatementNode w1(stmt1, &nte, 3);
-	vector<StatementNode*> stmt2 = { &a1, &w1 };
-	vector<StatementNode*> stmt3 = { &r };
+	std::vector<StatementNode*> stmt2 = { &a1, &w1 };
+	std::vector<StatementNode*> stmt3 = { &r };
 
 	IfStatementNode expected(stmt2, stmt3, &nte, 1);
 
-	string statement = "if(a*b!=3) then {a=3; while(a*b!=3){a=2;}} else{read b;}";
-	vector<Token*> tokens = Tokenizer(statement).tokenize();
+	std::string statement = "if(a*b!=3) then {a=3; while(a*b!=3){a=2;}} else{read b;}";
+	std::vector<Token*> tokens = Tokenizer(statement).tokenize();
 	IfStatementNode* result = IfStmParser(0, tokens, 1).parse();
 
 	REQUIRE(result->equals(&expected));

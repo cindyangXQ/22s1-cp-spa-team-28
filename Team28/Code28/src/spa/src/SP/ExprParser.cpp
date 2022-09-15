@@ -4,28 +4,26 @@
 #include <typeinfo>
 #include <iostream>
 
-using namespace std;
+std::string REL_OP_LIST[] = { "!", ">", "<", "==", "!=", ">=", "<=","&&", "||" };
 
-string REL_OP_LIST[] = { "!", ">", "<", "==", "!=", ">=", "<=","&&", "||"};
-
-CondParser::CondParser(int offset, vector<Token*> tokens) {
+CondParser::CondParser(int offset, std::vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
 }
 
-ExprParser::ExprParser(int offset, vector<Token*> tokens, bool iscond) {
-	this->offset = offset;
-	this->tokens = tokens;
-	this->iscond = iscond;
-}
-
-TermParser::TermParser(int offset, vector<Token*> tokens, bool iscond) {
+ExprParser::ExprParser(int offset, std::vector<Token*> tokens, bool iscond) {
 	this->offset = offset;
 	this->tokens = tokens;
 	this->iscond = iscond;
 }
 
-FactorParser::FactorParser(int offset, vector<Token*> tokens, bool iscond) {
+TermParser::TermParser(int offset, std::vector<Token*> tokens, bool iscond) {
+	this->offset = offset;
+	this->tokens = tokens;
+	this->iscond = iscond;
+}
+
+FactorParser::FactorParser(int offset, std::vector<Token*> tokens, bool iscond) {
 	this->offset = offset;
 	this->tokens = tokens;
 	this->iscond = iscond;
@@ -42,7 +40,7 @@ ExpressionNode* CondParser::parse() {
 	ExpressionNode* result = parser.parse();
 	offset = parser.getOffset();
 	if (curr -> value == "!") {
-		if (find(begin(REL_OP_LIST), end(REL_OP_LIST), result->getToken()->value) == end(REL_OP_LIST)) {
+		if (std::find(std::begin(REL_OP_LIST), std::end(REL_OP_LIST), result->getToken()->value) == std::end(REL_OP_LIST)) {
 			throw "invalid conditional expression";
 		}
 		root->left = result;
@@ -52,7 +50,7 @@ ExpressionNode* CondParser::parse() {
 	}
 
 	Token* next = tokens.at(offset);
-	while (find(begin(REL_OP_LIST), end(REL_OP_LIST), next->value) != end(REL_OP_LIST)) {
+	while (std::find(std::begin(REL_OP_LIST), std::end(REL_OP_LIST), next->value) != std::end(REL_OP_LIST)) {
 		offset++;
 
 		curr = tokens.at(offset);
@@ -72,12 +70,14 @@ ExpressionNode* CondParser::parse() {
 		if (next->value == "&&" || next->value == "||") {
 			if (find(begin(REL_OP_LIST), end(REL_OP_LIST), cond->left->getToken()->value) == end(REL_OP_LIST)
 				|| find(begin(REL_OP_LIST), end(REL_OP_LIST), cond->right->getToken()->value) == end(REL_OP_LIST)) {
+				std::cout << cond->left->getToken()->value << " " << cond->right->getToken()->value;
 				throw "invalid cond expression";
 			}
 		}
 		else {
 			if (find(begin(REL_OP_LIST), end(REL_OP_LIST), cond->left->getToken()->value) != end(REL_OP_LIST)
 				|| find(begin(REL_OP_LIST), end(REL_OP_LIST), cond->right->getToken()->value) != end(REL_OP_LIST)) {
+				std::cout << cond->left->getToken()->value << " " << cond->right->getToken()->value;
 				throw "invalid cond expression";
 			}
 		}
@@ -97,9 +97,6 @@ ExpressionNode* CondParser::parse() {
 		next = tokens.at(offset);
 	}
 
-	if (find(begin(REL_OP_LIST), end(REL_OP_LIST), root->getToken()->value) == end(REL_OP_LIST)) {
-		throw "invalid cond expression";
-	}
 	if (next->value == ";") {
 		offset++;
 		return root;
@@ -114,7 +111,7 @@ ExpressionNode* ExprParser::parse() {
 	TermParser parser = TermParser(offset, tokens, this->iscond);
 	ExpressionNode* result = parser.parse();
 	offset = parser.getOffset();
-	vector<ExpressionNode*> terms;
+	std::vector<ExpressionNode*> terms;
 	terms.push_back(result);
 	ExpressionNode* root = result;
 
@@ -156,7 +153,7 @@ ExpressionNode* ExprParser::parse() {
 ExpressionNode* TermParser::parse() {
 	FactorParser parser = FactorParser(offset, tokens, this->iscond);
 	ExpressionNode* result = parser.parse();
-	vector<ExpressionNode*> factors;
+	std::vector<ExpressionNode*> factors;
 	offset = parser.getOffset();
 	factors.push_back(result);
 	ExpressionNode* root = result;
