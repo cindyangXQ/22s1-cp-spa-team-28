@@ -22,7 +22,7 @@ ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
             }
             return clauseResult;
         }
-        else if (!left.isSynonym && right.isSynonym) {
+        else if (!left.isSynonym && right.isSynonym) {          
             ClauseResult clauseResult = ClauseResult(std::vector{ right.syn });
             EntityName rightName = right.syn.entity;
             std::vector<Value> result = queryFacade->solveRight(relRef, left, rightName);
@@ -53,7 +53,7 @@ bool SuchThatEvaluator::validate(SuchThatClause *suchThatCl) {
         || relRef == RelationshipReference::FOLLOWS_T 
         || relRef == RelationshipReference::PARENT 
         || relRef == RelationshipReference::PARENT_T) {
-        return (suchThatCl->refLeft.type == ReferenceType::STMT_REF && suchThatCl->refRight.type == ReferenceType::STMT_REF);
+        return (suchThatCl->refLeft.type != ReferenceType::ENT_REF && suchThatCl->refRight.type != ReferenceType::ENT_REF);
     }
     else if (relRef == RelationshipReference::USES || relRef == RelationshipReference::MODIFIES) {
         if (suchThatCl->refLeft.type == ReferenceType::WILDCARD) {
