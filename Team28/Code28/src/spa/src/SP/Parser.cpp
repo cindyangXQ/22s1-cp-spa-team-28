@@ -112,6 +112,7 @@ bool ProcedureParser::checkCalls(const vector<string>& procNames) {
 			throw "calling undeclared procedure is not allowed";
 		}
 	}
+	return true;
 }
 
 StatementNode* StatementParser::parse() {
