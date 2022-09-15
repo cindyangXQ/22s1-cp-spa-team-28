@@ -272,7 +272,7 @@ WhileStatementNode* WhileStmParser::parse() {
 		while (!tokens.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokens, line);
 			StatementNode* temp = parser.parse();
-			line++;
+			line = temp->getEndLine() + 1;
 			stmtList.push_back(temp);
 			offset = parser.getOffset();
 			if (offset >= tokens.size()) {
@@ -327,7 +327,7 @@ IfStatementNode* IfStmParser::parse() {
 		while (!tokens.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokens, line);
 			StatementNode* temp = parser.parse();
-			line++;
+			line = temp->getEndLine() + 1;
 			ifStmtList.push_back(temp);
 			offset = parser.getOffset();
 			if (offset >= tokens.size()) {
@@ -343,11 +343,10 @@ IfStatementNode* IfStmParser::parse() {
 	if (!tokens.at(offset++)->equals("else") || !tokens.at(offset++)->equals("{")) {
 		throw "if statement wrong syntax";
 	}
-	line++;
 	while (!tokens.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokens, line);
 			StatementNode* temp = parser.parse();
-			line++;
+			line = temp->getEndLine() + 1;
 			elseStmtList.push_back(temp);
 			offset = parser.getOffset();
 			if (offset >= tokens.size()) {
