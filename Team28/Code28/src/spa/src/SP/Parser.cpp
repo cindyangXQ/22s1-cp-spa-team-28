@@ -170,7 +170,7 @@ ReadStatementNode* ReadStmParser::parse() {
 			&& firstToken->equals("read")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		return new ReadStatementNode(VariableNode (secondToken->value), line);
+		return new ReadStatementNode(new VariableNode(secondToken->value), line);
 	}
 	else {
 		throw "read statement wrong syntax";
@@ -188,7 +188,7 @@ PrintStatementNode* PrintStmParser::parse() {
 			&& firstToken->equals("print")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		return new PrintStatementNode(VariableNode (secondToken->value), line);
+		return new PrintStatementNode(new VariableNode(secondToken->value), line);
 	}
 	else {
 		throw "print statement wrong syntax";
@@ -206,7 +206,7 @@ CallStatementNode* CallStmParser::parse() {
 			&& firstToken->equals("call")
 			&& secondToken->isName()
 			&& thirdToken->equals(";")) {
-		return new CallStatementNode(VariableNode (secondToken->value), line);
+		return new CallStatementNode(new VariableNode(secondToken->value), line);
 	}
 	else {
 		throw "call statement wrong syntax";
@@ -224,7 +224,7 @@ AssignStatementNode* AssignStmParser::parse() {
 		ExpressionNode* expr = parser.parse();
 		offset = parser.getOffset();
 
-		return new AssignStatementNode(VariableNode (firstToken->value), expr, line);
+		return new AssignStatementNode(new VariableNode(firstToken->value), expr, line);
 	}
 	else {
 		throw "assignment statement wrong syntax";
@@ -275,14 +275,6 @@ WhileStatementNode* WhileStmParser::parse() {
 	}
 
 }
-
-IfStmParser::IfStmParser(int offset, vector<Token*> tokens, int line)
-{
-	this->offset = offset;
-	this->tokens = tokens;
-	this->line = line;
-}
-
 
 IfStatementNode* IfStmParser::parse() {
 	Token* firstToken = tokens.at(offset++);

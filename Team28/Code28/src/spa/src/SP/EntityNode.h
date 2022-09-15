@@ -78,10 +78,10 @@ public:
 
 
 class ReadStatementNode : public StatementNode {
-	VariableNode var;
+	VariableNode* var;
 
 public:
-	ReadStatementNode(const VariableNode& variable, int line);
+	ReadStatementNode(VariableNode* variable, int line);
 	bool isRead() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
@@ -90,10 +90,10 @@ public:
 };
 
 class PrintStatementNode : public StatementNode {
-	VariableNode var;
+	VariableNode* var;
 
 public:
-	PrintStatementNode(const VariableNode& variable, int line);
+	PrintStatementNode(VariableNode* variable, int line);
 	bool isPrint() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
@@ -102,10 +102,10 @@ public:
 };
 
 class CallStatementNode : public StatementNode {
-	VariableNode var;
+	VariableNode* var;
 
 public:
-	CallStatementNode(const VariableNode& variable, int line);
+	CallStatementNode(VariableNode* variable, int line);
 	bool isCall() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
@@ -126,11 +126,11 @@ public:
 };
 
 class AssignStatementNode : public StatementNode {
-	VariableNode var;
+	VariableNode* var;
 	ExpressionNode* expr;
 
 public:
-	AssignStatementNode(const VariableNode& variable, ExpressionNode* expression, int line);
+	AssignStatementNode(VariableNode* variable, ExpressionNode* expression, int line);
 	bool isAssign() { return true; };
 	bool equals(StatementNode* other);
 	string getVariable();
