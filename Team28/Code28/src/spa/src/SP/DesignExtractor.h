@@ -14,7 +14,6 @@ protected:
 
 public:
 	DesignExtractor(ProgramNode* program, PopulateFacade* storage);
-	DesignExtractor();
 	void extractAll();
 };
 

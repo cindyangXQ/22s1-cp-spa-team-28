@@ -45,8 +45,10 @@ std::vector<StatementNode*> ProcedureNode::getStmtList() {
 	return this->stmtList;
 }
 
-int ProcedureNode::getEndline()
-{
+int ProcedureNode::getEndline() {
+	if (stmtList.size() == 0) {
+		return -1;
+	}
 	return stmtList.back()->getEndLine();
 }
 
@@ -80,13 +82,13 @@ bool WhileStatementNode::equals(StatementNode* other) {
 }
 
 // Read Statement
-ReadStatementNode::ReadStatementNode(const VariableNode& VariableNode, int line) {
-	this->var = VariableNode ;
+ReadStatementNode::ReadStatementNode(VariableNode* VariableNode, int line) {
+	this->var = VariableNode;
 	this->line = line;
 }
 
 std::string ReadStatementNode::getVariable() {
-	return this->var.getValue();
+	return this->var->getValue();
 }
 
 void ReadStatementNode::getVariablesInto(std::vector<std::string>& result) {
@@ -98,13 +100,13 @@ void ReadStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 }
 
 // Print Statement
-PrintStatementNode::PrintStatementNode(const VariableNode& VariableNode, int line ) {
-	this->var = VariableNode ;
+PrintStatementNode::PrintStatementNode(VariableNode* VariableNode, int line ) {
+	this->var = VariableNode;
 	this->line = line;
 }
 
 std::string PrintStatementNode::getVariable() {
-	return this->var.getValue();
+	return this->var->getValue();
 }
 
 void PrintStatementNode::getVariablesInto(std::vector<std::string>& result) {
@@ -116,9 +118,13 @@ void PrintStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 }
 
 // Call Statement
-CallStatementNode::CallStatementNode(const VariableNode& VariableNode, int line ) {
-	this->var = VariableNode ;
+CallStatementNode::CallStatementNode(VariableNode* VariableNode, int line ) {
+	this->var = VariableNode;
 	this->line = line;
+}
+
+std::string CallStatementNode::getVariable() {
+	return this->var->getValue();
 }
 
 void CallStatementNode::getStatementsInto(std::vector<Statement*>& result) { 
@@ -126,14 +132,14 @@ void CallStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 }
 
 // Assignment Statement
-AssignStatementNode::AssignStatementNode(const VariableNode& VariableNode , ExpressionNode* expression, int line) {
-	var = VariableNode ;
+AssignStatementNode::AssignStatementNode(VariableNode* VariableNode , ExpressionNode* expression, int line) {
+	var = VariableNode;
 	expr = expression;
 	this->line = line;
 }
 
 std::string AssignStatementNode::getVariable() {
-	return this->var.getValue();
+	return this->var->getValue();
 }
 
 void AssignStatementNode::getVariablesInto(std::vector<std::string>& result) {
@@ -158,6 +164,9 @@ WhileStatementNode::WhileStatementNode(const std::vector<StatementNode*>& stmtLi
 }
 
 int WhileStatementNode::getEndLine() {
+	if (stmtList.size() == 0) {
+		return this->line;
+	}
 	return this->stmtList.back()->getEndLine();
 }
 
@@ -195,8 +204,7 @@ void WhileStatementNode::getFollowsTInto(std::vector<Relationship<int, int>*>& r
 
 
 // Expression
-ExpressionNode::ExpressionNode(Token* token)
-{
+ExpressionNode::ExpressionNode(Token* token) {
 	this->token = token;
 	this->left = NULL;
 	this->right = NULL;
@@ -271,8 +279,11 @@ int IfStatementNode::getEndLine()
 	if (elseBlock.size() > 0) {
 		return elseBlock.back()->getEndLine();
 	}
-	else {
+	else if (ifBlock.size() > 0){
 		return ifBlock.back()->getEndLine();
+	}
+	else{
+		return line;
 	}
 }
 

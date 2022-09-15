@@ -9,7 +9,7 @@ TEST_CASE("Parser parses program to statements") {
 	VariableNode var1("west"), var2("y"), var3("z"), var4("west");
 	Operator op("+");
 	ExpressionNode expr(&op);
-	AssignStatementNode stmt1(var1, &expr, 1), stmt2(var2, &expr, 2), stmt3(var3, &expr, 3), stmt4(var4, &expr, 4);
+	AssignStatementNode stmt1(&var1, &expr, 1), stmt2(&var2, &expr, 2), stmt3(&var3, &expr, 3), stmt4(&var4, &expr, 4);
 	std::vector<StatementNode*> stmt_list = { &stmt1, &stmt2, &stmt3, &stmt4 };
 	ProcedureNode procedure1("Bedok", stmt_list);
 	std::vector<ProcedureNode*> proc_list = { &procedure1 };
@@ -25,12 +25,12 @@ TEST_CASE("keyword as assignment LHS") {
 	VariableNode var1("west"), var2("a"), var3("b"), var4("read"), var5("print"), var6("call");
 	Operator op("+");
 	ExpressionNode expr(&op);
-	AssignStatementNode stmt1(var1, &expr, 1);
-	ReadStatementNode stmt2(var2, 2);
-	PrintStatementNode stmt3(var3, 3);
-	AssignStatementNode stmt4(var4, &expr, 4);
-	AssignStatementNode stmt5(var5, &expr, 5);
-	AssignStatementNode stmt6(var6, &expr, 6);
+	AssignStatementNode stmt1(&var1, &expr, 1);
+	ReadStatementNode stmt2(&var2, 2);
+	PrintStatementNode stmt3(&var3, 3);
+	AssignStatementNode stmt4(&var4, &expr, 4);
+	AssignStatementNode stmt5(&var5, &expr, 5);
+	AssignStatementNode stmt6(&var6, &expr, 6);
 	std::vector<StatementNode*> stmt_list = { &stmt1, &stmt2, &stmt3, &stmt4, &stmt5, &stmt6 };
 	ProcedureNode procedure1("Bedok", stmt_list);
 	std::vector<ProcedureNode*> proc_list = { &procedure1 };
@@ -46,10 +46,10 @@ TEST_CASE("read read; print print") {
 	VariableNode var1("read"), var2("print"), var3("call");
 	Operator op("+");
 	ExpressionNode expr(&op);
-	ReadStatementNode stmt1(var1, 1);
-	PrintStatementNode stmt2(var2, 2);
-	ReadStatementNode stmt3(var3, 3);
-	PrintStatementNode stmt4(var3, 4);
+	ReadStatementNode stmt1(&var1, 1);
+	PrintStatementNode stmt2(&var2, 2);
+	ReadStatementNode stmt3(&var3, 3);
+	PrintStatementNode stmt4(&var3, 4);
 	std::vector<StatementNode*> stmt_list = { &stmt1, &stmt2, &stmt3, &stmt4 };
 	ProcedureNode procedure1("Bedok", stmt_list);
 	std::vector<ProcedureNode*> proc_list = { &procedure1 };
@@ -60,7 +60,6 @@ TEST_CASE("read read; print print") {
 	ProgramNode* program = ProgramParser(0, tokens).parse();
 	REQUIRE(program->equals(&expected));
 }
-
 
 TEST_CASE("Test Conditional Parser") {
 	VariableNode var1("a"), var2("b");
@@ -119,8 +118,8 @@ TEST_CASE("While Statement Parser") {
 	nte.left = &mul2;
 	nte.right = new ExpressionNode(&c2);
 
-	AssignStatementNode a(var1, new ExpressionNode(&c2), 2);
-	ReadStatementNode r(var2, 3);
+	AssignStatementNode a(&var1, new ExpressionNode(&c2), 2);
+	ReadStatementNode r(&var2, 3);
 	WhileStatementNode w1(stmtList, &nte, 4);
 	std::vector<StatementNode*> stmtList2 = { &a, &r, &w1 };
 
@@ -146,9 +145,9 @@ TEST_CASE("If Statement Parser") {
 	nte.left = &mul2;
 	nte.right = new ExpressionNode(&c2);
 
-	AssignStatementNode a1(var1, new ExpressionNode(&c2), 2);
-	AssignStatementNode a2(var1, new ExpressionNode(&c1), 4);
-	ReadStatementNode r(var2, 4);
+	AssignStatementNode a1(&var1, new ExpressionNode(&c2), 2);
+	AssignStatementNode a2(&var1, new ExpressionNode(&c1), 4);
+	ReadStatementNode r(&var2, 4);
 	std::vector<StatementNode*> stmt1 = { &a2 };
 	WhileStatementNode w1(stmt1, &nte, 3);
 	std::vector<StatementNode*> stmt2 = { &a1, &w1 };
@@ -162,3 +161,21 @@ TEST_CASE("If Statement Parser") {
 
 	REQUIRE(result->equals(&expected));
 }
+
+/*TEST_CASE("recursive call is not allowed") {
+	string sourceProgram = "procedure Bedok {\ncall Bedok;\n}";
+	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+}
+
+TEST_CASE("procedure of same name is not allowed") {
+	string sourceProgram = "procedure Bedok {\nread a;\n}\n\nprocedure Bedok {\nprint b;\n}";
+	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+}
+
+TEST_CASE("calling undeclared procedure is not allowed") {
+	string sourceProgram = "procedure Bedok {\ncall a;\n}";
+	vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+}*/
