@@ -90,11 +90,11 @@ TEST_CASE("Test Conditional Parser") {
 	nte.left = &mul2;
 	nte.right = new ExpressionNode(&c2);
 
-	ExpressionNode and(&op5);
-	and .left = &inverse;
-	and .right = &nte;
+	ExpressionNode andNode(&op5);
+	andNode.left = &inverse;
+	andNode.right = &nte;
 
-	ExpressionNode* expected = &and;
+	ExpressionNode* expected = &andNode;
 
 	string statement = "((!((2+3)*2 >= 5)) && (a*b != 3))";
 	vector<Token*> tokens = Tokenizer(statement).tokenize();
