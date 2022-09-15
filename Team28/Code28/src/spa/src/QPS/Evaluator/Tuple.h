@@ -67,6 +67,6 @@ public:
 	}
 
 	Value getValue(int index) {
-		return this->values[index];
+		return this->values[(size_t) index];
 	}
 };
