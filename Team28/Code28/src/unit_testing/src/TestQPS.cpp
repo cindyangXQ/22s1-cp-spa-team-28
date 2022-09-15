@@ -118,6 +118,44 @@ TEST_CASE("QPS evaluate select statements") {
 	REQUIRE(results == correct_output);
 }
 
+TEST_CASE("QPS evaluate select assign statements") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
+	Statement test1 = Statement(1, StatementType::ASSIGN);
+	Statement test2 = Statement(2, StatementType::ASSIGN);
+
+	statements->store(&test1);
+	statements->store(&test2);
+
+	QPS qps = QPS(&facade);
+
+	std::string input = "assign s; Select s";
+	std::list<std::string> results;
+	qps.evaluate(input, results);
+	std::list<std::string> correct_output{ "1", "2" };
+	REQUIRE(results == correct_output);
+}
+
+TEST_CASE("QPS evaluate select if statements") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
+	Statement test1 = Statement(1, StatementType::IF);
+	Statement test2 = Statement(2, StatementType::ASSIGN);
+
+	statements->store(&test1);
+	statements->store(&test2);
+
+	QPS qps = QPS(&facade);
+
+	std::string input = "if s; Select s";
+	std::list<std::string> results;
+	qps.evaluate(input, results);
+	std::list<std::string> correct_output{ "1" };
+	REQUIRE(results == correct_output);
+}
+
 TEST_CASE("QPS evaluate select variables") {
 	Storage storage;
 	QueryFacade facade = QueryFacade(&storage);

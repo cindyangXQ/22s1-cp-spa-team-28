@@ -82,6 +82,55 @@ TEST_CASE("Query evaluator can evaluate query with only select procedure clause"
     REQUIRE(result.size() == 2);
 }
 
+TEST_CASE("Evaluator can retrieve specific statement types") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
+    Statement test1 = Statement(1, StatementType::ASSIGN);
+    Statement test2 = Statement(2, StatementType::ASSIGN);
+    Statement test3 = Statement(3, StatementType::WHILE);
+    Statement test4 = Statement(3, StatementType::IF);
+    Statement test5 = Statement(3, StatementType::WHILE);
+
+    statements->store(&test1);
+    statements->store(&test2);
+    statements->store(&test3);
+    statements->store(&test4);
+    statements->store(&test5);
+
+    std::string input;
+    std::vector<std::string> result;
+    QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
+
+    input = "stmt s; Select s";
+    SolvableQuery solvableQ_stmt = QueryParser::parse(input);
+    QueryResult queryResult_stmt = queryEvaluator.evaluate(&solvableQ_stmt);
+    result = queryEvaluator.interpretQueryResult(&queryResult_stmt);
+
+    REQUIRE(result.size() == 5);
+
+    input = "if s; Select s";
+    SolvableQuery solvableQ_if = QueryParser::parse(input);
+    QueryResult queryResult_if = queryEvaluator.evaluate(&solvableQ_if);
+    result = queryEvaluator.interpretQueryResult(&queryResult_if);
+
+    REQUIRE(result.size() == 1);
+
+    input = "assign s; Select s";
+    SolvableQuery solvableQ_assign = QueryParser::parse(input);
+    QueryResult queryResult_assign = queryEvaluator.evaluate(&solvableQ_assign);
+    result = queryEvaluator.interpretQueryResult(&queryResult_assign);
+
+    REQUIRE(result.size() == 2);
+
+    input = "while s; Select s";
+    SolvableQuery solvableQ_while = QueryParser::parse(input);
+    QueryResult queryResult_while = queryEvaluator.evaluate(&solvableQ_while);
+    result = queryEvaluator.interpretQueryResult(&queryResult_while);
+
+    REQUIRE(result.size() == 2);
+}
+
 TEST_CASE("Query evaluator can evaluate query with single such that clause") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
