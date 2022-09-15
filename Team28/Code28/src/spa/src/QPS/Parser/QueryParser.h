@@ -6,8 +6,9 @@
 #include "../../commons/Reference.h"
 #include "../../commons/Variable.h"
 #include "../../commons/Statement.h"
-#include "../Error/SyntaxError.h"
 #include "../Clause/SelectClause.h"
+#include "../Error/SyntaxError.h"
+#include "../Error/SemanticError.h"
 #include "QueryParserRegex.h"
 
 /*

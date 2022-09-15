@@ -19,6 +19,10 @@ SolvableQuery QueryParser::parse(std::string query) {
     suchThatCl = QueryParser::parseSuchThatClause(&mainClause, decl.syns);
     patternCl = QueryParser::parsePatternClause(&mainClause, decl.syns);
 
+    if (!mainClause.empty()) {
+        throw SyntaxError("Unrecognized clause syntax");
+    }
+
     return SolvableQuery(decl, selectType, suchThatCl, patternCl);
 }
 
@@ -75,6 +79,12 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector
         }
         RelationshipReference relationship = relationshipMap.at(matches[1].str());
         Reference left = getReference(matches[2].str(), syns);
+        if (relationship == RelationshipReference::MODIFIES || relationship == RelationshipReference::USES) {
+            if (left.type == ReferenceType::WILDCARD) {
+                throw SemanticError("First argument cannot be wildcard");
+            }
+        }
+
         Reference right = getReference(matches[3].str(), syns);
 
         *clause = Utils::removeString(*clause, suchThatClause);

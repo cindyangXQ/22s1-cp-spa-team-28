@@ -94,11 +94,13 @@ TEST_CASE("Parser can parse such that clause") {
 
 	std::string undeclared_syn = "such that Modifies(1, p)";
 	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&undeclared_syn, syns));
-	/*
-	* TODO: check for wildcard in Modifies first argument
-	std::string modify_wildcard = "such that Modifies(_, v)";
-	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&modify_wildcard, syns));
-	*/
+
+	std::string modifies_wildcard = "such that Modifies(_, v)";
+	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&modifies_wildcard, syns));
+	
+	std::string uses_wildcard = "such that Uses(_, v)";
+	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&uses_wildcard, syns));
+	
 }
 
 TEST_CASE("Parser can parse pattern clause") {
