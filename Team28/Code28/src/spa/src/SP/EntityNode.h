@@ -55,6 +55,7 @@ public:
 	virtual void getFollowsInto(vector<Relationship<int, int>*>& result) {};
 	virtual void getFollowsTInto(vector<Relationship<int, int>*>& result) {};
 	virtual vector<string>* getUsesInto(vector<Relationship<int, string>*>& result) { vector<string> used; return &used; };
+	virtual vector<string>* getModsInto(vector<Relationship<int, string>*>& result) { vector<string> mdfd; return &mdfd; };
 };
 
 class ProcedureNode : public EntityNode {
@@ -90,7 +91,8 @@ public:
 	string getVariable();
 
 	void getVariablesInto(vector<string>& result);
-	void getStatementsInto(vector<Statement*>& result);
+	void getStatementsInto(vector<Statement*>& result);	
+	vector<string>* getModsInto(vector<Relationship<int, string>*>& result);
 };
 
 class PrintStatementNode : public StatementNode {
@@ -146,6 +148,7 @@ public:
 	void getConstantsInto(vector<string>& result);
 	void getStatementsInto(vector<Statement*>& result);
 	vector<string>* getUsesInto(vector<Relationship<int, string>*>& result);
+	vector<string>* getModsInto(vector<Relationship<int, string>*>& result);
 };
 
 
@@ -165,7 +168,8 @@ public:
 	void getStatementsInto(vector<Statement*>& result);
 	void getFollowsInto(vector<Relationship<int, int>*>& result);
 	void getFollowsTInto(vector<Relationship<int, int>*>& result);
-	vector<string>* getUsesInto(vector<Relationship<int, string>*>& result);
+	vector<string>* getUsesInto(vector<Relationship<int, string>*>& result);	
+	vector<string>* getModsInto(vector<Relationship<int, string>*>& result);
 };
 
 
@@ -187,4 +191,5 @@ public:
 	void getFollowsInto(vector<Relationship<int, int>*>& result);
 	void getFollowsTInto(vector<Relationship<int, int>*>& result);
 	vector<string>* getUsesInto(vector<Relationship<int, string>*>& result);
+	vector<string>* getModsInto(vector<Relationship<int, string>*>& result);
 };

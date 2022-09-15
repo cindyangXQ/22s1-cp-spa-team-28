@@ -87,3 +87,9 @@ public:
 	void populate();
 };
 
+class ModSExtractor : public DesignExtractor {
+public:
+	ModSExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
+	vector<Relationship<int, string>*> extract();
+	void populate();
+};

@@ -118,6 +118,16 @@ void ReadStatementNode::getStatementsInto(vector<Statement*>& result) {
 	result.push_back(new Statement(line, StatementType::READ)); 
 }
 
+vector<string>* ReadStatementNode::getModsInto(vector<Relationship<int, string>*>& result) {
+	Relationship<int, string>* mdfdVar = new Relationship<int, string>(
+		RelationshipReference::MODIFIES, this->getLineNumber(), this->getVariable());
+	result.push_back(mdfdVar);
+
+	vector<string> mdfd;
+	mdfd.push_back(this->getVariable());
+	return &mdfd;
+}
+
 // Print Statement
 PrintStatementNode::PrintStatementNode(VariableNode* VariableNode, int line ) {
 	this->var = VariableNode;
@@ -201,6 +211,16 @@ vector<string>* AssignStatementNode::getUsesInto(vector<Relationship<int, string
 	return &used;
 }
 
+vector<string>* AssignStatementNode::getModsInto(vector<Relationship<int, string>*>& result) {
+	Relationship<int, string>* mdfdVar = new Relationship<int, string>(
+		RelationshipReference::MODIFIES, this->getLineNumber(), this->getVariable());
+	result.push_back(mdfdVar);
+
+	vector<string> mdfd;
+	mdfd.push_back(this->getVariable());
+	return &mdfd;
+}
+
 // While Statement
 WhileStatementNode::WhileStatementNode(const vector<StatementNode*>& stmtList, ExpressionNode* cond, int line)
 {
@@ -265,6 +285,24 @@ vector<string>* WhileStatementNode::getUsesInto(vector<Relationship<int, string>
 				RelationshipReference::USES, lineNo, usedVars->at(j));
 			result.push_back(usedVar);
 			descendants.push_back(usedVars->at(j));
+		}
+	}
+
+	return &descendants;
+}
+
+vector<string>* WhileStatementNode::getModsInto(vector<Relationship<int, string>*>& result) {
+	int lineNo = this->getLineNumber();
+
+	vector<string> descendants;
+	vector<StatementNode*> stmts = this->getStmtList();
+	for (size_t i = 0; i < stmts.size(); i++) {
+		vector<string>* mdfdVars = stmts[i]->getModsInto(result);
+		for (size_t j = 0; j < mdfdVars->size(); j++) {
+			Relationship<int, string>* mdfdVar = new Relationship<int, string>(
+				RelationshipReference::MODIFIES, lineNo, mdfdVars->at(j));
+			result.push_back(mdfdVar);
+			descendants.push_back(mdfdVars->at(j));
 		}
 	}
 
@@ -360,6 +398,24 @@ vector<string>* IfStatementNode::getUsesInto(vector<Relationship<int, string>*>&
 				RelationshipReference::USES, lineNo, usedVars->at(j));
 			result.push_back(usedVar);
 			descendants.push_back(usedVars->at(j));
+		}
+	}
+
+	return &descendants;
+}
+
+vector<string>* IfStatementNode::getModsInto(vector<Relationship<int, string>*>& result) {
+	int lineNo = this->getLineNumber();
+
+	vector<string> descendants;
+	vector<StatementNode*> stmts = this->getStmtList();
+	for (size_t i = 0; i < stmts.size(); i++) {
+		vector<string>* mdfdVars = stmts[i]->getModsInto(result);
+		for (size_t j = 0; j < mdfdVars->size(); j++) {
+			Relationship<int, string>* mdfdVar = new Relationship<int, string>(
+				RelationshipReference::MODIFIES, lineNo, mdfdVars->at(j));
+			result.push_back(mdfdVar);
+			descendants.push_back(mdfdVars->at(j));
 		}
 	}
 

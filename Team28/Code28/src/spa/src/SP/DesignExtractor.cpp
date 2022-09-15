@@ -149,6 +149,20 @@ vector<Relationship<int, string>*> UsesSExtractor::extract() {
 	return result;
 }
 
+vector<Relationship<int, string>*> ModSExtractor::extract() {
+	vector<Relationship<int, string>*> result;
+
+	vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		for (size_t j = 0; j < stmtList.size(); j++) {
+			stmtList[j]->getModsInto(result);
+		}
+	}
+
+	return result;
+}
+
 
 void DesignExtractor::extractAll() {
 	ProcedureExtractor(this->program, this->storage).populate();
@@ -159,6 +173,8 @@ void DesignExtractor::extractAll() {
 	FollowsExtrT(this->program, this->storage).populate();
 	ParentExtractor(this->program, this->storage).populate();
 	ParentExtrT(this->program, this->storage).populate();
+	UsesSExtractor(this->program, this->storage).populate();
+	ModSExtractor(this->program, this->storage).populate();
 }
 
 void ProcedureExtractor::populate() {
@@ -204,4 +220,9 @@ void ParentExtrT::populate() {
 void UsesSExtractor::populate() {
 	vector<Relationship<int, string>*> usesS = this->extract();
 	this->storage->storeUsesS(&usesS);
+}
+
+void ModSExtractor::populate() {
+	vector<Relationship<int, string>*> ModifiesS = this->extract();
+	this->storage->storeUsesS(&ModifiesS);
 }
