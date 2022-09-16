@@ -481,6 +481,13 @@ public:
 	}
 };
 
+/*
+ * Table that maps a variable to its expression in an assignment statement.
+ */
+class AssignmentsTable : public RelationshipsTable<std::string, std::string> {
+
+};
+
 typedef StmtToStmtRelationshipsTable ParentTable;
 typedef StmtToStmtRelationshipsTable ParentTTable;
 typedef StmtToStmtRelationshipsTable FollowsTable;
