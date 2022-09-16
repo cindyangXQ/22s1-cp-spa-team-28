@@ -85,8 +85,8 @@ bool IfStatementNode::equals(StatementNode* other) {
 	if (other->isIf()) {
 		IfStatementNode* temp = static_cast<IfStatementNode*>(other);
 		if (this->cond->equals(temp->cond) && this->ifBlock.size() == temp->ifBlock.size() && this->elseBlock.size() == temp->elseBlock.size()) {
-			vector<StatementNode*> stmtList1 = this->getStmtList();
-			vector<StatementNode*> stmtList2 = this->getStmtList();
+			std::vector<StatementNode*> stmtList1 = this->getStmtList();
+			std::vector<StatementNode*> stmtList2 = this->getStmtList();
 
 			return ExtractUtils::compareStmtList(stmtList1, stmtList2);
 		}
@@ -118,12 +118,12 @@ void ReadStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 	result.push_back(new Statement(line, StatementType::READ)); 
 }
 
-vector<string>* ReadStatementNode::getModsInto(vector<Relationship<int, string>*>& result) {
-	Relationship<int, string>* mdfdVar = new Relationship<int, string>(
+std::vector<std::string>* ReadStatementNode::getModsInto(std::vector<Relationship<int, std::string>*>& result) {
+	Relationship<int, std::string>* mdfdVar = new Relationship<int, std::string>(
 		RelationshipReference::MODIFIES, this->getLineNumber(), this->getVariable());
 	result.push_back(mdfdVar);
 
-	vector<string> mdfd;
+	std::vector<std::string> mdfd;
 	mdfd.push_back(this->getVariable());
 	return &mdfd;
 }
@@ -146,13 +146,13 @@ void PrintStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 	result.push_back(new Statement(line, StatementType::PRINT)); 
 }
 
-vector<string>* PrintStatementNode::getUsesInto(vector<Relationship<int, string>*>& result) {
-	string variable = this->getVariable();
-	Relationship<int, string>* temp = new Relationship<int, string>(
+std::vector<std::string>* PrintStatementNode::getUsesInto(std::vector<Relationship<int, std::string>*>& result) {
+	std::string variable = this->getVariable();
+	Relationship<int, std::string>* temp = new Relationship<int, std::string>(
 		RelationshipReference::USES, this->getLineNumber(), variable);
 	result.push_back(temp);
 	
-	vector<string> used;
+	std::vector<std::string> used;
 	used.push_back(variable);
 	return &used;
 }
@@ -195,14 +195,14 @@ void AssignStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 	result.push_back(new Statement(line, StatementType::ASSIGN)); 
 }
 
-vector<string>* AssignStatementNode::getUsesInto(vector<Relationship<int, string>*>& result) {
+std::vector<std::string>* AssignStatementNode::getUsesInto(std::vector<Relationship<int, std::string>*>& result) {
 	int lineNo = this->getLineNumber();
-	vector<string> used;
+	std::vector<std::string> used;
 
-	vector<string> variables;
+	std::vector<std::string> variables;
 	this->expr->getVariablesInto(variables);
 	for (size_t i = 0; i < variables.size(); i++) {
-		Relationship<int, string>* variable = new Relationship<int, string>(
+		Relationship<int, std::string>* variable = new Relationship<int, std::string>(
 			RelationshipReference::USES, lineNo, variables[i]);
 		result.push_back(variable);
 		used.push_back(variables[i]);
@@ -211,12 +211,12 @@ vector<string>* AssignStatementNode::getUsesInto(vector<Relationship<int, string
 	return &used;
 }
 
-vector<string>* AssignStatementNode::getModsInto(vector<Relationship<int, string>*>& result) {
-	Relationship<int, string>* mdfdVar = new Relationship<int, string>(
+std::vector<std::string>* AssignStatementNode::getModsInto(std::vector<Relationship<int, std::string>*>& result) {
+	Relationship<int, std::string>* mdfdVar = new Relationship<int, std::string>(
 		RelationshipReference::MODIFIES, this->getLineNumber(), this->getVariable());
 	result.push_back(mdfdVar);
 
-	vector<string> mdfd;
+	std::vector<std::string> mdfd;
 	mdfd.push_back(this->getVariable());
 	return &mdfd;
 }
@@ -268,13 +268,13 @@ void WhileStatementNode::getFollowsTInto(std::vector<Relationship<int, int>*>& r
 	ExtractUtils::followsT(this->getStmtList(), result);
 }
 
-std::vector<std::string>* WhileStatementNode::getUsesInto(vector<Relationship<int, string>*>& result) {
+std::vector<std::string>* WhileStatementNode::getUsesInto(std::vector<Relationship<int, std::string>*>& result) {
 	int lineNo = this->getLineNumber();
 
 	std::vector<std::string> condVars;
 	this->cond->getVariablesInto(condVars);
 	for (size_t i = 0; i < condVars.size(); i++) {
-		Relationship<int, std::string>* condVar = new Relationship<int, string>(
+		Relationship<int, std::string>* condVar = new Relationship<int, std::string>(
 			RelationshipReference::USES, lineNo, condVars[i]);
 		result.push_back(condVar);
 	}
@@ -284,7 +284,7 @@ std::vector<std::string>* WhileStatementNode::getUsesInto(vector<Relationship<in
 	for (size_t i = 0; i < stmts.size(); i++) {
 		std::vector<std::string>* usedVars = stmts[i]->getUsesInto(result);
 		for (size_t j = 0; j < usedVars->size(); j++) {
-			Relationship<int, std::string>* usedVar = new Relationship<int, string>(
+			Relationship<int, std::string>* usedVar = new Relationship<int, std::string>(
 				RelationshipReference::USES, lineNo, usedVars->at(j));
 			result.push_back(usedVar);
 			descendants.push_back(usedVars->at(j));
@@ -294,7 +294,7 @@ std::vector<std::string>* WhileStatementNode::getUsesInto(vector<Relationship<in
 	return &descendants;
 }
 
-vector<string>* WhileStatementNode::getModsInto(vector<Relationship<int, string>*>& result) {
+std::vector<std::string>* WhileStatementNode::getModsInto(std::vector<Relationship<int, std::string>*>& result) {
 	int lineNo = this->getLineNumber();
 
 	std::vector<std::string> descendants;
@@ -302,7 +302,7 @@ vector<string>* WhileStatementNode::getModsInto(vector<Relationship<int, string>
 	for (size_t i = 0; i < stmts.size(); i++) {
 		std::vector<std::string>* mdfdVars = stmts[i]->getModsInto(result);
 		for (size_t j = 0; j < mdfdVars->size(); j++) {
-			Relationship<int, std::string>* mdfdVar = new Relationship<int, string>(
+			Relationship<int, std::string>* mdfdVar = new Relationship<int, std::string>(
 				RelationshipReference::MODIFIES, lineNo, mdfdVars->at(j));
 			result.push_back(mdfdVar);
 			descendants.push_back(mdfdVars->at(j));
@@ -377,24 +377,6 @@ void IfStatementNode::getStatementsInto(std::vector<Statement*>& result)
 	}
 }
 
-bool IfStatementNode::equals(StatementNode* other) {
-	if (other->isIf()) {
-		IfStatementNode* temp = static_cast<IfStatementNode*>(other);
-		if (this->cond->equals(temp->cond) && this->ifBlock.size() == temp->ifBlock.size() && this->elseBlock.size() == temp->elseBlock.size()) {
-			std::vector<StatementNode*> stmtList1 = this->getStmtList();
-			std::vector<StatementNode*> stmtList2 = this->getStmtList();
-
-			return ExtractUtils::compareStmtList(stmtList1, stmtList2);
-		}
-		else {
-			return false;
-		}
-	}
-	else {
-		return false;
-	}
-}
-
 void IfStatementNode::getFollowsInto(std::vector<Relationship<int, int>*>& result) {
 	ExtractUtils::follows(this->ifBlock, result);
 	ExtractUtils::follows(this->elseBlock, result);
@@ -405,13 +387,13 @@ void IfStatementNode::getFollowsTInto(std::vector<Relationship<int, int>*>& resu
 	ExtractUtils::followsT(this->elseBlock, result);
 }
 
-std::vector<std::string>* IfStatementNode::getUsesInto(vector<Relationship<int, string>*>& result) {
+std::vector<std::string>* IfStatementNode::getUsesInto(std::vector<Relationship<int, std::string>*>& result) {
 	int lineNo = this->getLineNumber();
 
 	std::vector<std::string> condVars;
 	this->cond->getVariablesInto(condVars);
 	for (size_t i = 0; i < condVars.size(); i++) {
-		Relationship<int, string>* condVar = new Relationship<int, string>(
+		Relationship<int, std::string>* condVar = new Relationship<int, std::string>(
 			RelationshipReference::USES, lineNo, condVars[i]);
 		result.push_back(condVar);
 	}
@@ -421,7 +403,7 @@ std::vector<std::string>* IfStatementNode::getUsesInto(vector<Relationship<int, 
 	for (size_t i = 0; i < stmts.size(); i++) {
 		std::vector<std::string>* usedVars = stmts[i]->getUsesInto(result);
 		for (size_t j = 0; j < usedVars->size(); j++) {
-			Relationship<int, string>* usedVar = new Relationship<int, string>(
+			Relationship<int, std::string>* usedVar = new Relationship<int, std::string>(
 				RelationshipReference::USES, lineNo, usedVars->at(j));
 			result.push_back(usedVar);
 			descendants.push_back(usedVars->at(j));
@@ -431,7 +413,7 @@ std::vector<std::string>* IfStatementNode::getUsesInto(vector<Relationship<int, 
 	return &descendants;
 }
 
-std::vector<std::string>* IfStatementNode::getModsInto(vector<Relationship<int, string>*>& result) {
+std::vector<std::string>* IfStatementNode::getModsInto(std::vector<Relationship<int, std::string>*>& result) {
 	int lineNo = this->getLineNumber();
 
 	std::vector<std::string> descendants;
@@ -439,7 +421,7 @@ std::vector<std::string>* IfStatementNode::getModsInto(vector<Relationship<int, 
 	for (size_t i = 0; i < stmts.size(); i++) {
 		std::vector<std::string>* mdfdVars = stmts[i]->getModsInto(result);
 		for (size_t j = 0; j < mdfdVars->size(); j++) {
-			Relationship<int, string>* mdfdVar = new Relationship<int, string>(
+			Relationship<int, std::string>* mdfdVar = new Relationship<int, std::string>(
 				RelationshipReference::MODIFIES, lineNo, mdfdVars->at(j));
 			result.push_back(mdfdVar);
 			descendants.push_back(mdfdVars->at(j));

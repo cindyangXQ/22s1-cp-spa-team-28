@@ -149,7 +149,7 @@ std::vector<Relationship<int, std::string>*> UsesSExtractor::extract() {
 }
 
 std::vector<Relationship<int, std::string>*> ModSExtractor::extract() {
-	std::vector<Relationship<int, string>*> result;
+	std::vector<Relationship<int, std::string>*> result;
 
 	std::vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
@@ -207,21 +207,21 @@ void FollowsExtrT::populate() {
 }
 
 void ParentExtractor::populate() {
-	vector<Relationship<int, int>*> parent = this->extract();
+	std::vector<Relationship<int, int>*> parent = this->extract();
 	this->storage->storeParent(&parent);
 }
 
 void ParentExtrT::populate() {
-	vector<Relationship<int, int>*> parentT = this->extract();
+	std::vector<Relationship<int, int>*> parentT = this->extract();
 	this->storage->storeParentT(&parentT);
 }
 
 void UsesSExtractor::populate() {
-	vector<Relationship<int, string>*> usesS = this->extract();
+	std::vector<Relationship<int, std::string>*> usesS = this->extract();
 	this->storage->storeUsesS(&usesS);
 }
 
 void ModSExtractor::populate() {
-	vector<Relationship<int, string>*> ModifiesS = this->extract();
+	std::vector<Relationship<int, std::string>*> ModifiesS = this->extract();
 	this->storage->storeUsesS(&ModifiesS);
 }

@@ -29,7 +29,7 @@ void ExtractUtils::followsT(const std::vector<StatementNode*>& stmtList, std::ve
 	}
 }
 
-void ExtractUtils::parent(StatementNode* parentNode, vector<Relationship<int, int>*>& result) {
+void ExtractUtils::parent(StatementNode* parentNode, std::vector<Relationship<int, int>*>& result) {
 	int parentLineNo = parentNode->getLineNumber();
 	std::vector<StatementNode*> children = parentNode->getStmtList();
 
@@ -42,13 +42,13 @@ void ExtractUtils::parent(StatementNode* parentNode, vector<Relationship<int, in
 	}
 }
 
-vector<int>* ExtractUtils::parentT(StatementNode* parentNode, vector<Relationship<int, int>*>& result) {
+std::vector<int>* ExtractUtils::parentT(StatementNode* parentNode, std::vector<Relationship<int, int>*>& result) {
 	int parentLineNo = parentNode->getLineNumber();
 	std::vector<StatementNode*> children = parentNode->getStmtList();
 	std::vector<int> descendants;
 
 	for (size_t i = 0; i < children.size(); i++) {
-		vector<int>* grandchildren = ExtractUtils::parentT(children[i], result);
+		std::vector<int>* grandchildren = ExtractUtils::parentT(children[i], result);
 		for (size_t j = 0; j < grandchildren->size(); j++) {
 			int grandchild = grandchildren->at(j);
 			Relationship<int, int>* addGrandchild = new Relationship<int, int>(
@@ -69,7 +69,7 @@ vector<int>* ExtractUtils::parentT(StatementNode* parentNode, vector<Relationshi
 
 
 
-bool ExtractUtils::compareStmtList(const vector<StatementNode*>& list1, const vector<StatementNode*>& list2) {
+bool ExtractUtils::compareStmtList(const std::vector<StatementNode*>& list1, const std::vector<StatementNode*>& list2) {
 	if (list1.size() != list2.size()) {
 		return false;
 	}

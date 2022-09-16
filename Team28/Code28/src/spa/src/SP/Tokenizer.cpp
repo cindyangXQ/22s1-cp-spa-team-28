@@ -1,10 +1,8 @@
 #include "Tokenizer.h"
 #include "Token.h"
 #include "EntityNode.h"
-#include <string>
 #include <vector>
 #include <ctype.h>
-#include <iostream>
 #include <algorithm>
 
 std::string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read", "call", "then"};

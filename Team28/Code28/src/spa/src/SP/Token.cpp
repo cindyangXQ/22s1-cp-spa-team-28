@@ -1,5 +1,4 @@
 #include "Token.h"
-#include <string>
 #include <iostream>
 
 Token::Token() {}
