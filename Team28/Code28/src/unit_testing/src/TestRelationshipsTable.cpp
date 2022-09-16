@@ -306,24 +306,3 @@ TEST_CASE("UsesPTable can initialise, store and retrieve correctly") {
 	REQUIRE(usesPTable.retrieveLeft("foo").count("v") == 1);
 	REQUIRE(usesPTable.retrieveRight("v").count("foo") == 1);
 }
-
-TEST_CASE("AssignmentsTable can initialise, store and retrieve correctly") {
-	AssignmentsTable assignmentsTable;
-
-	// x1 = 1 + 2
-	std::string expr = "((1)+(2))";
-	Relationship<std::string, std::string> test = Relationship(
-		RelationshipReference::EMPTY, 
-		std::string("x1"), 
-		expr
-	);
-	assignmentsTable.store(&test);
-
-	// successfully stored Uses ("foo", "v")
-	REQUIRE(assignmentsTable.retrieveLeft("x1").size() == 1);
-	REQUIRE(assignmentsTable.retrieveRight(expr).size() == 1);
-
-	// values in maps are correct
-	REQUIRE(assignmentsTable.retrieveLeft("x1").count(expr) == 1);
-	REQUIRE(assignmentsTable.retrieveRight(expr).count("x1") == 1);
-}
