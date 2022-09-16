@@ -3,8 +3,10 @@
 #include <map>
 #include <string>
 #include <unordered_set>
+#include <vector>
 
 #include "../commons/Assignment.h"
+#include "../commons/Value.h"
 #include "StatementPredicateMap.h"
 #include "Table.h"
 
@@ -60,7 +62,29 @@ public:
 		return -1; // TODO change behaviour, now returning dummy value
 	}
 
+	/*
+	* Return list of possible values of assignments that satisfy the given varName and expression
+	*/
+	std::vector<Value> getAssign(std::string varName, std::string expression);
+
+	/*
+	* Return list of possible (Assignment, Variable) pairs which satisfy the given expression
+	*/
+	std::vector<std::pair<Value, Value>> getAssignAndVar(std::string expression);
+
 private:
 	std::map<std::string, std::unordered_set<IntStringPair>> variableMap;
 	std::map<std::string, std::unordered_set<IntStringPair>> expressionMap;
+
+	std::vector<Value> allLineNumbers;
+
+	/*
+	* Return list of possible values of assignments that satisfy the given non-wildcarded varName and expression
+	*/
+	std::vector<Value> getAssignFromVarAndExpr(std::string varName, std::string expression);
+
+		/*
+	* Return list of possible values of assignments that satisfy the given expression
+	*/
+	std::vector<Value> getAssignFromExpr(std::string expression);
 };

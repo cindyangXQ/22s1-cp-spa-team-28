@@ -661,3 +661,46 @@ TEST_CASE("ProcToVar: SolveBoth queries for Modifies('Main', 'a') return correct
 	output = facade.solveBoth(RelationshipReference::MODIFIES, leftEntityName, rightEntityName);
 	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 }
+
+TEST_CASE("getAssign returns correct results") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	AssignmentsTable* assignments = (AssignmentsTable*)storage.getTable(TableName::ASSIGNMENTS);
+	
+	Assignment test1 = Assignment(1, "x1", "(1)");
+	Assignment test2 = Assignment(2, "x1", "((1)+(10))");
+	Assignment test3 = Assignment(3, "x2", "((x1)*(x1))");
+	assignments->store(&test1);
+	assignments->store(&test2);
+	assignments->store(&test3);
+
+	std::vector<Value> expectedResult;
+	std::vector<Value> output;
+	
+	// getAssign('_', '_') returns {'1', '2', '3'}
+	expectedResult = {
+		Value(ValueType::STMT_NUM, "1"),
+		Value(ValueType::STMT_NUM, "2"),
+		Value(ValueType::STMT_NUM, "3")};
+	output = facade.getAssign("_", "_");
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+	std::cout << "[DEBUG] passed" << std::endl;
+
+	// getAssign('_', '1') returns {'1', '2'}
+	// expectedResult = {Value(ValueType::STMT_NUM, "1"), Value(ValueType::STMT_NUM, "2")};
+	// output = facade.getAssign("_", "1");
+	// REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+	// std::cout << "[DEBUG] passed" << std::endl;
+
+	// getAssign('x1', '_') returns {'1', '2'}
+	expectedResult = {Value(ValueType::STMT_NUM, "1"), Value(ValueType::STMT_NUM, "2")};
+	output = facade.getAssign("x1", "_");
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+	std::cout << "[DEBUG] passed" << std::endl;
+
+	// getAssign('x1', '10') returns {'1', '2', '3'}
+	expectedResult = {Value(ValueType::STMT_NUM, "2")};
+	output = facade.getAssign("x1", "10");
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+	std::cout << "[DEBUG] passed" << std::endl;
+}

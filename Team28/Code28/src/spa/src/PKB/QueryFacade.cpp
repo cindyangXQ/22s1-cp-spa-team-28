@@ -306,3 +306,15 @@ std::vector<std::pair<Value, Value>> QueryFacade::solveBoth(RelationshipReferenc
 		}
 	}
 }
+
+std::vector<Value> QueryFacade::getAssign(std::string varName, std::string expression) {
+	AssignmentsTable* assignments = (AssignmentsTable*)this->storage->getTable(TableName::ASSIGNMENTS);
+
+	return assignments->getAssign(varName, expression);
+};
+
+std::vector<std::pair<Value, Value>> QueryFacade::getAssignAndVar(std::string expression) {
+	AssignmentsTable* assignments = (AssignmentsTable*)this->storage->getTable(TableName::ASSIGNMENTS);
+	
+	return assignments->getAssignAndVar(expression);
+};
