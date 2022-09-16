@@ -4,17 +4,16 @@
 #include <vector>
 #include <algorithm>
 
-using namespace std;
-
 DesignExtractor::DesignExtractor(ProgramNode* program, PopulateFacade* storage) {
 	this->program = program;
 	this->storage = storage;
 }
 
-vector<Procedure*> ProcedureExtractor::extract() {
-	vector<Procedure*> result;
 
-	vector<ProcedureNode*> procList = this->program->getProcList();
+std::vector<Procedure*> ProcedureExtractor::extract() {
+	std::vector<Procedure*> result;
+
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
 		result.push_back(new Procedure(procList.at(i)->getName()));
 	}
@@ -22,12 +21,12 @@ vector<Procedure*> ProcedureExtractor::extract() {
 	return result;
 }
 
-vector<Statement*> StatementExtractor::extract() {
-	vector<Statement*> result;
+std::vector<Statement*> StatementExtractor::extract() {
+	std::vector<Statement*> result;
 
-	vector<ProcedureNode*> procList = this->program->getProcList();
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			StatementNode* currStmt = stmtList.at(j);
 			currStmt->getStatementsInto(result);
@@ -37,13 +36,13 @@ vector<Statement*> StatementExtractor::extract() {
 	return result;
 }
 
-vector<Variable*> VariableExtractor::extract() {
-	vector<string> preresult;
-	vector<Variable*> result;
+std::vector<Variable*> VariableExtractor::extract() {
+	std::vector<std::string> preresult;
+	std::vector<Variable*> result;
 
-	vector<ProcedureNode*> procList = this->program->getProcList();
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			StatementNode* currStmt = stmtList.at(j);
 			currStmt->getVariablesInto(preresult);
@@ -60,13 +59,13 @@ vector<Variable*> VariableExtractor::extract() {
 	return result;
 }
 
-vector<Constant*> ConstantExtractor::extract() {
-	vector<string> preresult;
-	vector<Constant*> result;
+std::vector<Constant*> ConstantExtractor::extract() {
+	std::vector<std::string> preresult;
+	std::vector<Constant*> result;
 
-	vector<ProcedureNode*> procList = program->getProcList();
+	std::vector<ProcedureNode*> procList = program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			StatementNode* currStmt = stmtList.at(j);
 			currStmt->getConstantsInto(preresult);
@@ -83,36 +82,36 @@ vector<Constant*> ConstantExtractor::extract() {
 	return result;
 }
 
-vector<Relationship<int, int>*> FollowsExtractor::extract() {
-	vector<Relationship<int, int>*> result;
+std::vector<Relationship<int, int>*> FollowsExtractor::extract() {
+	std::vector<Relationship<int, int>*> result;
 
-	vector<ProcedureNode*> procList = this->program->getProcList();
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		ExtractUtils::follows(stmtList, result);
 	}
 
 	return result;
 }
 
-vector<Relationship<int, int>*> FollowsExtrT::extract() {
-	vector<Relationship<int, int>*> result;
+std::vector<Relationship<int, int>*> FollowsExtrT::extract() {
+	std::vector<Relationship<int, int>*> result;
 
-	vector<ProcedureNode*> procList = this->program->getProcList();
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		ExtractUtils::followsT(stmtList, result);
 	}
 
 	return result;
 }
 
-vector<Relationship<int, int>*> ParentExtractor::extract() {
-	vector<Relationship<int, int>*> result;
+std::vector<Relationship<int, int>*> ParentExtractor::extract() {
+	std::vector<Relationship<int, int>*> result;
 
-	vector<ProcedureNode*> procList = this->program->getProcList();
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			ExtractUtils::parent(stmtList[j], result);
 		}
@@ -121,12 +120,12 @@ vector<Relationship<int, int>*> ParentExtractor::extract() {
 	return result;
 }
 
-vector<Relationship<int, int>*> ParentExtrT::extract() {
-	vector<Relationship<int, int>*> result;
+std::vector<Relationship<int, int>*> ParentExtrT::extract() {
+	std::vector<Relationship<int, int>*> result;
 
-	vector<ProcedureNode*> procList = this->program->getProcList();
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			ExtractUtils::parentT(stmtList[j], result);
 		}
@@ -135,12 +134,12 @@ vector<Relationship<int, int>*> ParentExtrT::extract() {
 	return result;
 }
 
-vector<Relationship<int, string>*> UsesSExtractor::extract() {
-	vector<Relationship<int, string>*> result;
+std::vector<Relationship<int, std::string>*> UsesSExtractor::extract() {
+	std::vector<Relationship<int, std::string>*> result;
 
-	vector<ProcedureNode*> procList = this->program->getProcList();
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			stmtList[j]->getUsesInto(result);
 		}
@@ -149,12 +148,12 @@ vector<Relationship<int, string>*> UsesSExtractor::extract() {
 	return result;
 }
 
-vector<Relationship<int, string>*> ModSExtractor::extract() {
-	vector<Relationship<int, string>*> result;
+std::vector<Relationship<int, std::string>*> ModSExtractor::extract() {
+	std::vector<Relationship<int, string>*> result;
 
-	vector<ProcedureNode*> procList = this->program->getProcList();
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
 	for (size_t i = 0; i < procList.size(); i++) {
-		vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
 		for (size_t j = 0; j < stmtList.size(); j++) {
 			stmtList[j]->getModsInto(result);
 		}
@@ -178,32 +177,32 @@ void DesignExtractor::extractAll() {
 }
 
 void ProcedureExtractor::populate() {
-	vector<Procedure*> procedures = this->extract();
+	std::vector<Procedure*> procedures = this->extract();
 	this->storage->storeProcedures(&procedures);
 }
 
 void StatementExtractor::populate() {
-	vector<Statement*> statements = this->extract();
+	std::vector<Statement*> statements = this->extract();
 	this->storage->storeStatements(&statements);
 }
 
 void VariableExtractor::populate() {
-	vector<Variable*> variables = this->extract();
+	std::vector<Variable*> variables = this->extract();
 	this->storage->storeVariables(&variables);
 }
 
 void ConstantExtractor::populate() {
-	vector<Constant*> constants = this->extract();
+	std::vector<Constant*> constants = this->extract();
 	this->storage->storeConstants(&constants);
 }
 
 void FollowsExtractor::populate() {
-	vector<Relationship<int, int>*> follows = this->extract();
+	std::vector<Relationship<int, int>*> follows = this->extract();
 	this->storage->storeFollows(&follows);
 }
 
 void FollowsExtrT::populate() {
-	vector<Relationship<int, int>*> followsT = this->extract();
+	std::vector<Relationship<int, int>*> followsT = this->extract();
 	this->storage->storeFollowsT(&followsT);
 }
 

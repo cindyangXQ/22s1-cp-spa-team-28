@@ -4,32 +4,32 @@
 #include "ExprParser.h"
 #include <vector>
 
-using namespace std;
+std::string REL_LIST[] = { "!", ">", "<", "==", "!=", ">=", "<=","&&", "||" };
 
 // Constructors
-Parser::Parser(int offset, vector<Token*> tokens) {
+Parser::Parser(int offset, std::vector<Token*> tokens) {
 	this->offset = offset;
 	this->tokens = tokens;
 }
 
-ProcedureParser::ProcedureParser(int offset, vector<Token*> tokens, int startline) : Parser(offset, tokens) {
+ProcedureParser::ProcedureParser(int offset, std::vector<Token*> tokens, int startline) : Parser(offset, tokens) {
 	this->startline = startline;
 }
 
-StatementParser::StatementParser(int offset, vector<Token*> tokens, int line) : Parser(offset, tokens) {
+StatementParser::StatementParser(int offset, std::vector<Token*> tokens, int line) : Parser(offset, tokens) {
 	this->line = line;
 }
 
 
 // Parse
 ProgramNode* ProgramParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
-	vector<ProcedureNode*> procList;
+	std::vector<ProcedureNode*> procList;
 	int line = 1;
 
-	vector<string> procNames;
-	vector<ProcedureParser*> allProcCalls;
+	std::vector<std::string> procNames;
+	std::vector<ProcedureParser*> allProcCalls;
 
 	while (offset < tokenList.size()) {
 		ProcedureParser* parser = new ProcedureParser(offset, tokenList, line);
@@ -60,9 +60,9 @@ ProgramNode* ProgramParser::parse() {
 
 ProcedureNode* ProcedureParser::parse() {
 	int line = this->startline;
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
-	vector<StatementNode*> stmtList;
+	std::vector<StatementNode*> stmtList;
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
@@ -83,7 +83,13 @@ ProcedureNode* ProcedureParser::parse() {
 			}
 			stmtList.push_back(temp);
 
-			line = temp->getEndLine() + 1;
+			if (temp->getEndLine() == -1) {
+				line++;
+			}
+			else {
+				line = temp->getEndLine() + 1;
+			}
+
 			offset = parser.getOffset();
 			if (offset >= tokenList.size()) {
 				throw "procedure wrong syntax";
@@ -98,9 +104,9 @@ ProcedureNode* ProcedureParser::parse() {
 	return new ProcedureNode(secondToken->getValue(), stmtList);
 }
 
-bool ProcedureParser::checkCalls(const vector<string>& procNames) {
+bool ProcedureParser::checkCalls(const std::vector<std::string>& procNames) {
 	for (size_t i = 0; i < allCalls.size(); i++) {
-		string temp = allCalls[i];
+		std::string temp = allCalls[i];
 		bool isCallValid = false;
 		for (size_t j = 0; j < procNames.size(); j++) {
 			if (temp == procNames[j]) {
@@ -116,7 +122,7 @@ bool ProcedureParser::checkCalls(const vector<string>& procNames) {
 }
 
 StatementNode* StatementParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 	StatementNode* result;
 
 	Token* firstToken = tokenList.at(offset);
@@ -161,7 +167,7 @@ StatementNode* StatementParser::parse() {
 }
 
 ReadStatementNode* ReadStmParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
@@ -179,7 +185,7 @@ ReadStatementNode* ReadStmParser::parse() {
 }
 
 PrintStatementNode* PrintStmParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
@@ -197,7 +203,7 @@ PrintStatementNode* PrintStmParser::parse() {
 }
 
 CallStatementNode* CallStmParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
@@ -215,13 +221,13 @@ CallStatementNode* CallStmParser::parse() {
 }
 
 AssignStatementNode* AssignStmParser::parse() {
-	vector<Token*> tokenList = this->tokens;
+	std::vector<Token*> tokenList = this->tokens;
 
 	Token* firstToken = tokenList.at(offset++);
 	Token* secondToken = tokenList.at(offset++);
 
 	if (firstToken->isName() && secondToken->equals("=")) {
-		ExprParser parser = ExprParser(offset, tokenList);
+		ExprParser parser = ExprParser(offset, tokenList, false);
 		ExpressionNode* expr = parser.parse();
 		offset = parser.getOffset();
 
@@ -241,6 +247,9 @@ WhileStatementNode* WhileStmParser::parse() {
 	if (secondToken->equals("(")) {
 		CondParser parser = CondParser(offset, tokens);
  		cond = parser.parse();
+		if (std::find(std::begin(REL_LIST), std::end(REL_LIST), cond->getToken()->value) == std::end(REL_LIST)) {
+			throw "invalid cond expression";
+		}
 		offset = parser.getOffset();
 		if (tokens.at(offset)->equals(")")) {
 			offset++;
@@ -254,14 +263,14 @@ WhileStatementNode* WhileStmParser::parse() {
 	}
 
 	Token* curr = tokens.at(offset++);
-	vector<StatementNode*> stmtList;
+	std::vector<StatementNode*> stmtList;
 
 	if (curr->equals("{") ){
 		line++;
 		while (!tokens.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokens, line);
 			StatementNode* temp = parser.parse();
-			line++;
+			line = temp->getEndLine() + 1;
 			stmtList.push_back(temp);
 			offset = parser.getOffset();
 			if (offset >= tokens.size()) {
@@ -286,6 +295,9 @@ IfStatementNode* IfStmParser::parse() {
 	if (secondToken->equals("(")) {
 		CondParser parser = CondParser(offset, tokens);
 		cond = parser.parse();
+		if (std::find(std::begin(REL_LIST), std::end(REL_LIST), cond->getToken()->value) == std::end(REL_LIST)) {
+			throw "invalid cond expression";
+		}
 		offset = parser.getOffset();
 		if (!tokens.at(offset++)->equals(")")||!tokens.at(offset++)->equals("then")) {
 			throw "if statement wrong syntax";
@@ -296,15 +308,15 @@ IfStatementNode* IfStmParser::parse() {
 	}
 
 	Token* curr = tokens.at(offset++);
-	vector<StatementNode*> ifStmtList;
-	vector<StatementNode*> elseStmtList;
+	std::vector<StatementNode*> ifStmtList;
+	std::vector<StatementNode*> elseStmtList;
 
 	if (curr->equals("{")) {
 		line++;
 		while (!tokens.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokens, line);
 			StatementNode* temp = parser.parse();
-			line++;
+			line = temp->getEndLine() + 1;
 			ifStmtList.push_back(temp);
 			offset = parser.getOffset();
 			if (offset >= tokens.size()) {
@@ -320,11 +332,10 @@ IfStatementNode* IfStmParser::parse() {
 	if (!tokens.at(offset++)->equals("else") || !tokens.at(offset++)->equals("{")) {
 		throw "if statement wrong syntax";
 	}
-	line++;
 	while (!tokens.at(offset)->equals("}")) {
 			StatementParser parser = StatementParser(offset, tokens, line);
 			StatementNode* temp = parser.parse();
-			line++;
+			line = temp->getEndLine() + 1;
 			elseStmtList.push_back(temp);
 			offset = parser.getOffset();
 			if (offset >= tokens.size()) {

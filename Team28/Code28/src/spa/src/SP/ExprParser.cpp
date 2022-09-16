@@ -4,9 +4,19 @@
 #include <typeinfo>
 #include <iostream>
 
-using namespace std;
+std::string REL_OP_LIST[] = { "!", ">", "<", "==", "!=", ">=", "<=","&&", "||" };
 
-string REL_OP_LIST[] = { ">", "<", "==", "!=", ">=", "<=","&&", "||"};
+ExprParser::ExprParser(int offset, std::vector<Token*> tokens, bool iscond) : Parser(offset, tokens) {
+	this->iscond = iscond;
+}
+
+TermParser::TermParser(int offset, std::vector<Token*> tokens, bool iscond) : Parser(offset, tokens) {
+	this->iscond = iscond;
+}
+
+FactorParser::FactorParser(int offset, std::vector<Token*> tokens, bool iscond) : Parser(offset, tokens) {
+	this->iscond = iscond;
+}
 
 ExpressionNode* CondParser::parse() {
 	Token* curr = tokens.at(offset);
@@ -15,10 +25,13 @@ ExpressionNode* CondParser::parse() {
 		offset++;
 		root = new ExpressionNode(curr);
 	}
-	ExprParser parser = ExprParser(offset, tokens);
+	ExprParser parser = ExprParser(offset, tokens, true);
 	ExpressionNode* result = parser.parse();
 	offset = parser.getOffset();
 	if (curr -> value == "!") {
+		if (std::find(std::begin(REL_OP_LIST), std::end(REL_OP_LIST), result->getToken()->value) == std::end(REL_OP_LIST)) {
+			throw "invalid conditional expression";
+		}
 		root->left = result;
 	}
 	else {
@@ -26,7 +39,7 @@ ExpressionNode* CondParser::parse() {
 	}
 
 	Token* next = tokens.at(offset);
-	while (find(begin(REL_OP_LIST), end(REL_OP_LIST), next->value) != end(REL_OP_LIST) || next->value == "&&" || next->value == "||") {
+	while (std::find(std::begin(REL_OP_LIST), std::end(REL_OP_LIST), next->value) != std::end(REL_OP_LIST)) {
 		offset++;
 
 		curr = tokens.at(offset);
@@ -37,13 +50,31 @@ ExpressionNode* CondParser::parse() {
 		ExpressionNode* cond = new ExpressionNode(next);
 		cond->left = result;
 
-		parser = ExprParser(offset, tokens);
+		parser = ExprParser(offset, tokens, true);
 		result = parser.parse();
 		offset = parser.getOffset();
 
 		cond->right = result;
 
+		if (next->value == "&&" || next->value == "||") {
+			if (find(begin(REL_OP_LIST), end(REL_OP_LIST), cond->left->getToken()->value) == end(REL_OP_LIST)
+				|| find(begin(REL_OP_LIST), end(REL_OP_LIST), cond->right->getToken()->value) == end(REL_OP_LIST)) {
+				std::cout << cond->left->getToken()->value << " " << cond->right->getToken()->value;
+				throw "invalid cond expression";
+			}
+		}
+		else {
+			if (find(begin(REL_OP_LIST), end(REL_OP_LIST), cond->left->getToken()->value) != end(REL_OP_LIST)
+				|| find(begin(REL_OP_LIST), end(REL_OP_LIST), cond->right->getToken()->value) != end(REL_OP_LIST)) {
+				std::cout << cond->left->getToken()->value << " " << cond->right->getToken()->value;
+				throw "invalid cond expression";
+			}
+		}
+
 		if (curr->value == "!") {
+			if (find(begin(REL_OP_LIST), end(REL_OP_LIST), cond->getToken()->value) == end(REL_OP_LIST)) {
+				throw "invalid conditional expression";
+			}
 			root->left = cond;
 			result = root;
 		}
@@ -54,6 +85,7 @@ ExpressionNode* CondParser::parse() {
 
 		next = tokens.at(offset);
 	}
+
 	if (next->value == ";") {
 		offset++;
 		return root;
@@ -64,10 +96,10 @@ ExpressionNode* CondParser::parse() {
 }
 
 ExpressionNode* ExprParser::parse() {
-	TermParser parser = TermParser(offset, tokens);
+	TermParser parser = TermParser(offset, tokens, this->iscond);
 	ExpressionNode* result = parser.parse();
 	offset = parser.getOffset();
-	vector<ExpressionNode*> terms;
+	std::vector<ExpressionNode*> terms;
 	terms.push_back(result);
 	ExpressionNode* root = result;
 
@@ -79,7 +111,7 @@ ExpressionNode* ExprParser::parse() {
 		expr->left = terms.back();
 		root = expr;
 
-		parser = TermParser(offset, tokens);
+		parser = TermParser(offset, tokens, this->iscond);
 		result = parser.parse();
 		terms.push_back(result);
 		offset = parser.getOffset();
@@ -95,19 +127,21 @@ ExpressionNode* ExprParser::parse() {
 		return root;
 	}
 	else if (next->value == ")" || find(begin(REL_OP_LIST), end(REL_OP_LIST), next->value) != end(REL_OP_LIST)) {
-		//cout << result.index << endl;
+		if (!this->iscond && find(begin(REL_OP_LIST), end(REL_OP_LIST), next->value) != end(REL_OP_LIST)) {
+			throw "invalid expression";
+		}
 		return root;
 	}
 	else {
-		//throw error
+		throw "invalid expression";
 	}
 }
 
 
 ExpressionNode* TermParser::parse() {
-	FactorParser parser = FactorParser(offset, tokens);
+	FactorParser parser = FactorParser(offset, tokens, this->iscond);
 	ExpressionNode* result = parser.parse();
-	vector<ExpressionNode*> factors;
+	std::vector<ExpressionNode*> factors;
 	offset = parser.getOffset();
 	factors.push_back(result);
 	ExpressionNode* root = result;
@@ -121,7 +155,7 @@ ExpressionNode* TermParser::parse() {
 		term->left = factors.back();
 		root = term;
 
-		parser = FactorParser(offset, tokens);
+		parser = FactorParser(offset, tokens, this->iscond);
 		result = parser.parse();
 		factors.push_back(result);
 		offset = parser.getOffset();
@@ -133,11 +167,13 @@ ExpressionNode* TermParser::parse() {
 	}
 
 	if (next->value == "+" || next->value == "-" || next->value == ";"||next->value == ")"|| find(begin(REL_OP_LIST), end(REL_OP_LIST), next->value) != end(REL_OP_LIST)) {
-		// term end, return to expression
+		if (!iscond && find(begin(REL_OP_LIST), end(REL_OP_LIST), next->value) != end(REL_OP_LIST)) {
+			throw "invalid expression";
+		}
 		return root;
 	}
 	else {
-		//throw error
+		throw "invalid expression";
 	}
 }
 
@@ -150,14 +186,25 @@ ExpressionNode* FactorParser::parse() {
 	}
 	else if (curr->value == "(") {
 		offset++;
-		CondParser parser = CondParser(offset, tokens);
-		ExpressionNode* factor = parser.parse();
-		offset = parser.getOffset();
+		ExpressionNode* factor;
+		if (iscond) {
+			CondParser parser = CondParser(offset, tokens);
+			factor = parser.parse();
+			offset = parser.getOffset();
+		}
+		else {
+			ExprParser parser = ExprParser(offset, tokens, false);
+			factor = parser.parse();
+			offset = parser.getOffset();
+		}
 		//if next token is not ")" throw error
+		if (tokens.at(offset)->value != ")") {
+			throw "invalid expression";
+		}
 		offset++;
 		return factor;
 	}
 	else {
-		//throw error
+		throw "invalid expression";
 	}
 }

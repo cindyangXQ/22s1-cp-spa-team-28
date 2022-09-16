@@ -1,8 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include "../../commons/Relationship.h"
 #include "../../commons/Reference.h"
-#include "../../commons/Relationship/Relationship.h"
 
 /*
  * Class encapsulating the logic of the such that clause.

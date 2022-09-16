@@ -1,5 +1,10 @@
 #include "PatternEvaluator.h"
 
 ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
-    return ClauseResult(false);
+    if (patternCl->patternType == PatternType::EMPTY) {
+        return ClauseResult(false);
+    }
+    else if (patternCl->patternType == PatternType::ASSIGN) {
+        return ClauseResult(false);
+    }
 }

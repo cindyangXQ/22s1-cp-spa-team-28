@@ -7,6 +7,6 @@ public:
 	static void parent(StatementNode* parentNode, vector<Relationship<int, int>*>& result);
 	static vector<int>* parentT(StatementNode* parentNode, vector<Relationship<int, int>*>& result);
 
-	static bool compareStmtList(const vector<StatementNode*>& list1, const vector<StatementNode*>& list2);
-	static bool compareProcList(vector<ProcedureNode*>& list1, vector<ProcedureNode*>& list2);
+	static bool compareStmtList(const std::vector<StatementNode*>& list1, const std::vector<StatementNode*>& list2);
+	static bool compareProcList(std::vector<ProcedureNode*>& list1, std::vector<ProcedureNode*>& list2);
 };

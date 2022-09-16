@@ -7,17 +7,15 @@
 #include <iostream>
 #include <algorithm>
 
-using namespace std;
-
 enum class TokenType;
 
 class Tokenizer {
 private:
-	string input;
-	Token* createToken(TokenType type, string value);
+	std::string input;
+	Token* createToken(TokenType type, std::string value);
 	TokenType currType;
 	long index;
-	vector<Token*> tokens;
+	std::vector<Token*> tokens;
 
 	void handleDigit();
 	void handleAlpha();
@@ -25,6 +23,6 @@ private:
 	void handleSymbol();
 	void skipWhitespace();
 public:
-	Tokenizer(string sourceProg);
-	vector<Token*> tokenize();
+	Tokenizer(std::string sourceProg);
+	std::vector<Token*> tokenize();
 };
