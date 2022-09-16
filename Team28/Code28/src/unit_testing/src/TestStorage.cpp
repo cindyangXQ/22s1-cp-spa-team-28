@@ -50,6 +50,19 @@ TEST_CASE("Storage stores and retrieves Statements correctly") {
 	REQUIRE(*statements->retrieve(test.getLineNumber()) == test);
 }
 
+TEST_CASE("Storage stores and retrieves Assignments correctly") {
+	Storage storage;
+	AssignmentsTable* assignments = (AssignmentsTable*) storage.getTable(TableName::ASSIGNMENTS);
+	Assignment test = Assignment(1, "x1", "(1)");
+
+	assignments->store(&test);
+
+	// Assignment stored to AssignnmentsTable correctly
+	REQUIRE(assignments->retrieveFromVariable("x1").size() == 1);
+	// Assignment retrieved from Assignments correctly
+	REQUIRE(assignments->retrieveFromVariable("x1").count(IntStringPair(1, "(1)")) == 1);
+}
+
 TEST_CASE("Storage stores and retrieves Variables correctly") {
 	Storage storage;
 	VariablesTable* variables = (VariablesTable*) storage.getTable(TableName::VARIABLES);
