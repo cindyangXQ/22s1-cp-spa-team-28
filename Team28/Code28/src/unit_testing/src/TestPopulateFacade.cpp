@@ -36,6 +36,28 @@ TEST_CASE("storeStatement stores Statement objects correctly") {
 	REQUIRE(*statementsTable->retrieve(2) == test2);
 }
 
+TEST_CASE("storeAssignments store Assignment objects correctly") {
+	Storage storage;
+	PopulateFacade facade = PopulateFacade(&storage);
+	Assignment test1 = Assignment(1, "x1", "(1)");
+	Assignment test2 = Assignment(2, "x1", "(1)");
+	Assignment test3 = Assignment(3, "x2", "((x1)*(x1))");
+	std::vector<Assignment*> assignments = { &test1, &test2, &test3 };
+
+	facade.storeAssignments(&assignments);
+
+	AssignmentsTable* assignmentsTable = (AssignmentsTable*)storage.getTable(TableName::ASSIGNMENTS);
+
+	// returned number of assignments is equal to number stored
+	REQUIRE(assignmentsTable->retrieveFromVariable("x1").size() == 2);
+	REQUIRE(assignmentsTable->retrieveFromVariable("x2").size() == 1);
+	// items are stored correctly
+	REQUIRE(assignmentsTable->retrieveFromVariable("x1").count(IntStringPair(1, "(1)")) == 1);
+	REQUIRE(assignmentsTable->retrieveFromVariable("x1").count(IntStringPair(2, "(1)")) == 1);
+	REQUIRE(assignmentsTable->retrieveFromVariable("x2").count(IntStringPair(3, "((x1)*(x1))")) == 1);
+
+}
+
 TEST_CASE("storeVariable stores Variable objects correctly") {
 	Storage storage;
 	PopulateFacade facade = PopulateFacade(&storage);

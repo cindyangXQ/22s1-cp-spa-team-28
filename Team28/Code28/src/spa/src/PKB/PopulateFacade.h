@@ -20,6 +20,11 @@ public:
 	void storeStatements(std::vector<Statement*> *statements);
 
 	/*
+	* Stores the given assignments in an AssignmenstTable.
+	*/
+	void storeAssignments(std::vector<Assignment*> *assignments);
+
+	/*
 	* Stores the given variables in a VariablesTable.
 	*/
 	void storeVariables(std::vector<Variable*> *variables);
