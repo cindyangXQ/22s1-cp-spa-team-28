@@ -30,6 +30,7 @@ class StatementExtractor : public DesignExtractor {
 public:
 	StatementExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
 	std::vector<Statement*> extract();
+	std::vector<Assignment*> extractAssignments();
 	void populate();
 };
 
