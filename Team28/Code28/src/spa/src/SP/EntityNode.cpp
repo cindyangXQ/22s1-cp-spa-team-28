@@ -53,6 +53,15 @@ int ProcedureNode::getEndline() {
 }
 
 
+// Statement
+std::vector<std::string>* StatementNode::getUsesInto(std::vector<Relationship<int, std::string>*>& result) { 
+	return new std::vector<std::string>();
+};
+
+std::vector<std::string>* StatementNode::getModsInto(std::vector<Relationship<int, std::string>*>& result) {
+	return new std::vector<std::string>();
+};
+
 // Statement - equals
 bool ReadStatementNode::equals(StatementNode* other) {
 	return other->isRead() && this->getVariable() == other->getVariable();
@@ -81,6 +90,25 @@ bool WhileStatementNode::equals(StatementNode* other) {
 	}
 }
 
+bool IfStatementNode::equals(StatementNode* other) {
+	if (other->isIf()) {
+		IfStatementNode* temp = static_cast<IfStatementNode*>(other);
+		if (this->cond->equals(temp->cond) && this->ifBlock.size() == temp->ifBlock.size() && this->elseBlock.size() == temp->elseBlock.size()) {
+			std::vector<StatementNode*> stmtList1 = this->getStmtList();
+			std::vector<StatementNode*> stmtList2 = this->getStmtList();
+
+			return ExtractUtils::compareStmtList(stmtList1, stmtList2);
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
+
 // Read Statement
 ReadStatementNode::ReadStatementNode(VariableNode* VariableNode, int line) {
 	this->var = VariableNode;
@@ -99,6 +127,16 @@ void ReadStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 	result.push_back(new Statement(line, StatementType::READ)); 
 }
 
+std::vector<std::string>* ReadStatementNode::getModsInto(std::vector<Relationship<int, std::string>*>& result) {
+	Relationship<int, std::string>* mdfdVar = new Relationship<int, std::string>(
+		RelationshipReference::MODIFIES, this->getLineNumber(), this->getVariable());
+	result.push_back(mdfdVar);
+
+	std::vector<std::string>* mdfd = new std::vector<std::string>();
+	mdfd->push_back(this->getVariable());
+	return mdfd;
+}
+
 // Print Statement
 PrintStatementNode::PrintStatementNode(VariableNode* VariableNode, int line ) {
 	this->var = VariableNode;
@@ -115,6 +153,17 @@ void PrintStatementNode::getVariablesInto(std::vector<std::string>& result) {
 
 void PrintStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 	result.push_back(new Statement(line, StatementType::PRINT)); 
+}
+
+std::vector<std::string>* PrintStatementNode::getUsesInto(std::vector<Relationship<int, std::string>*>& result) {
+	std::string variable = this->getVariable();
+	Relationship<int, std::string>* temp = new Relationship<int, std::string>(
+		RelationshipReference::USES, this->getLineNumber(), variable);
+	result.push_back(temp);
+	
+	std::vector<std::string>* used = new std::vector<std::string>();
+	used->push_back(variable);
+	return used;
 }
 
 // Call Statement
@@ -142,6 +191,10 @@ std::string AssignStatementNode::getVariable() {
 	return this->var->getValue();
 }
 
+std::string AssignStatementNode::getExpressionString() {
+	return this->expr->toString();
+}
+
 void AssignStatementNode::getVariablesInto(std::vector<std::string>& result) {
 	result.push_back(this->getVariable());
 	this->expr->getVariablesInto(result);
@@ -155,8 +208,30 @@ void AssignStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 	result.push_back(new Statement(line, StatementType::ASSIGN)); 
 }
 
-std::string AssignStatementNode::getExpressionString() {
-	return this->expr->toString();
+std::vector<std::string>* AssignStatementNode::getUsesInto(std::vector<Relationship<int, std::string>*>& result) {
+	int lineNo = this->getLineNumber();
+	std::vector<std::string>* used = new std::vector<std::string>();
+
+	std::vector<std::string> variables;
+	this->expr->getVariablesInto(variables);
+	for (size_t i = 0; i < variables.size(); i++) {
+		Relationship<int, std::string>* variable = new Relationship<int, std::string>(
+			RelationshipReference::USES, lineNo, variables[i]);
+		result.push_back(variable);
+		used->push_back(variables[i]);
+	}
+
+	return used;
+}
+
+std::vector<std::string>* AssignStatementNode::getModsInto(std::vector<Relationship<int, std::string>*>& result) {
+	Relationship<int, std::string>* mdfdVar = new Relationship<int, std::string>(
+		RelationshipReference::MODIFIES, this->getLineNumber(), this->getVariable());
+	result.push_back(mdfdVar);
+
+	std::vector<std::string>* mdfd = new std::vector<std::string>();
+	mdfd->push_back(this->getVariable());
+	return mdfd;
 }
 
 // While Statement
@@ -206,83 +281,49 @@ void WhileStatementNode::getFollowsTInto(std::vector<Relationship<int, int>*>& r
 	ExtractUtils::followsT(this->getStmtList(), result);
 }
 
+std::vector<std::string>* WhileStatementNode::getUsesInto(std::vector<Relationship<int, std::string>*>& result) {
+	int lineNo = this->getLineNumber();
 
-// Expression
-ExpressionNode::ExpressionNode(Token* token) {
-	this->token = token;
-	this->left = NULL;
-	this->right = NULL;
+	std::vector<std::string> condVars;
+	this->cond->getVariablesInto(condVars);
+	for (size_t i = 0; i < condVars.size(); i++) {
+		Relationship<int, std::string>* condVar = new Relationship<int, std::string>(
+			RelationshipReference::USES, lineNo, condVars[i]);
+		result.push_back(condVar);
+	}
+
+	std::vector<std::string>* descendants = new std::vector<std::string>();
+	std::vector<StatementNode*> stmts = this->getStmtList();
+	for (size_t i = 0; i < stmts.size(); i++) {
+		std::vector<std::string>* usedVars = stmts[i]->getUsesInto(result);
+		for (size_t j = 0; j < usedVars->size(); j++) {
+			Relationship<int, std::string>* usedVar = new Relationship<int, std::string>(
+				RelationshipReference::USES, lineNo, usedVars->at(j));
+			result.push_back(usedVar);
+			descendants->push_back(usedVars->at(j));
+		}
+	}
+
+	return descendants;
 }
 
-ExpressionNode::ExpressionNode() {};
+std::vector<std::string>* WhileStatementNode::getModsInto(std::vector<Relationship<int, std::string>*>& result) {
+	int lineNo = this->getLineNumber();
 
-std::string ExpressionNode::toString() {
-	std::string result = "(";
-
-	if (this->left != NULL) {
-		result += this->left->toString();
+	std::vector<std::string>* descendants = new std::vector<std::string>();
+	std::vector<StatementNode*> stmts = this->getStmtList();
+	for (size_t i = 0; i < stmts.size(); i++) {
+		std::vector<std::string>* mdfdVars = stmts[i]->getModsInto(result);
+		for (size_t j = 0; j < mdfdVars->size(); j++) {
+			Relationship<int, std::string>* mdfdVar = new Relationship<int, std::string>(
+				RelationshipReference::MODIFIES, lineNo, mdfdVars->at(j));
+			result.push_back(mdfdVar);
+			descendants->push_back(mdfdVars->at(j));
+		}
 	}
-	result += this->token->getValue();
-	if (this->right != NULL) {
-		result += this->right->toString();
-	}
-	result += ")";
 
-	return result;
+	return descendants;
 }
-
-void ExpressionNode::getVariablesInto(std::vector<std::string>& result) {
-	if (this->token->isName()) {
-		result.push_back(this->token->getValue());
-	}
-	else if (this->token->isConstant()) {}
-	else {
-		this->left->getVariablesInto(result);
-		this->right->getVariablesInto(result);
-	}
-}
-
-void ExpressionNode::getConstantsInto(std::vector<std::string>& result) {
-	if (this->token->isConstant()) {
-		result.push_back(this->token->getValue());
-	}
-	else if (this->token->isName()) {}
-	else {
-		this->left->getConstantsInto(result);
-		this->right->getConstantsInto(result);
-	}
-}
-
-bool ExpressionNode::equals(ExpressionNode* other)
-{
-	if (this->left == NULL && this->right == NULL) {
-		return other->left == NULL && other->right == NULL && this->token->equals(other->token);
-	}
-	else if (this->right == NULL) {
-		if (other->left == NULL) return false;
-		return this->token->equals(other->token) && this->left->equals(other->left);
-	}
-	else {
-		if (other->left == NULL || other->right == NULL) { return false; }
-		return this->token->equals(other->token) && this->left->equals(other->left) && this->right->equals(other->right);
-	}
-
-	
-}
-
-
-// Constant
-ConstantNode ::ConstantNode (std::string s) {
-	this->value = s;
-}
-
-// Variable
-VariableNode ::VariableNode (std::string s) {
-	this->value = s;
-}
-
-VariableNode ::VariableNode () {}
-
 
 // If Statement
 IfStatementNode::IfStatementNode(std::vector<StatementNode*>& ifBlock, std::vector<StatementNode*>& elseBlock, ExpressionNode* cond, int line)
@@ -349,24 +390,6 @@ void IfStatementNode::getStatementsInto(std::vector<Statement*>& result)
 	}
 }
 
-bool IfStatementNode::equals(StatementNode* other) {
-	if (other->isIf()) {
-		IfStatementNode* temp = static_cast<IfStatementNode*>(other);
-		if (this->cond->equals(temp->cond) && this->ifBlock.size() == temp->ifBlock.size() && this->elseBlock.size() == temp->elseBlock.size()) {
-			std::vector<StatementNode*> stmtList1 = this->getStmtList();
-			std::vector<StatementNode*> stmtList2 = this->getStmtList();
-
-			return ExtractUtils::compareStmtList(stmtList1, stmtList2);
-		}
-		else {
-			return false;
-		}
-	}
-	else {
-		return false;
-	}
-}
-
 void IfStatementNode::getFollowsInto(std::vector<Relationship<int, int>*>& result) {
 	ExtractUtils::follows(this->ifBlock, result);
 	ExtractUtils::follows(this->elseBlock, result);
@@ -377,3 +400,119 @@ void IfStatementNode::getFollowsTInto(std::vector<Relationship<int, int>*>& resu
 	ExtractUtils::followsT(this->elseBlock, result);
 }
 
+std::vector<std::string>* IfStatementNode::getUsesInto(std::vector<Relationship<int, std::string>*>& result) {
+	int lineNo = this->getLineNumber();
+
+	std::vector<std::string> condVars;
+	this->cond->getVariablesInto(condVars);
+	for (size_t i = 0; i < condVars.size(); i++) {
+		Relationship<int, std::string>* condVar = new Relationship<int, std::string>(
+			RelationshipReference::USES, lineNo, condVars[i]);
+		result.push_back(condVar);
+	}
+
+	std::vector<std::string>* descendants= new std::vector<std::string>();
+	std::vector<StatementNode*> stmts = this->getStmtList();
+	for (size_t i = 0; i < stmts.size(); i++) {
+		std::vector<std::string>* usedVars = stmts[i]->getUsesInto(result);
+		for (size_t j = 0; j < usedVars->size(); j++) {
+			Relationship<int, std::string>* usedVar = new Relationship<int, std::string>(
+				RelationshipReference::USES, lineNo, usedVars->at(j));
+			result.push_back(usedVar);
+			descendants->push_back(usedVars->at(j));
+		}
+	}
+
+	return descendants;
+}
+
+std::vector<std::string>* IfStatementNode::getModsInto(std::vector<Relationship<int, std::string>*>& result) {
+	int lineNo = this->getLineNumber();
+
+	std::vector<std::string>* descendants = new std::vector<std::string>();
+	std::vector<StatementNode*> stmts = this->getStmtList();
+	for (size_t i = 0; i < stmts.size(); i++) {
+		std::vector<std::string>* mdfdVars = stmts[i]->getModsInto(result);
+		for (size_t j = 0; j < mdfdVars->size(); j++) {
+			Relationship<int, std::string>* mdfdVar = new Relationship<int, std::string>(
+				RelationshipReference::MODIFIES, lineNo, mdfdVars->at(j));
+			result.push_back(mdfdVar);
+			descendants->push_back(mdfdVars->at(j));
+		}
+	}
+
+	return descendants;
+}
+
+
+// Expression
+ExpressionNode::ExpressionNode(Token* token) {
+	this->token = token;
+	this->left = NULL;
+	this->right = NULL;
+}
+
+void ExpressionNode::getVariablesInto(std::vector<std::string>& result) {
+	if (this->token->isName()) {
+		result.push_back(this->token->getValue());
+	}
+	else if (this->token->isConstant()) {}
+	else {
+		this->left->getVariablesInto(result);
+		this->right->getVariablesInto(result);
+	}
+}
+
+void ExpressionNode::getConstantsInto(std::vector<std::string>& result) {
+	if (this->token->isConstant()) {
+		result.push_back(this->token->getValue());
+	}
+	else if (this->token->isName()) {}
+	else {
+		this->left->getConstantsInto(result);
+		this->right->getConstantsInto(result);
+	}
+}
+
+bool ExpressionNode::equals(ExpressionNode* other)
+{
+	if (this->left == NULL && this->right == NULL) {
+		return other->left == NULL && other->right == NULL && this->token->equals(other->token);
+	}
+	else if (this->right == NULL) {
+		if (other->left == NULL) return false;
+		return this->token->equals(other->token) && this->left->equals(other->left);
+	}
+	else {
+		if (other->left == NULL || other->right == NULL) { return false; }
+		return this->token->equals(other->token) && this->left->equals(other->left) && this->right->equals(other->right);
+	}
+}
+
+std::string ExpressionNode::toString() {
+	std::string result = "(";
+
+	if (this->left != NULL) {
+		result += this->left->toString();
+	}
+	result += this->token->getValue();
+	if (this->right != NULL) {
+		result += this->right->toString();
+	}
+	result += ")";
+
+	return result;
+}
+
+
+// Constant
+ConstantNode ::ConstantNode (std::string s) {
+	this->value = s;
+}
+
+// Variable
+VariableNode ::VariableNode (std::string s) {
+	this->value = s;
+}
+
+VariableNode ::VariableNode () {}

@@ -63,3 +63,31 @@ public:
 	std::vector<Relationship<int, int>*> extract();
 	void populate();
 };
+
+class ParentExtractor : public DesignExtractor {
+public:
+	ParentExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
+	std::vector<Relationship<int, int>*> extract();
+	void populate();
+};
+
+class ParentExtrT : public DesignExtractor {
+public:
+	ParentExtrT(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
+	std::vector<Relationship<int, int>*> extract();
+	void populate();
+};
+
+class UsesSExtractor : public DesignExtractor {
+public:
+	UsesSExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
+	std::vector<Relationship<int, std::string>*> extract();
+	void populate();
+};
+
+class ModSExtractor : public DesignExtractor {
+public:
+	ModSExtractor(ProgramNode* program, PopulateFacade* storage) : DesignExtractor(program, storage) {};
+	std::vector<Relationship<int, std::string>*> extract();
+	void populate();
+};

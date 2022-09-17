@@ -68,9 +68,9 @@ TEST_CASE("extract statement small program") {
 
 TEST_CASE("extract follows small program") {
 	std::vector<Relationship<int, int>*> expected;
-	expected.push_back(new Relationship(RelationshipReference::FOLLOWS, 1, 2));
-	expected.push_back(new Relationship(RelationshipReference::FOLLOWS, 2, 3));
-	expected.push_back(new Relationship(RelationshipReference::FOLLOWS, 3, 4));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::FOLLOWS, 1, 2));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::FOLLOWS, 2, 3));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::FOLLOWS, 3, 4));
 
 	std::string sourceProgram = "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + 2;\nwest = 9 + east + west;\n}";
 	std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
@@ -88,12 +88,12 @@ TEST_CASE("extract follows small program") {
 
 TEST_CASE("extract followsT small program") {
 	std::vector<Relationship<int, int>*> expected;
-	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 1, 2));
-	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 1, 3));
-	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 2, 3));
-	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 1, 4));
-	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 2, 4));
-	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 3, 4));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::FOLLOWS_T, 1, 2));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::FOLLOWS_T, 1, 3));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::FOLLOWS_T, 2, 3));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::FOLLOWS_T, 1, 4));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::FOLLOWS_T, 2, 4));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::FOLLOWS_T, 3, 4));
 
 	std::string sourceProgram = "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + 2;\nwest = 9 + east + west;\n}";
 	std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
@@ -109,7 +109,108 @@ TEST_CASE("extract followsT small program") {
 	}
 }
 
-TEST_CASE("Extract program with if else statements") {
+TEST_CASE("extract parent small program, a IF followed by a WHILE") {
+	std::vector<Relationship<int, int>*> expected;
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT, 1, 2));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT, 1, 3));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT, 1, 4));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT, 1, 5));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT, 6, 7));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT, 6, 8));
+
+	std::string sourceProgram = "procedure Bedok {\nif (a != 1) then{\na = 2;\na = 3;\n}\nelse {\na = 4;\na = 5;\n }\nwhile (a != 6) {\na = 7;\na = 8;\n}\n}";
+	std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+	ParentExtractor extr(program, NULL);
+	std::vector<Relationship<int, int>*> extracted = extr.extract();
+
+	REQUIRE(expected.size() == extracted.size());
+	for (int i = 0; i < expected.size(); i++) {
+		REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+		REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+		REQUIRE(expected[i]->getRelationshipReference() == extracted[i]->getRelationshipReference());
+	}
+}
+
+TEST_CASE("extract parentT small program, WHILE in a IF") {
+	std::vector<Relationship<int, int>*> expected;
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT_T, 1, 2));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT_T, 3, 4));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT_T, 3, 5));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT_T, 1, 4));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT_T, 1, 5));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT_T, 1, 3));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT_T, 1, 6));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT_T, 1, 7));
+	expected.push_back(new Relationship<int, int>(RelationshipReference::PARENT_T, 1, 8));
+
+	std::string sourceProgram = "procedure Bedok {\nif (a != 1) then{\na = 2;\nwhile (a != 6) {\na = 4;\na = 5;\n}\na = 6;\n}else {\na = 7;\na = 8;\n}\n}";
+	std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+	ParentExtrT extr(program, NULL);
+	std::vector<Relationship<int, int>*> extracted = extr.extract();
+
+	REQUIRE(expected.size() == extracted.size());
+	for (int i = 0; i < expected.size(); i++) {
+		REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+		REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+		REQUIRE(expected[i]->getRelationshipReference() == extracted[i]->getRelationshipReference());
+	}
+}
+
+TEST_CASE("extract usesS small program, ASSIGN and IF and WHILE and PRINT") {
+	std::vector<Relationship<int, std::string>*> expected;
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::USES, 1, "a"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::USES, 2, "b"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::USES, 3, "c"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::USES, 2, "c"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::USES, 4, "d"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::USES, 2, "d"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::USES, 5, "e"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::USES, 6, "f"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::USES, 5, "f"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::USES, 7, "g"));
+
+	std::string sourceProgram = "procedure Bedok {\nx = a;\nif (b != 2) then{\nx = c;\n}\nelse {\nx = d;\n}\nwhile (e != 5) {\nx = f;\n}\nprint g;\n}";
+	std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+	UsesSExtractor extr(program, NULL);
+	std::vector<Relationship<int, std::string>*> extracted = extr.extract();
+
+	REQUIRE(expected.size() == extracted.size());
+	for (int i = 0; i < expected.size(); i++) {
+		REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+		REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+		REQUIRE(expected[i]->getRelationshipReference() == extracted[i]->getRelationshipReference());
+	}
+}
+
+TEST_CASE("extract modifiesS small program, ASSIGN and IF and WHILE and READ") {
+	std::vector<Relationship<int, std::string>*> expected;
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::MODIFIES, 1, "a"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::MODIFIES, 3, "c"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::MODIFIES, 2, "c"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::MODIFIES, 4, "d"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::MODIFIES, 2, "d"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::MODIFIES, 6, "f"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::MODIFIES, 5, "f"));
+	expected.push_back(new Relationship<int, std::string>(RelationshipReference::MODIFIES, 7, "g"));
+
+	std::string sourceProgram = "procedure Bedok {\na = 1;\nif (b != 2) then{\nc = 3;\n}\nelse {\nd = 4;\n}\nwhile (e != 5) {\nf = 6;\n}\nread g;\n}";
+	std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+	ModSExtractor extr(program, NULL);
+	std::vector<Relationship<int, std::string>*> extracted = extr.extract();
+
+	REQUIRE(expected.size() == extracted.size());
+	for (int i = 0; i < expected.size(); i++) {
+		REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+		REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+		REQUIRE(expected[i]->getRelationshipReference() == extracted[i]->getRelationshipReference());
+	}
+}
+
+TEST_CASE("Extract program with if-else statements") {
 	// Follow relationship
 	std::vector<Relationship<int, int>*> expected;
 	expected.push_back(new Relationship(RelationshipReference::FOLLOWS_T, 3, 4));

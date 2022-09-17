@@ -46,9 +46,9 @@ std::vector<Assignment*> StatementExtractor::extractAssignments() {
 			StatementNode* currStmt = stmtList.at(j);
 			if (currStmt->isAssign()) {
 				AssignStatementNode* assign = (AssignStatementNode*) currStmt;
-				std::string expression = assign->getExpressionString();
 				int lineNo = assign->getLineNumber();
-				std::string leftVar = assign->getVariable();
+                std::string leftVar = assign->getVariable();
+                std::string expression = assign->getExpressionString();
 				result.push_back(new Assignment(lineNo, leftVar, expression));
 			}
 		}
@@ -127,6 +127,62 @@ std::vector<Relationship<int, int>*> FollowsExtrT::extract() {
 	return result;
 }
 
+std::vector<Relationship<int, int>*> ParentExtractor::extract() {
+	std::vector<Relationship<int, int>*> result;
+
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		for (size_t j = 0; j < stmtList.size(); j++) {
+			ExtractUtils::parent(stmtList[j], result);
+		}
+	}
+
+	return result;
+}
+
+std::vector<Relationship<int, int>*> ParentExtrT::extract() {
+	std::vector<Relationship<int, int>*> result;
+
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		for (size_t j = 0; j < stmtList.size(); j++) {
+			ExtractUtils::parentT(stmtList[j], result);
+		}
+	}
+
+	return result;
+}
+
+std::vector<Relationship<int, std::string>*> UsesSExtractor::extract() {
+	std::vector<Relationship<int, std::string>*> result;
+
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		for (size_t j = 0; j < stmtList.size(); j++) {
+			stmtList[j]->getUsesInto(result);
+		}
+	}
+
+	return result;
+}
+
+std::vector<Relationship<int, std::string>*> ModSExtractor::extract() {
+	std::vector<Relationship<int, std::string>*> result;
+
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		for (size_t j = 0; j < stmtList.size(); j++) {
+			stmtList[j]->getModsInto(result);
+		}
+	}
+
+	return result;
+}
+
 
 void DesignExtractor::extractAll() {
 	ProcedureExtractor(this->program, this->storage).populate();
@@ -135,6 +191,10 @@ void DesignExtractor::extractAll() {
 	ConstantExtractor(this->program, this->storage).populate();
 	FollowsExtractor(this->program, this->storage).populate();
 	FollowsExtrT(this->program, this->storage).populate();
+	ParentExtractor(this->program, this->storage).populate();
+	ParentExtrT(this->program, this->storage).populate();
+	UsesSExtractor(this->program, this->storage).populate();
+	ModSExtractor(this->program, this->storage).populate();
 }
 
 void ProcedureExtractor::populate() {
@@ -144,8 +204,9 @@ void ProcedureExtractor::populate() {
 
 void StatementExtractor::populate() {
 	std::vector<Statement*> statements = this->extract();
-	std::vector<Assignment*> assignments = this->extractAssignments();
 	this->storage->storeStatements(&statements);
+
+    std::vector<Assignment*> assignments = this->extractAssignments();
 	this->storage->storeAssignments(&assignments);
 }
 
@@ -167,4 +228,24 @@ void FollowsExtractor::populate() {
 void FollowsExtrT::populate() {
 	std::vector<Relationship<int, int>*> followsT = this->extract();
 	this->storage->storeFollowsT(&followsT);
+}
+
+void ParentExtractor::populate() {
+	std::vector<Relationship<int, int>*> parent = this->extract();
+	this->storage->storeParent(&parent);
+}
+
+void ParentExtrT::populate() {
+	std::vector<Relationship<int, int>*> parentT = this->extract();
+	this->storage->storeParentT(&parentT);
+}
+
+void UsesSExtractor::populate() {
+	std::vector<Relationship<int, std::string>*> usesS = this->extract();
+	this->storage->storeUsesS(&usesS);
+}
+
+void ModSExtractor::populate() {
+	std::vector<Relationship<int, std::string>*> ModifiesS = this->extract();
+	this->storage->storeUsesS(&ModifiesS);
 }

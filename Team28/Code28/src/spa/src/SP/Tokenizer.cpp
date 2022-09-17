@@ -1,16 +1,14 @@
 #include "Tokenizer.h"
 #include "Token.h"
 #include "EntityNode.h"
-#include <string>
 #include <vector>
 #include <ctype.h>
-#include <iostream>
 #include <algorithm>
 
 std::string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read", "call", "then"};
 char SYMBOL_LIST[] = { '(', ')', '{', '}', ';' };
 char WHITESPACE_LIST[] = { ' ' , '\n', '\t' };
-std::string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=","!=", "!", "&&", "||" };
+std::string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=","!=", "!", "&&", "||" , "=="};
 char opChar[] = { '+', '-', '=', '*', '/', '%', '>', '<', '!', '&', '|' };
 
 enum class TokenType {
