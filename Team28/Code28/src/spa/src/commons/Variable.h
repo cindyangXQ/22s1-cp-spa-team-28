@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <string>
 
@@ -6,9 +6,9 @@
 #include "Reference.h"
 
 /*
-* Class encapsulating a SIMPLE variable.
-*/
+ * Class encapsulating a SIMPLE variable.
+ */
 class Variable : public Entity {
 public:
-	explicit Variable(std::string name);
+    explicit Variable(std::string name);
 };

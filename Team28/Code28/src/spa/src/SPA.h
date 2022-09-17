@@ -6,14 +6,14 @@
 
 class SPA {
 public:
-	SPA();
+    SPA();
 
-	void parse(std::string filename);
+    void parse(std::string filename);
 
-	void evaluateQuery(std::string query, std::list<std::string>& results);
+    void evaluateQuery(std::string query, std::list<std::string> &results);
 
 private:
-	PKB pkb;
-	QPS qps = QPS(nullptr);
-	SP sp = SP(nullptr);
+    PKB pkb;
+    QPS qps = QPS(nullptr);
+    SP sp = SP(nullptr);
 };
