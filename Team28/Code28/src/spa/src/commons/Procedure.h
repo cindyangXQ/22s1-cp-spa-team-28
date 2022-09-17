@@ -1,15 +1,15 @@
-#pragma once 
+#pragma once
 
 #include <string>
 
 #include "Entity.h"
 
 /*
-* Class encapsulating a SIMPLE procedure.
-*/
+ * Class encapsulating a SIMPLE procedure.
+ */
 class Procedure : public Entity {
 public:
-	explicit Procedure(std::string name);
+    explicit Procedure(std::string name);
 
-	//TODO add representation of StmtLst in a Procedure
+    // TODO add representation of StmtLst in a Procedure
 };

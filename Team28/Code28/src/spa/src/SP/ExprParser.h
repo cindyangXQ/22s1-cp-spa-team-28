@@ -1,31 +1,35 @@
 #pragma once
 
-#include "Parser.h"
 #include "EntityNode.h"
+#include "Parser.h"
 
 class ExprParser : public Parser {
-	bool iscond;
+    bool iscond;
+
 public:
-	ExprParser(int offset, std::vector<Token*> tokens, bool iscond);
-	ExpressionNode* parse();
+    ExprParser(int offset, std::vector<Token *> tokens, bool iscond);
+    ExpressionNode *parse();
 };
 
 class TermParser : public Parser {
-	bool iscond;
+    bool iscond;
+
 public:
-	TermParser(int offset, std::vector<Token*> tokens, bool iscond);
-	ExpressionNode* parse();
+    TermParser(int offset, std::vector<Token *> tokens, bool iscond);
+    ExpressionNode *parse();
 };
 
 class FactorParser : public Parser {
-	bool iscond;
+    bool iscond;
+
 public:
-	FactorParser(int offset, std::vector<Token*> tokens, bool iscond);
-	ExpressionNode* parse();
+    FactorParser(int offset, std::vector<Token *> tokens, bool iscond);
+    ExpressionNode *parse();
 };
 
 class CondParser : public Parser {
 public:
-	CondParser(int offset, std::vector<Token*> tokens) : Parser(offset, tokens) {};
-	ExpressionNode* parse();
+    CondParser(int offset, std::vector<Token *> tokens)
+        : Parser(offset, tokens){};
+    ExpressionNode *parse();
 };

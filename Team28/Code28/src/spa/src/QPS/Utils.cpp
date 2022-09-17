@@ -23,7 +23,8 @@ std::string Utils::removeTrailingSpaces(std::string s) {
     return regex_replace(s, std::regex("^ +| +$|( ) +"), "$1");
 }
 
-std::vector<std::string> Utils::tokenize(std::string str, std::vector<char> special_char) {
+std::vector<std::string> Utils::tokenize(std::string str,
+                                         std::vector<char> special_char) {
     std::vector<std::string> result;
     std::string current = "";
     for (int i = 0; i < str.size(); i++) {
@@ -34,7 +35,8 @@ std::vector<std::string> Utils::tokenize(std::string str, std::vector<char> spec
             }
             continue;
         }
-        if (find(special_char.begin(), special_char.end(), str[i]) != special_char.end()) {
+        if (find(special_char.begin(), special_char.end(), str[i]) !=
+            special_char.end()) {
             if (current != "") {
                 result.push_back(current);
                 current = "";
@@ -58,6 +60,7 @@ std::string Utils::removeString(std::string input, std::string remove) {
     auto iter = input.find(remove);
     // Delete select string after it is parsed
     input.erase(iter, remove.length());
-    if (input.size() == 0) return "";
+    if (input.size() == 0)
+        return "";
     return input;
 }
