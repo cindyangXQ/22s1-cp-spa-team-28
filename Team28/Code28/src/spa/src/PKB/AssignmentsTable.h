@@ -12,18 +12,6 @@
 
 typedef std::pair<int, std::string> IntStringPair;
 
-// To allow for computation of hash of pairs
-// Referenced from https://stackoverflow.com/questions/2590677/how-do-i-combine-hash-values-in-c0x
-namespace std {
-template <> struct hash<IntStringPair> {
-    inline std::size_t operator()(const IntStringPair &v) const {
-		std::size_t h1 = std::hash<int>{}(v.first);
-		std::size_t h2 = std::hash<std::string>{}(v.second);
-        return h1 ^ (h2 + 0x9e3779b9 + (h1<<6) + (h1>>2));
-    }
-};
-}
-
 /*
 * Class encapsulating a Table used to store SIMPLE statements.
 */
@@ -38,29 +26,12 @@ public:
 	*/
 	void store(Assignment* assignment);
 
-	/*
-	* Stores the mapping of variable to (lineNo, expression)
-	*/
-	void storeVariableMap(std::string variable, int lineNo, std::string expression);
+	int getTableSize() const;
 
 	/*
-	* Stores the mapping of expression to (lineNo, variable)
+	* Return boolean of whether the given varName and expression exists in an assignment.
 	*/
-	void storeExpressionMap(std::string expression, int lineNo, std::string variable);
-
-	/*
-	* Retrieves the mapping of variable to (lineNo, expression)
-	*/
-	std::unordered_set<IntStringPair> retrieveFromVariable(std::string variable);
-
-	/*
-	* Retrieves the mapping of expression to (lineNo, variable)
-	*/
-	std::unordered_set<IntStringPair> retrieveFromExpression(std::string expression);
-
-	int getTableSize() const {
-		return -1; // TODO change behaviour, now returning dummy value
-	}
+	std::vector<Value> containsVarAndExpr(std::string varName, std::string expression);
 
 	/*
 	* Return list of possible values of assignments that satisfy the given varName and expression
@@ -73,11 +44,11 @@ public:
 	std::vector<std::pair<Value, Value>> getAssignAndVar(std::string expression);
 
 private:
-	std::map<std::string, std::unordered_set<IntStringPair>> variableMap;
-	std::map<std::string, std::unordered_set<IntStringPair>> expressionMap;
+	int tableSize = 0;
 
 	std::vector<Value> allLineNumbers;
-
+	std::vector<Assignment> allAssignments;
+	
 	/*
 	* Return list of possible values of assignments that satisfy the given non-wildcarded varName and expression
 	*/

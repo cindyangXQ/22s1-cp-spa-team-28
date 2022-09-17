@@ -684,23 +684,19 @@ TEST_CASE("getAssign returns correct results") {
 		Value(ValueType::STMT_NUM, "3")};
 	output = facade.getAssign("_", "_");
 	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
-	std::cout << "[DEBUG] passed" << std::endl;
 
 	// getAssign('_', '1') returns {'1', '2'}
-	// expectedResult = {Value(ValueType::STMT_NUM, "1"), Value(ValueType::STMT_NUM, "2")};
-	// output = facade.getAssign("_", "1");
-	// REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
-	// std::cout << "[DEBUG] passed" << std::endl;
+	expectedResult = {Value(ValueType::STMT_NUM, "1"), Value(ValueType::STMT_NUM, "2")};
+	output = facade.getAssign("_", "1");
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 
 	// getAssign('x1', '_') returns {'1', '2'}
 	expectedResult = {Value(ValueType::STMT_NUM, "1"), Value(ValueType::STMT_NUM, "2")};
 	output = facade.getAssign("x1", "_");
 	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
-	std::cout << "[DEBUG] passed" << std::endl;
 
 	// getAssign('x1', '10') returns {'1', '2', '3'}
 	expectedResult = {Value(ValueType::STMT_NUM, "2")};
 	output = facade.getAssign("x1", "10");
 	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
-	std::cout << "[DEBUG] passed" << std::endl;
 }

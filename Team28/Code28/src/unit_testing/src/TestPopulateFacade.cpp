@@ -49,13 +49,19 @@ TEST_CASE("storeAssignments store Assignment objects correctly") {
 	AssignmentsTable* assignmentsTable = (AssignmentsTable*)storage.getTable(TableName::ASSIGNMENTS);
 
 	// returned number of assignments is equal to number stored
-	REQUIRE(assignmentsTable->retrieveFromVariable("x1").size() == 2);
-	REQUIRE(assignmentsTable->retrieveFromVariable("x2").size() == 1);
-	// items are stored correctly
-	REQUIRE(assignmentsTable->retrieveFromVariable("x1").count(IntStringPair(1, "(1)")) == 1);
-	REQUIRE(assignmentsTable->retrieveFromVariable("x1").count(IntStringPair(2, "(1)")) == 1);
-	REQUIRE(assignmentsTable->retrieveFromVariable("x2").count(IntStringPair(3, "((x1)*(x1))")) == 1);
+	REQUIRE(assignmentsTable->getTableSize() == 3);
 
+	std::vector<Value> expectedResult;
+	std::vector<Value> output;
+
+	// items are stored correctly
+	expectedResult = {Value(ValueType::STMT_NUM, "1"), Value(ValueType::STMT_NUM, "2")};
+	output = assignmentsTable->containsVarAndExpr("x1", "(1)");
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+	
+	expectedResult = {Value(ValueType::STMT_NUM, "3")};
+	output = assignmentsTable->containsVarAndExpr("x2", "((x1)*(x1))");
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 }
 
 TEST_CASE("storeVariable stores Variable objects correctly") {

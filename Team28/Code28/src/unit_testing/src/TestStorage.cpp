@@ -58,9 +58,13 @@ TEST_CASE("Storage stores and retrieves Assignments correctly") {
 	assignments->store(&test);
 
 	// Assignment stored to AssignnmentsTable correctly
-	REQUIRE(assignments->retrieveFromVariable("x1").size() == 1);
+	REQUIRE(assignments->getTableSize() == 1);
 	// Assignment retrieved from Assignments correctly
-	REQUIRE(assignments->retrieveFromVariable("x1").count(IntStringPair(1, "(1)")) == 1);
+	std::vector<Value> expectedResult = {
+		Value(ValueType::STMT_NUM, "1")
+	};
+	std::vector<Value> output = assignments->containsVarAndExpr("x1", "(1)");
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 }
 
 TEST_CASE("Storage stores and retrieves Variables correctly") {
