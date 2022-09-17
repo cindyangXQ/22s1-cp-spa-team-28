@@ -12,5 +12,5 @@ private:
     QueryFacade *queryFacade;
 public:
     explicit PatternEvaluator(QueryFacade *queryFacade) : queryFacade(queryFacade) {};
-    std::vector<ClauseResult> evaluate(PatternClause *patternCl);
+    ClauseResult evaluate(PatternClause *patternCl);
 };

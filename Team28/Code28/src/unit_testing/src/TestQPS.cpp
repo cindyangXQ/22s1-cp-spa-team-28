@@ -384,7 +384,52 @@ TEST_CASE("QPS can process queries with modifies relationship") {
 	REQUIRE(results == correct_output);
 }
 
-TEST_CASE("QPS can process queries with pattern") {
+TEST_CASE("QPS can process queries with pattern clause") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	AssignmentsTable* assignments = (AssignmentsTable*)storage.getTable(TableName::ASSIGNMENTS);
+	VariablesTable* variables = (VariablesTable*)storage.getTable(TableName::VARIABLES);
+
+	Variable var1 = Variable("a");
+	Variable var2 = Variable("b");
+	Assignment assignment1 = Assignment(1, "a", "(b)");
+	Assignment assignment2 = Assignment(2, "b", "(a)");
+	assignments->store(&assignment1);
+	assignments->store(&assignment2);
+	variables->store(&var1);
+	variables->store(&var2);
+
+	QPS qps = QPS(&facade);
+	std::string input;
+	std::list<std::string> results;
+	std::list<std::string> correct_output;
+
+	input = "assign a; Select a pattern a(\"a\", _)";
+	correct_output = { "1" };
+	results = {};
+	qps.evaluate(input, results);
+	REQUIRE(results == correct_output);
+
+	input = "assign a; Select a pattern a(_, _)";
+	correct_output = { "1", "2" };
+	results = {};
+	qps.evaluate(input, results);
+	REQUIRE(results == correct_output);
+
+	input = "assign a; variable v; Select v pattern a(v, _)";
+	correct_output = { "a", "b" };
+	results = {};
+	qps.evaluate(input, results);
+	REQUIRE(results == correct_output);
+
+	input = "assign a; variable v; Select a pattern a(\"b\", _\"a\"_)";
+	correct_output = { "2" };
+	results = {};
+	qps.evaluate(input, results);
+	REQUIRE(results == correct_output);
+}
+
+TEST_CASE("QPS can process queries with such that and pattern clause") {
 	Storage storage;
 	QueryFacade facade = QueryFacade(&storage);
 	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
@@ -397,8 +442,8 @@ TEST_CASE("QPS can process queries with pattern") {
 	Statement line2 = Statement(2, StatementType::ASSIGN);
 	Variable var1 = Variable("a");
 	Variable var2 = Variable("b");
-	Assignment assignment1 = Assignment(1, "a", "b");
-	Assignment assignment2 = Assignment(2, "b", "a");
+	Assignment assignment1 = Assignment(1, "a", "(b)");
+	Assignment assignment2 = Assignment(2, "b", "(a)");
 	assignments->store(&assignment1);
 	assignments->store(&assignment2);
 	Relationship<int, std::string> rs1 = Relationship(
@@ -427,8 +472,26 @@ TEST_CASE("QPS can process queries with pattern") {
 	std::list<std::string> results;
 	std::list<std::string> correct_output;
 
-	input = "assign a; Select a such that Modifies(2, \"b\") pattern a(\"a\", _)";
+	input = "assign a; variable v; Select a such that Modifies(1, \"a\") pattern a(\"b\", _\"a\"_)";
+	correct_output = { "2" };
+	results = {};
+	qps.evaluate(input, results);
+	REQUIRE(results == correct_output);
+
+	input = "assign a; variable v; Select v such that Modifies(1, v) pattern a(v, _\"b\"_)";
+	correct_output = { "a" };
+	results = {};
+	qps.evaluate(input, results);
+	REQUIRE(results == correct_output);
+
+	input = "assign a; variable v; Select a such that Modifies(a, v) pattern a(v, _\"b\"_)";
 	correct_output = { "1" };
+	results = {};
+	qps.evaluate(input, results);
+	REQUIRE(results == correct_output);
+
+	input = "assign a; variable v; Select v such that Uses(a, v) pattern a(_, _\"b\"_)";
+	correct_output = { "b" };
 	results = {};
 	qps.evaluate(input, results);
 	REQUIRE(results == correct_output);

@@ -88,6 +88,9 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector
 
         return SuchThatClause(relationship, left, right);
     }
+    else {
+        return SuchThatClause();
+    }
 }
 
 PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<Synonym> syns) {
@@ -109,7 +112,9 @@ PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<S
         *clause = Utils::removeString(*clause, patternClause);
 
         return PatternClause(syn, entRef, expression);
-
+    }
+    else {
+        return PatternClause();
     }
 }
 
