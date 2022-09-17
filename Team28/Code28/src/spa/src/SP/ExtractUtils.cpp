@@ -45,7 +45,7 @@ void ExtractUtils::parent(StatementNode* parentNode, std::vector<Relationship<in
 std::vector<int>* ExtractUtils::parentT(StatementNode* parentNode, std::vector<Relationship<int, int>*>& result) {
 	int parentLineNo = parentNode->getLineNumber();
 	std::vector<StatementNode*> children = parentNode->getStmtList();
-	std::vector<int> descendants;
+	std::vector<int>* descendants = new std::vector<int>();
 
 	for (size_t i = 0; i < children.size(); i++) {
 		std::vector<int>* grandchildren = ExtractUtils::parentT(children[i], result);
@@ -54,17 +54,17 @@ std::vector<int>* ExtractUtils::parentT(StatementNode* parentNode, std::vector<R
 			Relationship<int, int>* addGrandchild = new Relationship<int, int>(
 				RelationshipReference::PARENT_T, parentLineNo, grandchild);
 			result.push_back(addGrandchild);
-			descendants.push_back(grandchild);
+			descendants->push_back(grandchild);
 		}
 
 		int child = children[i]->getLineNumber();
 		Relationship<int, int>* addChild = new Relationship<int, int>(
 			RelationshipReference::PARENT_T, parentLineNo, child);
 		result.push_back(addChild);
-		descendants.push_back(child);
+		descendants->push_back(child);
 	}
 
-	return &descendants;
+	return descendants;
 }
 
 

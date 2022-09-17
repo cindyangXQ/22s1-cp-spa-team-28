@@ -56,8 +56,8 @@ public:
 		result.push_back(new Statement(line, StatementType::NONE)); }
 	virtual void getFollowsInto(std::vector<Relationship<int, int>*>& result) {};
 	virtual void getFollowsTInto(std::vector<Relationship<int, int>*>& result) {};
-	virtual std::vector<std::string>* getUsesInto(std::vector<Relationship<int, std::string>*>& result) { std::vector<std::string> used; return &used; };
-	virtual std::vector<std::string>* getModsInto(std::vector<Relationship<int, std::string>*>& result) { std::vector<std::string> mdfd; return &mdfd; };
+	virtual std::vector<std::string>* getUsesInto(std::vector<Relationship<int, std::string>*>& result);
+	virtual std::vector<std::string>* getModsInto(std::vector<Relationship<int, std::string>*>& result);
 };
 
 class ProcedureNode : public EntityNode {
