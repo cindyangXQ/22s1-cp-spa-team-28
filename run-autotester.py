@@ -1,9 +1,5 @@
-import subprocess
 import sys
 import os
-import platform
-
-import xml.etree.cElementTree as et
 
 def autotest(source_path):
     cmd = "Team28//Code28//out//build//x64-Debug//src//autotester//autotester.exe Team28//Tests28//source//{}.txt Team28//Tests28//queries//{}_queries.txt Team28//Tests28//out_{}.xml".format(
