@@ -388,6 +388,7 @@ TEST_CASE("QPS can process queries with pattern") {
 	Storage storage;
 	QueryFacade facade = QueryFacade(&storage);
 	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
+	AssignmentsTable* assignments = (AssignmentsTable*)storage.getTable(TableName::ASSIGNMENTS);
 	VariablesTable* variables = (VariablesTable*)storage.getTable(TableName::VARIABLES);
 	ModifiesSTable* modifiesS = (ModifiesSTable*)storage.getTable(TableName::MODIFIES_S);
 	ModifiesSTable* usesS = (ModifiesSTable*)storage.getTable(TableName::USES_S);
@@ -396,6 +397,10 @@ TEST_CASE("QPS can process queries with pattern") {
 	Statement line2 = Statement(2, StatementType::ASSIGN);
 	Variable var1 = Variable("a");
 	Variable var2 = Variable("b");
+	Assignment assignment1 = Assignment(1, "a", "b");
+	Assignment assignment2 = Assignment(2, "b", "a");
+	assignments->store(&assignment1);
+	assignments->store(&assignment2);
 	Relationship<int, std::string> rs1 = Relationship(
 		RelationshipReference::MODIFIES, 1, std::string("a")
 	);
@@ -422,7 +427,7 @@ TEST_CASE("QPS can process queries with pattern") {
 	std::list<std::string> results;
 	std::list<std::string> correct_output;
 
-	input = "assign a; variable v; Select a pattern a(\"a\", _)";
+	input = "assign a; Select a such that Modifies(2, \"b\") pattern a(\"a\", _)";
 	correct_output = { "1" };
 	results = {};
 	qps.evaluate(input, results);

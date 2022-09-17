@@ -141,7 +141,7 @@ std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens)
 
 Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns) {
     if (std::all_of(input.begin(), input.end(), ::isdigit)) {
-        return Reference(input.c_str());
+        return Reference(input);
     }
     else if (input[0] == '\"' && input.back() == '\"') {
         return Reference(input.substr(1, input.size() - 2));

@@ -8,7 +8,7 @@ std::vector<ClauseResult> PatternEvaluator::evaluate(PatternClause *patternCl) {
         if (patternCl->entRef.isSynonym) {
             std::string expr = patternCl->expression;
 
-            if (expr.find('_') != std::string::npos) {
+            if (expr.find('_') != std::string::npos && expr.size() > 1) {
                 Reference expressionVar = Reference(expr.substr(1, expr.size() - 2));
                 ClauseResult clauseResultModifies = ClauseResult(std::vector{ patternCl->syn, patternCl->entRef.syn });
                 ClauseResult clauseResultUses = ClauseResult(std::vector{ patternCl->syn});
@@ -37,7 +37,7 @@ std::vector<ClauseResult> PatternEvaluator::evaluate(PatternClause *patternCl) {
             std::string varName = patternCl->entRef.value.value;
             std::string expr = patternCl->expression;
 
-            if (expr.find('_') != std::string::npos) {
+            if (expr.find('_') != std::string::npos && expr.size() > 1) {
                 Reference var = Reference(varName);
                 Reference expressionVar = Reference(expr.substr(1, expr.size() - 2));
                 ClauseResult clauseResultModifies = ClauseResult(std::vector{ patternCl->syn });
