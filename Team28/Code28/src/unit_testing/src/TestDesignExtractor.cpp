@@ -21,6 +21,31 @@ TEST_CASE("extract procedure small program") {
 	}
 }
 
+TEST_CASE("extract assignments small program") {
+	std::vector<Assignment*> expected;
+	Assignment a1 = Assignment(1, "west", "((9)+(east))");
+	Assignment a2 = Assignment(2, std::string("y"), "((east)-(4))");
+	Assignment a3 = Assignment(3, "z", "((west)+(2))");
+	Assignment a4 = Assignment(4, "west", "(((9)+(east))+(west))");
+	expected.push_back(&a1);
+	expected.push_back(&a2);
+	expected.push_back(&a3);
+	expected.push_back(&a4);
+
+	std::string sourceProgram = "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + 2;\nwest = 9 + east + west;\n}";
+	std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+	ProgramNode* program = ProgramParser(0, tokens).parse();
+	StatementExtractor extr(program, NULL);
+	std::vector<Assignment*> extracted = extr.extractAssignments();
+
+	REQUIRE(expected.size() == extracted.size());
+	for (int i = 0; i < expected.size(); i++) {
+		REQUIRE(expected[i]->getLineNo() == extracted[i]->getLineNo());
+		REQUIRE(expected[i]->getExpression() == extracted[i]->getExpression());
+		REQUIRE(expected[i]->getVariable() == extracted[i]->getVariable());
+	}
+}
+
 TEST_CASE("extract statement small program") {
 	std::vector<Statement*> expected;
 	expected.push_back(new Statement(1, StatementType::ASSIGN));

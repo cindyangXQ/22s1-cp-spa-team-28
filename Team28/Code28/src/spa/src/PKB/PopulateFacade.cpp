@@ -12,6 +12,14 @@ void PopulateFacade::storeStatements(std::vector<Statement*> *statements) {
 	}	
 };
 
+void PopulateFacade::storeAssignments(std::vector<Assignment*> *assignments) {
+	AssignmentsTable* assignmentsTable = (AssignmentsTable*) this->storage->getTable(TableName::ASSIGNMENTS);
+	
+	for(Assignment* assignment : *assignments) {
+		assignmentsTable->store(assignment);
+	}	
+};
+
 void PopulateFacade::storeVariables(std::vector<Variable*> *variables) {
 	VariablesTable* variableTable = (VariablesTable*) this->storage->getTable(TableName::VARIABLES);
 	for(Variable* variable : *variables) {

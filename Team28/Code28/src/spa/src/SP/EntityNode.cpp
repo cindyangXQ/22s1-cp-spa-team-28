@@ -155,6 +155,10 @@ void AssignStatementNode::getStatementsInto(std::vector<Statement*>& result) {
 	result.push_back(new Statement(line, StatementType::ASSIGN)); 
 }
 
+std::string AssignStatementNode::getExpressionString() {
+	return this->expr->toString();
+}
+
 // While Statement
 WhileStatementNode::WhileStatementNode(const std::vector<StatementNode*>& stmtList, ExpressionNode* cond, int line)
 {
@@ -211,6 +215,21 @@ ExpressionNode::ExpressionNode(Token* token) {
 }
 
 ExpressionNode::ExpressionNode() {};
+
+std::string ExpressionNode::toString() {
+	std::string result = "(";
+
+	if (this->left != NULL) {
+		result += this->left->toString();
+	}
+	result += this->token->getValue();
+	if (this->right != NULL) {
+		result += this->right->toString();
+	}
+	result += ")";
+
+	return result;
+}
 
 void ExpressionNode::getVariablesInto(std::vector<std::string>& result) {
 	if (this->token->isName()) {
