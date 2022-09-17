@@ -8,7 +8,7 @@
 std::string KEYWORD_LIST[] = { "procedure", "if", "else", "then", "while", "print", "read", "call", "then"};
 char SYMBOL_LIST[] = { '(', ')', '{', '}', ';' };
 char WHITESPACE_LIST[] = { ' ' , '\n', '\t' };
-std::string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=","!=", "!", "&&", "||" };
+std::string OPERATOR_LIST[] = { "+", "-",  "=", "*", "/", "%" , ">", "<", ">=", "<=","!=", "!", "&&", "||" , "=="};
 char opChar[] = { '+', '-', '=', '*', '/', '%', '>', '<', '!', '&', '|' };
 
 enum class TokenType {
