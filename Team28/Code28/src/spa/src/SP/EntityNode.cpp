@@ -452,8 +452,6 @@ ExpressionNode::ExpressionNode(Token* token) {
 	this->right = NULL;
 }
 
-ExpressionNode::ExpressionNode() {};
-
 void ExpressionNode::getVariablesInto(std::vector<std::string>& result) {
 	if (this->token->isName()) {
 		result.push_back(this->token->getValue());

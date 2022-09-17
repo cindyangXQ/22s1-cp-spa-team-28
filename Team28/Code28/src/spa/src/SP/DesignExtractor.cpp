@@ -46,9 +46,9 @@ std::vector<Assignment*> StatementExtractor::extractAssignments() {
 			StatementNode* currStmt = stmtList.at(j);
 			if (currStmt->isAssign()) {
 				AssignStatementNode* assign = (AssignStatementNode*) currStmt;
-				std::string expression = assign->getExpressionString();
 				int lineNo = assign->getLineNumber();
-				std::string leftVar = assign->getVariable();
+                std::string leftVar = assign->getVariable();
+                std::string expression = assign->getExpressionString();
 				result.push_back(new Assignment(lineNo, leftVar, expression));
 			}
 		}
@@ -204,8 +204,9 @@ void ProcedureExtractor::populate() {
 
 void StatementExtractor::populate() {
 	std::vector<Statement*> statements = this->extract();
-	std::vector<Assignment*> assignments = this->extractAssignments();
 	this->storage->storeStatements(&statements);
+
+    std::vector<Assignment*> assignments = this->extractAssignments();
 	this->storage->storeAssignments(&assignments);
 }
 
