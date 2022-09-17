@@ -2,8 +2,10 @@
 
 QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
     ClauseResult suchThatResult = suchThatEvaluator.evaluate(&solvableQ->suchThatCl);
-    ClauseResult patternResult = patternEvaluator.evaluate(&solvableQ->patternCl);
-    std::vector<ClauseResult> clauseResultList{suchThatResult, patternResult};
+    std::vector<ClauseResult> patternResult = patternEvaluator.evaluate(&solvableQ->patternCl);
+    std::vector<ClauseResult> clauseResultList{ suchThatResult };
+    clauseResultList.insert(clauseResultList.end(), patternResult.begin(), patternResult.end());
+
     return QueryResult(solvableQ->selectType, clauseResultList);
 }
 

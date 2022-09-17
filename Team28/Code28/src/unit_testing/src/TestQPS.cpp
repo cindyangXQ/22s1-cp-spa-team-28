@@ -383,3 +383,48 @@ TEST_CASE("QPS can process queries with modifies relationship") {
 	qps.evaluate(input, results);
 	REQUIRE(results == correct_output);
 }
+
+TEST_CASE("QPS can process queries with pattern") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	StatementsTable* statements = (StatementsTable*)storage.getTable(TableName::STATEMENTS);
+	VariablesTable* variables = (VariablesTable*)storage.getTable(TableName::VARIABLES);
+	ModifiesSTable* modifiesS = (ModifiesSTable*)storage.getTable(TableName::MODIFIES_S);
+	ModifiesSTable* usesS = (ModifiesSTable*)storage.getTable(TableName::USES_S);
+
+	Statement line1 = Statement(1, StatementType::ASSIGN);
+	Statement line2 = Statement(2, StatementType::ASSIGN);
+	Variable var1 = Variable("a");
+	Variable var2 = Variable("b");
+	Relationship<int, std::string> rs1 = Relationship(
+		RelationshipReference::MODIFIES, 1, std::string("a")
+	);
+	Relationship<int, std::string> rs2 = Relationship(
+		RelationshipReference::MODIFIES, 2, std::string("b")
+	);
+	Relationship<int, std::string> rs3 = Relationship(
+		RelationshipReference::USES, 1, std::string("b")
+	);
+	Relationship<int, std::string> rs4 = Relationship(
+		RelationshipReference::USES, 2, std::string("a")
+	);
+	statements->store(&line1);
+	statements->store(&line2);
+	variables->store(&var1);
+	variables->store(&var2);
+	modifiesS->store(&rs1);
+	modifiesS->store(&rs2);
+	usesS->store(&rs3);
+	usesS->store(&rs4);
+
+	QPS qps = QPS(&facade);
+	std::string input;
+	std::list<std::string> results;
+	std::list<std::string> correct_output;
+
+	input = "assign a; variable v; Select a pattern a(\"a\", _)";
+	correct_output = { "1" };
+	results = {};
+	qps.evaluate(input, results);
+	REQUIRE(results == correct_output);
+}

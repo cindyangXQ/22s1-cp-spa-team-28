@@ -88,7 +88,6 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector
 
         return SuchThatClause(relationship, left, right);
     }
-    throw SyntaxError("Expected such that clause");
 }
 
 PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<Synonym> syns) {
@@ -112,7 +111,6 @@ PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<S
         return PatternClause(syn, entRef, expression);
 
     }
-    throw SyntaxError("Expected pattern clause");
 }
 
 std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens) {
