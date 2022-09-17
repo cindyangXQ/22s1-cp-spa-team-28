@@ -122,6 +122,7 @@ public:
 	void getVariablesInto(std::vector<std::string>& result);
 	void getConstantsInto(std::vector<std::string>& result);
 	bool equals(ExpressionNode* other);
+	std::string toString();
 };
 
 class AssignStatementNode : public StatementNode {
@@ -133,6 +134,7 @@ public:
 	bool isAssign() { return true; };
 	bool equals(StatementNode* other);
 	std::string getVariable();
+	std::string getExpressionString();
 	void getVariablesInto(std::vector<std::string>& result);
 	void getConstantsInto(std::vector<std::string>& result);
 	void getStatementsInto(std::vector<Statement*>& result);

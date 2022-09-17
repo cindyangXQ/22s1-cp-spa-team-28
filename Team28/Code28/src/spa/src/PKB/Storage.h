@@ -13,6 +13,7 @@
 
 #include "Table.h"
 #include "StatementsTable.h"
+#include "AssignmentsTable.h"
 #include "NamesTable.h"
 #include "RelationshipsTable.h"
 
@@ -21,6 +22,7 @@
 */
 enum class TableName {
 	STATEMENTS,
+	ASSIGNMENTS,
 	PROCEDURES,
 	VARIABLES,
 	CONSTANTS,
@@ -41,6 +43,7 @@ class Storage {
 public:
 	explicit Storage() {
 		StatementsTable* statements = new StatementsTable();
+		AssignmentsTable* assignments = new AssignmentsTable();
 		ProceduresTable* procedures = new ProceduresTable();
 		VariablesTable* variables = new VariablesTable();
 		ConstantsTable* constants = new ConstantsTable();
@@ -57,6 +60,7 @@ public:
 		* TODO relook typecasting
 		*/
 		this->tables[TableName::STATEMENTS] = (Table<TableValue>*) statements;
+		this->tables[TableName::ASSIGNMENTS] = (Table<TableValue>*) assignments;
 		this->tables[TableName::PROCEDURES] = (Table<TableValue>*) procedures;
 		this->tables[TableName::VARIABLES] = (Table<TableValue>*) variables;
 		this->tables[TableName::CONSTANTS] = (Table<TableValue>*) constants;
