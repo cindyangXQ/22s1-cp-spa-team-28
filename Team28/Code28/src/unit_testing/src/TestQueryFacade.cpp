@@ -700,3 +700,41 @@ TEST_CASE("getAssign returns correct results") {
 	output = facade.getAssign("x1", "10");
 	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
 }
+
+TEST_CASE("getAssignAndVar returns correct results") {
+	Storage storage;
+	QueryFacade facade = QueryFacade(&storage);
+	AssignmentsTable* assignments = (AssignmentsTable*)storage.getTable(TableName::ASSIGNMENTS);
+	
+	Assignment test1 = Assignment(1, "x1", "(1)");
+	Assignment test2 = Assignment(2, "x1", "((1)+(10))");
+	Assignment test3 = Assignment(3, "x2", "((x1)*(x1))");
+	assignments->store(&test1);
+	assignments->store(&test2);
+	assignments->store(&test3);
+
+	Value varX1 = Value(ValueType::VAR_NAME, "x1");
+	Value varX2 = Value(ValueType::VAR_NAME, "x2");
+	Value stmt1 = Value(ValueType::STMT_NUM, "1");
+	Value stmt2 = Value(ValueType::STMT_NUM, "2");
+	Value stmt3 = Value(ValueType::STMT_NUM, "3");
+
+	std::vector<std::pair<Value, Value>> expectedResult;
+	std::vector<std::pair<Value, Value>> output;
+
+	// getAssignAndVar('_') returns {('1', 'x1'), ('2', 'x1'), ('3', 'x2')}
+	expectedResult = {std::make_pair(stmt1, varX1), std::make_pair(stmt2, varX1),
+		std::make_pair(stmt3, varX2) };
+	output = facade.getAssignAndVar("_");
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+
+	// getAssignAndVar('1') returns {('1', 'x1'), ('2', 'x1')}
+	expectedResult = {std::make_pair(stmt1, varX1), std::make_pair(stmt2, varX1)};
+	output = facade.getAssignAndVar("1");
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+
+	// getAssignAndVar('x1') returns {('3', 'x2')}
+	expectedResult = {std::make_pair(stmt3, varX2)};
+	output = facade.getAssignAndVar("x1");
+	REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(), output.begin()));
+}

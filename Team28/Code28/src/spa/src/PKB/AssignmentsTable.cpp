@@ -70,5 +70,22 @@ std::vector<Value> AssignmentsTable::getAssign(std::string varName, std::string 
 };
 
 std::vector<std::pair<Value, Value>> AssignmentsTable::getAssignAndVar(std::string expression) {
-	return {};
+	if (expression == "_") {
+		expression = "";
+	} else {
+		expression = "(" + expression + ")";
+	}
+	// TODO: handle exact matching
+
+	std::vector<std::pair<Value, Value>> result;
+	for (Assignment assignment : this->allAssignments) {
+		if (assignment.getExpression().find(expression) != std::string::npos) {
+			result.push_back(std::make_pair(
+				Value(ValueType::STMT_NUM, std::to_string(assignment.getLineNo())),
+				Value(ValueType::VAR_NAME, assignment.getVariable())
+			));
+		}
+	}
+	return result;
+
 };
