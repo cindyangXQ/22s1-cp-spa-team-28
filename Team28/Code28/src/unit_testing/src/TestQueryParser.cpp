@@ -119,8 +119,8 @@ TEST_CASE("Parser can parse such that clause") {
 	std::string missing_bracket = "such that Modifies(1, v";
 	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&missing_bracket, syns));
 
-	std::string misspelled = "suxh that Modifies(1, v)";
-	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&misspelled, syns));
+	std::string misspelled = "variable v; Select v suxh that Modifies(1, v)";
+	REQUIRE_THROWS(QueryParser::parse(misspelled));
 
 	std::string too_many_arguments = "such that Modifies(1, v, d)";
 	REQUIRE_THROWS(QueryParser::parseSuchThatClause(&too_many_arguments, syns));
@@ -149,8 +149,8 @@ TEST_CASE("Parser can parse pattern clause") {
     std::string undeclared_syn = "pattern a(p, \"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&undeclared_syn, syns));
 
-	std::string misspelled = "pattrn a(v, _)";
-	REQUIRE_THROWS(QueryParser::parsePatternClause(&misspelled, syns));
+	std::string misspelled = "assign a; Select a pattrn a(\"x\", _)";
+	REQUIRE_THROWS(QueryParser::parse(misspelled));
 
 	std::string too_many_arguments = "pattern a(v, _, c)";
 	REQUIRE_THROWS(QueryParser::parsePatternClause(&too_many_arguments, syns));

@@ -43,7 +43,7 @@ const RELATIONSHIP_MAP relationshipMap = {
 const std::regex intRegex("\\s*0|[1-9]\\d*\\s*");  // integer: DIGIT+
 const std::regex synRegex("\\s*[a-zA-Z][a-zA-Z0-9]*\\s*");  // synonym: LETTER(LETTER|DIGIT)*
 const std::regex nameRegex("\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"); // name: LETTER ( LETTER | DIGIT )*
-const std::regex wildcardRegex("^\\s*_\\s*"); // wildcard: _
+const std::regex wildcardRegex("\\s*_\\s*"); // wildcard: _
 
 /*
 * Regex expressions for arguments
