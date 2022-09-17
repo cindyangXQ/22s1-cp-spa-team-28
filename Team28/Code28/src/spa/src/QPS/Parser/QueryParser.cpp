@@ -88,7 +88,9 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause, std::vector
 
         return SuchThatClause(relationship, left, right);
     }
-    throw SyntaxError("Expected such that clause");
+    else {
+        return SuchThatClause();
+    }
 }
 
 PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<Synonym> syns) {
@@ -110,9 +112,10 @@ PatternClause QueryParser::parsePatternClause(std::string* clause, std::vector<S
         *clause = Utils::removeString(*clause, patternClause);
 
         return PatternClause(syn, entRef, expression);
-
     }
-    throw SyntaxError("Expected pattern clause");
+    else {
+        return PatternClause();
+    }
 }
 
 std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens) {
@@ -143,7 +146,7 @@ std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens)
 
 Reference QueryParser::getReference(std::string input, std::vector<Synonym> syns) {
     if (std::all_of(input.begin(), input.end(), ::isdigit)) {
-        return Reference(input.c_str());
+        return Reference(input);
     }
     else if (input[0] == '\"' && input.back() == '\"') {
         return Reference(input.substr(1, input.size() - 2));

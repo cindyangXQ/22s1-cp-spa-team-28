@@ -36,6 +36,27 @@ std::vector<Statement*> StatementExtractor::extract() {
 	return result;
 }
 
+std::vector<Assignment*> StatementExtractor::extractAssignments() {
+	std::vector<Assignment*> result;
+
+	std::vector<ProcedureNode*> procList = this->program->getProcList();
+	for (size_t i = 0; i < procList.size(); i++) {
+		std::vector<StatementNode*> stmtList = procList.at(i)->getStmtList();
+		for (size_t j = 0; j < stmtList.size(); j++) {
+			StatementNode* currStmt = stmtList.at(j);
+			if (currStmt->isAssign()) {
+				AssignStatementNode* assign = (AssignStatementNode*) currStmt;
+				std::string expression = assign->getExpressionString();
+				int lineNo = assign->getLineNumber();
+				std::string leftVar = assign->getVariable();
+				result.push_back(new Assignment(lineNo, leftVar, expression));
+			}
+		}
+	}
+
+	return result;
+}
+
 std::vector<Variable*> VariableExtractor::extract() {
 	std::vector<std::string> preresult;
 	std::vector<Variable*> result;
@@ -183,7 +204,9 @@ void ProcedureExtractor::populate() {
 
 void StatementExtractor::populate() {
 	std::vector<Statement*> statements = this->extract();
+	std::vector<Assignment*> assignments = this->extractAssignments();
 	this->storage->storeStatements(&statements);
+	this->storage->storeAssignments(&assignments);
 }
 
 void VariableExtractor::populate() {

@@ -133,6 +133,7 @@ public:
 	ExpressionNode();
 	bool equals(ExpressionNode* other);
 	Token* getToken() { return this->token; }
+	std::string toString();
 	
 	void getVariablesInto(std::vector<std::string>& result);
 	void getConstantsInto(std::vector<std::string>& result);
@@ -147,6 +148,7 @@ public:
 	bool isAssign() { return true; };
 	bool equals(StatementNode* other);
 	std::string getVariable();
+	std::string getExpressionString();
 	
 	void getVariablesInto(std::vector<std::string>& result);
 	void getConstantsInto(std::vector<std::string>& result);

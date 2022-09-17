@@ -191,6 +191,10 @@ std::string AssignStatementNode::getVariable() {
 	return this->var->getValue();
 }
 
+std::string AssignStatementNode::getExpressionString() {
+	return this->expr->toString();
+}
+
 void AssignStatementNode::getVariablesInto(std::vector<std::string>& result) {
 	result.push_back(this->getVariable());
 	this->expr->getVariablesInto(result);
@@ -485,8 +489,21 @@ bool ExpressionNode::equals(ExpressionNode* other)
 		if (other->left == NULL || other->right == NULL) { return false; }
 		return this->token->equals(other->token) && this->left->equals(other->left) && this->right->equals(other->right);
 	}
+}
 
-	
+std::string ExpressionNode::toString() {
+	std::string result = "(";
+
+	if (this->left != NULL) {
+		result += this->left->toString();
+	}
+	result += this->token->getValue();
+	if (this->right != NULL) {
+		result += this->right->toString();
+	}
+	result += ")";
+
+	return result;
 }
 
 
