@@ -2,7 +2,7 @@
 
 ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
     if (patternCl->patternType == PatternType::EMPTY) {
-        return { ClauseResult(false) };
+        return ClauseResult(false);
     }
     else if (patternCl->patternType == PatternType::ASSIGN) {
         if (patternCl->entRef.isSynonym) {
