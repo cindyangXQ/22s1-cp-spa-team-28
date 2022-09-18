@@ -114,9 +114,11 @@ PatternClause QueryParser::parsePatternClause(std::string *clause,
         }
 
         Synonym syn = getSynonym(matches[1].str(), syns);
+        if (syn.entity != EntityName::ASSIGN) {
+            throw SemanticError("Pattern only accepts assign synonym");
+        }
         Reference entRef = getReference(matches[2].str(), syns);
         Expression expression = matches[4].str();
-
         *clause = Utils::removeString(*clause, patternClause);
 
         return PatternClause(syn, entRef, expression);
