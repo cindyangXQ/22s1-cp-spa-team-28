@@ -5,13 +5,13 @@ Select r such that Follows(5, 6)
 5000
 2 - Follows (one synonym)
 stmt s;
-Select s such that Follows(s, 8)
-7
+Select s such that Follows(s, 6)
+5
 5000
 3 - Follows (two synonyms)
 assign a; stmt s;
 Select s such that Follows(a, s)
-2, 3, 10, 14, 20
+2, 3, 4, 10, 14, 20
 5000
 4 - Follows (one wildcard)
 procedure proc;
@@ -21,12 +21,12 @@ main
 5 - Follows* (no synonym)
 procedure proc;
 Select proc such that Follows*(1, 2)
-none
+main
 5000
 6 - Follows* (one synonym, one wildcard)
 read r;
 Select r such that Follows*(_, r)
-5, 10, 23, 26
+5, 10
 5000
 7 - Follows* (two synonym)
 assign a1, a2;
@@ -46,7 +46,7 @@ Select i such that Parent(i, _)
 10 - Parent (two synonym)
 if i; while w;
 Select i such that Parent(i, w)
-6, 15
+6, 17
 5000
 11 - Parent* (both named)
 while w;
@@ -91,7 +91,7 @@ Select r such that Modifies(r, "a29")
 19 - Modifies (double synonym)
 variable v; read r;
 Select v such that Modifies(r, v)
-5, 10, 23, 26
+read, a6, a26, a29
 5000
 20 - Pattern (no synonym)
 assign a;
@@ -121,12 +121,12 @@ none
 25 - Follows* + pattern
 assign a; read r;
 Select a such that Follows*(a, r) pattern a(_, _)
-2, 3, 9
+1, 2, 3, 9
 5000
 26 - Follows* + pattern
 assign a; print p;
 Select p such that Follows*(a, 3) pattern a(_, _"variable"_)
-2
+4, 11, 18, 20, 24, 25 
 5000
 27 - Parent + pattern
 assign a;
