@@ -40,7 +40,7 @@ Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
         all_syns.insert(all_syns.end(), curr_syns.begin(), curr_syns.end());
     }
     if (isDuplicateSynonymName(all_syns)) {
-        throw SyntaxError("Duplicate synonym names declared");
+        throw SemanticError("Duplicate synonym names declared");
     }
     return Declaration(all_syns);
 }
@@ -161,13 +161,10 @@ Reference QueryParser::getReference(std::string input,
     } else if (input == "_") {
         return Reference(input);
     }
-    for (int i = 0; i < syns.size(); i++) {
-        Synonym synonym = syns[i];
-        if (input.compare(synonym.name) == 0) {
-            return Reference(synonym);
-        }
+    else {
+        Synonym synonym = getSynonym(input, syns);
+        return Reference(synonym);
     }
-    throw SemanticError("Not a number, not a name, not a synonym declared");
 }
 
 Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
@@ -177,7 +174,7 @@ Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
             return synonym;
         }
     }
-    throw SyntaxError("Synonym not found");
+    throw SemanticError("Synonym not found");
 }
 
 bool QueryParser::isValidName(std::string name) {
