@@ -1,0 +1,16 @@
+procedure NestedIf {
+	test = 0;
+	if (x != 0) then {
+		test = 1;
+	} else {
+		if (y != 0) then {
+			test = 2;
+		} else {
+			if (z != 0) then {
+				test = 3;
+			} else {
+				test = 4;
+			}
+		}
+	}
+}
