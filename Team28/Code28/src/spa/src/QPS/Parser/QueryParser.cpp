@@ -165,7 +165,7 @@ Reference QueryParser::getReference(std::string input,
             return Reference(synonym);
         }
     }
-    throw SyntaxError("Not a number, not a name, not a synonym declared");
+    throw SemanticError("Not a number, not a name, not a synonym declared");
 }
 
 Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
