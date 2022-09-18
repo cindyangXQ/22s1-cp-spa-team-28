@@ -6,11 +6,10 @@
 /*
  * Class encapsulating a synonym.
  */
-class Synonym
-{
+class Synonym {
 public:
-	EntityName entity;
-	std::string name;
+    EntityName entity;
+    std::string name;
     Synonym();
-	Synonym(EntityName entity, std::string name);
+    Synonym(EntityName entity, std::string name);
 };

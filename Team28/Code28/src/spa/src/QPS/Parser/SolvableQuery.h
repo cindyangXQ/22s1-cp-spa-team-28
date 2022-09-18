@@ -1,21 +1,21 @@
 #pragma once
 
-#include <iostream>
 #include "../Clause/Declaration.h"
+#include "../Clause/PatternClause.h"
 #include "../Clause/SelectClause.h"
 #include "../Clause/SuchThatClause.h"
-#include "../Clause/PatternClause.h"
+#include <iostream>
 
 /*
  * Class encapsulating the logical representation of the query after parsing.
  */
-class SolvableQuery
-{
+class SolvableQuery {
 public:
-	Declaration decl;
-	SelectType selectType = Synonym();
-	SuchThatClause suchThatCl;
-	PatternClause patternCl;
+    Declaration decl;
+    SelectType selectType = Synonym();
+    SuchThatClause suchThatCl;
+    PatternClause patternCl;
 
-	SolvableQuery(Declaration decl, SelectType selectType, SuchThatClause suchThatCl, PatternClause patternCl);
+    SolvableQuery(Declaration decl, SelectType selectType,
+                  SuchThatClause suchThatCl, PatternClause patternCl);
 };

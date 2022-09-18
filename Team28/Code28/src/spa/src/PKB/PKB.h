@@ -5,20 +5,20 @@
 #include "Storage.h"
 
 /*
-* A wrapper class for PKB.
-* External components will utilise this class to retrieve the respective
-* facades for the PKB APIs.
-*/
+ * A wrapper class for PKB.
+ * External components will utilise this class to retrieve the respective
+ * facades for the PKB APIs.
+ */
 class PKB {
 public:
-	PopulateFacade *populateFacade;
-	QueryFacade *queryFacade;
+    PopulateFacade *populateFacade;
+    QueryFacade *queryFacade;
 
-	/*
-	* Explicit constructor for PKB.
-	*/
-	explicit PKB();
+    /*
+     * Explicit constructor for PKB.
+     */
+    explicit PKB();
 
 private:
-	Storage *storage;
+    Storage *storage;
 };

@@ -1,9 +1,9 @@
 #include "../PKB/PopulateFacade.h"
 
 class SP {
-	PopulateFacade* storage;
+    PopulateFacade *storage;
 
 public:
-	SP(PopulateFacade* facade);
-	void parse(std::string filename);
+    SP(PopulateFacade *facade);
+    void parse(std::string filename);
 };

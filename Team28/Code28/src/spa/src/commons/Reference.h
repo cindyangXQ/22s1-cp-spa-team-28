@@ -1,13 +1,9 @@
 #pragma once
 
-#include "Value.h"
 #include "Synonym.h"
+#include "Value.h"
 
-enum class ReferenceType {
-    STMT_REF,
-    ENT_REF,
-    WILDCARD
-};
+enum class ReferenceType { STMT_REF, ENT_REF, WILDCARD };
 
 /*
  * Class encapsulating Reference used in Relationship.

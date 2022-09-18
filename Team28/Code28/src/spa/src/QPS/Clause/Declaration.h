@@ -7,10 +7,9 @@
 /*
  * Class encapsulating the list of synonyms declared.
  */
-class Declaration
-{
+class Declaration {
 public:
-	std::vector<Synonym> syns;
-	Declaration();
+    std::vector<Synonym> syns;
+    Declaration();
     Declaration(std::vector<Synonym> syns);
 };
