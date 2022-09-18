@@ -44,13 +44,7 @@ std::vector<Assignment *> StatementExtractor::extractAssignments() {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
         for (size_t j = 0; j < stmtList.size(); j++) {
             StatementNode *currStmt = stmtList.at(j);
-            if (currStmt->isAssign()) {
-                AssignStatementNode *assign = (AssignStatementNode *)currStmt;
-                int lineNo = assign->getLineNumber();
-                std::string leftVar = assign->getVariable();
-                std::string expression = assign->getExpressionString();
-                result.push_back(new Assignment(lineNo, leftVar, expression));
-            }
+            currStmt->getAssignmentsInto(result);
         }
     }
 
