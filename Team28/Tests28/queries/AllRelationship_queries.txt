@@ -59,9 +59,9 @@ Select s such that Parent*(s, 1)
 none
 5000
 13 - Parent* (two synonym)
-if i; print r;
-Select r such that Parent*(i, r)
-6, 15, 16, 17
+if i; print p;
+Select p such that Parent*(i, p)
+11, 18, 20, 24, 25
 5000
 14 - Uses (no synonym)
 print p;
@@ -146,7 +146,7 @@ Select p such that Parent*(6, p) pattern a(_, _"0"_)
 30 - Parent* + pattern
 assign a; while w1, w2;
 Select w1 such that Parent*(w1, w2) pattern a(_, _"a20"_)
-none
+21
 5000
 31 - Modifies + pattern
 assign a; read r; variable v;
