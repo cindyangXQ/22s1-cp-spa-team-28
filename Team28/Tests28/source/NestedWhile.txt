@@ -1,0 +1,12 @@
+procedure NestedWhile {
+	test = 0;
+	while (x != 0) {
+		test = 1;
+		while (y != 0) {
+			test = 2;
+			while (z != 0) {
+				test = 3;
+			}
+		}
+	}
+}
