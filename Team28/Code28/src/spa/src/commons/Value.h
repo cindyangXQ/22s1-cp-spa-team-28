@@ -15,6 +15,8 @@ public:
         : type(type), value(value){};
 
     bool operator==(const Value &other) const;
+    bool operator<(const Value &other) const;
+
 };
 
 namespace std {
@@ -43,5 +45,13 @@ struct value_pair_hash {
     inline std::size_t operator()(const std::pair<Value,Value> &v) const {
         return ((std::hash<Value>()(v.first) 
             ^ (std::hash<Value>()(v.second) << 1)) >> 1);
+    }
+};
+
+struct value_pair_sort {
+    bool operator()(const std::pair<Value,Value> &left, const std::pair<Value,Value> &right) {
+        return left.first == right.first 
+          ? left.second < right.second
+          : left.first < right.first;
     }
 };
