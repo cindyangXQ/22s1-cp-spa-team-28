@@ -161,10 +161,11 @@ Reference QueryParser::getReference(std::string input,
     } else if (input == "_") {
         return Reference(input);
     }
-    else {
+    else if (std::regex_match(input, synRegex)) {
         Synonym synonym = getSynonym(input, syns);
         return Reference(synonym);
     }
+    throw SyntaxError("Invalid reference format");
 }
 
 Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
