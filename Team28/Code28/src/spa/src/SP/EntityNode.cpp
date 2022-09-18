@@ -45,9 +45,6 @@ std::vector<StatementNode *> ProcedureNode::getStmtList() {
 }
 
 int ProcedureNode::getEndline() {
-    if (stmtList.size() == 0) {
-        return -1;
-    }
     return stmtList.back()->getEndLine();
 }
 
@@ -253,9 +250,6 @@ WhileStatementNode::WhileStatementNode(
 }
 
 int WhileStatementNode::getEndLine() {
-    if (stmtList.size() == 0) {
-        return this->line;
-    }
     return this->stmtList.back()->getEndLine();
 }
 
@@ -356,13 +350,7 @@ IfStatementNode::IfStatementNode(std::vector<StatementNode *> &ifBlock,
 }
 
 int IfStatementNode::getEndLine() {
-    if (elseBlock.size() > 0) {
-        return elseBlock.back()->getEndLine();
-    } else if (ifBlock.size() > 0) {
-        return ifBlock.back()->getEndLine();
-    } else {
-        return line;
-    }
+    return elseBlock.back()->getEndLine();
 }
 
 std::vector<StatementNode *> IfStatementNode::getStmtList() {
@@ -485,7 +473,9 @@ void ExpressionNode::getVariablesInto(std::vector<std::string> &result) {
     } else if (this->token->isConstant()) {
     } else {
         this->left->getVariablesInto(result);
-        this->right->getVariablesInto(result);
+        if (this->right != NULL) {
+            this->right->getVariablesInto(result);
+        }
     }
 }
 
@@ -495,7 +485,9 @@ void ExpressionNode::getConstantsInto(std::vector<std::string> &result) {
     } else if (this->token->isName()) {
     } else {
         this->left->getConstantsInto(result);
-        this->right->getConstantsInto(result);
+        if (this->right != NULL) {
+            this->right->getConstantsInto(result);
+        }
     }
 }
 
