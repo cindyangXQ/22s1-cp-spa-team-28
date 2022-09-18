@@ -7,6 +7,7 @@
 
 #include "../commons/Reference.h"
 #include "../commons/Relationship.h"
+#include "../commons/StringUtil.h"
 #include "NamesTable.h"
 #include "RelationshipPredicateMap.h"
 #include "StatementsTable.h"
@@ -63,6 +64,20 @@ public:
      */
     std::unordered_set<Left> retrieveRight(Right right) {
         return this->rightToLeftsMap[right];
+    }
+
+    /*
+     * Adds all possibleLefts from the given right into intermediateResult
+     */
+    void addPossibleLefts(std::vector<Left> *possibleLefts, 
+                          Right right,
+                          std::unordered_set<Value> *intermediateResult,
+                          ValueType valueType) {
+        for (Left left : *possibleLefts) {
+            if (leftToRightsMap[left].count(right) == 1){
+                intermediateResult->insert(Value(valueType, convertToString(left)));
+            }
+        }
     }
 
     /*
@@ -207,12 +222,7 @@ public:
             }
         } else {
             std::string right = rightRef.value.value;
-            for (int left : possibleLefts) {
-                if (leftToRightsMap[left].count(right) == 1) {
-                    intermediateResult.insert(
-                        Value(ValueType::STMT_NUM, std::to_string(left)));
-                }
-            }
+            addPossibleLefts(&possibleLefts, right, &intermediateResult, ValueType::STMT_NUM);
         }
         std::vector<Value> result = std::vector<Value>(
             intermediateResult.begin(), intermediateResult.end());
@@ -346,12 +356,7 @@ public:
             }
         } else {
             std::string right = rightRef.value.value;
-            for (std::string left : possibleLefts) {
-                if (leftToRightsMap[left].count(right) == 1) {
-                    // not sure if this is the same as procedure name
-                    intermediateResult.insert(Value(ValueType::VAR_NAME, left));
-                }
-            }
+            addPossibleLefts(&possibleLefts, right, &intermediateResult, ValueType::VAR_NAME);
         }
         std::vector<Value> result = std::vector<Value>(
             intermediateResult.begin(), intermediateResult.end());
@@ -489,12 +494,7 @@ public:
             }
         } else {
             int right = std::stoi(rightRef.value.value);
-            for (int left : possibleLefts) {
-                if (leftToRightsMap[left].count(right) == 1) {
-                    intermediateResult.insert(
-                        Value(ValueType::STMT_NUM, std::to_string(left)));
-                }
-            }
+            addPossibleLefts(&possibleLefts, right, &intermediateResult, ValueType::STMT_NUM);
         }
         std::vector<Value> result = std::vector<Value>(
             intermediateResult.begin(), intermediateResult.end());
