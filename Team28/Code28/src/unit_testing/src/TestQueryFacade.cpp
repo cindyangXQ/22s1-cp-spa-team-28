@@ -351,6 +351,56 @@ TEST_CASE(
                        output.begin()));
 }
 
+TEST_CASE(
+    "StmtToStmt: No duplicate results") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    StatementsTable *statements =
+        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+    FollowsTTable *follows =
+        (FollowsTTable *)storage.getTable(TableName::FOLLOWS_T);
+
+    Statement line1 = Statement(1, StatementType::ASSIGN);
+    Statement line2 = Statement(2, StatementType::ASSIGN);
+    Statement line3 = Statement(3, StatementType::ASSIGN);
+    Relationship<int, int> rs1 =
+        Relationship(RelationshipReference::FOLLOWS_T, 1, 2);
+    Relationship<int, int> rs2 =
+        Relationship(RelationshipReference::FOLLOWS_T, 2, 3);
+    Relationship<int, int> rs3 =
+        Relationship(RelationshipReference::FOLLOWS_T, 1, 3);
+    statements->store(&line1);
+    statements->store(&line2);
+    statements->store(&line3);
+    follows->store(&rs1);
+    follows->store(&rs2);
+    follows->store(&rs3);
+    Value value1 = Value(ValueType::STMT_NUM, "1");
+    Value value2 = Value(ValueType::STMT_NUM, "2");
+    Value value3 = Value(ValueType::STMT_NUM, "3");
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // SolveRight(Follows*, _, Statement) returns {'2', '3'} not {'2', '3', '3'}
+    Reference leftRef = Reference("_");
+    EntityName rightEntityName = EntityName::STMT;
+    expectedResult = {value2, value3};
+    output = facade.solveRight(RelationshipReference::FOLLOWS_T, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Follows*, _, Statement) returns {'1'} not {'1', '1'}
+    Reference rightRef = Reference("_");
+    EntityName leftEntityName = EntityName::STMT;
+    expectedResult = {value1, value2};
+    output = facade.solveLeft(RelationshipReference::FOLLOWS_T, rightRef,
+                               leftEntityName); 
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
 TEST_CASE("StmtToVar: Validate returns correct results") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);

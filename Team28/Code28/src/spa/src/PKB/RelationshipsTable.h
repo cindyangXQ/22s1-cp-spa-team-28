@@ -158,21 +158,24 @@ public:
         std::unordered_set<std::string> possibleRightsSet = variables->getAll();
         std::vector<std::string> possibleRights = std::vector<std::string>(
             possibleRightsSet.begin(), possibleRightsSet.end());
-        std::vector<Value> result;
+        std::unordered_set<Value> intermediateResult;
         if (leftRef.isWildcard()) {
             for (std::string right : possibleRights) {
                 if (rightToLeftsMap[right].size() != 0) {
-                    result.push_back(Value(ValueType::VAR_NAME, right));
+                    intermediateResult.insert(Value(ValueType::VAR_NAME, right));
                 }
             }
         } else {
             int left = std::stoi(leftRef.value.value);
             for (std::string right : possibleRights) {
                 if (rightToLeftsMap[right].count(left) == 1) {
-                    result.push_back(Value(ValueType::VAR_NAME, right));
+                    intermediateResult.insert(Value(ValueType::VAR_NAME, right));
                 }
             }
         }
+        std::vector<Value> result = std::vector<Value>(
+            intermediateResult.begin(), intermediateResult.end());
+        std::sort(result.begin(), result.end());
         return result;
     };
 
@@ -193,11 +196,11 @@ public:
                 Statement::getStmtTypeFromEntityName(leftSynonym);
             possibleLefts = statements->getStatementsByType(statementType);
         }
-        std::vector<Value> result;
+        std::unordered_set<Value> intermediateResult;
         if (rightRef.isWildcard()) {
             for (int left : possibleLefts) {
                 if (leftToRightsMap[left].size() != 0) {
-                    result.push_back(
+                    intermediateResult.insert(
                         Value(ValueType::STMT_NUM, std::to_string(left)));
                 }
             }
@@ -205,11 +208,14 @@ public:
             std::string right = rightRef.value.value;
             for (int left : possibleLefts) {
                 if (leftToRightsMap[left].count(right) == 1) {
-                    result.push_back(
+                    intermediateResult.insert(
                         Value(ValueType::STMT_NUM, std::to_string(left)));
                 }
             }
         }
+        std::vector<Value> result = std::vector<Value>(
+            intermediateResult.begin(), intermediateResult.end());
+        std::sort(result.begin(), result.end());
         return result;
     };
 
@@ -238,18 +244,20 @@ public:
             possibleLefts = statements->getStatementsByType(statementType);
         }
 
-        std::vector<std::pair<Value, Value>> result;
+        std::unordered_set<std::pair<Value, Value>, value_pair_hash> intermediateResult;
         for (int left : possibleLefts) {
             for (std::string right : possibleRights) {
                 if (leftToRightsMap[left].count(right) == 1) {
                     Value leftValue =
                         Value(ValueType::STMT_NUM, std::to_string(left));
                     Value rightValue = Value(ValueType::VAR_NAME, right);
-                    result.push_back(std::make_pair(leftValue, rightValue));
+                    intermediateResult.insert(std::make_pair(leftValue, rightValue));
                 }
             }
         }
-
+        std::vector<std::pair<Value, Value>> result = std::vector<std::pair<Value, Value>>(
+            intermediateResult.begin(), intermediateResult.end());
+        std::sort(result.begin(), result.end(), value_pair_sort());
         return result;
     }
 };
@@ -293,21 +301,24 @@ public:
         std::unordered_set<std::string> possibleRightsSet = variables->getAll();
         std::vector<std::string> possibleRights = std::vector<std::string>(
             possibleRightsSet.begin(), possibleRightsSet.end());
-        std::vector<Value> result;
+        std::unordered_set<Value> intermediateResult;
         if (leftRef.isWildcard()) {
             for (std::string right : possibleRights) {
                 if (rightToLeftsMap[right].size() != 0) {
-                    result.push_back(Value(ValueType::VAR_NAME, right));
+                    intermediateResult.insert(Value(ValueType::VAR_NAME, right));
                 }
             }
         } else {
             std::string left = leftRef.value.value;
             for (std::string right : possibleRights) {
                 if (rightToLeftsMap[right].count(left) == 1) {
-                    result.push_back(Value(ValueType::VAR_NAME, right));
+                    intermediateResult.insert(Value(ValueType::VAR_NAME, right));
                 }
             }
-        }
+        }        
+        std::vector<Value> result = std::vector<Value>(
+            intermediateResult.begin(), intermediateResult.end());
+        std::sort(result.begin(), result.end());
         return result;
     };
 
@@ -324,12 +335,12 @@ public:
         std::unordered_set<std::string> possibleLeftsSet = procedures->getAll();
         std::vector<std::string> possibleLefts = std::vector<std::string>(
             possibleLeftsSet.begin(), possibleLeftsSet.end());
-        std::vector<Value> result;
+        std::unordered_set<Value> intermediateResult;
         if (rightRef.isWildcard()) {
             for (std::string left : possibleLefts) {
                 if (leftToRightsMap[left].size() != 0) {
                     // not sure if this is the same as procedure name
-                    result.push_back(Value(ValueType::VAR_NAME, left));
+                    intermediateResult.insert(Value(ValueType::VAR_NAME, left));
                 }
             }
         } else {
@@ -337,10 +348,13 @@ public:
             for (std::string left : possibleLefts) {
                 if (leftToRightsMap[left].count(right) == 1) {
                     // not sure if this is the same as procedure name
-                    result.push_back(Value(ValueType::VAR_NAME, left));
+                    intermediateResult.insert(Value(ValueType::VAR_NAME, left));
                 }
             }
         }
+        std::vector<Value> result = std::vector<Value>(
+            intermediateResult.begin(), intermediateResult.end());
+        std::sort(result.begin(), result.end());
         return result;
     };
 
@@ -364,18 +378,20 @@ public:
         std::vector<std::string> possibleRights = std::vector<std::string>(
             possibleRightsSet.begin(), possibleRightsSet.end());
 
-        std::vector<std::pair<Value, Value>> result;
+        std::unordered_set<std::pair<Value, Value>, value_pair_hash> intermediateResult;
         for (std::string left : possibleLefts) {
             for (std::string right : possibleRights) {
                 if (leftToRightsMap[left].count(right) == 1) {
                     // not sure if this is the same as procedure name
                     Value leftValue = Value(ValueType::VAR_NAME, left);
                     Value rightValue = Value(ValueType::VAR_NAME, right);
-                    result.push_back(std::make_pair(leftValue, rightValue));
+                    intermediateResult.insert(std::make_pair(leftValue, rightValue));
                 }
             }
         }
-
+        std::vector<std::pair<Value, Value>> result = std::vector<std::pair<Value, Value>>(
+            intermediateResult.begin(), intermediateResult.end());
+        std::sort(result.begin(), result.end(), value_pair_sort());
         return result;
     }
 };
@@ -422,11 +438,11 @@ public:
                 Statement::getStmtTypeFromEntityName(rightSynonym);
             possibleRights = statements->getStatementsByType(statementType);
         }
-        std::vector<Value> result;
+        std::unordered_set<Value> intermediateResult;
         if (leftRef.isWildcard()) {
             for (int right : possibleRights) {
                 if (rightToLeftsMap[right].size() != 0) {
-                    result.push_back(
+                    intermediateResult.insert(
                         Value(ValueType::STMT_NUM, std::to_string(right)));
                 }
             }
@@ -434,11 +450,14 @@ public:
             int left = std::stoi(leftRef.value.value);
             for (int right : possibleRights) {
                 if (rightToLeftsMap[right].count(left) == 1) {
-                    result.push_back(
+                    intermediateResult.insert(
                         Value(ValueType::STMT_NUM, std::to_string(right)));
                 }
             }
         }
+        std::vector<Value> result = std::vector<Value>(
+            intermediateResult.begin(), intermediateResult.end());
+        std::sort(result.begin(), result.end());
         return result;
     };
 
@@ -459,11 +478,11 @@ public:
                 Statement::getStmtTypeFromEntityName(leftSynonym);
             possibleLefts = statements->getStatementsByType(statementType);
         }
-        std::vector<Value> result;
+        std::unordered_set<Value> intermediateResult;
         if (rightRef.isWildcard()) {
             for (int left : possibleLefts) {
                 if (leftToRightsMap[left].size() != 0) {
-                    result.push_back(
+                    intermediateResult.insert(
                         Value(ValueType::STMT_NUM, std::to_string(left)));
                 }
             }
@@ -471,11 +490,14 @@ public:
             int right = std::stoi(rightRef.value.value);
             for (int left : possibleLefts) {
                 if (leftToRightsMap[left].count(right) == 1) {
-                    result.push_back(
+                    intermediateResult.insert(
                         Value(ValueType::STMT_NUM, std::to_string(left)));
                 }
             }
         }
+        std::vector<Value> result = std::vector<Value>(
+            intermediateResult.begin(), intermediateResult.end());
+        std::sort(result.begin(), result.end());
         return result;
     };
 
@@ -507,7 +529,7 @@ public:
             possibleRights = statements->getStatementsByType(statementType);
         }
 
-        std::vector<std::pair<Value, Value>> result;
+        std::unordered_set<std::pair<Value, Value>, value_pair_hash> intermediateResult;
         for (int left : possibleLefts) {
             for (int right : possibleRights) {
                 if (leftToRightsMap[left].count(right) == 1) {
@@ -515,11 +537,13 @@ public:
                         Value(ValueType::STMT_NUM, std::to_string(left));
                     Value rightValue =
                         Value(ValueType::STMT_NUM, std::to_string(right));
-                    result.push_back(std::make_pair(leftValue, rightValue));
+                    intermediateResult.insert(std::make_pair(leftValue, rightValue));
                 }
             }
         }
-
+        std::vector<std::pair<Value, Value>> result = std::vector<std::pair<Value, Value>>(
+            intermediateResult.begin(), intermediateResult.end());
+        std::sort(result.begin(), result.end(), value_pair_sort());
         return result;
     }
 };
