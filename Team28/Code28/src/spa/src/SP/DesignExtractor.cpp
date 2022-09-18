@@ -248,5 +248,5 @@ void UsesSExtractor::populate() {
 
 void ModSExtractor::populate() {
     std::vector<Relationship<int, std::string> *> ModifiesS = this->extract();
-    this->storage->storeUsesS(&ModifiesS);
+    this->storage->storeModifiesS(&ModifiesS);
 }
