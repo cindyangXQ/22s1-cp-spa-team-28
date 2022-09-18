@@ -10,10 +10,8 @@ std::string QPS::processQuery(std::string input) {
     }
     std::string print;
     for (int i = 0; i < result.size() - 1; i++) {
-        // std::cout << result[i] + ", ";
         print.append(result[i] + ", ");
     }
-    // std::cout << result[result.size() - 1] << std::endl;
     print.append(result[result.size() - 1]);
     return print;
 }
