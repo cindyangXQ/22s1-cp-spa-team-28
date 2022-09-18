@@ -23,7 +23,7 @@ void SP::parse(std::string filename) {
         DesignExtractor(program, this->storage).extractAll();
     } catch (...) {
         std::cout << "Parsing failed. Exiting program." << std::endl;
-        exit(0);
+        exit(1);
     }
 
 }
