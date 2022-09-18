@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../commons/Assignment.h"
 #include "../commons/Constant.h"
 #include "../commons/Relationship.h"
 #include "../commons/Statement.h"
@@ -57,6 +58,7 @@ public:
     virtual void getStatementsInto(std::vector<Statement *> &result) {
         result.push_back(new Statement(line, StatementType::NONE));
     }
+    virtual void getAssignmentsInto(std::vector<Assignment *> &result){};
     virtual void
     getFollowsInto(std::vector<Relationship<int, int> *> &result){};
     virtual void
@@ -100,6 +102,7 @@ public:
 
     void getVariablesInto(std::vector<std::string> &result);
     void getStatementsInto(std::vector<Statement *> &result);
+    void getAssignmentsInto(std::vector<Assignment *> &result) {};
     std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
 };
@@ -115,6 +118,7 @@ public:
 
     void getVariablesInto(std::vector<std::string> &result);
     void getStatementsInto(std::vector<Statement *> &result);
+    void getAssignmentsInto(std::vector<Assignment *> &result) {};
     std::vector<std::string> *
     getUsesInto(std::vector<Relationship<int, std::string> *> &result);
 };
@@ -129,6 +133,7 @@ public:
     std::string getVariable();
 
     void getStatementsInto(std::vector<Statement *> &result);
+    void getAssignmentsInto(std::vector<Assignment *> &result) {};
 };
 
 class ExpressionNode : public EntityNode {
@@ -162,6 +167,7 @@ public:
     void getVariablesInto(std::vector<std::string> &result);
     void getConstantsInto(std::vector<std::string> &result);
     void getStatementsInto(std::vector<Statement *> &result);
+    void getAssignmentsInto(std::vector<Assignment *> &result);
     std::vector<std::string> *
     getUsesInto(std::vector<Relationship<int, std::string> *> &result);
     std::vector<std::string> *
@@ -183,6 +189,7 @@ public:
     void getVariablesInto(std::vector<std::string> &result);
     void getConstantsInto(std::vector<std::string> &result);
     void getStatementsInto(std::vector<Statement *> &result);
+    void getAssignmentsInto(std::vector<Assignment *> &result);
     void getFollowsInto(std::vector<Relationship<int, int> *> &result);
     void getFollowsTInto(std::vector<Relationship<int, int> *> &result);
     std::vector<std::string> *
@@ -208,6 +215,7 @@ public:
     void getVariablesInto(std::vector<std::string> &result);
     void getConstantsInto(std::vector<std::string> &result);
     void getStatementsInto(std::vector<Statement *> &result);
+    void getAssignmentsInto(std::vector<Assignment *> &result);
     void getFollowsInto(std::vector<Relationship<int, int> *> &result);
     void getFollowsTInto(std::vector<Relationship<int, int> *> &result);
     std::vector<std::string> *
