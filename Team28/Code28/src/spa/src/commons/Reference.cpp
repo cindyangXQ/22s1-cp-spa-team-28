@@ -1,4 +1,5 @@
 #include "Reference.h"
+#include "../QPS/Error/SyntaxError.h"
 #include "../QPS/Error/SemanticError.h"
 #include "../QPS/Parser/QueryParserRegex.h"
 
@@ -27,7 +28,7 @@ Reference::Reference(std::string value) {
         this->type = ReferenceType::ENT_REF;
         this->value = Value(ValueType::VAR_NAME, value);
     } else {
-        throw SemanticError("Invalid reference format");
+        throw SyntaxError("Invalid reference format");
     }
 }
 
