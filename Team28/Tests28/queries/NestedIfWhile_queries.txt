@@ -18,3 +18,58 @@ stmt s;
 Select s
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
 5000
+5 - If parent
+stmt s;
+Select s such that Parent(4, s)
+5, 6
+5000
+6 - Nested if parent
+stmt s;
+Select s such that Parent*(s, 20)
+14, 15, 16, 18, 19
+5000
+7 - Select stmt from nested if
+stmt s;
+Select s such that Parent*(7, s)
+8, 9, 10, 11, 12, 13
+5000
+8 - Select stmt from nested else
+stmt s;
+Select s such that Parent(s, 13)
+12
+5000
+9 - Select stmt from nested else after nested statements
+stmt s;
+Select s such that Parent*(s, 21)
+14, 15
+5000
+10 - While parent
+while w;
+Select w such that Parent*(7, 8)
+2, 7, 8, 10, 12, 18, 19
+5000
+11 - Nested while parent
+if i;
+Select i such that Parent*(7, 10)
+4, 9, 14, 15, 16
+5000
+12 - Mixed nested parent
+procedure proc;
+Select proc such that Parent*(14, 21)
+main
+5000
+13 - Select stmt from nested while
+stmt s;
+Select s such that Parent*(8, s)
+9, 10, 11, 12, 13
+5000
+14 - Select parent of stmt from nested while
+stmt s;
+Select s such that Parent*(s, 9)
+7, 8
+5000
+15 - Select parent of stmt from deeply nested while
+stmt s;
+Select s such that Parent*(s, 11)
+7, 8, 9, 10
+5000
