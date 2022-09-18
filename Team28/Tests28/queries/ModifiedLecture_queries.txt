@@ -61,7 +61,7 @@ count
 13 - SPA correctly works with Parent* and pattern
 assign a; while w;
 Select w such that Parent*(w,a) pattern a("count",_)
-6
+5
 5000
 14 - SPA correctly works with Uses and pattern
 assign a; variable v;
