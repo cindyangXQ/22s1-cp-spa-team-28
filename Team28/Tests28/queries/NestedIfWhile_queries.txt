@@ -1,0 +1,20 @@
+1 - SPA parses while correctly
+while s;
+Select s
+2, 7, 8, 10, 12, 18, 19
+5000
+2 - SPA parses if correctly
+if i;
+Select i
+4, 9, 14, 15, 16
+5000
+3 - SPA parses variables correctly
+variable v;
+Select v
+a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29
+5000
+4 - SPA parses statements correctly
+stmt s;
+Select s
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+5000
