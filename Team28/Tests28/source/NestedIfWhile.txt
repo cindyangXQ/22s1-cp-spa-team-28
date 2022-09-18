@@ -1,0 +1,23 @@
+procedure NestedIfWhile {
+	test = 0;
+	if (x != 0) then {
+		test = 8;
+		while (y != 0) {
+			test = 1;
+		}
+		test = 2;
+		if (z != 0) then {
+			test = 3;
+			while (w != 0) {
+				test = 4;
+			}
+			test = 5;
+		} else {
+			test = 9;
+		}
+		test = 6;
+		test = 7;
+	} else {
+		test = 10;
+	}
+}

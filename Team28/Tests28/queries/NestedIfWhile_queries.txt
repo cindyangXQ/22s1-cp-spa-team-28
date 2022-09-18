@@ -1,0 +1,40 @@
+1 - SPA parses procedures correctly
+procedure proc; 
+Select proc
+NestedIfWhile
+5000
+2 - SPA parses constants correctly
+constant c;
+Select c
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+5000
+3 - SPA parses statements correctly
+stmt s;
+Select s
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+4 - SPA parses variables correctly
+variable v; 
+Select v
+x, y, z, w, test
+5000
+5 - SPA parses if correctly
+if ifs;
+Select ifs
+2, 7
+5000
+6 - SPA parses while correctly
+while w;
+Select w
+4, 9
+5000
+7 - SPA identifies Parent*(2,s) correctly
+stmt s;
+Select s such that Parent*(2,s)
+3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+5000
+7 - SPA identifies Follows*(3,s) correctly
+stmt s;
+Select s such that Follows*(3,s)
+4, 6, 7, 13, 14
+5000
