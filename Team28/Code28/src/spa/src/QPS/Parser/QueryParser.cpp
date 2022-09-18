@@ -1,6 +1,9 @@
 #include "QueryParser.h"
 
 SolvableQuery QueryParser::parse(std::string query) {
+    if (query.back() == ';') {
+        throw SyntaxError("Semicolon at the end not allowed");
+    }
     std::vector<std::string> clauses = Utils::splitString(query, ';');
     size_t size = clauses.size();
 

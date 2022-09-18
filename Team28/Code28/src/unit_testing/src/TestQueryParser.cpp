@@ -9,6 +9,11 @@ TEST_CASE("QueryParser is parsing correctly") {
                            "that Modifies(1, v) pattern a(v, \"x\")");
 
     REQUIRE(solvableQ.selectType.entity == EntityName::ASSIGN);
+    REQUIRE_THROWS(
+        QueryParser::parse("assign a; constant c; variable v; Select a;"));
+    REQUIRE_THROWS(
+        QueryParser::parse("assign a; constant c; variable v; Select a such "
+                           "that Modifies(1, v) pattern a(v, \"x\");"));
 }
 
 TEST_CASE("QueryParser can parse declaration correctly") {
