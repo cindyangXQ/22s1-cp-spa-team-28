@@ -84,11 +84,7 @@ ProcedureNode *ProcedureParser::parse() {
             }
             stmtList.push_back(temp);
 
-            if (temp->getEndLine() == -1) {
-                line++;
-            } else {
-                line = temp->getEndLine() + 1;
-            }
+            line = temp->getEndLine() + 1;
 
             offset = parser.getOffset();
             if (offset >= tokenList.size()) {
@@ -98,7 +94,9 @@ ProcedureNode *ProcedureParser::parse() {
     } else {
         throw "procedure wrong syntax";
     }
-
+    if (stmtList.size() == 0) {
+        throw "procedure wrong syntax";
+    }
     offset++;
     return new ProcedureNode(secondToken->getValue(), stmtList);
 }
@@ -263,6 +261,9 @@ WhileStatementNode *WhileStmParser::parse() {
                 throw "while statement wrong syntax";
             }
         }
+        if (stmtList.size() == 0) {
+            throw "while statement wrong syntax";
+        }
         offset++;
         return new WhileStatementNode(stmtList, cond, startline);
     } else {
@@ -328,6 +329,9 @@ IfStatementNode *IfStmParser::parse() {
         }
     }
     offset++;
+    if (ifStmtList.size() == 0 || elseStmtList.size() == 0) {
+        throw "if statement wrong syntax";
+    }
     IfStatementNode *result =
         new IfStatementNode(ifStmtList, elseStmtList, cond, startline);
     return result;

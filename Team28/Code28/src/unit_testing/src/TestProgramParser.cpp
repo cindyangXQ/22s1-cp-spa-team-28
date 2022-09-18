@@ -127,12 +127,11 @@ TEST_CASE("While Statement Parser") {
 
     AssignStatementNode a(&var1, new ExpressionNode(&c2), 2);
     ReadStatementNode r(&var2, 3);
-    WhileStatementNode w1(stmtList, &nte, 4);
-    std::vector<StatementNode *> stmtList2 = {&a, &r, &w1};
+    std::vector<StatementNode *> stmtList2 = {&a, &r};
 
     WhileStatementNode expected(stmtList2, &nte, 1);
 
-    std::string statement = "while(a*b != 3) {a = 3; read b;while(a*b!=3){}}";
+    std::string statement = "while(a*b != 3) {a = 3; read b;}";
     std::vector<Token *> tokens = Tokenizer(statement).tokenize();
     WhileStatementNode *result = WhileStmParser(0, tokens, 1).parse();
 
