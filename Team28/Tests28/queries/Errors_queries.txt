@@ -1,0 +1,160 @@
+1 - SPA catches syntax errors in declaration (miss spell design entity)
+variabla v;
+Select v
+SyntaxError
+5000
+2 - SPA catches syntax errors in declaration (invalid name)
+variable 1v;
+Select v
+SyntaxError
+5000
+3 - SPA catches semantic errors in declaration (duplicate name)
+variable v;
+stmt v; Select v
+SemanticError
+5000
+4 - SPA catches syntax errors in declaration (extra comma)
+variable v, yey,; 
+Select v
+SyntaxError
+5000
+5 - SPA catches syntax errors in declaration (no semi colon)
+variable v, yey
+Select v
+SyntaxError
+5000
+6 - SPA catches syntax errors in declaration (no synonym)
+variable ;
+Select v
+SyntaxError
+5000
+7 - SPA catches syntax errors in select clause (no synonym)
+variable v;
+Select 
+SyntaxError
+5000
+8 - SPA catches semantic errors in select clause (undeclared synonym)
+variable v;
+Select yey
+SemanticError
+5000
+9 - SPA catches syntax errors in select clause (extra semi colon)
+variable ;
+Select v;
+SyntaxError
+5000
+10 - SPA catches syntax errors in select clause (miss spell Select)
+variable v;
+Seleyeyct v
+SyntaxError
+5000
+11 - SPA catches syntax errors in select clause (extra stuff after select)
+variable v;
+Select v fdasf
+SyntaxError
+5000
+12 - SPA catches syntax errors in such that clause (miss spell such that)
+variable v;
+Select v sach that Modifies(1, v)
+SyntaxError
+5000
+13 - SPA catches syntax errors in such that clause (miss spell relationship)
+variable v;
+Select v such that Modyeyfies(1, v)
+SyntaxError
+5000
+14 - SPA catches syntax errors in such that clause (missing comma)
+variable v;
+Select v such that Modifies(1 v)
+SyntaxError
+5000
+15 - SPA catches syntax errors in such that clause (missing bracket)
+variable v;
+Select v such that Modifies(1, v
+SyntaxError
+5000
+16 - SPA catches syntax errors in such that clause (extra bracket)
+variable v;
+Select v such that Modifies(1, v))
+SyntaxError
+5000
+17 - SPA catches semantic errors in such that clause (undeclared synonym)
+variable v;
+Select v such that Modifies(1, yey)
+SemanticError
+5000
+18 - SPA catches semantic errors in such that clause (stmt ref when should be ent ref)
+variable v; stmt s;
+Select v such that Modifies(1, s)
+SemanticError
+5000
+19 - SPA catches semantic errors in such that clause (ent ref when should be stmt ref)
+variable v;
+Select v such that Follows(1, v)
+SemanticError
+5000
+20 - SPA catches semantic errors in such that clause (wild cards not allowed for Modifies)
+variable v;
+Select v such that Modifies(_, v)
+SemanticError
+5000
+21 - SPA catches semantic errors in such that clause (wild cards not allowed for Uses)
+variable v;
+Select v such that Uses(_, v)
+SemanticError
+5000
+22 - SPA catches syntax errors in such that clause (more that one such that clause)
+variable v;
+Select v such that Uses(1, v) such that Parent(1,2)
+SyntaxError
+5000
+23 - SPA catches syntax errors in such that clause (invalid variable name)
+variable v;
+Select v such that Uses(1, "123")
+SyntaxError
+5000
+24 - SPA catches syntax errors in such that clause (invalid statement number)
+variable v;
+Select v such that Uses(1b, "yey")
+SyntaxError
+5000
+25 - SPA catches syntax errors in pattern clause (miss spell pattern)
+variable v; assign a;
+Select v pattyeyrn a(_, _)
+SyntaxError
+5000
+26 - SPA catches semantic errors in pattern clause (use wrong synonym)
+variable v; if i;
+Select v pattern i(_, _)
+SemanticError
+5000
+27 - SPA catches syntax errors in pattern clause (invalid variable name in left)
+variable v; assign a;
+Select v pattern a("123", _)
+SyntaxError
+5000
+28 - SPA catches syntax errors in pattern clause (multiple pattern clauses)
+variable v; assign a;
+Select v pattern a(_, _) pattern a(1, "yey")
+SyntaxError
+5000
+29 - SPA catches syntax errors in pattern clause (missing wildcard)
+variable v; assign a;
+Select v pattern a(1, _"yey")
+SyntaxError
+5000
+30 - SPA catches syntax errors in pattern clause (missing comma)
+variable v; assign a;
+Select v pattern a(1 _"yey"_)
+SyntaxError
+5000
+31 - SPA catches syntax errors in pattern clause (missing bracket)
+variable v; assign a;
+Select v pattern a(1, _"yey"_
+SyntaxError
+5000
+32 - SPA catches syntax errors in pattern clause (extra bracket)
+variable v; assign a;
+Select v pattern a(1, _"yey"_))
+SyntaxError
+5000
