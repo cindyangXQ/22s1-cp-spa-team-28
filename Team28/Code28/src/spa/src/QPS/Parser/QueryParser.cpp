@@ -114,9 +114,11 @@ PatternClause QueryParser::parsePatternClause(std::string *clause,
         }
 
         Synonym syn = getSynonym(matches[1].str(), syns);
+        if (syn.entity != EntityName::ASSIGN) {
+            throw SemanticError("Pattern only accepts assign synonym");
+        }
         Reference entRef = getReference(matches[2].str(), syns);
         Expression expression = matches[4].str();
-
         *clause = Utils::removeString(*clause, patternClause);
 
         return PatternClause(syn, entRef, expression);
@@ -165,7 +167,7 @@ Reference QueryParser::getReference(std::string input,
             return Reference(synonym);
         }
     }
-    throw SyntaxError("Not a number, not a name, not a synonym declared");
+    throw SemanticError("Not a number, not a name, not a synonym declared");
 }
 
 Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {

@@ -257,7 +257,9 @@ TEST_CASE("QPS evaluate syntax error") {
     std::string extra_bracket =
         "variable v; Select v such that Modifies((1, v)";
     std::list<std::string> results;
-    REQUIRE_THROWS(qps.evaluate(extra_bracket, results));
+    qps.evaluate(extra_bracket, results);
+    std::list<std::string> correct_output = {"SyntaxError"};
+    REQUIRE(results == correct_output);
 }
 
 TEST_CASE("QPS evaluate semantic error") {
@@ -276,7 +278,9 @@ TEST_CASE("QPS evaluate semantic error") {
     std::string undeclared_synonym =
         "variable v; Select v such that Modifies(1, yey)";
     std::list<std::string> results;
-    REQUIRE_THROWS(qps.evaluate(undeclared_synonym, results));
+    qps.evaluate(undeclared_synonym, results);
+    std::list<std::string> correct_output = {"SemanticError"};
+    REQUIRE(results == correct_output);
 }
 
 TEST_CASE("QPS can process queries with follows relationship") {
@@ -397,9 +401,10 @@ TEST_CASE("QPS can process queries with modifies relationship") {
     REQUIRE(results == correct_output);
 
     input = "stmt s; variable v; Select s such that Modifies(_, \"a\")";
-    correct_output = {"1", "2"};
     results = {};
-    REQUIRE_THROWS(qps.evaluate(input, results));
+    qps.evaluate(input, results);
+    correct_output = {"SemanticError"};
+    REQUIRE(results == correct_output);
 
     input = "stmt s; variable v; Select s such that Modifies(1, \"a\")";
     correct_output = {"1", "2"};
