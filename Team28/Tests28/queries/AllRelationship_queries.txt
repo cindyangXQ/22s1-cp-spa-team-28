@@ -1,0 +1,185 @@
+1 - Follows (no synonym)
+read r;
+Select r such that Follows(13, 14)
+5, 10, 23, 26
+5000
+2 - Follows (one synonym)
+stmt s;
+Select s such that Follows(s, 19)
+18
+5000
+3 - Follows (two synonyms)
+assign a; stmt s;
+Select s such that Follows(a, s)
+2, 3, 4, 10, 14, 20
+5000
+4 - Follows (one wildcard)
+procedure proc;
+Select proc such that Follows(2, _)
+main
+5000
+5 - Follows* (no synonym)
+procedure proc;
+Select proc such that Follows*(18, 20)
+main
+5000
+6 - Follows* (one synonym, one wildcard)
+read r;
+Select r such that Follows*(_, r)
+5, 10
+5000
+7 - Follows* (two synonym)
+assign a1, a2;
+Select a2 such that Follows*(a1, a2)
+2, 3, 14
+5000
+8 - Parent (no synonym)
+read r;
+Select r such that Parent(21, 22)
+5, 10, 23, 26
+5000
+9 - Parent (one wildcard)
+if i;
+Select i such that Parent(i, _)
+6, 15, 16, 17
+5000
+10 - Parent (two synonym)
+if i; while w;
+Select i such that Parent(i, w)
+6, 17
+5000
+11 - Parent* (both named)
+while w;
+Select w such that Parent*(15, 20)
+8, 12, 21, 22
+5000
+12 - Parent* (one synonym)
+stmt s;
+Select s such that Parent*(s, 1)
+none
+5000
+13 - Parent* (two synonym)
+if i; print p;
+Select p such that Parent*(i, p)
+11, 18, 20, 24, 25
+5000
+14 - Parent* (one wildcard)
+print p;
+Select p such that Parent*(_, p)
+11, 18, 20, 24, 25
+5000
+15 - Uses (no synonym)
+print p;
+Select p such that Uses(3, "procedure")
+4, 11, 18, 20, 24, 25
+5000
+16 - Uses (one synonym)
+assign a;
+Select a such that Uses(a, "a2")
+7
+5000
+17 - Uses (two synonym)
+variable v; print p;
+Select p such that Uses(p, v)
+4, 11, 18, 20, 24, 25
+5000
+18 - Uses (one wildcard)
+print p;
+Select p such that Uses(p, _)
+4, 11, 18, 20, 24, 25
+5000
+19 - Modifies (both named)
+procedure proc;
+Select proc such that Modifies(2, "constant")
+main
+5000
+20 - Modifies (one synonym)
+read r;
+Select r such that Modifies(r, "a29")
+26
+5000
+21 - Modifies (double synonym)
+variable v; read r;
+Select v such that Modifies(r, v)
+read, a6, a26, a29
+5000
+22 - Modifies (one wildcard)
+read r;
+Select r such that Modifies(r, _)
+5, 10, 23, 26
+5000
+23 - Pattern (no synonym)
+assign a;
+Select a pattern a("procedure", _"1"_)
+3
+5000
+24 - Pattern (one wildcard)
+assign a;
+Select a pattern a("a18", _)
+19
+5000
+25 - Pattern (two wildcard)
+assign a;
+Select a pattern a(_, _)
+1, 2, 3, 7, 9, 13, 14, 19
+5000
+26 - Follows + pattern (three synonym, one wildcard)
+assign a; stmt s;
+Select s such that Follows(a, s) pattern a(_, _"0"_)
+10
+5000
+27 - Follows + pattern (three synonym, two wildcard)
+assign a; read r;
+Select a such that Follows(r, a) pattern a(_, _)
+none
+5000
+28 - Follows* + pattern (two synonym, two wildcard)
+assign a; read r;
+Select a such that Follows*(a, 4) pattern a(_, _)
+1, 2, 3
+5000
+29 - Follows* + pattern (two synonym, one wildcard)
+assign a; print p;
+Select p such that Follows*(a, 3) pattern a(_, _"variable"_)
+4, 11, 18, 20, 24, 25 
+5000
+30 - Parent + pattern (one synonym, one wildcard)
+assign a;
+Select a such that Parent(16, 17) pattern a(_, _"a20"_)
+19
+5000
+31 - Parent + pattern (one synonym, three wildcard)
+assign a; stmt s;
+Select a such that Parent(_, _) pattern a(_, _"a20"_)
+19
+5000
+32 - Parent* + pattern 
+assign a; print p;
+Select p such that Parent*(6, p) pattern a(_, _"0"_)
+11
+5000
+33 - Parent* + pattern 
+assign a; while w1, w2;
+Select w1 such that Parent*(w1, w2) pattern a(_, _"a20"_)
+21
+5000
+34 - Modifies + pattern
+assign a; read r; variable v;
+Select r such that Modifies(r, v) pattern a(v, _"3"_)
+none
+5000
+35 - Modifies + pattern (two overlapping synonym)
+assign a; variable v;
+Select v such that Modifies(a, v) pattern a(v, _"a19"_)
+a18
+5000
+36 - Uses + pattern (one overlapping synonym)
+print p; assign a; variable v;
+Select p such that Uses(p, v) pattern a(v, _"variable"_)
+4
+5000
+37 - Parent + pattern (four wildcard)
+assign a; variable v; procedure proc;
+Select proc such that Parent(_, _) pattern a(_, _"variable"_)
+main
+5000

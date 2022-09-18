@@ -37,7 +37,7 @@ void ExtractUtils::parent(StatementNode *parentNode,
     std::vector<StatementNode *> children = parentNode->getStmtList();
 
     for (size_t i = 0; i < children.size(); i++) {
-        ExtractUtils::parentT(children[i], result);
+        ExtractUtils::parent(children[i], result);
         int child = children[i]->getLineNumber();
         Relationship<int, int> *addChild = new Relationship<int, int>(
             RelationshipReference::PARENT, parentLineNo, child);
