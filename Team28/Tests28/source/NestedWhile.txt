@@ -1,5 +1,6 @@
 procedure NestedWhile {
 	test = 0;
+	test = 4;
 	while (x != 0) {
 		test = 1;
 		while (y != 0) {

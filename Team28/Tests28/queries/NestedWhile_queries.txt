@@ -6,12 +6,12 @@ NestedWhile
 2 - SPA parses constants correctly
 constant c;
 Select c
-0, 1, 2, 3
+0, 1, 2, 3, 4
 5000
 3 - SPA parses statements correctly
 stmt s;
 Select s
-1, 2, 3, 4, 5, 6, 7
+1, 2, 3, 4, 5, 6, 7, 8
 5000
 4 - SPA parses variables correctly
 variable v; 
@@ -21,15 +21,15 @@ x, y, z, test
 5 - SPA parses while correctly
 while w;
 Select w
-2, 4, 6
+3, 5, 7
 5000
-6 - SPA identifies Parent*(2,s) correctly
+6 - SPA identifies Parent*(3,s) correctly
 stmt s;
-Select s such that Parent*(2,s)
-3, 4, 5, 6, 7
+Select s such that Parent*(3,s)
+4, 5, 6, 7, 8
 5000
 7 - SPA identifies Follows*(1,s) correctly
 stmt s;
 Select s such that Follows*(1,s)
-2
+2, 3
 5000
