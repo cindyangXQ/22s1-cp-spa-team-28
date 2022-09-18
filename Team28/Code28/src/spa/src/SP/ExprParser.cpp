@@ -65,8 +65,6 @@ ExpressionNode *CondParser::parse() {
                      cond->left->getToken()->value) == end(REL_OP_LIST) ||
                 find(begin(REL_OP_LIST), end(REL_OP_LIST),
                      cond->right->getToken()->value) == end(REL_OP_LIST)) {
-                std::cout << cond->left->getToken()->value << " "
-                          << cond->right->getToken()->value;
                 throw "invalid cond expression";
             }
         } else {
@@ -74,8 +72,6 @@ ExpressionNode *CondParser::parse() {
                      cond->left->getToken()->value) != end(REL_OP_LIST) ||
                 find(begin(REL_OP_LIST), end(REL_OP_LIST),
                      cond->right->getToken()->value) != end(REL_OP_LIST)) {
-                std::cout << cond->left->getToken()->value << " "
-                          << cond->right->getToken()->value;
                 throw "invalid cond expression";
             }
         }

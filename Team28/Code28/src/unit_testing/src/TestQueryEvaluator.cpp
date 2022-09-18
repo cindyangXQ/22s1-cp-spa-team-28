@@ -21,7 +21,7 @@ TEST_CASE(
     statements->store(&test1);
     statements->store(&test2);
 
-    SolvableQuery solvableQ = QueryParser::parse("stmt s; Select s;");
+    SolvableQuery solvableQ = QueryParser::parse("stmt s; Select s");
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
     QueryResult queryResult = queryEvaluator.evaluate(&solvableQ);
     std::vector<std::string> result =
@@ -42,7 +42,7 @@ TEST_CASE(
     variables->store(&test1);
     variables->store(&test2);
 
-    SolvableQuery solvableQ = QueryParser::parse("variable v; Select v;");
+    SolvableQuery solvableQ = QueryParser::parse("variable v; Select v");
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
     QueryResult queryResult = queryEvaluator.evaluate(&solvableQ);
     std::vector<std::string> result =
@@ -63,7 +63,7 @@ TEST_CASE(
     constants->store(&test1);
     constants->store(&test2);
 
-    SolvableQuery solvableQ = QueryParser::parse("constant c; Select c;");
+    SolvableQuery solvableQ = QueryParser::parse("constant c; Select c");
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
     QueryResult queryResult = queryEvaluator.evaluate(&solvableQ);
     std::vector<std::string> result =
@@ -84,7 +84,7 @@ TEST_CASE(
     procedures->store(&test1);
     procedures->store(&test2);
 
-    SolvableQuery solvableQ = QueryParser::parse("procedure p; Select p;");
+    SolvableQuery solvableQ = QueryParser::parse("procedure p; Select p");
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
     QueryResult queryResult = queryEvaluator.evaluate(&solvableQ);
     std::vector<std::string> result =

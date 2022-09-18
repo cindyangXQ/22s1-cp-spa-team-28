@@ -18,4 +18,3 @@ variable v;
 Select v
 east, west, x, y, z
 5000
-

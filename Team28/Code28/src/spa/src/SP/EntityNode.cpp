@@ -205,6 +205,13 @@ void AssignStatementNode::getStatementsInto(std::vector<Statement *> &result) {
     result.push_back(new Statement(line, StatementType::ASSIGN));
 }
 
+void AssignStatementNode::getAssignmentsInto(std::vector<Assignment *> &result) {
+    int lineNo = this->getLineNumber();
+    std::string leftVar = this->getVariable();
+    std::string expression = this->getExpressionString();
+    result.push_back(new Assignment(lineNo, leftVar, expression));
+}
+
 std::vector<std::string> *AssignStatementNode::getUsesInto(
     std::vector<Relationship<int, std::string> *> &result) {
     int lineNo = this->getLineNumber();
@@ -270,6 +277,12 @@ void WhileStatementNode::getStatementsInto(std::vector<Statement *> &result) {
     result.push_back(new Statement(line, StatementType::WHILE));
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList.at(i)->getStatementsInto(result);
+    }
+}
+
+void WhileStatementNode::getAssignmentsInto(std::vector<Assignment *> &result) {
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList.at(i)->getAssignmentsInto(result);
     }
 }
 
@@ -388,6 +401,13 @@ void IfStatementNode::getStatementsInto(std::vector<Statement *> &result) {
     result.push_back(new Statement(line, StatementType::IF));
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList.at(i)->getStatementsInto(result);
+    }
+}
+
+void IfStatementNode::getAssignmentsInto(std::vector<Assignment *> &result) {
+    std::vector<StatementNode *> stmtList = this->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList.at(i)->getAssignmentsInto(result);
     }
 }
 
