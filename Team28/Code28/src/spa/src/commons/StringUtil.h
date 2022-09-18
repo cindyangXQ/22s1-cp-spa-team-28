@@ -12,7 +12,7 @@ std::string convertToString(const T& t) {
 }
 
 // Returns the same string from a given string.
-std::string convertToString(const std::string& value)
+inline std::string convertToString(const std::string& value)
 {
     return value;
 }
