@@ -47,39 +47,39 @@ public:
     void storeFollows(std::vector<Relationship<int, int> *> *follows);
 
     /*
-     * Stores the given followsT relations in a FollowsTable.
+     * Stores the given followsT relations in a FollowsTTable.
      */
     void storeFollowsT(std::vector<Relationship<int, int> *> *followsT);
 
     /*
-     * Stores the given parent relations in a FollowsTable.
+     * Stores the given parent relations in a ParentTable.
      */
     void storeParent(std::vector<Relationship<int, int> *> *parents);
 
     /*
-     * Stores the given parentT relations in a FollowsTable.
+     * Stores the given parentT relations in a ParentTTable.
      */
     void storeParentT(std::vector<Relationship<int, int> *> *parentsT);
 
     /*
-     * Stores the given modifiesS relations in a FollowsTable.
+     * Stores the given modifiesS relations in a ModifiesSTable.
      */
     void
     storeModifiesS(std::vector<Relationship<int, std::string> *> *modifiesS);
 
     /*
-     * Stores the given modifiesP relations in a FollowsTable.
+     * Stores the given modifiesP relations in a ModifiesPTable.
      */
     void storeModifiesP(
         std::vector<Relationship<std::string, std::string> *> *modifiesP);
 
     /*
-     * Stores the given usesS relations in a FollowsTable.
+     * Stores the given usesS relations in a UsesSTable.
      */
     void storeUsesS(std::vector<Relationship<int, std::string> *> *usesS);
 
     /*
-     * Stores the given modifiesP relations in a FollowsTable.
+     * Stores the given modifiesP relations in a UsesPTable.
      */
     void
     storeUsesP(std::vector<Relationship<std::string, std::string> *> *usesT);
