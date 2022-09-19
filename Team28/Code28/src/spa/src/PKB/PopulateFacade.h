@@ -79,7 +79,7 @@ public:
     void storeUsesS(std::vector<Relationship<int, std::string> *> *usesS);
 
     /*
-     * Stores the given modifiesP relations in a UsesPTable.
+     * Stores the given usesP relations in a UsesPTable.
      */
     void
     storeUsesP(std::vector<Relationship<std::string, std::string> *> *usesT);
