@@ -37,6 +37,7 @@ AssignmentsTable::getAssignFromVarAndExpr(std::string varName,
     if (expression == "_") {
         expression = "";
     } else {
+        // TODO: remove brackets once qps implement bracket adder
         expression = "(" + expression + ")";
     }
 
@@ -57,12 +58,48 @@ AssignmentsTable::getAssignFromVarAndExpr(std::string varName,
     return result;
 };
 
+std::vector<Value>
+AssignmentsTable::getAssignFromVarAndExprExact(std::string varName,
+                                               std::string expression) {
+    std::unordered_set<Value> intermediateResult;
+
+    for (Assignment assignment : this->allAssignments) {
+        if (assignment.getVariable() != varName) {
+            continue;
+        }
+        if (assignment.getExpression() == expression) {
+            intermediateResult.insert(Value(ValueType::STMT_NUM,
+                                   std::to_string(assignment.getLineNo())));
+        }
+    }
+    std::vector<Value> result = std::vector<Value>(
+        intermediateResult.begin(), intermediateResult.end());
+    std::sort(result.begin(), result.end());
+    return result;
+};
+
 std::vector<Value> AssignmentsTable::getAssignFromExpr(std::string expression) {
+    // TODO: remove brackets once qps implement bracket adder
     expression = "(" + expression + ")";
     std::unordered_set<Value> intermediateResult;
 
     for (Assignment assignment : this->allAssignments) {
         if (assignment.getExpression().find(expression) != std::string::npos) {
+            intermediateResult.insert(Value(ValueType::STMT_NUM,
+                                   std::to_string(assignment.getLineNo())));
+        }
+    }    
+    std::vector<Value> result = std::vector<Value>(
+        intermediateResult.begin(), intermediateResult.end());
+    std::sort(result.begin(), result.end());
+    return result;
+};
+
+std::vector<Value> AssignmentsTable::getAssignFromExprExact(std::string expression) {
+    std::unordered_set<Value> intermediateResult;
+
+    for (Assignment assignment : this->allAssignments) {
+        if (assignment.getExpression() == expression) {
             intermediateResult.insert(Value(ValueType::STMT_NUM,
                                    std::to_string(assignment.getLineNo())));
         }
@@ -85,19 +122,48 @@ std::vector<Value> AssignmentsTable::getAssign(std::string varName,
     return this->getAssignFromVarAndExpr(varName, expression);
 };
 
+std::vector<Value> AssignmentsTable::getAssignExact(std::string varName,
+                                                    std::string expression) {
+    // assumes bracket is already added. TODO: remove comment 
+    if (varName == "_") {
+        return this->getAssignFromExprExact(expression);
+    }
+    return this->getAssignFromVarAndExprExact(varName, expression);
+};
+
 std::vector<std::pair<Value, Value>>
 AssignmentsTable::getAssignAndVar(std::string expression) {
     if (expression == "_") {
         expression = "";
     } else {
+        // TODO: remove brackets once qps implement bracket adder
         expression = "(" + expression + ")";
     }
-    // TODO: handle exact matching
 
     std::unordered_set<std::pair<Value, Value>, value_pair_hash> intermediateResult;
 
     for (Assignment assignment : this->allAssignments) {
         if (assignment.getExpression().find(expression) != std::string::npos) {
+            intermediateResult.insert(std::make_pair(
+                Value(ValueType::STMT_NUM,
+                      std::to_string(assignment.getLineNo())),
+                Value(ValueType::VAR_NAME, assignment.getVariable())));
+        }
+    }
+    std::vector<std::pair<Value, Value>> result = std::vector<std::pair<Value, Value>>(
+        intermediateResult.begin(), intermediateResult.end());
+    std::sort(result.begin(), result.end(), value_pair_sort());
+    return result;
+};
+
+std::vector<std::pair<Value, Value>>
+AssignmentsTable::getAssignAndVarExact(std::string expression) {
+    // assumes bracket is already added. TODO: remove comment 
+
+    std::unordered_set<std::pair<Value, Value>, value_pair_hash> intermediateResult;
+
+    for (Assignment assignment : this->allAssignments) {
+        if (assignment.getExpression() == expression) {
             intermediateResult.insert(std::make_pair(
                 Value(ValueType::STMT_NUM,
                       std::to_string(assignment.getLineNo())),
