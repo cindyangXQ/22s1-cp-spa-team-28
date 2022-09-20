@@ -65,46 +65,6 @@ public:
         return this->rightToLeftsMap[right];
     }
 
-    /*
-     * Filters RelationshipsTable based on conditions encapsulated in a given
-     * predicateMap.
-     */
-    RelationshipsTable<Left, Right> *
-    filter(RelationshipPredicateMap<Left, Right> *predicateMap) {
-        if ((*predicateMap).isEmpty()) {
-            RelationshipsTable<Left, Right> *newTable = this;
-            return newTable;
-        }
-
-        RelationshipsTable<Left, Right> *newTable =
-            new RelationshipsTable<Left, Right>();
-        std::map<RelationshipHeader, Relationship<Left, Right> *> extractedMap =
-            (*predicateMap).getPredicateMap();
-
-        for (auto const &[mapToCheck, relationship] : extractedMap) {
-            Left leftValue = relationship->getLeft();
-            Right rightValue = relationship->getRight();
-
-            if (mapToCheck == RelationshipHeader::CHECK_LEFT) {
-                std::unordered_set<Right> set =
-                    this->leftToRightsMap[leftValue];
-                if (set.find(rightValue) != set.end()) {
-                    newTable->storeLeftToRightMap(rightValue, leftValue);
-                }
-            }
-
-            if (mapToCheck == RelationshipHeader::CHECK_RIGHT) {
-                std::unordered_set<Left> set =
-                    this->rightToLeftsMap[rightValue];
-                if (set.find(leftValue) != set.end()) {
-                    newTable->storeRightToLeftMap(leftValue, rightValue);
-                }
-            }
-        }
-
-        return newTable;
-    }
-
     int getTableSize() const {
         return -1; // TODO change behaviour, now returning dummy value
     }
@@ -124,10 +84,9 @@ protected:
     /*
      * Adds all possibleRights from the given left into intermediateResult.
      */
-    void addPossibleRights(std::vector<Right> *possibleRights, 
-                          Left left,
-                          std::unordered_set<Value> *intermediateResult,
-                          ValueType valueType) {
+    void addPossibleRights(std::vector<Right> *possibleRights, Left left,
+                           std::unordered_set<Value> *intermediateResult,
+                           ValueType valueType) {
         for (Right right : *possibleRights) {
             if (rightToLeftsMap[right].count(left) == 1) {
                 intermediateResult->insert(Value(valueType, toString(right)));
@@ -138,9 +97,10 @@ protected:
     /*
      * Adds all possibleRights that are non-empty into intermediateResult.
      */
-    void addNonemptyPossibleRights(std::vector<Right> *possibleRights, 
-                                   std::unordered_set<Value> *intermediateResult,
-                                   ValueType valueType) {
+    void
+    addNonemptyPossibleRights(std::vector<Right> *possibleRights,
+                              std::unordered_set<Value> *intermediateResult,
+                              ValueType valueType) {
         for (Right right : *possibleRights) {
             if (rightToLeftsMap[right].size() != 0) {
                 intermediateResult->insert(Value(valueType, toString(right)));
@@ -151,8 +111,7 @@ protected:
     /*
      * Adds all possibleLefts from the given right into intermediateResult.
      */
-    void addPossibleLefts(std::vector<Left> *possibleLefts, 
-                          Right right,
+    void addPossibleLefts(std::vector<Left> *possibleLefts, Right right,
                           std::unordered_set<Value> *intermediateResult,
                           ValueType valueType) {
         for (Left left : *possibleLefts) {
@@ -165,9 +124,9 @@ protected:
     /*
      * Adds all possibleLefts that are non-empty into intermediateResult
      */
-    void addNonemptyPossibleLefts(std::vector<Left> *possibleLefts, 
-                                   std::unordered_set<Value> *intermediateResult,
-                                   ValueType valueType) {
+    void addNonemptyPossibleLefts(std::vector<Left> *possibleLefts,
+                                  std::unordered_set<Value> *intermediateResult,
+                                  ValueType valueType) {
         for (Left left : *possibleLefts) {
             if (leftToRightsMap[left].size() != 0) {
                 intermediateResult->insert(Value(valueType, toString(left)));
@@ -176,81 +135,25 @@ protected:
     }
 
     /*
-     * Adds all possibleLefts and possibleRights that are in a relationship 
+     * Adds all possibleLefts and possibleRights that are in a relationship
      * into the intermediateResults.
-     */ 
-    void addMatchingLeftRights(std::vector<Left> *possibleLefts,
-                               std::vector<Right> *possibleRights,
-                               std::unordered_set<std::pair<Value, Value>, 
-                                value_pair_hash> *intermediateResult,
-                               ValueType leftValueType,
-                               ValueType rightValueType) {
+     */
+    void addMatchingLeftRights(
+        std::vector<Left> *possibleLefts, std::vector<Right> *possibleRights,
+        std::unordered_set<std::pair<Value, Value>, value_pair_hash>
+            *intermediateResult,
+        ValueType leftValueType, ValueType rightValueType) {
         for (Left left : *possibleLefts) {
             for (Right right : *possibleRights) {
                 if (leftToRightsMap[left].count(right) == 1) {
                     Value leftValue = Value(leftValueType, toString(left));
                     Value rightValue = Value(rightValueType, toString(right));
-                    intermediateResult->insert(std::make_pair(leftValue, rightValue));
+                    intermediateResult->insert(
+                        std::make_pair(leftValue, rightValue));
                 }
             }
         }
     }
-
-    /*
-     * Filters RelationshipsTable based on conditions encapsulated in a given
-     * predicateMap.
-     */
-    RelationshipsTable<Left, Right> *
-    filter(RelationshipPredicateMap<Left, Right> *predicateMap) {
-        if ((*predicateMap).isEmpty()) {
-            RelationshipsTable<Left, Right> *newTable = this;
-            return newTable;
-        }
-
-        RelationshipsTable<Left, Right> *newTable =
-            new RelationshipsTable<Left, Right>();
-        std::map<RelationshipHeader, Relationship<Left, Right> *> extractedMap =
-            (*predicateMap).getPredicateMap();
-
-        for (auto const &[mapToCheck, relationship] : extractedMap) {
-            Left leftValue = relationship->getLeft();
-            Right rightValue = relationship->getRight();
-
-            if (mapToCheck == RelationshipHeader::CHECK_LEFT) {
-                std::unordered_set<Right> set =
-                    this->leftToRightsMap[leftValue];
-                if (set.find(rightValue) != set.end()) {
-                    newTable->storeLeftToRightMap(rightValue, leftValue);
-                }
-            }
-
-            if (mapToCheck == RelationshipHeader::CHECK_RIGHT) {
-                std::unordered_set<Left> set =
-                    this->rightToLeftsMap[rightValue];
-                if (set.find(leftValue) != set.end()) {
-                    newTable->storeRightToLeftMap(leftValue, rightValue);
-                }
-            }
-        }
-
-        return newTable;
-    }
-
-    int getTableSize() const {
-        return -1; // TODO change behaviour, now returning dummy value
-    }
-
-    std::map<Left, std::unordered_set<Right>> getLeftMap() {
-        return this->leftToRightsMap;
-    }
-
-    std::map<Right, std::unordered_set<Left>> getRightMap() {
-        return this->rightToLeftsMap;
-    }
-
-protected:
-    std::map<Left, std::unordered_set<Right>> leftToRightsMap;
-    std::map<Right, std::unordered_set<Left>> rightToLeftsMap;
 };
 
 class StmtToVarRelationshipsTable
@@ -292,10 +195,12 @@ public:
             possibleRightsSet.begin(), possibleRightsSet.end());
         std::unordered_set<Value> intermediateResult;
         if (leftRef.isWildcard()) {
-            addNonemptyPossibleRights(&possibleRights, &intermediateResult, ValueType::VAR_NAME);
+            addNonemptyPossibleRights(&possibleRights, &intermediateResult,
+                                      ValueType::VAR_NAME);
         } else {
             int left = std::stoi(leftRef.value.value);
-            addPossibleRights(&possibleRights, left, &intermediateResult, ValueType::VAR_NAME);
+            addPossibleRights(&possibleRights, left, &intermediateResult,
+                              ValueType::VAR_NAME);
         }
         std::vector<Value> result = std::vector<Value>(
             intermediateResult.begin(), intermediateResult.end());
@@ -322,10 +227,12 @@ public:
         }
         std::unordered_set<Value> intermediateResult;
         if (rightRef.isWildcard()) {
-            addNonemptyPossibleLefts(&possibleLefts, &intermediateResult, ValueType::STMT_NUM);
+            addNonemptyPossibleLefts(&possibleLefts, &intermediateResult,
+                                     ValueType::STMT_NUM);
         } else {
             std::string right = rightRef.value.value;
-            addPossibleLefts(&possibleLefts, right, &intermediateResult, ValueType::STMT_NUM);
+            addPossibleLefts(&possibleLefts, right, &intermediateResult,
+                             ValueType::STMT_NUM);
         }
         std::vector<Value> result = std::vector<Value>(
             intermediateResult.begin(), intermediateResult.end());
@@ -358,11 +265,14 @@ public:
             possibleLefts = statements->getStatementsByType(statementType);
         }
 
-        std::unordered_set<std::pair<Value, Value>, value_pair_hash> intermediateResult;
-        addMatchingLeftRights(&possibleLefts, &possibleRights, &intermediateResult,
-            ValueType::STMT_NUM, ValueType::VAR_NAME);
-        std::vector<std::pair<Value, Value>> result = std::vector<std::pair<Value, Value>>(
-            intermediateResult.begin(), intermediateResult.end());
+        std::unordered_set<std::pair<Value, Value>, value_pair_hash>
+            intermediateResult;
+        addMatchingLeftRights(&possibleLefts, &possibleRights,
+                              &intermediateResult, ValueType::STMT_NUM,
+                              ValueType::VAR_NAME);
+        std::vector<std::pair<Value, Value>> result =
+            std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
+                                                 intermediateResult.end());
         std::sort(result.begin(), result.end(), value_pair_sort());
         return result;
     }
@@ -409,12 +319,13 @@ public:
             possibleRightsSet.begin(), possibleRightsSet.end());
         std::unordered_set<Value> intermediateResult;
         if (leftRef.isWildcard()) {
-            addNonemptyPossibleRights(&possibleRights, &intermediateResult, ValueType::VAR_NAME);
+            addNonemptyPossibleRights(&possibleRights, &intermediateResult,
+                                      ValueType::VAR_NAME);
         } else {
             std::string left = leftRef.value.value;
-            addPossibleRights(&possibleRights, left, &intermediateResult, ValueType::VAR_NAME);
-
-        }        
+            addPossibleRights(&possibleRights, left, &intermediateResult,
+                              ValueType::VAR_NAME);
+        }
         std::vector<Value> result = std::vector<Value>(
             intermediateResult.begin(), intermediateResult.end());
         std::sort(result.begin(), result.end());
@@ -436,10 +347,12 @@ public:
             possibleLeftsSet.begin(), possibleLeftsSet.end());
         std::unordered_set<Value> intermediateResult;
         if (rightRef.isWildcard()) {
-            addNonemptyPossibleLefts(&possibleLefts, &intermediateResult, ValueType::VAR_NAME);
+            addNonemptyPossibleLefts(&possibleLefts, &intermediateResult,
+                                     ValueType::VAR_NAME);
         } else {
             std::string right = rightRef.value.value;
-            addPossibleLefts(&possibleLefts, right, &intermediateResult, ValueType::VAR_NAME);
+            addPossibleLefts(&possibleLefts, right, &intermediateResult,
+                             ValueType::VAR_NAME);
         }
         std::vector<Value> result = std::vector<Value>(
             intermediateResult.begin(), intermediateResult.end());
@@ -467,11 +380,14 @@ public:
         std::vector<std::string> possibleRights = std::vector<std::string>(
             possibleRightsSet.begin(), possibleRightsSet.end());
 
-        std::unordered_set<std::pair<Value, Value>, value_pair_hash> intermediateResult;
-        addMatchingLeftRights(&possibleLefts, &possibleRights, &intermediateResult,
-            ValueType::VAR_NAME, ValueType::VAR_NAME);
-        std::vector<std::pair<Value, Value>> result = std::vector<std::pair<Value, Value>>(
-            intermediateResult.begin(), intermediateResult.end());
+        std::unordered_set<std::pair<Value, Value>, value_pair_hash>
+            intermediateResult;
+        addMatchingLeftRights(&possibleLefts, &possibleRights,
+                              &intermediateResult, ValueType::VAR_NAME,
+                              ValueType::VAR_NAME);
+        std::vector<std::pair<Value, Value>> result =
+            std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
+                                                 intermediateResult.end());
         std::sort(result.begin(), result.end(), value_pair_sort());
         return result;
     }
@@ -521,11 +437,12 @@ public:
         }
         std::unordered_set<Value> intermediateResult;
         if (leftRef.isWildcard()) {
-            addNonemptyPossibleRights(&possibleRights, &intermediateResult, ValueType::STMT_NUM);
+            addNonemptyPossibleRights(&possibleRights, &intermediateResult,
+                                      ValueType::STMT_NUM);
         } else {
             int left = std::stoi(leftRef.value.value);
-            addPossibleRights(&possibleRights, left, &intermediateResult, ValueType::STMT_NUM);
-
+            addPossibleRights(&possibleRights, left, &intermediateResult,
+                              ValueType::STMT_NUM);
         }
         std::vector<Value> result = std::vector<Value>(
             intermediateResult.begin(), intermediateResult.end());
@@ -552,10 +469,12 @@ public:
         }
         std::unordered_set<Value> intermediateResult;
         if (rightRef.isWildcard()) {
-            addNonemptyPossibleLefts(&possibleLefts, &intermediateResult, ValueType::STMT_NUM);
+            addNonemptyPossibleLefts(&possibleLefts, &intermediateResult,
+                                     ValueType::STMT_NUM);
         } else {
             int right = std::stoi(rightRef.value.value);
-            addPossibleLefts(&possibleLefts, right, &intermediateResult, ValueType::STMT_NUM);
+            addPossibleLefts(&possibleLefts, right, &intermediateResult,
+                             ValueType::STMT_NUM);
         }
         std::vector<Value> result = std::vector<Value>(
             intermediateResult.begin(), intermediateResult.end());
@@ -591,11 +510,14 @@ public:
             possibleRights = statements->getStatementsByType(statementType);
         }
 
-        std::unordered_set<std::pair<Value, Value>, value_pair_hash> intermediateResult;
-        addMatchingLeftRights(&possibleLefts, &possibleRights, &intermediateResult,
-            ValueType::STMT_NUM, ValueType::STMT_NUM);
-        std::vector<std::pair<Value, Value>> result = std::vector<std::pair<Value, Value>>(
-            intermediateResult.begin(), intermediateResult.end());
+        std::unordered_set<std::pair<Value, Value>, value_pair_hash>
+            intermediateResult;
+        addMatchingLeftRights(&possibleLefts, &possibleRights,
+                              &intermediateResult, ValueType::STMT_NUM,
+                              ValueType::STMT_NUM);
+        std::vector<std::pair<Value, Value>> result =
+            std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
+                                                 intermediateResult.end());
         std::sort(result.begin(), result.end(), value_pair_sort());
         return result;
     }
