@@ -89,13 +89,13 @@ public:
 
     /*
      * Return list of possible values of assignments that satisfy the given
-     * varName and expression
+     * varName and expression.
      */
     std::vector<Value> getAssign(std::string varName, std::string expression);
 
     /*
      * Return list of possible (Assignment, Variable) pairs which satisfy the
-     * given expression
+     * given expression.
      */
     std::vector<std::pair<Value, Value>>
     getAssignAndVar(std::string expression);
