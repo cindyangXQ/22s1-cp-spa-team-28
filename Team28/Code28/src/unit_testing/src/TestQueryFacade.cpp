@@ -866,27 +866,27 @@ TEST_CASE("getAssign returns correct results") {
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2"),
                       Value(ValueType::STMT_NUM, "3")};
-    output = facade.getAssign("_", "_");
+    output = facade.getAssign("_", "_", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // getAssign('_', '1') returns {'1', '2'}
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2")};
-    output = facade.getAssign("_", "1");
+    output = facade.getAssign("_", "1", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // getAssign('x1', '_') returns {'1', '2'}
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2")};
-    output = facade.getAssign("x1", "_");
+    output = facade.getAssign("x1", "_", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // getAssign('x1', '10') returns {'1', '2', '3'}
     expectedResult = {Value(ValueType::STMT_NUM, "2")};
-    output = facade.getAssign("x1", "10");
+    output = facade.getAssign("x1", "10", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
@@ -917,20 +917,20 @@ TEST_CASE("getAssignAndVar returns correct results") {
     expectedResult = {std::make_pair(stmt1, varX1),
                       std::make_pair(stmt2, varX1),
                       std::make_pair(stmt3, varX2)};
-    output = facade.getAssignAndVar("_");
+    output = facade.getAssignAndVar("_", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // getAssignAndVar('1') returns {('1', 'x1'), ('2', 'x1')}
     expectedResult = {std::make_pair(stmt1, varX1),
                       std::make_pair(stmt2, varX1)};
-    output = facade.getAssignAndVar("1");
+    output = facade.getAssignAndVar("1", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // getAssignAndVar('x1') returns {('3', 'x2')}
     expectedResult = {std::make_pair(stmt3, varX2)};
-    output = facade.getAssignAndVar("x1");
+    output = facade.getAssignAndVar("x1", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }

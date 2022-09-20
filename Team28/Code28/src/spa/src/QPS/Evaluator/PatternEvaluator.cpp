@@ -12,7 +12,7 @@ ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
             ClauseResult clauseResult = ClauseResult(
                 std::vector{patternCl->syn, patternCl->entRef.syn});
             std::vector<std::pair<Value, Value>> result =
-                queryFacade->getAssignAndVar(expr);
+                queryFacade->getAssignAndVar(expr, false);
             for (int i = 0; i < result.size(); i++) {
                 clauseResult.insert(
                     Tuple(std::vector{result[i].first, result[i].second}));
@@ -26,7 +26,7 @@ ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
             ClauseResult clauseResult =
                 ClauseResult(std::vector{patternCl->syn});
             std::vector<Value> result =
-                queryFacade->getAssign(patternCl->entRef.value.value, expr);
+                queryFacade->getAssign(patternCl->entRef.value.value, expr, false);
             for (int i = 0; i < result.size(); i++) {
                 clauseResult.insert(Tuple(std::vector{result[i]}));
             }

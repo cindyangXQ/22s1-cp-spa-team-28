@@ -91,14 +91,15 @@ public:
      * Return list of possible values of assignments that satisfy the given
      * varName and expression.
      */
-    std::vector<Value> getAssign(std::string varName, std::string expression);
+    std::vector<Value> getAssign(std::string varName, std::string expression,
+                                 bool isExactExpr);
 
     /*
      * Return list of possible (Assignment, Variable) pairs which satisfy the
      * given expression.
      */
     std::vector<std::pair<Value, Value>>
-    getAssignAndVar(std::string expression);
+    getAssignAndVar(std::string expression, bool isExactExpr);
 
 private:
     Storage *storage;
