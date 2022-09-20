@@ -5,8 +5,6 @@
 
 #include "TableValue.h"
 
-enum class EntityHeader { NAME };
-
 enum class EntityName {
     PROCEDURE,
     STMT,
@@ -41,20 +39,7 @@ public:
     bool operator==(const Entity &other) const {
         return this->name == other.name;
     };
-
-    /*
-     * Checks whether value of EntityHeader is equal.
-     */
-    bool isValueEqual(EntityHeader header, const Entity &other) {
-        switch (header) {
-        case EntityHeader::NAME:
-            return this->name == other.name;
-
-        default:
-            std::cerr << "Unknown EntityHeader." << std::endl;
-        }
-    };
-
+    
 private:
     std::string name;
 };

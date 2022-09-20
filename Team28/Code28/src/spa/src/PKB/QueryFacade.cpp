@@ -13,12 +13,12 @@ std::vector<Statement *>
 QueryFacade::getAllStatementsByType(StatementType type) {
     StatementsTable *statements =
         (StatementsTable *)this->storage->getTable(TableName::STATEMENTS);
-    std::map<StatementHeader, Statement *> m = {
-        {StatementHeader::STATEMENT_TYPE, new Statement(1, type)}};
-    StatementPredicateMap predicateMap = StatementPredicateMap(&m);
-    StatementsTable *singleTypeStatements = statements->filter(&predicateMap);
-
-    return singleTypeStatements->getAll();
+    std::vector<int> statementTypeIndices = statements->getStatementsByType(type);
+    std::vector<Statement *> results;
+    for (int i : statementTypeIndices) {
+        results.push_back(new Statement(i, type));
+    }
+    return results;
 }
 
 Statement *QueryFacade::getStatementByLineNo(const int &lineNo) {

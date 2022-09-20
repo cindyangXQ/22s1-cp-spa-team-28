@@ -33,19 +33,6 @@ bool Statement::operator==(const Statement &other) const {
     return this->lineNo == other.lineNo && this->type == other.type;
 }
 
-bool Statement::isValueEqual(StatementHeader header, Statement *other) {
-    switch (header) {
-    case StatementHeader::LINE_NUMBER:
-        return Statement::isLineNumberEqual(other);
-
-    case StatementHeader::STATEMENT_TYPE:
-        return Statement::isStatementTypeEqual(other);
-
-    default:
-        std::cerr << "Unknown StatementHeader." << std::endl;
-    }
-}
-
 bool Statement::isStatementTypeEqual(Statement *other) {
     return this->type == other->type;
 }

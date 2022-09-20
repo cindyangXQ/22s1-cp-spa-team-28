@@ -1,6 +1,5 @@
 #include "StatementsTable.h"
 #include "../commons/Statement.h"
-#include "StatementPredicateMap.h"
 
 #include <algorithm>
 
@@ -41,30 +40,6 @@ StatementType StatementsTable::getStatementType(const int &lineNum) {
     }
 
     return StatementType::NONE;
-}
-
-StatementsTable *StatementsTable::filter(StatementPredicateMap *predicateMap) {
-    if ((*predicateMap).isEmpty()) {
-        return this;
-    }
-
-    StatementsTable *newTable = new StatementsTable();
-    std::map<StatementHeader, Statement *> extractedMap =
-        (*predicateMap).getPredicateMap();
-
-    for (Statement *statement : this->statements) {
-        bool isFilter = true;
-        for (auto const &[key, val] : extractedMap) {
-            if (!statement->isValueEqual(key, val)) {
-                isFilter = false;
-            }
-        }
-        if (isFilter) {
-            newTable->store(statement);
-        }
-    }
-
-    return newTable;
 }
 
 std::vector<Statement *> StatementsTable::getAll() { return this->statements; }
