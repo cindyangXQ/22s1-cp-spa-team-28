@@ -396,22 +396,22 @@ QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
 std::vector<Value> QueryFacade::getAssign(std::string varName,
                                           std::string expression,
                                           bool isExactExpr) {
-    if (isExactExpr) {
-        
-    }
     AssignmentsTable *assignments =
         (AssignmentsTable *)this->storage->getTable(TableName::ASSIGNMENTS);
 
+    if (isExactExpr) {
+        return assignments->getAssignExact(varName, expression);    
+    }
     return assignments->getAssign(varName, expression);
 };
 
 std::vector<std::pair<Value, Value>>
 QueryFacade::getAssignAndVar(std::string expression, bool isExactExpr) {
-    if (isExactExpr) {
-        
-    }
     AssignmentsTable *assignments =
         (AssignmentsTable *)this->storage->getTable(TableName::ASSIGNMENTS);
 
+    if (isExactExpr) {
+        return assignments->getAssignAndVarExact(expression);
+    }
     return assignments->getAssignAndVar(expression);
 };

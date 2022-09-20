@@ -126,9 +126,9 @@ std::vector<Value> AssignmentsTable::getAssignExact(std::string varName,
                                                     std::string expression) {
     // assumes bracket is already added. TODO: remove comment 
     if (varName == "_") {
-        return this->getAssignFromExpr(expression);
+        return this->getAssignFromExprExact(expression);
     }
-    return this->getAssignFromVarAndExpr(varName, expression);
+    return this->getAssignFromVarAndExprExact(varName, expression);
 };
 
 std::vector<std::pair<Value, Value>>

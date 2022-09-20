@@ -862,7 +862,7 @@ TEST_CASE("getAssign returns correct results") {
     std::vector<Value> expectedResult;
     std::vector<Value> output;
 
-    // getAssign('_', '_') returns {'1', '2', '3'}
+    // getAssign('_', '_', false) returns {'1', '2', '3'}
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2"),
                       Value(ValueType::STMT_NUM, "3")};
@@ -870,23 +870,35 @@ TEST_CASE("getAssign returns correct results") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getAssign('_', '1') returns {'1', '2'}
+    // getAssign('_', '1', false) returns {'1', '2'}
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2")};
     output = facade.getAssign("_", "1", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
+    
+    // getAssign('_', '(1)', true) returns {'1'}
+    expectedResult = {Value(ValueType::STMT_NUM, "1")};
+    output = facade.getAssign("_", "(1)", true);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
 
-    // getAssign('x1', '_') returns {'1', '2'}
+    // getAssign('x1', '_', false) returns {'1', '2'}
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2")};
     output = facade.getAssign("x1", "_", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getAssign('x1', '10') returns {'1', '2', '3'}
+    // getAssign('x1', '10', false) returns {'1', '2', '3'}
     expectedResult = {Value(ValueType::STMT_NUM, "2")};
     output = facade.getAssign("x1", "10", false);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    
+    // getAssign('x1', '(10)', true) returns {}
+    expectedResult = {};
+    output = facade.getAssign("x1", "(10)", true);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
@@ -913,7 +925,8 @@ TEST_CASE("getAssignAndVar returns correct results") {
     std::vector<std::pair<Value, Value>> expectedResult;
     std::vector<std::pair<Value, Value>> output;
 
-    // getAssignAndVar('_') returns {('1', 'x1'), ('2', 'x1'), ('3', 'x2')}
+    // getAssignAndVar('_', false) returns 
+    // {('1', 'x1'), ('2', 'x1'), ('3', 'x2')}
     expectedResult = {std::make_pair(stmt1, varX1),
                       std::make_pair(stmt2, varX1),
                       std::make_pair(stmt3, varX2)};
@@ -921,16 +934,28 @@ TEST_CASE("getAssignAndVar returns correct results") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getAssignAndVar('1') returns {('1', 'x1'), ('2', 'x1')}
+    // getAssignAndVar('1', false) returns {('1', 'x1'), ('2', 'x1')}
     expectedResult = {std::make_pair(stmt1, varX1),
                       std::make_pair(stmt2, varX1)};
     output = facade.getAssignAndVar("1", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getAssignAndVar('x1') returns {('3', 'x2')}
+    // getAssignAndVar('(1)', true) returns {('1', 'x1')}
+    expectedResult = {std::make_pair(stmt1, varX1)};
+    output = facade.getAssignAndVar("(1)", true);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignAndVar('x1', false) returns {('3', 'x2')}
     expectedResult = {std::make_pair(stmt3, varX2)};
     output = facade.getAssignAndVar("x1", false);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignAndVar('(x1)', true) returns {}
+    expectedResult = {};
+    output = facade.getAssignAndVar("(x1)", true);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
