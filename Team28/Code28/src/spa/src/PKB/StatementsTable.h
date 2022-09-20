@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "../commons/Statement.h"
-#include "StatementPredicateMap.h"
 #include "Table.h"
 
 /*
@@ -33,11 +32,6 @@ public:
      * Returns the size of StatementsTable.
      */
     int getTableSize() const;
-
-    /*
-     * Filters table based on the PredicateMap.
-     */
-    StatementsTable *filter(StatementPredicateMap *predicateMap);
 
     /*
      * Gets all statements in StatementsTable.

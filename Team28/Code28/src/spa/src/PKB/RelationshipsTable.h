@@ -9,7 +9,6 @@
 #include "../commons/Relationship.h"
 #include "../commons/StringUtil.h"
 #include "NamesTable.h"
-#include "RelationshipPredicateMap.h"
 #include "StatementsTable.h"
 #include "Table.h"
 
@@ -139,46 +138,6 @@ public:
                 }
             }
         }
-    }
-
-    /*
-     * Filters RelationshipsTable based on conditions encapsulated in a given
-     * predicateMap.
-     */
-    RelationshipsTable<Left, Right> *
-    filter(RelationshipPredicateMap<Left, Right> *predicateMap) {
-        if ((*predicateMap).isEmpty()) {
-            RelationshipsTable<Left, Right> *newTable = this;
-            return newTable;
-        }
-
-        RelationshipsTable<Left, Right> *newTable =
-            new RelationshipsTable<Left, Right>();
-        std::map<RelationshipHeader, Relationship<Left, Right> *> extractedMap =
-            (*predicateMap).getPredicateMap();
-
-        for (auto const &[mapToCheck, relationship] : extractedMap) {
-            Left leftValue = relationship->getLeft();
-            Right rightValue = relationship->getRight();
-
-            if (mapToCheck == RelationshipHeader::CHECK_LEFT) {
-                std::unordered_set<Right> set =
-                    this->leftToRightsMap[leftValue];
-                if (set.find(rightValue) != set.end()) {
-                    newTable->storeLeftToRightMap(rightValue, leftValue);
-                }
-            }
-
-            if (mapToCheck == RelationshipHeader::CHECK_RIGHT) {
-                std::unordered_set<Left> set =
-                    this->rightToLeftsMap[rightValue];
-                if (set.find(leftValue) != set.end()) {
-                    newTable->storeRightToLeftMap(leftValue, rightValue);
-                }
-            }
-        }
-
-        return newTable;
     }
 
     int getTableSize() const {

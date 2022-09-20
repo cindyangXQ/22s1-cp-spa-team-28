@@ -8,7 +8,6 @@
 
 #include "../commons/Assignment.h"
 #include "../commons/Value.h"
-#include "StatementPredicateMap.h"
 #include "Table.h"
 
 typedef std::pair<int, std::string> IntStringPair;
