@@ -10,8 +10,6 @@
  */
 enum class StatementType { READ, PRINT, ASSIGN, CALL, WHILE, IF, NONE };
 
-enum class StatementHeader { LINE_NUMBER, STATEMENT_TYPE };
-
 /*
  * Class encapsulating a SIMPLE Statement.
  */
@@ -43,11 +41,6 @@ public:
      * Override equality operator for Statement to check index and type.
      */
     bool operator==(const Statement &other) const;
-
-    /*
-     * Checks whether value of StatementHeader is equal.
-     */
-    bool isValueEqual(StatementHeader header, Statement *other);
 
     bool isStatementTypeEqual(Statement *other);
 

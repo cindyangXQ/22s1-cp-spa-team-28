@@ -5,13 +5,14 @@
 #include <type_traits>
 #include <unordered_set>
 
+#include "../commons/Constant.h"
 #include "../commons/Entity.h"
-#include "EntityPredicateMap.h"
+#include "../commons/Procedure.h"
+#include "../commons/Variable.h"
 #include "Table.h"
 
 /*
  * Class encapsulating a Table used for storing Procedures/Variables/Constants.
- * TODO: Abstract filter method if possible
  */
 template <typename T> class NamesTable : public Table<Entity> {
 public:
@@ -60,92 +61,6 @@ protected:
     std::map<std::string, Entity *> nameEntityMap;
 };
 
-class ConstantsTable : public NamesTable<Constant> {
-public:
-    /*
-     * Filter table based on the PredicateMap.
-     */
-    ConstantsTable *filter(ConstantPredicateMap *predicateMap) {
-        if ((*predicateMap).isEmpty()) {
-            ConstantsTable *newTable = this;
-            return newTable;
-        }
-
-        ConstantsTable *newTable = new ConstantsTable();
-        std::map<EntityHeader, Constant *> extractedMap =
-            (*predicateMap).getPredicateMap();
-
-        for (auto const &[name, entity] : this->getNameEntityMap()) {
-            bool isFilter = true;
-            for (auto const &[key, val] : extractedMap) {
-                if (!entity->isValueEqual(key, *val)) {
-                    isFilter = false;
-                }
-            }
-            if (isFilter) {
-                newTable->store(entity);
-            }
-        }
-        return newTable;
-    };
-};
-
-class VariablesTable : public NamesTable<Variable> {
-public:
-    /*
-     * Filter table based on the PredicateMap.
-     */
-    VariablesTable *filter(VariablePredicateMap *predicateMap) {
-        if ((*predicateMap).isEmpty()) {
-            VariablesTable *newTable = this;
-            return newTable;
-        }
-
-        VariablesTable *newTable = new VariablesTable();
-        std::map<EntityHeader, Variable *> extractedMap =
-            (*predicateMap).getPredicateMap();
-
-        for (auto const &[index, entity] : this->getNameEntityMap()) {
-            bool isFilter = true;
-            for (auto const &[key, val] : extractedMap) {
-                if (!entity->isValueEqual(key, *val)) {
-                    isFilter = false;
-                }
-            }
-            if (isFilter) {
-                newTable->store(entity);
-            }
-        }
-        return newTable;
-    };
-};
-
-class ProceduresTable : public NamesTable<Procedure> {
-public:
-    /*
-     * Filter table based on the PredicateMap.
-     */
-    ProceduresTable *filter(ProcedurePredicateMap *predicateMap) {
-        if ((*predicateMap).isEmpty()) {
-            ProceduresTable *newTable = this;
-            return newTable;
-        }
-
-        ProceduresTable *newTable = new ProceduresTable();
-        std::map<EntityHeader, Procedure *> extractedMap =
-            (*predicateMap).getPredicateMap();
-
-        for (auto const &[name, entity] : this->getNameEntityMap()) {
-            bool isFilter = true;
-            for (auto const &[key, val] : extractedMap) {
-                if (!entity->isValueEqual(key, *val)) {
-                    isFilter = false;
-                }
-            }
-            if (isFilter) {
-                newTable->store(entity);
-            }
-        }
-        return newTable;
-    };
-};
+typedef NamesTable<Constant> ConstantsTable;
+typedef NamesTable<Variable> VariablesTable;
+typedef NamesTable<Procedure> ProceduresTable;
