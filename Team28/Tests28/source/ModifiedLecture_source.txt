@@ -21,4 +21,6 @@ procedure computeCentroid {
 	normSq= cenX * cenX + cenY * cenY;
 }
 
-procedure readPoint {}
+procedure readPoint {
+	x = x + 1;
+}
