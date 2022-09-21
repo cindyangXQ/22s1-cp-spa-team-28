@@ -1,4 +1,4 @@
-#include "PKB/PopulateFacade.h"
+#include "PKB/Facades/PopulateFacade.h"
 #include "SP/SP.h"
 #include "catch.hpp"
 

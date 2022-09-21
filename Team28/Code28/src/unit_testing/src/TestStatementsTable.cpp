@@ -1,4 +1,4 @@
-#include "PKB/StatementsTable.h"
+#include "PKB/Tables/StatementsTable.h"
 
 #include "catch.hpp"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../PKB/QueryFacade.h"
+#include "../../PKB/Facades/QueryFacade.h"
 #include "../Clause/PatternClause.h"
 #include "ClauseResult.h"
 

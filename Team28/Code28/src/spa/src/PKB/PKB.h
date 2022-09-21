@@ -1,7 +1,7 @@
 #pragma once
 
-#include "PopulateFacade.h"
-#include "QueryFacade.h"
+#include "Facades/PopulateFacade.h"
+#include "Facades/QueryFacade.h"
 #include "Storage.h"
 
 /*

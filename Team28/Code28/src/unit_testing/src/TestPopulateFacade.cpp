@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "PKB/PopulateFacade.h"
+#include "PKB/Facades/PopulateFacade.h"
 
 #include "catch.hpp"
 

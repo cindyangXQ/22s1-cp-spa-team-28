@@ -1,4 +1,4 @@
-#include "PKB/QueryFacade.h"
+#include "PKB/Facades/QueryFacade.h"
 #include "QPS/QPS.h"
 
 #include "catch.hpp"

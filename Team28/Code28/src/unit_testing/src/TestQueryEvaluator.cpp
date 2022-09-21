@@ -1,4 +1,4 @@
-#include "PKB/QueryFacade.h"
+#include "PKB/Facades/QueryFacade.h"
 #include "QPS/Evaluator/ClauseResult.h"
 #include "QPS/Evaluator/PatternEvaluator.h"
 #include "QPS/Evaluator/QueryEvaluator.h"

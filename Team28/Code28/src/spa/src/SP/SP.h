@@ -1,4 +1,6 @@
-#include "../PKB/PopulateFacade.h"
+#pragma once
+
+#include "../PKB/Facades/PopulateFacade.h"
 
 class SP {
     PopulateFacade *storage;
