@@ -1,6 +1,9 @@
 #include "catch.hpp"
 
 #include "PKB/RelationshipsTable.h"
+#include "PKB/ProcToVarRelationshipsTable.h"
+#include "PKB/StmtToStmtRelationshipsTable.h"
+#include "PKB/StmtToVarRelationshipsTable.h"
 
 TEST_CASE("RelationshipsTable can be initialised correctly") {
     RelationshipsTable<int, int> table;

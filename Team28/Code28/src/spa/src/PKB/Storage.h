@@ -13,9 +13,11 @@
 
 #include "AssignmentsTable.h"
 #include "NamesTable.h"
-#include "RelationshipsTable.h"
 #include "StatementsTable.h"
 #include "Table.h"
+#include "StmtToStmtRelationshipsTable.h"
+#include "StmtToVarRelationshipsTable.h"
+#include "ProcToVarRelationshipsTable.h"
 
 /*
  * Enumerates the different kinds of tables to instantiate.
