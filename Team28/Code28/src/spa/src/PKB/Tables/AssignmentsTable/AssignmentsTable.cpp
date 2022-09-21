@@ -21,12 +21,12 @@ AssignmentsTable::containsVarAndExpr(std::string varName,
     for (Assignment assignment : this->allAssignments) {
         if (assignment.getVariable() == varName &&
             assignment.getExpression() == expression) {
-            intermediateResult.insert(Value(ValueType::STMT_NUM,
-                                   std::to_string(assignment.getLineNo())));
+            intermediateResult.insert(Value(
+                ValueType::STMT_NUM, std::to_string(assignment.getLineNo())));
         }
     }
-    std::vector<Value> result = std::vector<Value>(
-        intermediateResult.begin(), intermediateResult.end());
+    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
+                                                   intermediateResult.end());
     std::sort(result.begin(), result.end());
     return result;
 };
@@ -48,12 +48,12 @@ AssignmentsTable::getAssignFromVarAndExpr(std::string varName,
             continue;
         }
         if (assignment.getExpression().find(expression) != std::string::npos) {
-            intermediateResult.insert(Value(ValueType::STMT_NUM,
-                                   std::to_string(assignment.getLineNo())));
+            intermediateResult.insert(Value(
+                ValueType::STMT_NUM, std::to_string(assignment.getLineNo())));
         }
     }
-    std::vector<Value> result = std::vector<Value>(
-        intermediateResult.begin(), intermediateResult.end());
+    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
+                                                   intermediateResult.end());
     std::sort(result.begin(), result.end());
     return result;
 };
@@ -68,12 +68,12 @@ AssignmentsTable::getAssignFromVarAndExprExact(std::string varName,
             continue;
         }
         if (assignment.getExpression() == expression) {
-            intermediateResult.insert(Value(ValueType::STMT_NUM,
-                                   std::to_string(assignment.getLineNo())));
+            intermediateResult.insert(Value(
+                ValueType::STMT_NUM, std::to_string(assignment.getLineNo())));
         }
     }
-    std::vector<Value> result = std::vector<Value>(
-        intermediateResult.begin(), intermediateResult.end());
+    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
+                                                   intermediateResult.end());
     std::sort(result.begin(), result.end());
     return result;
 };
@@ -85,27 +85,28 @@ std::vector<Value> AssignmentsTable::getAssignFromExpr(std::string expression) {
 
     for (Assignment assignment : this->allAssignments) {
         if (assignment.getExpression().find(expression) != std::string::npos) {
-            intermediateResult.insert(Value(ValueType::STMT_NUM,
-                                   std::to_string(assignment.getLineNo())));
+            intermediateResult.insert(Value(
+                ValueType::STMT_NUM, std::to_string(assignment.getLineNo())));
         }
-    }    
-    std::vector<Value> result = std::vector<Value>(
-        intermediateResult.begin(), intermediateResult.end());
+    }
+    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
+                                                   intermediateResult.end());
     std::sort(result.begin(), result.end());
     return result;
 };
 
-std::vector<Value> AssignmentsTable::getAssignFromExprExact(std::string expression) {
+std::vector<Value>
+AssignmentsTable::getAssignFromExprExact(std::string expression) {
     std::unordered_set<Value> intermediateResult;
 
     for (Assignment assignment : this->allAssignments) {
         if (assignment.getExpression() == expression) {
-            intermediateResult.insert(Value(ValueType::STMT_NUM,
-                                   std::to_string(assignment.getLineNo())));
+            intermediateResult.insert(Value(
+                ValueType::STMT_NUM, std::to_string(assignment.getLineNo())));
         }
-    }    
-    std::vector<Value> result = std::vector<Value>(
-        intermediateResult.begin(), intermediateResult.end());
+    }
+    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
+                                                   intermediateResult.end());
     std::sort(result.begin(), result.end());
     return result;
 };
@@ -124,7 +125,7 @@ std::vector<Value> AssignmentsTable::getAssign(std::string varName,
 
 std::vector<Value> AssignmentsTable::getAssignExact(std::string varName,
                                                     std::string expression) {
-    // assumes bracket is already added. TODO: remove comment 
+    // assumes bracket is already added. TODO: remove comment
     if (varName == "_") {
         return this->getAssignFromExprExact(expression);
     }
@@ -140,7 +141,8 @@ AssignmentsTable::getAssignAndVar(std::string expression) {
         expression = "(" + expression + ")";
     }
 
-    std::unordered_set<std::pair<Value, Value>, value_pair_hash> intermediateResult;
+    std::unordered_set<std::pair<Value, Value>, value_pair_hash>
+        intermediateResult;
 
     for (Assignment assignment : this->allAssignments) {
         if (assignment.getExpression().find(expression) != std::string::npos) {
@@ -150,17 +152,19 @@ AssignmentsTable::getAssignAndVar(std::string expression) {
                 Value(ValueType::VAR_NAME, assignment.getVariable())));
         }
     }
-    std::vector<std::pair<Value, Value>> result = std::vector<std::pair<Value, Value>>(
-        intermediateResult.begin(), intermediateResult.end());
+    std::vector<std::pair<Value, Value>> result =
+        std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
+                                             intermediateResult.end());
     std::sort(result.begin(), result.end(), value_pair_sort());
     return result;
 };
 
 std::vector<std::pair<Value, Value>>
 AssignmentsTable::getAssignAndVarExact(std::string expression) {
-    // assumes bracket is already added. TODO: remove comment 
+    // assumes bracket is already added. TODO: remove comment
 
-    std::unordered_set<std::pair<Value, Value>, value_pair_hash> intermediateResult;
+    std::unordered_set<std::pair<Value, Value>, value_pair_hash>
+        intermediateResult;
 
     for (Assignment assignment : this->allAssignments) {
         if (assignment.getExpression() == expression) {
@@ -170,8 +174,9 @@ AssignmentsTable::getAssignAndVarExact(std::string expression) {
                 Value(ValueType::VAR_NAME, assignment.getVariable())));
         }
     }
-    std::vector<std::pair<Value, Value>> result = std::vector<std::pair<Value, Value>>(
-        intermediateResult.begin(), intermediateResult.end());
+    std::vector<std::pair<Value, Value>> result =
+        std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
+                                             intermediateResult.end());
     std::sort(result.begin(), result.end(), value_pair_sort());
     return result;
 };

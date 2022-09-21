@@ -6,9 +6,9 @@
 #include <unordered_set>
 #include <vector>
 
-#include "../../commons/Assignment.h"
-#include "../../commons/Value.h"
-#include "Table.h"
+#include "../../../commons/Assignment.h"
+#include "../../../commons/Value.h"
+#include "../Table.h"
 
 typedef std::pair<int, std::string> IntStringPair;
 
@@ -45,7 +45,8 @@ public:
      * Return list of possible values of assignments that satisfy the given
      * varName and exact expression
      */
-    std::vector<Value> getAssignExact(std::string varName, std::string expression);
+    std::vector<Value> getAssignExact(std::string varName,
+                                      std::string expression);
 
     /*
      * Return list of possible (Assignment, Variable) pairs which satisfy the

@@ -5,19 +5,19 @@
 #include <string>
 #include <utility>
 
-#include "../commons/Constant.h"
-#include "../commons/Entity.h"
-#include "../commons/Procedure.h"
-#include "../commons/TableValue.h"
-#include "../commons/Variable.h"
+#include "../../commons/Constant.h"
+#include "../../commons/Entity.h"
+#include "../../commons/Procedure.h"
+#include "../../commons/TableValue.h"
+#include "../../commons/Variable.h"
 
-#include "Tables/AssignmentsTable.h"
-#include "Tables/NamesTable.h"
-#include "Tables/StatementsTable.h"
-#include "Tables/Table.h"
-#include "Tables/StmtToStmtRelationshipsTable.h"
-#include "Tables/StmtToVarRelationshipsTable.h"
-#include "Tables/ProcToVarRelationshipsTable.h"
+#include "../Tables/AssignmentsTable/AssignmentsTable.h"
+#include "../Tables/NamesTable/NamesTable.h"
+#include "../Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
+#include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
+#include "../Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
+#include "../Tables/StatementsTable/StatementsTable.h"
+#include "../Tables/Table.h"
 
 /*
  * Enumerates the different kinds of tables to instantiate.

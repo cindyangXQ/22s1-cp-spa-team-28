@@ -5,12 +5,12 @@
 #include <string>
 #include <unordered_set>
 
-#include "../../commons/Reference.h"
-#include "../../commons/Relationship.h"
-#include "../../commons/StringUtil.h"
-#include "NamesTable.h"
-#include "StatementsTable.h"
-#include "Table.h"
+#include "../../../commons/Reference.h"
+#include "../../../commons/Relationship.h"
+#include "../../../commons/StringUtil.h"
+#include "../NamesTable/NamesTable.h"
+#include "../StatementsTable/StatementsTable.h"
+#include "../Table.h"
 
 template <typename Left, typename Right>
 class RelationshipsTable : public Table<Relationship<Left, Right>> {

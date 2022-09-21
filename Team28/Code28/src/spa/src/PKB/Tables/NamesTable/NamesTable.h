@@ -5,11 +5,11 @@
 #include <type_traits>
 #include <unordered_set>
 
-#include "../../commons/Constant.h"
-#include "../../commons/Entity.h"
-#include "../../commons/Procedure.h"
-#include "../../commons/Variable.h"
-#include "Table.h"
+#include "../../../commons/Constant.h"
+#include "../../../commons/Entity.h"
+#include "../../../commons/Procedure.h"
+#include "../../../commons/Variable.h"
+#include "../Table.h"
 
 /*
  * Class encapsulating a Table used for storing Procedures/Variables/Constants.

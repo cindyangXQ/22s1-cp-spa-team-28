@@ -1,4 +1,4 @@
-#include "PKB/Tables/NamesTable.h"
+#include "PKB/Tables/NamesTable/NamesTable.h"
 #include "commons/Constant.h"
 #include "commons/Procedure.h"
 #include "commons/Variable.h"
