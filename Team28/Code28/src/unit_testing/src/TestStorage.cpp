@@ -1,4 +1,4 @@
-#include "PKB/Storage.h"
+#include "PKB/Storage/Storage.h"
 
 #include "catch.hpp"
 

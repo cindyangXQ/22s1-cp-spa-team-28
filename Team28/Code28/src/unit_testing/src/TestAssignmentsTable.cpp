@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include "PKB/Tables/AssignmentsTable.h"
+#include "PKB/Tables/AssignmentsTable/AssignmentsTable.h"
 
 TEST_CASE("AssignmentsTable can initialise, store and retrieve correctly") {
     AssignmentsTable assignmentsTable;

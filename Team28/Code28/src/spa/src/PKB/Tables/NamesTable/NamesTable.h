@@ -9,7 +9,7 @@
 #include "../../commons/Entity.h"
 #include "../../commons/Procedure.h"
 #include "../../commons/Variable.h"
-#include "Table.h"
+#include "../Table.h"
 
 /*
  * Class encapsulating a Table used for storing Procedures/Variables/Constants.

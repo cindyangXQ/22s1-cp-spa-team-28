@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "../../commons/Statement.h"
-#include "Table.h"
+#include "../Table.h"
 
 /*
  * Class encapsulating a Table used to store SIMPLE statements.

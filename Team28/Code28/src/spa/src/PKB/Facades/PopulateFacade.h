@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "../Storage.h"
+#include "../Storage/Storage.h"
 
 /*
  * A Facade class for SP->PKB interactions.

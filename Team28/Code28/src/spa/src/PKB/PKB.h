@@ -2,7 +2,7 @@
 
 #include "Facades/PopulateFacade.h"
 #include "Facades/QueryFacade.h"
-#include "Storage.h"
+#include "Storage/Storage.h"
 
 /*
  * A wrapper class for PKB.
