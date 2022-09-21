@@ -6,8 +6,8 @@
 #include <unordered_set>
 #include <vector>
 
-#include "../../commons/Assignment.h"
-#include "../../commons/Value.h"
+#include "../../../commons/Assignment.h"
+#include "../../../commons/Value.h"
 #include "../Table.h"
 
 typedef std::pair<int, std::string> IntStringPair;
