@@ -1,4 +1,4 @@
-file(GLOB srcs "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+file(GLOB srcs "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/Facades/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/Tables/*.cpp")
 
 add_library(pkb ${srcs})
 

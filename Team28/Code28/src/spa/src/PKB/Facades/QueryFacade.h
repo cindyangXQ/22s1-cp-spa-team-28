@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Storage.h"
+#include "../Storage.h"
 
 /*
  * A Facade class for QPS->PKB interactions.

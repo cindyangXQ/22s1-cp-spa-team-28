@@ -5,9 +5,9 @@
 #include <string>
 #include <unordered_set>
 
-#include "../commons/Reference.h"
-#include "../commons/Relationship.h"
-#include "../commons/StringUtil.h"
+#include "../../commons/Reference.h"
+#include "../../commons/Relationship.h"
+#include "../../commons/StringUtil.h"
 #include "NamesTable.h"
 #include "StatementsTable.h"
 #include "Table.h"

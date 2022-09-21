@@ -2,7 +2,7 @@
 
 #include <list>
 
-#include "../PKB/QueryFacade.h"
+#include "../PKB/Facades/QueryFacade.h"
 #include "Evaluator/ClauseResult.h"
 #include "Evaluator/PatternEvaluator.h"
 #include "Evaluator/QueryEvaluator.h"

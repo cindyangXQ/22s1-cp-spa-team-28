@@ -11,13 +11,13 @@
 #include "../commons/TableValue.h"
 #include "../commons/Variable.h"
 
-#include "AssignmentsTable.h"
-#include "NamesTable.h"
-#include "StatementsTable.h"
-#include "Table.h"
-#include "StmtToStmtRelationshipsTable.h"
-#include "StmtToVarRelationshipsTable.h"
-#include "ProcToVarRelationshipsTable.h"
+#include "Tables/AssignmentsTable.h"
+#include "Tables/NamesTable.h"
+#include "Tables/StatementsTable.h"
+#include "Tables/Table.h"
+#include "Tables/StmtToStmtRelationshipsTable.h"
+#include "Tables/StmtToVarRelationshipsTable.h"
+#include "Tables/ProcToVarRelationshipsTable.h"
 
 /*
  * Enumerates the different kinds of tables to instantiate.
