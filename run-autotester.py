@@ -1,6 +1,6 @@
 # Python script to run all Autotester tests.
 # To add new Autotester tests, add a source code file {name}_source.txt to Tests28/source
-# and a query file {name}_queries.txt to Tests28/source
+# and a query file {name}_queries.txt to Tests28/queries
 
 import sys
 import os
