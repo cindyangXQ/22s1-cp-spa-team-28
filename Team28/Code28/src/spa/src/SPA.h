@@ -12,6 +12,8 @@ public:
 
     void evaluateQuery(std::string query, std::list<std::string> &results);
 
+    PKB getPKB();
+
 private:
     PKB pkb;
     QPS qps = QPS(nullptr);
