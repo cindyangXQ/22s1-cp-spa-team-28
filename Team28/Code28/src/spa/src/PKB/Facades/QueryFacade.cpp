@@ -13,7 +13,8 @@ std::vector<Statement *>
 QueryFacade::getAllStatementsByType(StatementType type) {
     StatementsTable *statements =
         (StatementsTable *)this->storage->getTable(TableName::STATEMENTS);
-    std::vector<int> statementTypeIndices = statements->getStatementsByType(type);
+    std::vector<int> statementTypeIndices =
+        statements->getStatementsByType(type);
     std::vector<Statement *> results;
     for (int i : statementTypeIndices) {
         results.push_back(new Statement(i, type));
@@ -127,6 +128,7 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
             return modifiesS->validate(leftRef, rightRef) ||
                    modifiesP->validate(leftRef, rightRef);
         }
+        break;
     }
     case RelationshipReference::USES: {
         if (leftRef.type == ReferenceType::STMT_REF) {
@@ -147,6 +149,7 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
             return usesS->validate(leftRef, rightRef) ||
                    usesP->validate(leftRef, rightRef);
         }
+        break;
     }
     default: {
         // TODO: throw error instead of return false
@@ -217,6 +220,7 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
             result.insert(result.end(), procRes.begin(), procRes.end());
             return result;
         }
+        break;
     }
     case RelationshipReference::USES: {
         if (leftRef.type == ReferenceType::STMT_REF) {
@@ -242,6 +246,7 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
             result.insert(result.end(), procRes.begin(), procRes.end());
             return result;
         }
+        break;
     }
     default: {
         // TODO: throw error instead of return false
@@ -400,7 +405,7 @@ std::vector<Value> QueryFacade::getAssign(std::string varName,
         (AssignmentsTable *)this->storage->getTable(TableName::ASSIGNMENTS);
 
     if (isExactExpr) {
-        return assignments->getAssignExact(varName, expression);    
+        return assignments->getAssignExact(varName, expression);
     }
     return assignments->getAssign(varName, expression);
 };
