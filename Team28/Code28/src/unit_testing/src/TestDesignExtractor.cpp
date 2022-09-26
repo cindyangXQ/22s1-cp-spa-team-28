@@ -14,7 +14,7 @@ TEST_CASE("extract procedure small program") {
         "2;\nwest = 9 + east + west;\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
-    ProcedureExtractor extr(program, NULL);
+    ProcedureExtractor extr(program, nullptr);
     std::vector<Procedure *> extracted = extr.extract();
 
     REQUIRE(expected.size() == extracted.size());
@@ -39,7 +39,7 @@ TEST_CASE("extract assignments small program") {
         "2;\nwest = 9 + east + west;\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
-    StatementExtractor extr(program, NULL);
+    StatementExtractor extr(program, nullptr);
     std::vector<Assignment *> extracted = extr.extractAssignments();
 
     REQUIRE(expected.size() == extracted.size());
@@ -62,7 +62,7 @@ TEST_CASE("extract statement small program") {
         "2;\nwest = 9 + east + west;\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
-    StatementExtractor extr(program, NULL);
+    StatementExtractor extr(program, nullptr);
     std::vector<Statement *> extracted = extr.extract();
 
     REQUIRE(expected.size() == extracted.size());
@@ -86,7 +86,7 @@ TEST_CASE("extract follows small program") {
         "2;\nwest = 9 + east + west;\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
-    FollowsExtractor extr(program, NULL);
+    FollowsExtractor extr(program, nullptr);
     std::vector<Relationship<int, int> *> extracted = extr.extract();
 
     REQUIRE(expected.size() == extracted.size());
@@ -118,7 +118,7 @@ TEST_CASE("extract followsT small program") {
         "2;\nwest = 9 + east + west;\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
-    FollowsExtrT extr(program, NULL);
+    FollowsExtrT extr(program, nullptr);
     std::vector<Relationship<int, int> *> extracted = extr.extract();
 
     REQUIRE(expected.size() == extracted.size());
@@ -150,7 +150,7 @@ TEST_CASE("extract parent small program, a IF followed by a WHILE") {
         "4;\na = 5;\n }\nwhile (a != 6) {\na = 7;\na = 8;\n}\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
-    ParentExtractor extr(program, NULL);
+    ParentExtractor extr(program, nullptr);
     std::vector<Relationship<int, int> *> extracted = extr.extract();
 
     REQUIRE(expected.size() == extracted.size());
@@ -188,7 +188,7 @@ TEST_CASE("extract parentT small program, WHILE in a IF") {
         "4;\na = 5;\n}\na = 6;\n}else {\na = 7;\na = 8;\n}\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
-    ParentExtrT extr(program, NULL);
+    ParentExtrT extr(program, nullptr);
     std::vector<Relationship<int, int> *> extracted = extr.extract();
 
     REQUIRE(expected.size() == extracted.size());
@@ -228,7 +228,7 @@ TEST_CASE("extract usesS small program, ASSIGN and IF and WHILE and PRINT") {
         "d;\n}\nwhile (e != 5) {\nx = f;\n}\nprint g;\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
-    UsesSExtractor extr(program, NULL);
+    UsesSExtractor extr(program, nullptr);
     std::vector<Relationship<int, std::string> *> extracted = extr.extract();
 
     REQUIRE(expected.size() == extracted.size());
@@ -264,7 +264,7 @@ TEST_CASE("extract modifiesS small program, ASSIGN and IF and WHILE and READ") {
         "4;\n}\nwhile (e != 5) {\nf = 6;\n}\nread g;\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
-    ModSExtractor extr(program, NULL);
+    ModSExtractor extr(program, nullptr);
     std::vector<Relationship<int, std::string> *> extracted = extr.extract();
 
     REQUIRE(expected.size() == extracted.size());
@@ -289,7 +289,7 @@ TEST_CASE("Extract program with if-else statements") {
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramParser parser = ProgramParser(0, tokens);
     ProgramNode *program = parser.parse();
-    FollowsExtrT extr(program, NULL);
+    FollowsExtrT extr(program, nullptr);
     std::vector<Relationship<int, int> *> extracted = extr.extract();
 
     REQUIRE(expected.size() == extracted.size());
@@ -303,7 +303,7 @@ TEST_CASE("Extract program with if-else statements") {
     // Variable extr
     std::vector<std::string> varexpected = {"a", "b", "c"};
     std::vector<Variable *> varresult =
-        VariableExtractor(program, NULL).extract();
+        VariableExtractor(program, nullptr).extract();
 
     REQUIRE(varexpected.size() == varresult.size());
     for (int i = 0; i < varresult.size(); i++) {
@@ -313,7 +313,7 @@ TEST_CASE("Extract program with if-else statements") {
 
     // Constant extr
     std::vector<std::string> constexpected = {"2", "3", "4"};
-    ConstantExtractor extractor(program, NULL);
+    ConstantExtractor extractor(program, nullptr);
     std::vector<Constant *> constresult = extractor.extract();
 
     REQUIRE(constexpected.size() == constresult.size());
@@ -333,7 +333,7 @@ TEST_CASE("Extract program with if-else statements") {
     stmtExpected.push_back(new Statement(6, StatementType::READ));
 
     std::vector<Statement *> stmtExtracted =
-        StatementExtractor(program, NULL).extract();
+        StatementExtractor(program, nullptr).extract();
     REQUIRE(stmtExpected.size() == stmtExtracted.size());
     for (int i = 0; i < stmtExpected.size(); i++) {
         REQUIRE(stmtExpected[i]->isLineNumberEqual(stmtExtracted[i]));
