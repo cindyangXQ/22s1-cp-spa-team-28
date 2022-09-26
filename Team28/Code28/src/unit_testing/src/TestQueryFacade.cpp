@@ -884,7 +884,7 @@ TEST_CASE("ProcToProc: Validate returns correct results") {
         !facade.validate(RelationshipReference::CALLS, wildcardRef, wrongRef));
 }
 
-TEST_CASE("ProcToProc: SolveRight queries for Uses('proc1', 'proc2') return "
+TEST_CASE("ProcToProc: SolveRight queries for Calls('proc1', 'proc2') return "
           "correct results") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
@@ -934,7 +934,7 @@ TEST_CASE("ProcToProc: SolveRight queries for Uses('proc1', 'proc2') return "
                        output.begin()));
 }
 
-TEST_CASE("ProcToProc: SolveLeft queries for Uses('proc1', 'proc2') return "
+TEST_CASE("ProcToProc: SolveLeft queries for Calls('proc1', 'proc2') return "
           "correct results") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
