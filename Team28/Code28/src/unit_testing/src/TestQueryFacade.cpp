@@ -924,7 +924,7 @@ TEST_CASE("ProcToProc: SolveRight queries for Calls('proc1', 'proc2') return "
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // SolveRight(Calls, Foo, Proc2) for Modifies('proc1', 'proc2') returns {}
+    // SolveRight(Calls, Foo, Proc2) for Calls('proc1', 'proc2') returns {}
     leftRef = Reference("Foo");
     rightEntityName = EntityName::PROCEDURE;
     expectedResult = {};
@@ -956,7 +956,7 @@ TEST_CASE("ProcToProc: SolveLeft queries for Calls('proc1', 'proc2') return "
     std::vector<Value> expectedResult;
     std::vector<Value> output;
 
-    // SolveLeft(Calls, Proc1, Proc2) for Modifies('proc1', 'proc2') returns
+    // SolveLeft(Calls, Proc1, Proc2) for Calls('proc1', 'proc2') returns
     // {'proc1'}
     rightRef = Reference("proc2");
     leftEntityName = EntityName::PROCEDURE;
@@ -966,7 +966,7 @@ TEST_CASE("ProcToProc: SolveLeft queries for Calls('proc1', 'proc2') return "
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // SolveLeft(Calls, _, Proc2) for Modifies('proc1', 'proc2') returns
+    // SolveLeft(Calls, _, Proc2) for Calls('proc1', 'proc2') returns
     // {'proc1'}
     rightRef = Reference("_");
     leftEntityName = EntityName::PROCEDURE;
@@ -975,7 +975,7 @@ TEST_CASE("ProcToProc: SolveLeft queries for Calls('proc1', 'proc2') return "
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // SolveLeft(Modifies, Foo, Proc2) for Modifies('Foo', 'proc2') returns {}
+    // SolveLeft(Calls, Foo, Proc2) for Calls('Foo', 'proc2') returns {}
     rightRef = Reference("Foo");
     leftEntityName = EntityName::PROCEDURE;
     expectedResult = {};
