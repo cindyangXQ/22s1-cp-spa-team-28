@@ -351,8 +351,7 @@ TEST_CASE(
                        output.begin()));
 }
 
-TEST_CASE(
-    "StmtToStmt: No duplicate results") {
+TEST_CASE("StmtToStmt: No duplicate results") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     StatementsTable *statements =
@@ -396,7 +395,7 @@ TEST_CASE(
     EntityName leftEntityName = EntityName::STMT;
     expectedResult = {value1, value2};
     output = facade.solveLeft(RelationshipReference::FOLLOWS_T, rightRef,
-                               leftEntityName); 
+                              leftEntityName);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
@@ -846,6 +845,201 @@ TEST_CASE("ProcToVar: SolveBoth queries for Modifies('Main', 'a') return "
                        output.begin()));
 }
 
+TEST_CASE("ProcToProc: Validate returns correct results") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    ProceduresTable *procedures =
+        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+    CallsTable *calls = (CallsTable *)storage.getTable(TableName::CALLS);
+
+    Procedure proc1 = Procedure("proc1");
+    Procedure proc2 = Procedure("proc2");
+    Relationship<std::string, std::string> rs =
+        Relationship(RelationshipReference::CALLS, std::string("proc1"),
+                     std::string("proc2"));
+    procedures->store(&proc1);
+    procedures->store(&proc2);
+    calls->store(&rs);
+
+    Reference leftRef = Reference("proc1");
+    Reference rightRef = Reference("proc2");
+    Reference wildcardRef = Reference("_");
+    Reference wrongRef = Reference("Foo");
+
+    // Queries where relationships do exist
+    REQUIRE(facade.validate(RelationshipReference::CALLS, leftRef, rightRef));
+    REQUIRE(
+        facade.validate(RelationshipReference::CALLS, leftRef, wildcardRef));
+    REQUIRE(
+        facade.validate(RelationshipReference::CALLS, wildcardRef, rightRef));
+    REQUIRE(facade.validate(RelationshipReference::CALLS, wildcardRef,
+                            wildcardRef));
+
+    // Queries where relationships do not exist
+    REQUIRE(!facade.validate(RelationshipReference::CALLS, wrongRef, rightRef));
+    REQUIRE(!facade.validate(RelationshipReference::CALLS, leftRef, wrongRef));
+    REQUIRE(
+        !facade.validate(RelationshipReference::CALLS, wrongRef, wildcardRef));
+    REQUIRE(
+        !facade.validate(RelationshipReference::CALLS, wildcardRef, wrongRef));
+}
+
+TEST_CASE("ProcToProc: SolveRight queries for Uses('proc1', 'proc2') return "
+          "correct results") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    ProceduresTable *procedures =
+        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+    CallsTable *calls = (CallsTable *)storage.getTable(TableName::CALLS);
+
+    Procedure proc1 = Procedure("proc1");
+    Procedure proc2 = Procedure("proc2");
+    Relationship<std::string, std::string> rs =
+        Relationship(RelationshipReference::CALLS, std::string("proc1"),
+                     std::string("proc2"));
+    procedures->store(&proc1);
+    procedures->store(&proc2);
+    calls->store(&rs);
+
+    Reference leftRef;
+    EntityName rightEntityName;
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // SolveRight(Calls, Proc1, Proc2) for Calls('proc1', 'proc2') returns
+    // {'proc2'}
+    leftRef = Reference("proc1");
+    rightEntityName = EntityName::PROCEDURE;
+    expectedResult = {Value(ValueType::VAR_NAME, "proc2")};
+    output = facade.solveRight(RelationshipReference::CALLS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveRight(Calls, _, Proc2) for Calls('proc1', 'proc2') returns {'proc2'}
+    leftRef = Reference("_");
+    rightEntityName = EntityName::PROCEDURE;
+    output = facade.solveRight(RelationshipReference::CALLS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveRight(Calls, Foo, Proc2) for Modifies('proc1', 'proc2') returns {}
+    leftRef = Reference("Foo");
+    rightEntityName = EntityName::PROCEDURE;
+    expectedResult = {};
+    output = facade.solveRight(RelationshipReference::CALLS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("ProcToProc: SolveLeft queries for Uses('proc1', 'proc2') return "
+          "correct results") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    ProceduresTable *procedures =
+        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+    CallsTable *calls = (CallsTable *)storage.getTable(TableName::CALLS);
+
+    Procedure proc1 = Procedure("proc1");
+    Procedure proc2 = Procedure("proc2");
+    Relationship<std::string, std::string> rs =
+        Relationship(RelationshipReference::CALLS, std::string("proc1"),
+                     std::string("proc2"));
+    procedures->store(&proc1);
+    procedures->store(&proc2);
+    calls->store(&rs);
+
+    Reference rightRef;
+    EntityName leftEntityName;
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // SolveLeft(Calls, Proc1, Proc2) for Modifies('proc1', 'proc2') returns
+    // {'proc1'}
+    rightRef = Reference("proc2");
+    leftEntityName = EntityName::PROCEDURE;
+    expectedResult = {Value(ValueType::VAR_NAME, "proc1")};
+    output = facade.solveLeft(RelationshipReference::CALLS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Calls, _, Proc2) for Modifies('proc1', 'proc2') returns
+    // {'proc1'}
+    rightRef = Reference("_");
+    leftEntityName = EntityName::PROCEDURE;
+    output = facade.solveLeft(RelationshipReference::CALLS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Modifies, Foo, Proc2) for Modifies('Foo', 'proc2') returns {}
+    rightRef = Reference("Foo");
+    leftEntityName = EntityName::PROCEDURE;
+    expectedResult = {};
+    output = facade.solveLeft(RelationshipReference::CALLS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("ProcToVar: SolveBoth queries for Calls('proc1', 'proc2') return "
+          "correct results") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    ProceduresTable *procedures =
+        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+    CallsTable *calls = (CallsTable *)storage.getTable(TableName::CALLS);
+
+    Procedure proc1 = Procedure("proc1");
+    Procedure proc2 = Procedure("proc2");
+    Relationship<std::string, std::string> rs =
+        Relationship(RelationshipReference::CALLS, std::string("proc1"),
+                     std::string("proc2"));
+    procedures->store(&proc1);
+    procedures->store(&proc2);
+    calls->store(&rs);
+
+    Value value1 = Value(ValueType::VAR_NAME, "proc1");
+    Value value2 = Value(ValueType::VAR_NAME, "proc2");
+
+    EntityName leftEntityName;
+    EntityName rightEntityName;
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // SolveBoth(Calls, Proc1, Proc2) for Calls('proc1', 'proc2') returns {('proc1',
+    // 'proc2')}
+    leftEntityName = EntityName::PROCEDURE;
+    rightEntityName = EntityName::PROCEDURE;
+    expectedResult = {std::make_pair(value1, value2)};
+    output = facade.solveBoth(RelationshipReference::CALLS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(expectedResult.size() == output.size());
+    REQUIRE(expectedResult[0].first == output[0].first);
+    REQUIRE(expectedResult[0].second == output[0].second);
+
+    // SolveBoth(Calls, Proc1, Print) for Calls('proc1', 'a') returns {}
+    leftEntityName = EntityName::PROCEDURE;
+    rightEntityName = EntityName::PRINT;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::CALLS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveBoth(Calls, Call, Proc2) for Calls('a', 'proc2') returns {}
+    leftEntityName = EntityName::CALL;
+    rightEntityName = EntityName::PROCEDURE;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::CALLS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
 TEST_CASE("getAssign returns correct results") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
@@ -876,7 +1070,7 @@ TEST_CASE("getAssign returns correct results") {
     output = facade.getAssign("_", "1", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
-    
+
     // getAssign('_', '(1)', true) returns {'1'}
     expectedResult = {Value(ValueType::STMT_NUM, "1")};
     output = facade.getAssign("_", "(1)", true);
@@ -895,7 +1089,7 @@ TEST_CASE("getAssign returns correct results") {
     output = facade.getAssign("x1", "10", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
-    
+
     // getAssign('x1', '(10)', true) returns {}
     expectedResult = {};
     output = facade.getAssign("x1", "(10)", true);
@@ -925,7 +1119,7 @@ TEST_CASE("getAssignAndVar returns correct results") {
     std::vector<std::pair<Value, Value>> expectedResult;
     std::vector<std::pair<Value, Value>> output;
 
-    // getAssignAndVar('_', false) returns 
+    // getAssignAndVar('_', false) returns
     // {('1', 'x1'), ('2', 'x1'), ('3', 'x2')}
     expectedResult = {std::make_pair(stmt1, varX1),
                       std::make_pair(stmt2, varX1),
