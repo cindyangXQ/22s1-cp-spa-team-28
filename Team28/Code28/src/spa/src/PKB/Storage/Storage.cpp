@@ -14,6 +14,8 @@ Storage::Storage() {
     ModifiesPTable *modifiesP = new ModifiesPTable();
     UsesSTable *usesS = new UsesSTable();
     UsesPTable *usesP = new UsesPTable();
+    CallsTable *calls = new CallsTable();
+    CallsTTable *callsT = new CallsTTable();
 
     /*
      * TODO relook typecasting
@@ -31,6 +33,8 @@ Storage::Storage() {
     this->tables[TableName::MODIFIES_P] = (Table<TableValue> *)modifiesP;
     this->tables[TableName::USES_S] = (Table<TableValue> *)usesS;
     this->tables[TableName::USES_P] = (Table<TableValue> *)usesP;
+    this->tables[TableName::CALLS] = (Table<TableValue> *)calls;
+    this->tables[TableName::CALLS_T] = (Table<TableValue> *)callsT;
 };
 
 Table<TableValue> *Storage::getTable(TableName name) {

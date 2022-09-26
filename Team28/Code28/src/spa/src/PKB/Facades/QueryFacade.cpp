@@ -151,6 +151,16 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
         }
         break;
     }
+    case RelationshipReference::CALLS: {
+        CallsTable *calls =
+            (CallsTable *)this->storage->getTable(TableName::CALLS);
+        return calls->validate(leftRef, rightRef);
+    }
+    case RelationshipReference::CALLS_T: {
+        CallsTTable *callsT =
+            (CallsTTable *)this->storage->getTable(TableName::CALLS_T);
+        return callsT->validate(leftRef, rightRef);
+    }
     default: {
         // TODO: throw error instead of return false
         return false;
@@ -170,6 +180,8 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         (StatementsTable *)this->storage->getTable(TableName::STATEMENTS);
     VariablesTable *variables =
         (VariablesTable *)this->storage->getTable(TableName::VARIABLES);
+    ProceduresTable *procedures =
+        (ProceduresTable *)this->storage->getTable(TableName::PROCEDURES);
 
     switch (relType) {
     case RelationshipReference::FOLLOWS: {
@@ -248,6 +260,16 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         }
         break;
     }
+    case RelationshipReference::CALLS: {
+        CallsTable *calls =
+            (CallsTable *)this->storage->getTable(TableName::CALLS);
+        return calls->solveRight(leftRef, rightSynonym, procedures);
+    }
+    case RelationshipReference::CALLS_T: {
+        CallsTTable *callsT =
+            (CallsTTable *)this->storage->getTable(TableName::CALLS_T);
+        return callsT->solveRight(leftRef, rightSynonym, procedures);
+    }
     default: {
         // TODO: throw error instead of return false
         return std::vector<Value>();
@@ -318,6 +340,16 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
         }
         // TODO: throw error instead of returning empty list
         return std::vector<Value>();
+    }
+    case RelationshipReference::CALLS: {
+        CallsTable *calls =
+            (CallsTable *)this->storage->getTable(TableName::CALLS);
+        return calls->solveLeft(rightRef, leftSynonym, procedures);
+    }
+    case RelationshipReference::CALLS_T: {
+        CallsTTable *callsT =
+            (CallsTTable *)this->storage->getTable(TableName::CALLS_T);
+        return callsT->solveLeft(rightRef, leftSynonym, procedures);
     }
     default: {
         // TODO: throw error instead of return false
@@ -390,6 +422,16 @@ QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
         }
         // TODO: throw error instead of returning empty list
         return std::vector<std::pair<Value, Value>>();
+    }
+    case RelationshipReference::CALLS: {
+        CallsTable *calls =
+            (CallsTable *)this->storage->getTable(TableName::CALLS);
+        return calls->solveBoth(leftSynonym, rightSynonym, procedures);
+    }
+    case RelationshipReference::CALLS_T: {
+        CallsTTable *callsT =
+            (CallsTTable *)this->storage->getTable(TableName::CALLS_T);
+        return callsT->solveBoth(leftSynonym, rightSynonym, procedures);
     }
     default: {
         // TODO: throw error instead of return false

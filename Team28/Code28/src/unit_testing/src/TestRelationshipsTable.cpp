@@ -1,5 +1,6 @@
 #include "catch.hpp"
 
+#include "PKB/Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/RelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
@@ -241,4 +242,38 @@ TEST_CASE("UsesPTable can initialise, store and retrieve correctly") {
     // values in maps are correct
     REQUIRE(usesPTable.retrieveLeft("foo").count("v") == 1);
     REQUIRE(usesPTable.retrieveRight("v").count("foo") == 1);
+}
+
+TEST_CASE("CallsTable can initialise, store and retrieve correctly") {
+    CallsTable callsTable;
+
+    // Calls ("foo", "bar")
+    Relationship<std::string, std::string> test = Relationship(
+        RelationshipReference::CALLS, std::string("foo"), std::string("bar"));
+    callsTable.store(&test);
+
+    // successfully stored Calls ("foo", "bar")
+    REQUIRE(callsTable.retrieveLeft("foo").size() == 1);
+    REQUIRE(callsTable.retrieveRight("bar").size() == 1);
+
+    // values in maps are correct
+    REQUIRE(callsTable.retrieveLeft("foo").count("bar") == 1);
+    REQUIRE(callsTable.retrieveRight("bar").count("foo") == 1);
+}
+
+TEST_CASE("CallsTTable can initialise, store and retrieve correctly") {
+    CallsTTable callsTTable;
+
+    // Calls* ("foo", "bar")
+    Relationship<std::string, std::string> test = Relationship(
+        RelationshipReference::CALLS, std::string("foo"), std::string("bar"));
+    callsTTable.store(&test);
+
+    // successfully stored Calls* ("foo", "bar")
+    REQUIRE(callsTTable.retrieveLeft("foo").size() == 1);
+    REQUIRE(callsTTable.retrieveRight("bar").size() == 1);
+
+    // values in maps are correct
+    REQUIRE(callsTTable.retrieveLeft("foo").count("bar") == 1);
+    REQUIRE(callsTTable.retrieveRight("bar").count("foo") == 1);
 }
