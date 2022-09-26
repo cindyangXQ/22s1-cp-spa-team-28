@@ -22,8 +22,8 @@ bool ProcToProcRelationshipsTable::validate(Reference leftRef,
 
 std::vector<Value> ProcToProcRelationshipsTable::solveRight(
     Reference leftRef, EntityName rightSynonym, ProceduresTable *procedures) {
-    // Validate rightSynonym is a variable. TODO: throw error if not
-    if (rightSynonym != EntityName::VARIABLE) {
+    // Validate rightSynonym is a procedure. TODO: throw error if not
+    if (rightSynonym != EntityName::PROCEDURE) {
         return std::vector<Value>();
     }
     // TODO: iterate through set don't convert to vector
@@ -74,7 +74,7 @@ std::vector<std::pair<Value, Value>>
 ProcToProcRelationshipsTable::solveBoth(EntityName leftSynonym,
                                         EntityName rightSynonym,
                                         ProceduresTable *procedures) {
-    // Validate synonyms here. TODO: throw error if not
+    // Validate synonyms are both procedures here. TODO: throw error if not
     if (leftSynonym != EntityName::PROCEDURE ||
         rightSynonym != EntityName::PROCEDURE) {
         return std::vector<std::pair<Value, Value>>();
