@@ -16,6 +16,7 @@
 #include "../Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
+#include "../Tables/RelationshipsTable/ProcToProcRelationshipsTable.h" 
 #include "../Tables/StatementsTable/StatementsTable.h"
 #include "../Tables/Table.h"
 
@@ -35,7 +36,9 @@ enum class TableName {
     MODIFIES_S,
     MODIFIES_P,
     USES_S,
-    USES_P
+    USES_P,
+    CALLS,
+    CALLS_T
 };
 
 /*

@@ -10,6 +10,8 @@ enum class RelationshipReference {
     PARENT_T,
     USES,
     MODIFIES,
+    CALLS,
+    CALLS_T,
     EMPTY
 };
 
