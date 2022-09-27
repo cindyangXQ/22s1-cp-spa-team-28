@@ -72,67 +72,74 @@ TEST_CASE("Parser can parse such that clause") {
     std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
                               Synonym(EntityName::ASSIGN, "a")};
     std::string correct_input_num_syn = "such that Modifies(1, v)";
-    SuchThatClause clause1 =
+    std::vector<SuchThatClause> clause1 =
         QueryParser::parseSuchThatClause(&correct_input_num_syn, syns);
-    REQUIRE(clause1.relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause1.refLeft.isSynonym == false);
-    REQUIRE(clause1.refLeft.value.value == "1");
-    REQUIRE(clause1.refRight.isSynonym == true);
-    REQUIRE(clause1.refRight.syn.name == "v");
+    REQUIRE(clause1.size() == 1);
+    REQUIRE(clause1[0].relationship == RelationshipReference::MODIFIES);
+    REQUIRE(clause1[0].refLeft.isSynonym == false);
+    REQUIRE(clause1[0].refLeft.value.value == "1");
+    REQUIRE(clause1[0].refRight.isSynonym == true);
+    REQUIRE(clause1[0].refRight.syn.name == "v");
 
     std::string correct_input_syn_name = "such that Modifies(a, \"yey\")";
-    SuchThatClause clause2 =
+    std::vector<SuchThatClause> clause2 =
         QueryParser::parseSuchThatClause(&correct_input_syn_name, syns);
-    REQUIRE(clause2.relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause2.refLeft.isSynonym == true);
-    REQUIRE(clause2.refLeft.syn.name == "a");
-    REQUIRE(clause2.refRight.isSynonym == false);
-    REQUIRE(clause2.refRight.value.value == "yey");
+    REQUIRE(clause2.size() == 1);
+    REQUIRE(clause2[0].relationship == RelationshipReference::MODIFIES);
+    REQUIRE(clause2[0].refLeft.isSynonym == true);
+    REQUIRE(clause2[0].refLeft.syn.name == "a");
+    REQUIRE(clause2[0].refRight.isSynonym == false);
+    REQUIRE(clause2[0].refRight.value.value == "yey");
 
     std::string correct_input_num_name = "such that Modifies(1, \"yey\")";
-    SuchThatClause clause3 =
+    std::vector<SuchThatClause> clause3 =
         QueryParser::parseSuchThatClause(&correct_input_num_name, syns);
-    REQUIRE(clause3.relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause3.refLeft.isSynonym == false);
-    REQUIRE(clause3.refLeft.value.value == "1");
-    REQUIRE(clause3.refRight.isSynonym == false);
-    REQUIRE(clause3.refRight.value.value == "yey");
+    REQUIRE(clause3.size() == 1);
+    REQUIRE(clause3[0].relationship == RelationshipReference::MODIFIES);
+    REQUIRE(clause3[0].refLeft.isSynonym == false);
+    REQUIRE(clause3[0].refLeft.value.value == "1");
+    REQUIRE(clause3[0].refRight.isSynonym == false);
+    REQUIRE(clause3[0].refRight.value.value == "yey");
 
     std::string correct_input_syn_syn = "such that Modifies(a, v)";
-    SuchThatClause clause4 =
+    std::vector<SuchThatClause> clause4 =
         QueryParser::parseSuchThatClause(&correct_input_syn_syn, syns);
-    REQUIRE(clause4.relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause4.refLeft.isSynonym == true);
-    REQUIRE(clause4.refLeft.syn.name == "a");
-    REQUIRE(clause4.refRight.isSynonym == true);
-    REQUIRE(clause4.refRight.syn.name == "v");
+    REQUIRE(clause4.size() == 1);
+    REQUIRE(clause4[0].relationship == RelationshipReference::MODIFIES);
+    REQUIRE(clause4[0].refLeft.isSynonym == true);
+    REQUIRE(clause4[0].refLeft.syn.name == "a");
+    REQUIRE(clause4[0].refRight.isSynonym == true);
+    REQUIRE(clause4[0].refRight.syn.name == "v");
 
     std::string correct_input_syn_wildcard = "such that Modifies(a, _)";
-    SuchThatClause clause5 =
+    std::vector<SuchThatClause> clause5 =
         QueryParser::parseSuchThatClause(&correct_input_syn_wildcard, syns);
-    REQUIRE(clause5.relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause5.refLeft.isSynonym == true);
-    REQUIRE(clause5.refLeft.syn.name == "a");
-    REQUIRE(clause5.refRight.isSynonym == false);
-    REQUIRE(clause5.refRight.value.value == "_");
+    REQUIRE(clause5.size() == 1);
+    REQUIRE(clause5[0].relationship == RelationshipReference::MODIFIES);
+    REQUIRE(clause5[0].refLeft.isSynonym == true);
+    REQUIRE(clause5[0].refLeft.syn.name == "a");
+    REQUIRE(clause5[0].refRight.isSynonym == false);
+    REQUIRE(clause5[0].refRight.value.value == "_");
 
     std::string correct_input_wildcard_syn = "such that Follows(_, a)";
-    SuchThatClause clause6 =
+    std::vector<SuchThatClause> clause6 =
         QueryParser::parseSuchThatClause(&correct_input_wildcard_syn, syns);
-    REQUIRE(clause6.relationship == RelationshipReference::FOLLOWS);
-    REQUIRE(clause6.refLeft.isSynonym == false);
-    REQUIRE(clause6.refLeft.value.value == "_");
-    REQUIRE(clause6.refRight.isSynonym == true);
-    REQUIRE(clause6.refRight.syn.name == "a");
+    REQUIRE(clause6.size() == 1);
+    REQUIRE(clause6[0].relationship == RelationshipReference::FOLLOWS);
+    REQUIRE(clause6[0].refLeft.isSynonym == false);
+    REQUIRE(clause6[0].refLeft.value.value == "_");
+    REQUIRE(clause6[0].refRight.isSynonym == true);
+    REQUIRE(clause6[0].refRight.syn.name == "a");
 
     std::string correct_input_wildcard_syn_star = "such that Follows*(_, a)";
-    SuchThatClause clause7 = QueryParser::parseSuchThatClause(
+    std::vector<SuchThatClause> clause7 = QueryParser::parseSuchThatClause(
         &correct_input_wildcard_syn_star, syns);
-    REQUIRE(clause7.relationship == RelationshipReference::FOLLOWS_T);
-    REQUIRE(clause7.refLeft.isSynonym == false);
-    REQUIRE(clause7.refLeft.value.value == "_");
-    REQUIRE(clause7.refRight.isSynonym == true);
-    REQUIRE(clause7.refRight.syn.name == "a");
+    REQUIRE(clause7.size() == 1);
+    REQUIRE(clause7[0].relationship == RelationshipReference::FOLLOWS_T);
+    REQUIRE(clause7[0].refLeft.isSynonym == false);
+    REQUIRE(clause7[0].refLeft.value.value == "_");
+    REQUIRE(clause7[0].refRight.isSynonym == true);
+    REQUIRE(clause7[0].refRight.syn.name == "a");
 
     std::string extra_bracket = "such that Modifies((1, v)";
     REQUIRE_THROWS(QueryParser::parseSuchThatClause(&extra_bracket, syns));
@@ -167,14 +174,15 @@ TEST_CASE("Parser can parse pattern clause") {
     std::string correct_input = "pattern a(v, _\"x\"_)";
     std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
                               Synonym(EntityName::ASSIGN, "a")};
-    PatternClause clause =
+    std::vector<PatternClause> clause =
         QueryParser::parsePatternClause(&correct_input, syns);
-    REQUIRE(clause.entRef.isSynonym == true);
-    REQUIRE(clause.entRef.syn.name == "v");
-    REQUIRE(clause.entRef.syn.entity == EntityName::VARIABLE);
-    REQUIRE(clause.syn.name == "a");
-    REQUIRE(clause.syn.entity == EntityName::ASSIGN);
-    REQUIRE(clause.expression == "_\"x\"_");
+    REQUIRE(clause.size() == 1);
+    REQUIRE(clause[0].entRef.isSynonym == true);
+    REQUIRE(clause[0].entRef.syn.name == "v");
+    REQUIRE(clause[0].entRef.syn.entity == EntityName::VARIABLE);
+    REQUIRE(clause[0].syn.name == "a");
+    REQUIRE(clause[0].syn.entity == EntityName::ASSIGN);
+    REQUIRE(clause[0].expression == "_\"x\"_");
 
     std::string extra_bracket = "pattern a((v, \"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&extra_bracket, syns));

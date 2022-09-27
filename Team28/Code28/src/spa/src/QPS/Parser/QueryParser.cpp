@@ -9,8 +9,8 @@ SolvableQuery QueryParser::parse(std::string query) {
 
     Declaration decl;
     SelectType selectType;
-    SuchThatClause suchThatCl;
-    PatternClause patternCl;
+    std::vector<SuchThatClause> suchThatCls;
+    std::vector<PatternClause> patternCls;
 
     if (size >= 2) {
         decl = QueryParser::parseDeclaration(clauses);
@@ -19,14 +19,14 @@ SolvableQuery QueryParser::parse(std::string query) {
     // Extract main clause
     std::string mainClause = Utils::removeTrailingSpaces(clauses[size - 1]);
     selectType = QueryParser::parseSelectClause(&mainClause, decl.syns);
-    suchThatCl = QueryParser::parseSuchThatClause(&mainClause, decl.syns);
-    patternCl = QueryParser::parsePatternClause(&mainClause, decl.syns);
+    suchThatCls = QueryParser::parseSuchThatClause(&mainClause, decl.syns);
+    patternCls = QueryParser::parsePatternClause(&mainClause, decl.syns);
 
     if (!mainClause.empty()) {
         throw SyntaxError("Unrecognized clause syntax");
     }
 
-    return SolvableQuery(decl, selectType, suchThatCl, patternCl);
+    return SolvableQuery(decl, selectType, suchThatCls, patternCls);
 }
 
 Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
@@ -65,11 +65,13 @@ SelectType QueryParser::parseSelectClause(std::string *clause,
     throw SyntaxError("Expected select clause");
 }
 
-SuchThatClause QueryParser::parseSuchThatClause(std::string *clause,
+std::vector<SuchThatClause>
+QueryParser::parseSuchThatClause(std::string *clause,
                                                 std::vector<Synonym> syns) {
+    std::vector<SuchThatClause> clauses;
     if ((*clause).size() == 0)
-        return SuchThatClause();
-    if (std::regex_search(*clause, std::regex("\\b(such\\s+that)\\b"))) {
+        return clauses;
+    while (std::regex_search(*clause, std::regex("\\b(such\\s+that)\\b"))) {
         std::smatch matches;
         std::regex_match(*clause, matches, suchThatClauseRegex);
         std::string suchThatClause = matches[1];
@@ -93,17 +95,18 @@ SuchThatClause QueryParser::parseSuchThatClause(std::string *clause,
 
         *clause = Utils::removeString(*clause, suchThatClause);
 
-        return SuchThatClause(relationship, left, right);
-    } else {
-        return SuchThatClause();
+        clauses.push_back(SuchThatClause(relationship, left, right));
     }
+    return clauses;
+    
 }
 
-PatternClause QueryParser::parsePatternClause(std::string *clause,
+std::vector<PatternClause> QueryParser::parsePatternClause(std::string *clause,
                                               std::vector<Synonym> syns) {
+    std::vector<PatternClause> clauses;
     if ((*clause).size() == 0)
-        return PatternClause();
-    if (std::regex_search(*clause, std::regex("\\b(pattern)\\b"))) {
+        return clauses;
+    while (std::regex_search(*clause, std::regex("\\b(pattern)\\b"))) {
         std::smatch matches;
         std::regex_match(*clause, matches, patternClauseRegex);
         std::string patternClause = matches[1];
@@ -121,10 +124,9 @@ PatternClause QueryParser::parsePatternClause(std::string *clause,
         Expression expression = matches[4].str();
         *clause = Utils::removeString(*clause, patternClause);
 
-        return PatternClause(syn, entRef, expression);
-    } else {
-        return PatternClause();
+        clauses.push_back(PatternClause(syn, entRef, expression));
     }
+    return clauses;
 }
 
 std::vector<Synonym>
