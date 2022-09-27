@@ -115,3 +115,21 @@ void PopulateFacade::storeUsesP(
         modifiesPTable->store(use);
     }
 }
+
+void PopulateFacade::storeCalls(
+    std::vector<Relationship<std::string, std::string> *> *calls) {
+    CallsTable *callsTable =
+        (CallsTable *)this->storage->getTable(TableName::CALLS);
+    for (Relationship<std::string, std::string> *call : *calls) {
+        callsTable->store(call);
+    }
+}
+
+void PopulateFacade::storeCallsT(
+    std::vector<Relationship<std::string, std::string> *> *callsT) {
+    CallsTable *callsTTable =
+        (CallsTable *)this->storage->getTable(TableName::CALLS_T);
+    for (Relationship<std::string, std::string> *call : *callsT) {
+        callsTTable->store(call);
+    }
+}
