@@ -18,7 +18,7 @@ stmt s1, s2;
 Select s1 such that Parent(s1,s2)
 2, 4
 5000
-3 - Variables in whiole clause are captured in Uses relationship
+3 - Variables in whole clause are captured in Uses relationship
 variable v;
 Select v such that Uses(2,v)
 a1, a2, a3
@@ -26,7 +26,7 @@ a1, a2, a3
 4 - Variables in if clause are captured in Uses relationship
 variable v;
 Select v such that Uses(4,v)
-a1, a4, a5
+a1, a4, a5, a6, a7, a8, y, z
 5000
 4a - Variables in if clause are captured in Uses relationship
 stmt s;
@@ -40,7 +40,7 @@ Select s such that Uses(s,   "a6"  )
 5000
 4c - Variables in if clause are captured in Uses relationship
 variable v;
-Select v such that Uses(6, v  )
+Select v such that Uses(6, v)
 a6, a7, a8
 5000
 5 - Handle white space in quotation marks for pattern clause
