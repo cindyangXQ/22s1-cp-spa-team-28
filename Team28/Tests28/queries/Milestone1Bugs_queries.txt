@@ -36,12 +36,12 @@ Select s such that Uses(s,   "a4"  )
 4b - Variables in if clause are captured in Uses relationship
 stmt s;
 Select s such that Uses(s,   "a6"  )
-4
+6
 5000
-4b - Variables in if clause are captured in Uses relationship
+4c - Variables in if clause are captured in Uses relationship
 variable v;
 Select v such that Uses(6, v  )
-4
+a6, a7, a8
 5000
 5 - Handle white space in quotation marks for pattern clause
 assign a; variable v;
