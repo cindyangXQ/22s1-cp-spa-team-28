@@ -82,7 +82,13 @@ public:
      * Stores the given usesP relations in a UsesPTable.
      */
     void
-    storeUsesP(std::vector<Relationship<std::string, std::string> *> *usesT);
+    storeUsesP(std::vector<Relationship<std::string, std::string> *> *usesP);
+
+    void
+    storeCalls(std::vector<Relationship<std::string, std::string> *> *calls);
+
+    void
+    storeCallsT(std::vector<Relationship<std::string, std::string> *> *callsT);
 
 private:
     Storage *storage;
