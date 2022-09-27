@@ -15,4 +15,18 @@ procedure main {
         a1 = a1 * 2;
         x = 1;
     }
+
+    while (b1 < b2) {
+        while (b3 >= b4) {
+            if (c1 + c2 == c3) then {
+                while (d1 == d2) {
+                    read read;
+                }
+            } else {
+                while (d3 == d4) {
+                    read print;
+                }
+            }
+        }
+    }
 }
