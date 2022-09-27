@@ -73,9 +73,11 @@ QueryParser::parseSuchThatClause(std::string *clause,
         return clauses;
     while (std::regex_search(*clause, std::regex("\\b(such\\s+that)\\b"))) {
         std::smatch matches;
+        // The suchThatClauseRegex will match such that clauses from the back,
+        // so the order will be reversed
         std::regex_match(*clause, matches, suchThatClauseRegex);
         std::string suchThatClause = matches[1];
-
+        
         std::regex_match(suchThatClause, matches, suchThatRegex);
         if (matches.size() != 4) {
             throw SyntaxError("Invalid such that clause syntax");

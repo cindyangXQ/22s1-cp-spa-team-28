@@ -205,3 +205,20 @@ TEST_CASE("Parser can parse pattern clause") {
     std::string missing_underscore = "pattern a(c, _\"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_underscore, syns));
 }
+
+TEST_CASE("Parser can parse multiple such that clauses") {
+    std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
+                              Synonym(EntityName::ASSIGN, "a"),
+                              Synonym(EntityName::STMT, "s"), 
+                              Synonym(EntityName::READ, "r"),
+                              Synonym(EntityName::ASSIGN, "a1")};
+    std::string input = "such that Modifies(a, _) pattern a(_, _) such that Follows(s, r) such that Uses(s, v) pattern a1(v, _\"weew\"_)";
+    std::string remaining_input =
+        "pattern a(_, _) pattern a1(v, _\"weew\"_)";
+    std::vector<SuchThatClause> clauses = QueryParser::parseSuchThatClause(&input, syns);
+    REQUIRE(clauses.size() == 3);
+    REQUIRE(clauses[0].relationship == RelationshipReference::USES);
+    REQUIRE(clauses[1].relationship == RelationshipReference::FOLLOWS);
+    REQUIRE(clauses[2].relationship == RelationshipReference::MODIFIES);
+    REQUIRE(input == remaining_input);
+}

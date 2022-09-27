@@ -87,7 +87,7 @@ const std::regex suchThatRegex(
     "\\s*\\)\\s*");
 // For clause extraction
 const std::regex suchThatClauseRegex(
-    "(\\s*such\\s+that\\s+"
+    ".*(\\s*such\\s+that\\s+"
     "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|)\\s*" // relRef
     "\\(\\s*"
     "(\\s*[a-zA-z\\d]+\\s*|[a-zA-z\\d]+|_|\\s*0|[1-9]\\d*\\s*|\"\\s*[a-zA-Z][a-"
