@@ -1,10 +1,10 @@
 #include "SolvableQuery.h"
 
 SolvableQuery::SolvableQuery(Declaration decl, SelectType selectType,
-                             SuchThatClause suchThatCl,
-                             PatternClause patternCl) {
+                             std::vector<SuchThatClause> suchThatCls,
+                             std::vector<PatternClause> patternCls) {
     this->decl = decl;
     this->selectType = selectType;
-    this->suchThatCl = suchThatCl;
-    this->patternCl = patternCl;
+    this->suchThatCls = suchThatCls;
+    this->patternCls = patternCls;
 }
