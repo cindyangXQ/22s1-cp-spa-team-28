@@ -337,3 +337,48 @@ TEST_CASE("storeUsesP stores Relationship<std::string, std::string> objects "
     REQUIRE(usesPTable->getLeftMap().size() == 3);
     REQUIRE(usesPTable->getRightMap().size() == 3);
 }
+
+TEST_CASE("storeCalls stores Relationship<std::string, std::string> objects "
+          "correctly") {
+    Storage storage;
+    PopulateFacade facade = PopulateFacade(&storage);
+    Relationship<std::string, std::string> test1 = Relationship(
+        RelationshipReference::CALLS, std::string("x"), std::string("a"));
+    Relationship<std::string, std::string> test2 = Relationship(
+        RelationshipReference::CALLS, std::string("y"), std::string("b"));
+    Relationship<std::string, std::string> test3 = Relationship(
+        RelationshipReference::CALLS, std::string("z"), std::string("c"));
+    std::vector<Relationship<std::string, std::string> *> calls = {
+        &test1, &test2, &test3};
+
+    facade.storeCalls(&calls);
+
+    CallsTable *callsTable = (CallsTable *)storage.getTable(TableName::CALLS);
+
+    // Relationship is stored correctly
+    REQUIRE(callsTable->getLeftMap().size() == 3);
+    REQUIRE(callsTable->getRightMap().size() == 3);
+}
+
+TEST_CASE("storeCallsT stores Relationship<std::string, std::string> objects "
+          "correctly") {
+    Storage storage;
+    PopulateFacade facade = PopulateFacade(&storage);
+    Relationship<std::string, std::string> test1 = Relationship(
+        RelationshipReference::CALLS_T, std::string("x"), std::string("a"));
+    Relationship<std::string, std::string> test2 = Relationship(
+        RelationshipReference::CALLS_T, std::string("y"), std::string("b"));
+    Relationship<std::string, std::string> test3 = Relationship(
+        RelationshipReference::CALLS_T, std::string("z"), std::string("c"));
+    std::vector<Relationship<std::string, std::string> *> calls = {
+        &test1, &test2, &test3};
+
+    facade.storeCallsT(&calls);
+
+    CallsTTable *callsTable =
+        (CallsTTable *)storage.getTable(TableName::CALLS_T);
+
+    // Relationship is stored correctly
+    REQUIRE(callsTable->getLeftMap().size() == 3);
+    REQUIRE(callsTable->getRightMap().size() == 3);
+}
