@@ -222,3 +222,19 @@ TEST_CASE("Parser can parse multiple such that clauses") {
     REQUIRE(clauses[2].relationship == RelationshipReference::MODIFIES);
     REQUIRE(input == remaining_input);
 }
+
+TEST_CASE("Parser can parse multiple pattern clauses") {
+    std::vector<Synonym> syns{Synonym(EntityName::ASSIGN, "a1"),
+                              Synonym(EntityName::ASSIGN, "a2"),
+                              Synonym(EntityName::VARIABLE, "v1"), 
+                              Synonym(EntityName::STMT, "s1"),
+                              Synonym(EntityName::STMT, "s2")};
+    std::string input =
+        "such that Modifies(a1, _) pattern a1(v1, _\"yey\"_) such that Follows(s1, s2) such "
+        "that Uses(s2, v1) pattern a2(v1, _\"weew\"_)";
+    std::string remaining_input = "such that Modifies(a1, _)  such that Follows(s1, s2) such that Uses(s2, v1) ";
+    std::vector<PatternClause> clauses =
+        QueryParser::parsePatternClause(&input, syns);
+    REQUIRE(clauses.size() == 2);
+    REQUIRE(input == remaining_input);
+}
