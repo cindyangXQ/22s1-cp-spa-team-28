@@ -36,9 +36,6 @@ AssignmentsTable::getAssignFromVarAndExpr(std::string varName,
                                           std::string expression) {
     if (expression == "_") {
         expression = "";
-    } else {
-        // TODO: remove brackets once qps implement bracket adder
-        expression = "(" + expression + ")";
     }
 
     std::unordered_set<Value> intermediateResult;
@@ -79,8 +76,6 @@ AssignmentsTable::getAssignFromVarAndExprExact(std::string varName,
 };
 
 std::vector<Value> AssignmentsTable::getAssignFromExpr(std::string expression) {
-    // TODO: remove brackets once qps implement bracket adder
-    expression = "(" + expression + ")";
     std::unordered_set<Value> intermediateResult;
 
     for (Assignment assignment : this->allAssignments) {
@@ -117,7 +112,6 @@ std::vector<Value> AssignmentsTable::getAssign(std::string varName,
         return this->allLineNumbers;
     }
     if (varName == "_") {
-        // Assume only partial match. TODO: handle exact matching
         return this->getAssignFromExpr(expression);
     }
     return this->getAssignFromVarAndExpr(varName, expression);
@@ -125,7 +119,6 @@ std::vector<Value> AssignmentsTable::getAssign(std::string varName,
 
 std::vector<Value> AssignmentsTable::getAssignExact(std::string varName,
                                                     std::string expression) {
-    // assumes bracket is already added. TODO: remove comment
     if (varName == "_") {
         return this->getAssignFromExprExact(expression);
     }
@@ -136,9 +129,6 @@ std::vector<std::pair<Value, Value>>
 AssignmentsTable::getAssignAndVar(std::string expression) {
     if (expression == "_") {
         expression = "";
-    } else {
-        // TODO: remove brackets once qps implement bracket adder
-        expression = "(" + expression + ")";
     }
 
     std::unordered_set<std::pair<Value, Value>, value_pair_hash>
@@ -161,8 +151,6 @@ AssignmentsTable::getAssignAndVar(std::string expression) {
 
 std::vector<std::pair<Value, Value>>
 AssignmentsTable::getAssignAndVarExact(std::string expression) {
-    // assumes bracket is already added. TODO: remove comment
-
     std::unordered_set<std::pair<Value, Value>, value_pair_hash>
         intermediateResult;
 
