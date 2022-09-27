@@ -1,5 +1,5 @@
 #include "SP/DesignExtractor.h"
-#include "SP/ExtractUtils.h"
+#include "SP/SPUtils.h"
 #include "catch.hpp"
 
 #include "SP/Parser.h"

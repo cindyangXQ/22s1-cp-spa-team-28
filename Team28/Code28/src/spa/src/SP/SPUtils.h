@@ -2,7 +2,7 @@
 #include "Tokenizer.h"
 #include "ExprParser.h"
 
-class ExtractUtils {
+class SPUtils {
 public:
     static void follows(const std::vector<StatementNode *> &stmtList,
                         std::vector<Relationship<int, int> *> &result);

@@ -1,5 +1,5 @@
 #include "EntityNode.h"
-#include "ExtractUtils.h"
+#include "SPUtils.h"
 #include <vector>
 
 EntityNode::EntityNode() {}
@@ -19,7 +19,7 @@ std::vector<ProcedureNode *> ProgramNode::getProcList() {
 bool ProgramNode::equals(ProgramNode *other) {
     std::vector<ProcedureNode *> procedures = this->getProcList();
     std::vector<ProcedureNode *> others = other->getProcList();
-    return ExtractUtils::compareProcList(procedures, others);
+    return SPUtils::compareProcList(procedures, others);
 }
 
 // Procedure
@@ -35,7 +35,7 @@ bool ProcedureNode::equals(ProcedureNode *other) {
     }
     std::vector<StatementNode *> statements = this->getStmtList();
     std::vector<StatementNode *> others = other->getStmtList();
-    return ExtractUtils::compareStmtList(statements, others);
+    return SPUtils::compareStmtList(statements, others);
 }
 
 std::string ProcedureNode::getName() { return this->procName; }
@@ -81,7 +81,7 @@ bool WhileStatementNode::equals(StatementNode *other) {
     if (other->isWhile()) {
         WhileStatementNode *temp = static_cast<WhileStatementNode *>(other);
         return this->cond->equals(temp->cond) &&
-               ExtractUtils::compareStmtList(this->getStmtList(),
+               SPUtils::compareStmtList(this->getStmtList(),
                                              temp->getStmtList());
     } else {
         return false;
@@ -97,7 +97,7 @@ bool IfStatementNode::equals(StatementNode *other) {
             std::vector<StatementNode *> stmtList1 = this->getStmtList();
             std::vector<StatementNode *> stmtList2 = this->getStmtList();
 
-            return ExtractUtils::compareStmtList(stmtList1, stmtList2);
+            return SPUtils::compareStmtList(stmtList1, stmtList2);
         } else {
             return false;
         }
@@ -282,12 +282,12 @@ void WhileStatementNode::getAssignmentsInto(std::vector<Assignment *> &result) {
 
 void WhileStatementNode::getFollowsInto(
     std::vector<Relationship<int, int> *> &result) {
-    ExtractUtils::follows(this->getStmtList(), result);
+    SPUtils::follows(this->getStmtList(), result);
 }
 
 void WhileStatementNode::getFollowsTInto(
     std::vector<Relationship<int, int> *> &result) {
-    ExtractUtils::followsT(this->getStmtList(), result);
+    SPUtils::followsT(this->getStmtList(), result);
 }
 
 std::vector<std::string> *WhileStatementNode::getUsesInto(
@@ -401,14 +401,14 @@ void IfStatementNode::getAssignmentsInto(std::vector<Assignment *> &result) {
 
 void IfStatementNode::getFollowsInto(
     std::vector<Relationship<int, int> *> &result) {
-    ExtractUtils::follows(this->ifBlock, result);
-    ExtractUtils::follows(this->elseBlock, result);
+    SPUtils::follows(this->ifBlock, result);
+    SPUtils::follows(this->elseBlock, result);
 }
 
 void IfStatementNode::getFollowsTInto(
     std::vector<Relationship<int, int> *> &result) {
-    ExtractUtils::followsT(this->ifBlock, result);
-    ExtractUtils::followsT(this->elseBlock, result);
+    SPUtils::followsT(this->ifBlock, result);
+    SPUtils::followsT(this->elseBlock, result);
 }
 
 std::vector<std::string> *IfStatementNode::getUsesInto(
