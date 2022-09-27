@@ -4,7 +4,7 @@ procedure main {
         a1 = a1 * a1;
     }
 
-    if (a4 == (((a5) + a4) * a2)) then {
+    if (a9 == (((a5) + a4) * x)) then {
         a1 = a1 + 1;
     } else {
         if (a6 == a7 + a8) then {
