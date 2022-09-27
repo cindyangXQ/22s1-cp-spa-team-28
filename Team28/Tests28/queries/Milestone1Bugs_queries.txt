@@ -28,3 +28,28 @@ variable v;
 Select v such that Uses(4,v)
 a1, a4, a5
 5000
+5 - Handle white space in quotation marks for pattern clause
+assign a; variable v;
+Select v pattern a(v, _"1 "_)
+x
+5000
+6 - Invalid expression for pattern clause (To confirm)
+assign a; variable v;
+Select v pattern a(v, _"1) "_)
+SyntaxError
+5000
+7a - Semantically invalid query on usage of c-syn in Uses
+stmt s; constant c;
+Select s such that Uses(s, c)
+SemanticError
+5000
+7b - Semantically invalid query on usage of c-syn in patt
+assign a; constant c;
+Select a pattern a(c, _)
+SemanticError
+5000
+8 - Semantically invalid query on usage of s-syn in patt
+assign a; stmt s;
+Select s pattern a(s, _)
+SemanticError
+5000
