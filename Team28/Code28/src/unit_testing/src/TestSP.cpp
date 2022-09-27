@@ -1,6 +1,5 @@
 #include "PKB/Facades/PopulateFacade.h"
 #include "SP/SP.h"
-#include "SP/SPUtils.h"
 #include "catch.hpp"
 
 #include <iostream>
@@ -25,5 +24,5 @@ TEST_CASE() {
 
 TEST_CASE("test expr converter") { 
     std::string expected = "((((a)+(b))+((c)/(d)))+((e)*(f)))";
-    REQUIRE(SPUtils::convertExpression("a+b+c/d+e*f") == expected);
+    REQUIRE(SP::convertExpression("a+b+c/d+e*f") == expected);
 }

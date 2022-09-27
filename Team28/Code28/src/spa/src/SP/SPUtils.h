@@ -16,6 +16,4 @@ public:
                                 const std::vector<StatementNode *> &list2);
     static bool compareProcList(std::vector<ProcedureNode *> &list1,
                                 std::vector<ProcedureNode *> &list2);
-
-    static std::string convertExpression(std::string input);
 };

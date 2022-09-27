@@ -2,6 +2,7 @@
 
 #include "DesignExtractor.h"
 #include "EntityNode.h"
+#include "ExprParser.h"
 #include "Parser.h"
 #include "Token.h"
 #include "Tokenizer.h"
@@ -26,4 +27,12 @@ void SP::parse(std::string filename) {
         exit(1);
     }
 
+}
+
+std::string SP::convertExpression(std::string input) {
+    Tokenizer tokenizer(input + ";");
+    std::vector<Token *> tokens = tokenizer.tokenize();
+    ExprParser parser(0, tokens, false);
+    ExpressionNode *expr = parser.parse();
+    return expr->toString();
 }
