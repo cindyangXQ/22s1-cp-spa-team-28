@@ -1,6 +1,6 @@
 #include "DesignExtractor.h"
 #include "EntityNode.h"
-#include "ExtractUtils.h"
+#include "SPUtils.h"
 #include <algorithm>
 #include <vector>
 
@@ -105,7 +105,7 @@ std::vector<Relationship<int, int> *> FollowsExtractor::extract() {
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        ExtractUtils::follows(stmtList, result);
+        SPUtils::follows(stmtList, result);
     }
 
     return result;
@@ -117,7 +117,7 @@ std::vector<Relationship<int, int> *> FollowsExtrT::extract() {
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        ExtractUtils::followsT(stmtList, result);
+        SPUtils::followsT(stmtList, result);
     }
 
     return result;
@@ -130,7 +130,7 @@ std::vector<Relationship<int, int> *> ParentExtractor::extract() {
     for (size_t i = 0; i < procList.size(); i++) {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
         for (size_t j = 0; j < stmtList.size(); j++) {
-            ExtractUtils::parent(stmtList[j], result);
+            SPUtils::parent(stmtList[j], result);
         }
     }
 
@@ -144,7 +144,7 @@ std::vector<Relationship<int, int> *> ParentExtrT::extract() {
     for (size_t i = 0; i < procList.size(); i++) {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
         for (size_t j = 0; j < stmtList.size(); j++) {
-            ExtractUtils::parentT(stmtList[j], result);
+            SPUtils::parentT(stmtList[j], result);
         }
     }
 

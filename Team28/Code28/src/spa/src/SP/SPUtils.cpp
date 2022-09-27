@@ -1,6 +1,6 @@
-#include "ExtractUtils.h"
+#include "SPUtils.h"
 
-void ExtractUtils::follows(const std::vector<StatementNode *> &stmtList,
+void SPUtils::follows(const std::vector<StatementNode *> &stmtList,
                            std::vector<Relationship<int, int> *> &result) {
     std::vector<int> lineNumbers;
     for (size_t i = 0; i < stmtList.size(); i++) {
@@ -14,7 +14,7 @@ void ExtractUtils::follows(const std::vector<StatementNode *> &stmtList,
     }
 }
 
-void ExtractUtils::followsT(const std::vector<StatementNode *> &stmtList,
+void SPUtils::followsT(const std::vector<StatementNode *> &stmtList,
                             std::vector<Relationship<int, int> *> &result) {
     std::vector<int> lineNumbers;
     for (size_t i = 0; i < stmtList.size(); i++) {
@@ -31,13 +31,13 @@ void ExtractUtils::followsT(const std::vector<StatementNode *> &stmtList,
     }
 }
 
-void ExtractUtils::parent(StatementNode *parentNode,
+void SPUtils::parent(StatementNode *parentNode,
                           std::vector<Relationship<int, int> *> &result) {
     int parentLineNo = parentNode->getLineNumber();
     std::vector<StatementNode *> children = parentNode->getStmtList();
 
     for (size_t i = 0; i < children.size(); i++) {
-        ExtractUtils::parent(children[i], result);
+        SPUtils::parent(children[i], result);
         int child = children[i]->getLineNumber();
         Relationship<int, int> *addChild = new Relationship<int, int>(
             RelationshipReference::PARENT, parentLineNo, child);
@@ -46,7 +46,7 @@ void ExtractUtils::parent(StatementNode *parentNode,
 }
 
 std::vector<int> *
-ExtractUtils::parentT(StatementNode *parentNode,
+SPUtils::parentT(StatementNode *parentNode,
                       std::vector<Relationship<int, int> *> &result) {
     int parentLineNo = parentNode->getLineNumber();
     std::vector<StatementNode *> children = parentNode->getStmtList();
@@ -54,7 +54,7 @@ ExtractUtils::parentT(StatementNode *parentNode,
 
     for (size_t i = 0; i < children.size(); i++) {
         std::vector<int> *grandchildren =
-            ExtractUtils::parentT(children[i], result);
+            SPUtils::parentT(children[i], result);
         for (size_t j = 0; j < grandchildren->size(); j++) {
             int grandchild = grandchildren->at(j);
             Relationship<int, int> *addGrandchild = new Relationship<int, int>(
@@ -73,7 +73,7 @@ ExtractUtils::parentT(StatementNode *parentNode,
     return descendants;
 }
 
-bool ExtractUtils::compareStmtList(const std::vector<StatementNode *> &list1,
+bool SPUtils::compareStmtList(const std::vector<StatementNode *> &list1,
                                    const std::vector<StatementNode *> &list2) {
     if (list1.size() != list2.size()) {
         return false;
@@ -86,7 +86,7 @@ bool ExtractUtils::compareStmtList(const std::vector<StatementNode *> &list1,
     return true;
 }
 // DRY
-bool ExtractUtils::compareProcList(std::vector<ProcedureNode *> &list1,
+bool SPUtils::compareProcList(std::vector<ProcedureNode *> &list1,
                                    std::vector<ProcedureNode *> &list2) {
     if (list1.size() != list2.size()) {
         return false;

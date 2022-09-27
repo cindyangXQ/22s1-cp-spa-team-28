@@ -21,3 +21,8 @@ TEST_CASE() {
     SP sp(&facade);
     sp.parse(source2);
 }
+
+TEST_CASE("test expr converter") { 
+    std::string expected = "((((a)+(b))+((c)/(d)))+((e)*(f)))";
+    REQUIRE(SP::convertExpression("a+b+c/d+e*f") == expected);
+}
