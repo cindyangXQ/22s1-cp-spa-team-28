@@ -463,8 +463,8 @@ std::vector<std::string> *IfStatementNode::getModsInto(
 // Expression
 ExpressionNode::ExpressionNode(Token *token) {
     this->token = token;
-    this->left = NULL;
-    this->right = NULL;
+    this->left = nullptr;
+    this->right = nullptr;
 }
 
 void ExpressionNode::getVariablesInto(std::vector<std::string> &result) {
@@ -473,7 +473,7 @@ void ExpressionNode::getVariablesInto(std::vector<std::string> &result) {
     } else if (this->token->isConstant()) {
     } else {
         this->left->getVariablesInto(result);
-        if (this->right != NULL) {
+        if (this->right != nullptr) {
             this->right->getVariablesInto(result);
         }
     }
@@ -485,23 +485,23 @@ void ExpressionNode::getConstantsInto(std::vector<std::string> &result) {
     } else if (this->token->isName()) {
     } else {
         this->left->getConstantsInto(result);
-        if (this->right != NULL) {
+        if (this->right != nullptr) {
             this->right->getConstantsInto(result);
         }
     }
 }
 
 bool ExpressionNode::equals(ExpressionNode *other) {
-    if (this->left == NULL && this->right == NULL) {
-        return other->left == NULL && other->right == NULL &&
+    if (this->left == nullptr && this->right == nullptr) {
+        return other->left == nullptr && other->right == nullptr &&
                this->token->equals(other->token);
-    } else if (this->right == NULL) {
-        if (other->left == NULL)
+    } else if (this->right == nullptr) {
+        if (other->left == nullptr)
             return false;
         return this->token->equals(other->token) &&
                this->left->equals(other->left);
     } else {
-        if (other->left == NULL || other->right == NULL) {
+        if (other->left == nullptr || other->right == nullptr) {
             return false;
         }
         return this->token->equals(other->token) &&
@@ -513,11 +513,11 @@ bool ExpressionNode::equals(ExpressionNode *other) {
 std::string ExpressionNode::toString() {
     std::string result = "(";
 
-    if (this->left != NULL) {
+    if (this->left != nullptr) {
         result += this->left->toString();
     }
     result += this->token->getValue();
-    if (this->right != NULL) {
+    if (this->right != nullptr) {
         result += this->right->toString();
     }
     result += ")";
