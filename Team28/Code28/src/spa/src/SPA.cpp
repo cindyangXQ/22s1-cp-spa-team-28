@@ -11,3 +11,5 @@ void SPA::parse(std::string filename) { this->sp.parse(filename); }
 void SPA::evaluateQuery(std::string query, std::list<std::string> &results) {
     this->qps.evaluate(query, results);
 }
+
+PKB SPA::getPKB() { return this->pkb; }
