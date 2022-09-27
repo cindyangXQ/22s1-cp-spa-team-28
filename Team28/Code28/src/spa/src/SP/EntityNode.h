@@ -72,6 +72,7 @@ public:
 class ProcedureNode : public EntityNode {
     std::string procName;
     std::vector<StatementNode *> stmtList;
+    std::vector<std::string> allCalls;
 
 public:
     ProcedureNode(std::string procName, std::vector<StatementNode *> stmtList);
@@ -79,6 +80,10 @@ public:
     std::string getName();
     std::vector<StatementNode *> getStmtList();
     int getEndline();
+    std::vector<std::string> getAllCalls() { return allCalls; }
+    void setAllCalls(std::vector<std::string> allCalls) {
+        this->allCalls = allCalls;
+    }
 };
 
 class ProgramNode : public EntityNode {
