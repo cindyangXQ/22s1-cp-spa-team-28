@@ -169,20 +169,47 @@ TEST_CASE("If Statement Parser") {
     REQUIRE(result->equals(&expected));
 }
 
-/*TEST_CASE("recursive call is not allowed") {
-        string sourceProgram = "procedure Bedok {\ncall Bedok;\n}";
-        vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
-        ProgramNode* program = ProgramParser(0, tokens).parse();
+TEST_CASE("recursive call is not allowed") {
+        std::string sourceProgram = "procedure Bedok {\ncall Bedok;\n}";
+        std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+        try {
+            ProgramNode *program = ProgramParser(0, tokens).parse();
+            FAIL();
+        } catch (char* e) {
+            REQUIRE(strcmp(e, "recursive call is not allowed") == 0);
+        } 
 }
 
 TEST_CASE("procedure of same name is not allowed") {
-        string sourceProgram = "procedure Bedok {\nread a;\n}\n\nprocedure Bedok
-{\nprint b;\n}"; vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
-        ProgramNode* program = ProgramParser(0, tokens).parse();
+        std::string sourceProgram = "procedure Bedok {\nread a;\n}\n\nprocedure Bedok{\nprint b;\n}"; 
+        std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
+        try {
+            ProgramNode *program = ProgramParser(0, tokens).parse();
+            FAIL();
+        } catch (char *e) {
+            REQUIRE(strcmp(e, "procedure of same name is not allowed") == 0);
+        }
 }
 
 TEST_CASE("calling undeclared procedure is not allowed") {
-        string sourceProgram = "procedure Bedok {\ncall a;\n}";
-        vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
-        ProgramNode* program = ProgramParser(0, tokens).parse();
-}*/
+    std::string sourceProgram = "procedure Bedok {\ncall a;\n}";
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    try {
+        ProgramNode *program = ProgramParser(0, tokens).parse();
+        FAIL();
+    } catch (char *e) {
+        REQUIRE(strcmp(e, "calling undeclared procedure is not allowed") == 0);
+    }
+}
+
+TEST_CASE("cyclic calling is not allowed") {
+    std::string sourceProgram = "procedure a{call b;} procedure b{call c; call "
+                                "d;} procedure c{call d;} procedure d{call a;}";
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    try {
+        ProgramNode *program = ProgramParser(0, tokens).parse();
+        FAIL();
+    } catch (char *e) {
+        REQUIRE(strcmp(e, "cyclic calling is not allowed") == 0);
+    }
+}
