@@ -1,0 +1,18 @@
+procedure main {
+    a1 = 1;
+    while (a2 < a3) {
+        a1 = a1 * a1;
+    }
+
+    if (a4 == (((a5) + a4) * a2)) then {
+        a1 = a1 + 1;
+    } else {
+        if (a6 == a7 + a8) then {
+            y = y;
+        } else {
+            z = z;
+        }
+        a1 = a1 * 2;
+        x = 1;
+    }
+}
