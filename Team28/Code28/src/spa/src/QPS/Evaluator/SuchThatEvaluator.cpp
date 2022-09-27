@@ -8,6 +8,19 @@ ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
         Reference right = suchThatCl->refRight;
         RelationshipReference relRef = suchThatCl->relationship;
 
+        if (relRef == RelationshipReference::FOLLOWS ||
+            relRef == RelationshipReference::FOLLOWS_T ||
+            relRef == RelationshipReference::PARENT ||
+            relRef == RelationshipReference::PARENT_T ||
+            relRef == RelationshipReference::USES ||
+            relRef == RelationshipReference::MODIFIES) {
+            if (left.isSynonym && right.isSynonym) {
+                if (left.syn.entity == right.syn.entity && left.syn.name == right.syn.name) {
+                    return ClauseResult(false);
+                }
+            }
+        }
+
         if (!left.isSynonym && !right.isSynonym) {
             // the boolean argument is isEmpty, if validate returns true,
             // isEmpty should be false.
