@@ -22,7 +22,7 @@ SolvableQuery QueryParser::parse(std::string query) {
     suchThatCls = QueryParser::parseSuchThatClause(&mainClause, decl.syns);
     patternCls = QueryParser::parsePatternClause(&mainClause, decl.syns);
 
-    if (!mainClause.empty()) {
+    if (!Utils::removeTrailingSpaces(mainClause).empty()) {
         throw SyntaxError("Unrecognized clause syntax");
     }
 
@@ -73,8 +73,6 @@ QueryParser::parseSuchThatClause(std::string *clause,
         return clauses;
     while (std::regex_search(*clause, std::regex("\\b(such\\s+that)\\b"))) {
         std::smatch matches;
-        // The suchThatClauseRegex will match such that clauses from the back,
-        // so the order will be reversed
         std::regex_match(*clause, matches, suchThatClauseRegex);
         std::string suchThatClause = matches[1];
         
