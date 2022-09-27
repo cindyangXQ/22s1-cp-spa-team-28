@@ -163,7 +163,7 @@ TEST_CASE("Parser can parse such that clause") {
         QueryParser::parseSuchThatClause(&missing_relationship_name, syns));
 }
 
-TEST_CASE("Parser can detect semantic error of using wrong type of synonym") {
+TEST_CASE("Parser can detect semantic error of using wrong type of synonym and reference type") {
     std::vector<Synonym> syns{Synonym(EntityName::CONSTANT, "c"),
                               Synonym(EntityName::ASSIGN, "a")};
 
@@ -175,6 +175,9 @@ TEST_CASE("Parser can detect semantic error of using wrong type of synonym") {
 
     std::string wrong_pattern_assign_synonym = "pattern a(c, _\"x\"_)";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&wrong_pattern_assign_synonym, syns));
+
+    std::string wrong_pattern_assign_ref_type = "pattern a(\"1\", _\"x\"_)";
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&wrong_pattern_assign_ref_type, syns));
 }
 
 TEST_CASE("Parser can parse pattern clause") {
