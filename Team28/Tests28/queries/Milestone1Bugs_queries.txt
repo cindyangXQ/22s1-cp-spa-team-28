@@ -1,0 +1,30 @@
+1 - PQL clause with 2 identical synonyms (Follows)
+stmt s;
+Select s such that Follows(s,s)
+none
+5000
+1a - PQL clause with 2 different synonyms (Follows)
+stmt s1, s2;
+Select s1 such that Follows(s1,s2)
+1, 2, 6
+5000
+2 - PQL clause with 2 identical synonyms (Parent)
+stmt s;
+Select s such that Parent(s,s)
+none
+5000
+2a - PQL clause with 2 different synonyms (Parent)
+stmt s1, s2;
+Select s1 such that Parent(s1,s2)
+2, 4
+5000
+3 - Variables in whiole clause are captured in Uses relationship
+variable v;
+Select v such that Uses(2,v)
+a1, a2, a3
+5000
+4 - Variables in if clause are captured in Uses relationship
+variable v;
+Select v such that Uses(4,v)
+a1, a4, a5
+5000

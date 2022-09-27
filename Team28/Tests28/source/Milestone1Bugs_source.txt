@@ -1,0 +1,13 @@
+procedure main {
+    a1 = 1;
+    while (a2 < a3) {
+        a1 = a1 * a1;
+    }
+
+    if (a4 == a5) then {
+        a1 = a1 + 1;
+    } else {
+        a1 = a1 * 2;
+        x = 1;
+    }
+}
