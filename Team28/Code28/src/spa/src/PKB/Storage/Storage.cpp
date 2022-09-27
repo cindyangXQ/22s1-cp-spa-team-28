@@ -16,6 +16,8 @@ Storage::Storage() {
     UsesPTable *usesP = new UsesPTable();
     CallsTable *calls = new CallsTable();
     CallsTTable *callsT = new CallsTTable();
+    BranchInTable *branchIn = new BranchInTable();
+    BranchOutTable *branchOut = new BranchOutTable();
 
     /*
      * TODO relook typecasting
@@ -35,6 +37,8 @@ Storage::Storage() {
     this->tables[TableName::USES_P] = (Table<TableValue> *)usesP;
     this->tables[TableName::CALLS] = (Table<TableValue> *)calls;
     this->tables[TableName::CALLS_T] = (Table<TableValue> *)callsT;
+    this->tables[TableName::BRANCH_IN] = (Table<TableValue> *)branchIn;
+    this->tables[TableName::BRANCH_OUT] = (Table<TableValue> *)branchOut;
 };
 
 Table<TableValue> *Storage::getTable(TableName name) {

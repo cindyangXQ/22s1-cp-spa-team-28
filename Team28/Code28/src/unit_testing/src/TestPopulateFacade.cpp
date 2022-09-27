@@ -382,3 +382,46 @@ TEST_CASE("storeCallsT stores Relationship<std::string, std::string> objects "
     REQUIRE(callsTable->getLeftMap().size() == 3);
     REQUIRE(callsTable->getRightMap().size() == 3);
 }
+
+TEST_CASE("storeBranchIn stores Relationship<int, int> objects correctly") {
+    Storage storage;
+    PopulateFacade facade = PopulateFacade(&storage);
+    Relationship<int, int> test1 =
+        Relationship(RelationshipReference::EMPTY, 1, 2);
+    Relationship<int, int> test2 =
+        Relationship(RelationshipReference::EMPTY, 2, 3);
+    Relationship<int, int> test3 =
+        Relationship(RelationshipReference::EMPTY, 3, 4);
+    std::vector<Relationship<int, int> *> branchIns = {&test1, &test2, &test3};
+
+    facade.storeBranchIn(&branchIns);
+
+    BranchInTable *branchinTable =
+        (BranchInTable *)storage.getTable(TableName::BRANCH_IN);
+
+    // Relationship is stored correctly
+    REQUIRE(branchinTable->getLeftMap().size() == 3);
+    REQUIRE(branchinTable->getRightMap().size() == 3);
+}
+
+TEST_CASE(
+    "storeBranchOut Follows stores Relationship<int, int> objects correctly") {
+    Storage storage;
+    PopulateFacade facade = PopulateFacade(&storage);
+    Relationship<int, int> test1 =
+        Relationship(RelationshipReference::EMPTY, 1, 2);
+    Relationship<int, int> test2 =
+        Relationship(RelationshipReference::EMPTY, 2, 3);
+    Relationship<int, int> test3 =
+        Relationship(RelationshipReference::EMPTY, 3, 4);
+    std::vector<Relationship<int, int> *> branchIns = {&test1, &test2, &test3};
+
+    facade.storeBranchOut(&branchIns);
+
+    BranchOutTable *branchoutTable =
+        (BranchOutTable *)storage.getTable(TableName::BRANCH_OUT);
+
+    // Relationship is stored correctly
+    REQUIRE(branchoutTable->getLeftMap().size() == 3);
+    REQUIRE(branchoutTable->getRightMap().size() == 3);
+}
