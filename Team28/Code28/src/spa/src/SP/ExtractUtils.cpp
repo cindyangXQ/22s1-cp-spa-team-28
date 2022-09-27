@@ -98,3 +98,12 @@ bool ExtractUtils::compareProcList(std::vector<ProcedureNode *> &list1,
     }
     return true;
 }
+
+
+std::string ExtractUtils::convertExpression(std::string input) {
+    Tokenizer tokenizer(input + ";");
+    std::vector<Token *> tokens = tokenizer.tokenize();
+    ExprParser parser(0, tokens, false);
+    ExpressionNode *expr = parser.parse();
+    return expr->toString();
+}
