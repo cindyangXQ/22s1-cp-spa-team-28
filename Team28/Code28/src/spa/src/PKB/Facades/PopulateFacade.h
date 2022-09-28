@@ -84,11 +84,27 @@ public:
     void
     storeUsesP(std::vector<Relationship<std::string, std::string> *> *usesP);
 
+    /*
+    * Stores the given Calls relations in a CallsTable.
+    */
     void
     storeCalls(std::vector<Relationship<std::string, std::string> *> *calls);
 
+    /*
+    * Stores the given CallsT relations in a CallsTTable.
+    */
     void
     storeCallsT(std::vector<Relationship<std::string, std::string> *> *callsT);
+
+    /*
+    * Stores the given branch ins in a BranchInTable.
+    */
+    void storeBranchIn(std::vector<Relationship<int, int> *> *branchIn);
+
+    /*
+     * Stores the given branch out in a BranchOutTable.
+     */
+    void storeBranchOut(std::vector<Relationship<int, int> *> *branchOut);
 
 private:
     Storage *storage;

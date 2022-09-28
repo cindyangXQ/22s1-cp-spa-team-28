@@ -4,24 +4,6 @@
 
 #include <iostream>
 
-TEST_CASE("Storage is initialised correctly") {
-    Storage storage;
-    ConstantsTable *constants =
-        (ConstantsTable *)storage.getTable(TableName::CONSTANTS);
-    VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
-    ProceduresTable *procedures =
-        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
-    StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
-
-    // Check that all tables are instantiated.
-    REQUIRE(constants != nullptr);
-    REQUIRE(variables != nullptr);
-    REQUIRE(procedures != nullptr);
-    REQUIRE(statements != nullptr);
-}
-
 TEST_CASE("Storage stores and retrieves Constants correctly") {
     Storage storage;
     ConstantsTable *constants =
@@ -214,4 +196,60 @@ TEST_CASE("Storage stores and retrieves UsesP correctly") {
     // Relationship stored to ModifiesS correctly
     REQUIRE(usesP->retrieveLeft("main").size() == 1);
     REQUIRE(usesP->retrieveRight("v").size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves Calls correctly") {
+    Storage storage;
+    CallsTable *calls = (CallsTable *)storage.getTable(TableName::CALLS);
+    Relationship<std::string, std::string> test =
+        Relationship(RelationshipReference::CALLS, std::string("proc1"),
+                     std::string("proc2"));
+
+    calls->store(&test);
+
+    // Relationship stored to Calls correctly
+    REQUIRE(calls->retrieveLeft("proc1").size() == 1);
+    REQUIRE(calls->retrieveRight("proc2").size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves CallsT correctly") {
+    Storage storage;
+    CallsTTable *callsT = (CallsTTable *)storage.getTable(TableName::CALLS);
+    Relationship<std::string, std::string> test =
+        Relationship(RelationshipReference::CALLS_T, std::string("proc1"),
+                     std::string("proc2"));
+
+    callsT->store(&test);
+
+    // Relationship stored to Calls correctly
+    REQUIRE(callsT->retrieveLeft("proc1").size() == 1);
+    REQUIRE(callsT->retrieveRight("proc2").size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves BranchIn correctly") {
+    Storage storage;
+    BranchInTable *branchIn =
+        (BranchInTable *)storage.getTable(TableName::BRANCH_IN);
+    Relationship<int, int> test =
+        Relationship(RelationshipReference::EMPTY, 1, 2);
+
+    branchIn->store(&test);
+
+    // Relationship stored to BranchInTable correctly
+    REQUIRE(branchIn->retrieveLeft(1).size() == 1);
+    REQUIRE(branchIn->retrieveRight(2).size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves BranchOut correctly") {
+    Storage storage;
+    BranchOutTable *branchOut =
+        (BranchOutTable *)storage.getTable(TableName::BRANCH_OUT);
+    Relationship<int, int> test =
+        Relationship(RelationshipReference::EMPTY, 1, 2);
+
+    branchOut->store(&test);
+
+    // Relationship stored to FollowsTTable correctly
+    REQUIRE(branchOut->retrieveLeft(1).size() == 1);
+    REQUIRE(branchOut->retrieveRight(2).size() == 1);
 }

@@ -133,3 +133,21 @@ void PopulateFacade::storeCallsT(
         callsTTable->store(call);
     }
 }
+
+void PopulateFacade::storeBranchIn(
+    std::vector<Relationship<int, int> *> *branchIn) {
+    BranchInTable *branchinTable =
+        (BranchInTable *)this->storage->getTable(TableName::BRANCH_IN);
+    for (Relationship<int, int> *branchin : *branchIn) {
+        branchinTable->store(branchin);
+    }
+}
+
+void PopulateFacade::storeBranchOut(
+    std::vector<Relationship<int, int> *> *branchOut) {
+    BranchOutTable *branchoutTable =
+        (BranchOutTable *)this->storage->getTable(TableName::BRANCH_OUT);
+    for (Relationship<int, int> *branchout : *branchOut) {
+        branchoutTable->store(branchout);
+    }
+}
