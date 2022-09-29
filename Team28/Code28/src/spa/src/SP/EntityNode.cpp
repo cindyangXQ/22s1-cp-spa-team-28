@@ -52,12 +52,12 @@ int ProcedureNode::getEndline() {
 std::vector<std::string> *StatementNode::getUsesInto(
     std::vector<Relationship<int, std::string> *> &result) {
     return new std::vector<std::string>();
-};
+}
 
 std::vector<std::string> *StatementNode::getModsInto(
     std::vector<Relationship<int, std::string> *> &result) {
     return new std::vector<std::string>();
-};
+}
 
 // Statement - equals
 bool ReadStatementNode::equals(StatementNode *other) {
@@ -163,6 +163,11 @@ std::vector<std::string> *PrintStatementNode::getUsesInto(
     return used;
 }
 
+void PrintStatementNode::getUsesPInto(std::vector<std::string> &semiResult,
+                                      std::vector<ProcedureNode *> &procList) {
+    semiResult.push_back(this->getVariable());
+}
+
 // Call Statement
 CallStatementNode::CallStatementNode(VariableNode *VariableNode, int line) {
     this->var = VariableNode;
@@ -173,6 +178,15 @@ std::string CallStatementNode::getVariable() { return this->var->getValue(); }
 
 void CallStatementNode::getStatementsInto(std::vector<Statement *> &result) {
     result.push_back(new Statement(line, StatementType::CALL));
+}
+
+void CallStatementNode::getUsesPInto(std::vector<std::string> &result,
+                                     std::vector<ProcedureNode *> &procList) {
+    ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
+    std::vector<std::string> *temp = SPUtils::usesP(procedure, procList);
+    for (size_t i = 0; i < temp->size(); i++) {
+        result.push_back(temp->at(i));
+    }
 }
 
 // Assignment Statement
@@ -225,6 +239,11 @@ std::vector<std::string> *AssignStatementNode::getUsesInto(
     }
 
     return used;
+}
+
+void AssignStatementNode::getUsesPInto(std::vector<std::string> &semiResult,
+                                       std::vector<ProcedureNode *> &procList) {
+    this->expr->getVariablesInto(semiResult);
 }
 
 std::vector<std::string> *AssignStatementNode::getModsInto(
@@ -318,6 +337,16 @@ std::vector<std::string> *WhileStatementNode::getUsesInto(
     }
 
     return descendants;
+}
+
+void WhileStatementNode::getUsesPInto(std::vector<std::string> &result,
+                                      std::vector<ProcedureNode *> &procList) {
+    this->cond->getVariablesInto(result);
+
+    std::vector<StatementNode *> stmtList = this->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getUsesPInto(result, procList);
+    }
 }
 
 std::vector<std::string> *WhileStatementNode::getModsInto(
@@ -440,6 +469,16 @@ std::vector<std::string> *IfStatementNode::getUsesInto(
     }
 
     return descendants;
+}
+
+void IfStatementNode::getUsesPInto(std::vector<std::string> &result,
+                                   std::vector<ProcedureNode *> &procList) {
+    this->cond->getVariablesInto(result);
+
+    std::vector<StatementNode *> stmtList = this->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getUsesPInto(result, procList);
+    }
 }
 
 std::vector<std::string> *IfStatementNode::getModsInto(
