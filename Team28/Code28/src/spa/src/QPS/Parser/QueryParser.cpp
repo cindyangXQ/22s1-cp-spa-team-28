@@ -194,29 +194,20 @@ bool QueryParser::isValidSuchThatClause(RelationshipReference relRef,
                                         Reference left, Reference right) {
     if (relRef == RelationshipReference::EMPTY) {
         return true;
-    } else if (left.isSynonym && left.syn.entity == EntityName::CONSTANT) {
-        return false;
-    } else if (right.isSynonym && right.syn.entity == EntityName::CONSTANT) {
-        return false;
-    } else if (relRef == RelationshipReference::FOLLOWS ||
-               relRef == RelationshipReference::FOLLOWS_T ||
-               relRef == RelationshipReference::PARENT ||
-               relRef == RelationshipReference::PARENT_T) {
-        return (left.type != ReferenceType::ENT_REF &&
-                right.type != ReferenceType::ENT_REF);
-    } else if (relRef == RelationshipReference::USES ||
-               relRef == RelationshipReference::MODIFIES) {
-        if (left.type == ReferenceType::WILDCARD) {
-            return false;
-        }
-        if (relRef == RelationshipReference::USES) {
-            if (right.isSynonym && 
-                right.syn.entity != EntityName::VARIABLE) {
-                return false;
-            }
-        }
-        return (right.type != ReferenceType::STMT_REF);
+    } 
+    bool isLeftValid;
+    bool isRightValid;
+    if (left.isSynonym) {
+        isLeftValid = relationshipLeftArgMap.find(relRef)->second.count(left.syn.entity);
+    } else {
+        isLeftValid = relationshipLeftRefMap.find(relRef)->second.count(left.type);
     }
+    if (right.isSynonym) {
+        isRightValid = relationshipRightArgMap.find(relRef)->second.count(right.syn.entity);
+    } else {
+        isRightValid = relationshipRightRefMap.find(relRef)->second.count(right.type);
+    }
+    return isLeftValid && isRightValid;
 }
 
 bool QueryParser::isDuplicateSynonymName(std::vector<Synonym> syns) {
