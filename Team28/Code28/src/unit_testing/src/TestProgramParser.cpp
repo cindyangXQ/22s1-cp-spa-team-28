@@ -172,44 +172,24 @@ TEST_CASE("If Statement Parser") {
 TEST_CASE("recursive call is not allowed") {
         std::string sourceProgram = "procedure Bedok {\ncall Bedok;\n}";
         std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
-        try {
-            ProgramNode *program = ProgramParser(0, tokens).parse();
-            FAIL();
-        } catch (char* e) {
-            REQUIRE(strcmp(e, "recursive call is not allowed") == 0);
-        } 
+        REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "recursive call is not allowed");
 }
 
 TEST_CASE("procedure of same name is not allowed") {
         std::string sourceProgram = "procedure Bedok {\nread a;\n}\n\nprocedure Bedok{\nprint b;\n}"; 
         std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
-        try {
-            ProgramNode *program = ProgramParser(0, tokens).parse();
-            FAIL();
-        } catch (char *e) {
-            REQUIRE(strcmp(e, "procedure of same name is not allowed") == 0);
-        }
+        REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "procedure of same name is not allowed");
 }
 
 TEST_CASE("calling undeclared procedure is not allowed") {
     std::string sourceProgram = "procedure Bedok {\ncall a;\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
-    try {
-        ProgramNode *program = ProgramParser(0, tokens).parse();
-        FAIL();
-    } catch (char *e) {
-        REQUIRE(strcmp(e, "calling undeclared procedure is not allowed") == 0);
-    }
+    REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "calling undeclared procedure is not allowed");
 }
 
 TEST_CASE("cyclic calling is not allowed") {
     std::string sourceProgram = "procedure a{call b;} procedure b{call c; call "
                                 "d;} procedure c{call d;} procedure d{call a;}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
-    try {
-        ProgramNode *program = ProgramParser(0, tokens).parse();
-        FAIL();
-    } catch (char *e) {
-        REQUIRE(strcmp(e, "cyclic calling is not allowed") == 0);
-    }
+    REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "cyclic calling is not allowed");
 }
