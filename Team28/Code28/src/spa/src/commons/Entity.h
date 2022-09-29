@@ -23,8 +23,7 @@ const ENTITY_TYPE_MAP stmtRefSet = {
     EntityName::STMT,  EntityName::READ, EntityName::PRINT, EntityName::CALL,
     EntityName::WHILE, EntityName::IF,   EntityName::ASSIGN};
 
-const ENTITY_TYPE_MAP entRefSet = {EntityName::VARIABLE, EntityName::CONSTANT,
-                                   EntityName::PROCEDURE};
+const ENTITY_TYPE_MAP entRefSet = {EntityName::VARIABLE, EntityName::PROCEDURE};
 
 /*
  * Class encapsulating 1 of the following design entities: Procedure, Constant,

@@ -14,6 +14,8 @@ enum class RelationshipReference {
     CALLS_T,
     NEXT,
     NEXT_T,
+    AFFECTS,
+    AFFECTS_T,
     EMPTY
 };
 
