@@ -281,31 +281,3 @@ TEST_CASE("Storage stores and retrieves NextT correctly") {
     REQUIRE(nextT->retrieveLeft(1).size() == 1);
     REQUIRE(nextT->retrieveRight(2).size() == 1);
 }
-
-TEST_CASE("Storage stores and retrieves IfControl correctly") {
-    Storage storage;
-    IfControlVarTable *ifsControl =
-        (IfControlVarTable *)storage.getTable(TableName::I_CONTROL);
-    Relationship<int, std::string> test =
-        Relationship(RelationshipReference::USES, 1, std::string("x"));
-
-    ifsControl->store(&test);
-
-    // Relationship stored to FollowsTTable correctly
-    REQUIRE(ifsControl->retrieveLeft(1).size() == 1);
-    REQUIRE(ifsControl->retrieveRight("x").size() == 1);
-}
-
-TEST_CASE("Storage stores and retrieves WhileControl correctly") {
-    Storage storage;
-    WhileControlVarTable *whileControl =
-        (WhileControlVarTable *)storage.getTable(TableName::W_CONTROL);
-    Relationship<int, std::string> test =
-        Relationship(RelationshipReference::USES, 1, std::string("x"));
-
-    whileControl->store(&test);
-
-    // Relationship stored to FollowsTTable correctly
-    REQUIRE(whileControl->retrieveLeft(1).size() == 1);
-    REQUIRE(whileControl->retrieveRight("x").size() == 1);
-}
