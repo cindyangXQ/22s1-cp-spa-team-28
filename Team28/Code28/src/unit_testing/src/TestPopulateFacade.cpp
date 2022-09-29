@@ -425,3 +425,63 @@ TEST_CASE(
     REQUIRE(branchoutTable->getLeftMap().size() == 3);
     REQUIRE(branchoutTable->getRightMap().size() == 3);
 }
+
+TEST_CASE(
+    "storeIfControlVar stores Relationship<int, std::string> objects correctly") {
+    Storage storage;
+    PopulateFacade facade = PopulateFacade(&storage);
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("a"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("b"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("c"));
+    std::vector<Relationship<int, std::string> *> usesS = {&test1, &test2,
+                                                           &test3};
+
+    facade.storeIfControlVar(&usesS);
+
+    IfControlVarTable *ifsTable = 
+        (IfControlVarTable *)storage.getTable(TableName::I_CONTROL);
+
+    // Relationship is stored correctly
+    REQUIRE(ifsTable->getLeftMap().size() == 3);
+    REQUIRE(ifsTable->getRightMap().size() == 3);
+
+    // While table is not affected
+    WhileControlVarTable *whileTable = 
+        (WhileControlVarTable *)storage.getTable(TableName::W_CONTROL);
+
+    REQUIRE(whileTable->getLeftMap().size() == 0);
+    REQUIRE(whileTable->getRightMap().size() == 0);
+}
+
+TEST_CASE(
+    "storeWhileControlVar stores Relationship<int, std::string> objects correctly") {
+    Storage storage;
+    PopulateFacade facade = PopulateFacade(&storage);
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("a"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("b"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("c"));
+    std::vector<Relationship<int, std::string> *> usesS = {&test1, &test2,
+                                                           &test3};
+
+    facade.storeWhileControlVar(&usesS);
+
+    WhileControlVarTable *whileTable = 
+        (WhileControlVarTable *)storage.getTable(TableName::W_CONTROL);
+
+    // Relationship is stored correctly
+    REQUIRE(whileTable->getLeftMap().size() == 3);
+    REQUIRE(whileTable->getRightMap().size() == 3);
+
+    // If table is not affected
+    IfControlVarTable *ifsTable = 
+        (IfControlVarTable *)storage.getTable(TableName::I_CONTROL);
+        
+    REQUIRE(ifsTable->getLeftMap().size() == 0);
+    REQUIRE(ifsTable->getRightMap().size() == 0);
+}
