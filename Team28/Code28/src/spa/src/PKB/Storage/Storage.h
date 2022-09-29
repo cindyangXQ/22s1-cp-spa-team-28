@@ -41,7 +41,9 @@ enum class TableName {
     CALLS,
     CALLS_T,
     BRANCH_IN,
-    BRANCH_OUT
+    BRANCH_OUT,
+    NEXT,
+    NEXT_T
 };
 
 /*

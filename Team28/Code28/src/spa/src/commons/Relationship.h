@@ -12,6 +12,8 @@ enum class RelationshipReference {
     MODIFIES,
     CALLS,
     CALLS_T,
+    NEXT,
+    NEXT_T,
     EMPTY
 };
 
