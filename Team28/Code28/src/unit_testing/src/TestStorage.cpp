@@ -253,3 +253,31 @@ TEST_CASE("Storage stores and retrieves BranchOut correctly") {
     REQUIRE(branchOut->retrieveLeft(1).size() == 1);
     REQUIRE(branchOut->retrieveRight(2).size() == 1);
 }
+
+TEST_CASE("Storage stores and retrieves Next correctly") {
+    Storage storage;
+    NextTable *next =
+        (NextTable *)storage.getTable(TableName::NEXT);
+    Relationship<int, int> test =
+        Relationship(RelationshipReference::NEXT, 1, 2);
+
+    next->store(&test);
+
+    // Relationship stored to FollowsTTable correctly
+    REQUIRE(next->retrieveLeft(1).size() == 1);
+    REQUIRE(next->retrieveRight(2).size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves NextT correctly") {
+    Storage storage;
+    NextTTable *nextT =
+        (NextTTable *)storage.getTable(TableName::NEXT_T);
+    Relationship<int, int> test =
+        Relationship(RelationshipReference::NEXT_T, 1, 2);
+
+    nextT->store(&test);
+
+    // Relationship stored to FollowsTTable correctly
+    REQUIRE(nextT->retrieveLeft(1).size() == 1);
+    REQUIRE(nextT->retrieveRight(2).size() == 1);
+}
