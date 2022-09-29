@@ -165,6 +165,8 @@ TEST_CASE("Parser can parse such that clause") {
 
 TEST_CASE("Parser can detect semantic error of using wrong type of synonym and reference type") {
     std::vector<Synonym> syns{Synonym(EntityName::CONSTANT, "c"),
+                              Synonym(EntityName::VARIABLE, "v1"),
+                              Synonym(EntityName::VARIABLE, "v2"),
                               Synonym(EntityName::ASSIGN, "a")};
 
     std::string constant_used_in_follow_left = "such that Follow(c, \"1\")";
@@ -172,6 +174,9 @@ TEST_CASE("Parser can detect semantic error of using wrong type of synonym and r
 
     std::string constant_used_in_uses_right = "such that Uses(a, c)";
     REQUIRE_THROWS(QueryParser::parseSuchThatClause(&constant_used_in_uses_right, syns));
+
+    std::string wrong_synonym_in_uses_left = "such that Uses(v1, v2)";
+    REQUIRE_THROWS(QueryParser::parseSuchThatClause(&wrong_synonym_in_uses_left, syns));
 
     std::string wrong_pattern_assign_synonym = "pattern a(c, _\"x\"_)";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&wrong_pattern_assign_synonym, syns));
