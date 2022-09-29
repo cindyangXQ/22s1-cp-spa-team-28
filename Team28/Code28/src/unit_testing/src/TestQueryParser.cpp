@@ -6,14 +6,14 @@
 TEST_CASE("QueryParser is parsing correctly") {
     SolvableQuery solvableQ =
         QueryParser::parse("assign a; constant c; variable v; Select a such "
-                           "that Modifies(1, v) pattern a(v, \"x\")");
+                           "that Modifies(1, v) pattern a(v, _\"x\"_)");
 
     REQUIRE(solvableQ.selectType.entity == EntityName::ASSIGN);
     REQUIRE_THROWS(
         QueryParser::parse("assign a; constant c; variable v; Select a;"));
     REQUIRE_THROWS(
         QueryParser::parse("assign a; constant c; variable v; Select a such "
-                           "that Modifies(1, v) pattern a(v, \"x\");"));
+                           "that Modifies(1, v) pattern a(v, _\"x\"_);"));
 }
 
 TEST_CASE("QueryParser can parse declaration correctly") {
@@ -196,7 +196,7 @@ TEST_CASE("Parser can parse pattern clause") {
     REQUIRE(clause.entRef.syn.entity == EntityName::VARIABLE);
     REQUIRE(clause.syn.name == "a");
     REQUIRE(clause.syn.entity == EntityName::ASSIGN);
-    REQUIRE(clause.expression == "_\"x\"_");
+    REQUIRE(clause.expression == "(x)");
 
     std::string extra_bracket = "pattern a((v, \"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&extra_bracket, syns));
@@ -218,4 +218,7 @@ TEST_CASE("Parser can parse pattern clause") {
 
     std::string missing_underscore = "pattern a(c, _\"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_underscore, syns));
+
+    std::string wrong_expression_syntax = "pattern a(c, _\"+x\"_)";
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&wrong_expression_syntax, syns));
 }

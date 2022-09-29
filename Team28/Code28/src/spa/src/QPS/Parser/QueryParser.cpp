@@ -1,4 +1,5 @@
 #include "QueryParser.h"
+#include "../../SP/SP.h"
 
 SolvableQuery QueryParser::parse(std::string query) {
     if (query.back() == ';') {
@@ -126,10 +127,21 @@ PatternClause QueryParser::parsePatternClause(std::string *clause,
                 throw SemanticError("Pattern-assign first argument must be an entity reference or wildcard");
             }
         }
-        Expression expression = matches[4].str();
+        Expression expr = matches[4].str();
+        if (expr.find('_') != std::string::npos && expr.size() >= 5) {
+            expr = expr.substr(2, expr.size() - 4);
+        }
+        if (expr.compare("_") != 0) {
+            try {
+                expr = SP::convertExpression(expr);
+            }
+            catch (std::runtime_error e) {
+                throw SyntaxError("Invalid expression syntax");
+            }
+        }
         *clause = Utils::removeString(*clause, patternClause);
 
-        return PatternClause(syn, entRef, expression);
+        return PatternClause(syn, entRef, expr);
     } else {
         return PatternClause();
     }
