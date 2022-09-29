@@ -163,9 +163,9 @@ std::vector<std::string> *PrintStatementNode::getUsesInto(
     return used;
 }
 
-void PrintStatementNode::getUsesPInto(std::vector<std::string> &semiResult,
+void PrintStatementNode::getUsesPInto(std::vector<std::string> &result,
                                       std::vector<ProcedureNode *> &procList) {
-    semiResult.push_back(this->getVariable());
+    result.push_back(this->getVariable());
 }
 
 // Call Statement
@@ -241,9 +241,9 @@ std::vector<std::string> *AssignStatementNode::getUsesInto(
     return used;
 }
 
-void AssignStatementNode::getUsesPInto(std::vector<std::string> &semiResult,
+void AssignStatementNode::getUsesPInto(std::vector<std::string> &result,
                                        std::vector<ProcedureNode *> &procList) {
-    this->expr->getVariablesInto(semiResult);
+    this->expr->getVariablesInto(result);
 }
 
 std::vector<std::string> *AssignStatementNode::getModsInto(

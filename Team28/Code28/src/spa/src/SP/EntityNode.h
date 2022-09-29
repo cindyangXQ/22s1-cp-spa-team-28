@@ -67,7 +67,7 @@ public:
     getFollowsTInto(std::vector<Relationship<int, int> *> &result){};
     virtual std::vector<std::string> *
     getUsesInto(std::vector<Relationship<int, std::string> *> &result);
-    virtual void getUsesPInto(std::vector<std::string> &semiResult,
+    virtual void getUsesPInto(std::vector<std::string> &result,
                               std::vector<ProcedureNode *> &procList){};
     virtual std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
@@ -130,7 +130,7 @@ public:
     void getAssignmentsInto(std::vector<Assignment *> &result) {};
     std::vector<std::string> *
     getUsesInto(std::vector<Relationship<int, std::string> *> &result);
-    void getUsesPInto(std::vector<std::string> &semiResult,
+    void getUsesPInto(std::vector<std::string> &result,
                       std::vector<ProcedureNode *> &procList);
 };
 
@@ -144,8 +144,8 @@ public:
     std::string getVariable();
 
     void getStatementsInto(std::vector<Statement *> &result);
-    void getAssignmentsInto(std::vector<Assignment *> &result) {};
-    void getUsesPInto(std::vector<std::string> &semiResult,
+    void getAssignmentsInto(std::vector<Assignment *> &result){};
+    void getUsesPInto(std::vector<std::string> &result,
                       std::vector<ProcedureNode *> &procList);
 };
 
@@ -183,7 +183,7 @@ public:
     void getAssignmentsInto(std::vector<Assignment *> &result);
     std::vector<std::string> *
     getUsesInto(std::vector<Relationship<int, std::string> *> &result);
-    void getUsesPInto(std::vector<std::string> &semiResult,
+    void getUsesPInto(std::vector<std::string> &result,
                       std::vector<ProcedureNode *> &procList);
     std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
@@ -209,7 +209,7 @@ public:
     void getFollowsTInto(std::vector<Relationship<int, int> *> &result);
     std::vector<std::string> *
     getUsesInto(std::vector<Relationship<int, std::string> *> &result);
-    void getUsesPInto(std::vector<std::string> &semiResult,
+    void getUsesPInto(std::vector<std::string> &result,
                       std::vector<ProcedureNode *> &procList);
     std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
@@ -237,7 +237,7 @@ public:
     void getFollowsTInto(std::vector<Relationship<int, int> *> &result);
     std::vector<std::string> *
     getUsesInto(std::vector<Relationship<int, std::string> *> &result);
-    void getUsesPInto(std::vector<std::string> &semiResult,
+    void getUsesPInto(std::vector<std::string> &result,
                       std::vector<ProcedureNode *> &procList);
     std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
