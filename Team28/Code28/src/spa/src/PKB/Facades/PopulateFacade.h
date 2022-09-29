@@ -106,16 +106,6 @@ public:
      */
     void storeBranchOut(std::vector<Relationship<int, int> *> *branchOut);
 
-    /*
-     * Stores the given usesS relations in a IfControlVarTable.
-     */
-    void storeIfControlVar(std::vector<Relationship<int, std::string> *> *usesS);
-
-    /*
-     * Stores the given usesS relations in a WhileControlVarTable.
-     */
-    void storeWhileControlVar(std::vector<Relationship<int, std::string> *> *usesS);
-
 private:
     Storage *storage;
 };

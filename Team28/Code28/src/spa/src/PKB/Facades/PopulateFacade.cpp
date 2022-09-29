@@ -151,21 +151,3 @@ void PopulateFacade::storeBranchOut(
         branchoutTable->store(branchout);
     }
 }
-
-void PopulateFacade::storeIfControlVar(
-    std::vector<Relationship<int, std::string> *> *usesS) {
-    IfControlVarTable *ifControlVarTable =
-        (IfControlVarTable *)this->storage->getTable(TableName::I_CONTROL);
-    for (Relationship<int, std::string> *use : *usesS) {
-        ifControlVarTable->store(use);
-    }
-}
-
-void PopulateFacade::storeWhileControlVar(
-    std::vector<Relationship<int, std::string> *> *usesS) {
-    WhileControlVarTable *whileControlVarTable =
-        (WhileControlVarTable *)this->storage->getTable(TableName::W_CONTROL);
-    for (Relationship<int, std::string> *use : *usesS) {
-        whileControlVarTable->store(use);
-    }
-}
