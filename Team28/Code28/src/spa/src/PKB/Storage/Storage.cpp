@@ -20,8 +20,6 @@ Storage::Storage() {
     BranchOutTable *branchOut = new BranchOutTable();
     NextTable *next = new NextTable();
     NextTTable *nextT = new NextTTable();
-    IfControlVarTable *ifControl = new IfControlVarTable();
-    WhileControlVarTable *whileControl = new WhileControlVarTable();
 
     /*
      * TODO relook typecasting
@@ -45,8 +43,6 @@ Storage::Storage() {
     this->tables[TableName::BRANCH_OUT] = (Table<TableValue> *)branchOut;
     this->tables[TableName::NEXT] = (Table<TableValue> *)next;
     this->tables[TableName::NEXT_T] = (Table<TableValue> *)nextT;
-    this->tables[TableName::I_CONTROL] = (Table<TableValue> *)ifControl;
-    this->tables[TableName::W_CONTROL] = (Table<TableValue> *)whileControl;
 };
 
 Table<TableValue> *Storage::getTable(TableName name) {
