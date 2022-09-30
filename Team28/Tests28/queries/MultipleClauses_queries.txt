@@ -1,0 +1,5 @@
+1 - 1 such that clause
+assign a; variable v; stmt s;
+Select v such that Modifies(s, v) such that Follows(a, s) pattern a(_, _"a3"_)
+a10
+5000
