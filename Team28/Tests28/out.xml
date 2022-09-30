@@ -1,0 +1,73 @@
+<?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
+<test_results>
+<info>
+<name>build</name><parsing_time_taken>3.078000</parsing_time_taken>
+</info>
+<queries>
+<query>
+<id ReturnTuple="1" Follows="1" Modifies="1" UnnamedVar="2" Pattern="1" SuchThat="2" CondNum="8" RelNum="2" comment="2 such that clause">1</id><querystr><![CDATA[assign a; variable v; stmt s; Select v such that Modifies(s, v) pattern a(_, _"a3"_) such that Follows(a, s)]]></querystr>
+<stuans>a10</stuans>
+<correct>a10</correct>
+<time_taken>5.101000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Follows="2" UnnamedVar="2" Pattern="1" SuchThat="2" CondNum="8" RelNum="2" comment="All false clauses">2</id><querystr><![CDATA[assign a; variable v; stmt s; read r1, r2; Select v such that Follows(r1, r2) pattern a(_, _"12123123"_) such that Follows(s, s)]]></querystr>
+<stuans></stuans>
+<correct></correct>
+<time_taken>2.152000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Follows="2" UnnamedVar="2" Pattern="1" SuchThat="2" CondNum="8" RelNum="2" comment="All false clauses">2</id><querystr><![CDATA[assign a; variable v; stmt s; read r1, r2; Select r1 such that Follows(r1, r2) pattern a(_, _"12123123"_) such that Follows(s, s)]]></querystr>
+<stuans></stuans>
+<correct></correct>
+<time_taken>1.937000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Follows="1" Modifies="1" UnnamedVar="2" Pattern="1" SuchThat="2" CondNum="8" RelNum="2" comment="Pattern false">3</id><querystr><![CDATA[assign a; variable v; stmt s; Select v such that Modifies(s, v) pattern a(_, _"12312321321"_) such that Follows(a, s)]]></querystr>
+<stuans></stuans>
+<correct></correct>
+<time_taken>2.597000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Follows="2" UnnamedVar="2" Pattern="1" SuchThat="2" CondNum="8" RelNum="2" comment="Such that false">4</id><querystr><![CDATA[assign a; variable v; stmt s; read r1, r2; Select v such that Follows(r1, r2) pattern a(_, _"a3"_) such that Follows(a, s)]]></querystr>
+<stuans></stuans>
+<correct></correct>
+<time_taken>1.754000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Followsstar="1" UnnamedVar="3" Pattern="2" SuchThat="1" CondNum="8" RelNum="1" comment="2 pattern clause">5</id><querystr><![CDATA[assign a; print p; Select a pattern a(_, _"a19"_) such that Follows*(p, a) pattern a("a18", _"a20"_)]]></querystr>
+<stuans>19</stuans>
+<correct>19</correct>
+<time_taken>1.783000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" UnnamedVar="4" Pattern="3" CondNum="8" RelNum="0" comment="3 pattern clause">6</id><querystr><![CDATA[assign a; variable v; Select v pattern a(v, _"a3"_) pattern a("a9", _"a6"_) pattern a(_, _) ]]></querystr>
+<stuans>a9</stuans>
+<correct>a9</correct>
+<time_taken>1.725000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Parent="2" Uses="1" SuchThat="3" CondNum="7" RelNum="3" comment="3 such that clause">7</id><querystr><![CDATA[assign a; variable v; read r; while w1, w2; stmt s1, s2; Select r such that Uses(1, "print") such that Parent(w1, w2) such that Parent(w2, r)]]></querystr>
+<stuans>23</stuans>
+<correct></correct>
+<time_taken>1.929000</time_taken>
+<failed>
+<missing></missing>
+<additional>23</additional>
+<summary>
+<expected>0</expected>
+<matched>0</matched>
+<missing>0</missing>
+<additional>1</additional>
+</summary>
+</failed>
+</query>
+</queries>
+</test_results>

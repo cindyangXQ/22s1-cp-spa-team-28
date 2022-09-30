@@ -35,6 +35,6 @@ a9
 5000
 7 - 3 such that clause
 assign a; variable v; read r; while w1, w2; stmt s1, s2;
-Select r such that Uses(1, "read") such that Parents*(w1, w2) such that Parents(w2, r)
-a10
+Select r such that Uses(1, "print") such that Parent(w1, w2) such that Parent(w2, r)
+23
 5000
