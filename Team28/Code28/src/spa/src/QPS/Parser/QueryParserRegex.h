@@ -319,7 +319,7 @@ const std::regex patternRegex(
     "\\(\\s*"                                                     // '('
     "(([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"))" // entRef
     "\\s*,\\s*"
-    "(\".*?\"|_|_\".*?\"_)" // expression-spec
+    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)" // expression-spec
     "\\s*\\)\\s*");
 // For clause extraction
 const std::regex patternClauseRegex(
@@ -328,5 +328,5 @@ const std::regex patternClauseRegex(
     "\\(\\s*"                                                     // '('
     "(([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"))" // entRef
     "\\s*,\\s*"
-    "(\".*?\"|_|_\".*?\"_)" // expression-spec
+    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)" // expression-spec
     "\\s*\\)\\s*$).*?");

@@ -129,17 +129,20 @@ PatternClause QueryParser::parsePatternClause(std::string *clause,
         }
         Expression expr = matches[4].str();
         bool isExact = false;
+
+        expr = Utils::removeTrailingSpaces(expr);
         if (expr.find('_') != std::string::npos) {
             isExact = false;
-            if (expr.size() >= 5) {
+            if (expr.compare("_") != 0) {
                 //Remove _ at the start and end
-                expr = expr.substr(1, expr.size() - 2);
+                expr.erase(std::remove(expr.begin(), expr.end(), '_'), expr.end());
             }
         }
         if (expr.compare("_") != 0) {
             try {
                 //Remove " at the start and end
-                expr = expr.substr(1, expr.size() - 2);
+                expr.erase(std::remove(expr.begin(), expr.end(), '"'), expr.end());
+                
                 expr = SP::convertExpression(expr);
             }
             catch (std::runtime_error e) {

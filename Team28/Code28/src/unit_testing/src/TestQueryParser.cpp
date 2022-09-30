@@ -198,7 +198,7 @@ TEST_CASE("Parser can parse pattern clause") {
     REQUIRE(clause.syn.entity == EntityName::ASSIGN);
     REQUIRE(clause.expression == "(x)");
 
-    std::string correct_input_space = "pattern a(v, _\"    x    \"_)";
+    std::string correct_input_space = "pattern a(v, _    \"    x    \"    _)";
     PatternClause clause_space =
         QueryParser::parsePatternClause(&correct_input_space, syns);
     REQUIRE(clause_space.expression == "(x)");
