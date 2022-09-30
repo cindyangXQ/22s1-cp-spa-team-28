@@ -198,6 +198,11 @@ TEST_CASE("Parser can parse pattern clause") {
     REQUIRE(clause.syn.entity == EntityName::ASSIGN);
     REQUIRE(clause.expression == "(x)");
 
+    std::string correct_input_space = "pattern a(v, _\"    x    \"_)";
+    PatternClause clause_space =
+        QueryParser::parsePatternClause(&correct_input_space, syns);
+    REQUIRE(clause_space.expression == "(x)");
+
     std::string extra_bracket = "pattern a((v, \"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&extra_bracket, syns));
 
@@ -219,6 +224,6 @@ TEST_CASE("Parser can parse pattern clause") {
     std::string missing_underscore = "pattern a(c, _\"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_underscore, syns));
 
-    std::string wrong_expression_syntax = "pattern a(c, _\"+x\"_)";
+    std::string wrong_expression_syntax = "pattern a(c, _\"+expression+hi\"_)";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&wrong_expression_syntax, syns));
 }

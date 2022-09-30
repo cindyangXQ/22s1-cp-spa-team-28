@@ -128,11 +128,18 @@ PatternClause QueryParser::parsePatternClause(std::string *clause,
             }
         }
         Expression expr = matches[4].str();
-        if (expr.find('_') != std::string::npos && expr.size() >= 5) {
-            expr = expr.substr(2, expr.size() - 4);
+        bool isExact = false;
+        if (expr.find('_') != std::string::npos) {
+            isExact = false;
+            if (expr.size() >= 5) {
+                //Remove _ at the start and end
+                expr = expr.substr(1, expr.size() - 2);
+            }
         }
         if (expr.compare("_") != 0) {
             try {
+                //Remove " at the start and end
+                expr = expr.substr(1, expr.size() - 2);
                 expr = SP::convertExpression(expr);
             }
             catch (std::runtime_error e) {
@@ -141,7 +148,7 @@ PatternClause QueryParser::parsePatternClause(std::string *clause,
         }
         *clause = Utils::removeString(*clause, patternClause);
 
-        return PatternClause(syn, entRef, expr);
+        return PatternClause(syn, entRef, expr, isExact);
     } else {
         return PatternClause();
     }
