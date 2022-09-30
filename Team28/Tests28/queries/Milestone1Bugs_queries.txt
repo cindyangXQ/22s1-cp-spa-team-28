@@ -76,7 +76,7 @@ a6, a7, a8, y, z
 5 - 5: Handle white space in quotation marks for pattern clause
 assign a; variable v;
 Select v pattern a(v, _"1 "_)
-x
+a1, x
 5000
 6 - 6: Invalid expression for pattern clause 
 assign a; variable v;
