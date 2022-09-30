@@ -1,5 +1,6 @@
 #include "PKB/Facades/QueryFacade.h"
 #include "QPS/QPS.h"
+#include "SP/SP.h"
 
 #include "catch.hpp"
 
@@ -547,8 +548,8 @@ TEST_CASE("QPS can process queries with advanced pattern clause") {
     Statement line2 = Statement(2, StatementType::ASSIGN);
     Variable var1 = Variable("a");
     Variable var2 = Variable("b");
-    //(a+b*a)/a-b
-    Assignment assignment1 = Assignment(1, "a", "((((a)+((b)*(a)))/(a))-(b))");
+    //(a+b*a)/a-b+1
+    Assignment assignment1 = Assignment(1, "a", "(((((a)+((b)*(a)))/(a))-(b))+(1))");
     //b*a+(a-a/b)*b
     Assignment assignment2 = Assignment(2, "b", "(((b)*(a))+(((a)-((a)/(b)))*(b)))");
     assignments->store(&assignment1);
@@ -577,6 +578,12 @@ TEST_CASE("QPS can process queries with advanced pattern clause") {
 
     input = "assign a; variable v; Select v pattern a(v, _\"(a - a / b)     \"_)";
     correct_output = {"b"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "assign a; variable v; Select v pattern a(v, _\"   1     \"_)";
+    correct_output = {"a"};
     results = {};
     qps.evaluate(input, results);
     REQUIRE(results == correct_output);

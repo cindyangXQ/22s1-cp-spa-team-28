@@ -1,5 +1,6 @@
 #include "QPS/Parser/QueryParser.h"
 #include "QPS/Parser/SolvableQuery.h"
+#include "SP/SP.h"
 
 #include "catch.hpp"
 
@@ -212,18 +213,32 @@ TEST_CASE("Parser can parse pattern clause") {
     std::string misspelled = "assign a; Select a pattrn a(\"x\", _)";
     REQUIRE_THROWS(QueryParser::parse(misspelled));
 
-    std::string too_many_arguments = "pattern a(v, _, c)";
+    std::string too_many_arguments = "pattern a(v, _, a)";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&too_many_arguments, syns));
 
-    std::string too_few_arguments = "pattern a(c)";
+    std::string too_few_arguments = "pattern a(v)";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&too_few_arguments, syns));
 
-    std::string missing_quotation = "pattern a(c, \"x)";
+    std::string missing_quotation = "pattern a(v, \"x)";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_quotation, syns));
 
-    std::string missing_underscore = "pattern a(c, _\"x\")";
+    std::string missing_underscore = "pattern a(v, _\"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_underscore, syns));
 
     std::string wrong_expression_syntax = "pattern a(c, _\"+expression+hi\"_)";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&wrong_expression_syntax, syns));
+
+    std::string missing_bracket_left = "pattern a(v, _\"(x\"_)";
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_bracket_left, syns));
+
+    std::string missing_bracket_left2 = "pattern a(v, \"(x\")";
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_bracket_left2, syns));
+    
+    /*
+    std::string missing_bracket_right = "pattern a(v, _\"x)\"_)";
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_bracket_right, syns));
+
+    std::string missing_bracket_right2 = "pattern a(v, \"x)\")";
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_bracket_right2, syns));
+    */
 }
