@@ -6,7 +6,7 @@ none
 1a - 1a: PQL clause with 2 different synonyms (Follows)
 stmt s1, s2;
 Select s1 such that Follows(s1,s2)
-1, 2, 6
+1, 2, 4, 6, 9
 5000
 2 - 2: PQL clause with 2 identical synonyms (Parent)
 stmt s;
@@ -16,7 +16,7 @@ none
 2a - 2a: PQL clause with 2 different synonyms (Parent)
 stmt s1, s2;
 Select s1 such that Parent(s1,s2)
-2, 4
+2, 4, 6, 11, 12, 13, 14, 16
 5000
 3 - 3: Variables in while clause are captured in Uses relationship
 variable v;
@@ -78,7 +78,7 @@ assign a; variable v;
 Select v pattern a(v, _"1 "_)
 x
 5000
-6 - 6: Invalid expression for pattern clause (To confirm)
+6 - 6: Invalid expression for pattern clause 
 assign a; variable v;
 Select v pattern a(v, _"1) "_)
 SyntaxError
