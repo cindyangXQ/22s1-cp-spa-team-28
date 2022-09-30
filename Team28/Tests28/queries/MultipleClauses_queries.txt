@@ -1,5 +1,40 @@
-1 - 1 such that clause
+1 - 2 such that clause
 assign a; variable v; stmt s;
-Select v such that Modifies(s, v) such that Follows(a, s) pattern a(_, _"a3"_)
+Select v such that Modifies(s, v) pattern a(_, _"a3"_) such that Follows(a, s)
+a10
+5000
+2a - All false clauses
+assign a; variable v; stmt s; read r1, r2;
+Select v such that Follows(r1, r2) pattern a(_, _"12123123"_) such that Follows(s, s)
+none
+5000
+2b - All false clauses
+assign a; variable v; stmt s; read r1, r2;
+Select r1 such that Follows(r1, r2) pattern a(_, _"12123123"_) such that Follows(s, s)
+none
+5000
+3 - Pattern false 
+assign a; variable v; stmt s;
+Select v such that Modifies(s, v) pattern a(_, _"12312321321"_) such that Follows(a, s)
+none
+5000
+4 - Such that false 
+assign a; variable v; stmt s; read r1, r2;
+Select v such that Follows(r1, r2) pattern a(_, _"a3"_) such that Follows(a, s)
+none
+5000
+5 - 2 pattern clause
+assign a; print p;
+Select a pattern a(_, _"a19"_) such that Follows*(p, a) pattern a("a18", _"a20"_)
+19
+5000
+6 - 3 pattern clause
+assign a; variable v;
+Select v pattern a(v, _"a3"_) pattern a("a9", _"a6"_) pattern a(_, _) 
+a9
+5000
+7 - 3 such that clause
+assign a; variable v; read r; while w1, w2; stmt s1, s2;
+Select r such that Uses(1, "read") such that Parents*(w1, w2) such that Parents(w2, r)
 a10
 5000
