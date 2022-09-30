@@ -103,57 +103,47 @@ variable v;
 Select v such that Uses(_, v)
 SemanticError
 5000
-22 - SPA catches syntax errors in such that clause (more that one such that clause)
-variable v;
-Select v such that Uses(1, v) such that Parent(1,2)
-SyntaxError
-5000
-23 - SPA catches syntax errors in such that clause (invalid variable name)
+22 - SPA catches syntax errors in such that clause (invalid variable name)
 variable v;
 Select v such that Uses(1, "123")
 SyntaxError
 5000
-24 - SPA catches syntax errors in such that clause (invalid statement number)
+23 - SPA catches syntax errors in such that clause (invalid statement number)
 variable v;
 Select v such that Uses(1b, "yey")
 SyntaxError
 5000
-25 - SPA catches syntax errors in pattern clause (miss spell pattern)
+24 - SPA catches syntax errors in pattern clause (miss spell pattern)
 variable v; assign a;
 Select v pattyeyrn a(_, _)
 SyntaxError
 5000
-26 - SPA catches semantic errors in pattern clause (use wrong synonym)
+25 - SPA catches semantic errors in pattern clause (use wrong synonym)
 variable v; if i;
 Select v pattern i(_, _)
 SemanticError
 5000
-27 - SPA catches syntax errors in pattern clause (invalid variable name in left)
+26 - SPA catches syntax errors in pattern clause (invalid variable name in left)
 variable v; assign a;
 Select v pattern a("123", _)
 SyntaxError
 5000
-28 - SPA catches syntax errors in pattern clause (multiple pattern clauses)
-variable v; assign a;
-Select v pattern a(_, _) pattern a(1, "yey")
-SyntaxError
-5000
-29 - SPA catches syntax errors in pattern clause (missing wildcard)
+27 - SPA catches syntax errors in pattern clause (missing wildcard)
 variable v; assign a;
 Select v pattern a(1, _"yey")
 SyntaxError
 5000
-30 - SPA catches syntax errors in pattern clause (missing comma)
+28 - SPA catches syntax errors in pattern clause (missing comma)
 variable v; assign a;
 Select v pattern a(1 _"yey"_)
 SyntaxError
 5000
-31 - SPA catches syntax errors in pattern clause (missing bracket)
+29 - SPA catches syntax errors in pattern clause (missing bracket)
 variable v; assign a;
 Select v pattern a(1, _"yey"_
 SyntaxError
 5000
-32 - SPA catches syntax errors in pattern clause (extra bracket)
+30 - SPA catches syntax errors in pattern clause (extra bracket)
 variable v; assign a;
 Select v pattern a(1, _"yey"_))
 SyntaxError

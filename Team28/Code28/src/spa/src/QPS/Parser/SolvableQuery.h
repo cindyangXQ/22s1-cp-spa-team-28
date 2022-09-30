@@ -13,9 +13,10 @@ class SolvableQuery {
 public:
     Declaration decl;
     SelectType selectType = Synonym();
-    SuchThatClause suchThatCl;
-    PatternClause patternCl;
+    std::vector<SuchThatClause> suchThatCls;
+    std::vector<PatternClause> patternCls;
 
     SolvableQuery(Declaration decl, SelectType selectType,
-                  SuchThatClause suchThatCl, PatternClause patternCl);
+                  std::vector<SuchThatClause> suchThatCls,
+                  std::vector<PatternClause> patternCls);
 };
