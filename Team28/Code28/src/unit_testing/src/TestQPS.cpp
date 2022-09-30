@@ -1,5 +1,6 @@
 #include "PKB/Facades/QueryFacade.h"
 #include "QPS/QPS.h"
+#include "SP/SP.h"
 
 #include "catch.hpp"
 
@@ -528,6 +529,61 @@ TEST_CASE("QPS can process queries with such that and pattern clause") {
     input = "assign a; variable v; Select v such that Uses(a, v) pattern a(_, "
             "_\"b\"_)";
     correct_output = {"b"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+}
+
+TEST_CASE("QPS can process queries with advanced pattern clause") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    StatementsTable *statements =
+        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+    AssignmentsTable *assignments =
+        (AssignmentsTable *)storage.getTable(TableName::ASSIGNMENTS);
+    VariablesTable *variables =
+        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+
+    Statement line1 = Statement(1, StatementType::ASSIGN);
+    Statement line2 = Statement(2, StatementType::ASSIGN);
+    Variable var1 = Variable("a");
+    Variable var2 = Variable("b");
+    //(a+b*a)/a-b+1
+    Assignment assignment1 = Assignment(1, "a", "(((((a)+((b)*(a)))/(a))-(b))+(1))");
+    //b*a+(a-a/b)*b
+    Assignment assignment2 = Assignment(2, "b", "(((b)*(a))+(((a)-((a)/(b)))*(b)))");
+    assignments->store(&assignment1);
+    assignments->store(&assignment2);
+    statements->store(&line1);
+    statements->store(&line2);
+    variables->store(&var1);
+    variables->store(&var2);
+
+    QPS qps = QPS(&facade);
+    std::string input;
+    std::list<std::string> results;
+    std::list<std::string> correct_output;
+
+    input = "assign a; variable v; Select a pattern a(_, _\"b*a\"_)";
+    correct_output = {"1", "2"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "assign a; variable v; Select a pattern a(\"b\", \"b * a + (a - a / b) * b\")";
+    correct_output = {"2"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "assign a; variable v; Select v pattern a(v, _\"(a - a / b)     \"_)";
+    correct_output = {"b"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "assign a; variable v; Select v pattern a(v, _\"   1     \"_)";
+    correct_output = {"a"};
     results = {};
     qps.evaluate(input, results);
     REQUIRE(results == correct_output);
