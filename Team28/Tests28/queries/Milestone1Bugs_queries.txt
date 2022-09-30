@@ -18,15 +18,45 @@ stmt s1, s2;
 Select s1 such that Parent(s1,s2)
 2, 4
 5000
-3 - Variables in whole clause are captured in Uses relationship
+3 - Variables in while clause are captured in Uses relationship
 variable v;
 Select v such that Uses(2,v)
 a1, a2, a3
 5000
+3a - Variables in while clause are captured in Uses relationship
+variable v;
+Select v such that Uses(11,v)
+b1, b2, b3, b4, c1, c2, c3, d1, d2, d3, d4
+5000
+3b - Variables in while clause are captured in Uses relationship
+variable v;
+Select v such that Uses(12,v)
+b3, b4, c1, c2, c3, d1, d2, d3, d4
+5000
+3c - Variables in while clause are captured in Uses relationship
+variable v;
+Select v such that Uses(13,v)
+c1, c2, c3, d1, d2, d3, d4
+5000
+3d - Variables in while clause are captured in Uses relationship
+variable v;
+Select v such that Uses(14,v)
+d1, d2
+5000
+3e- Variables in while clause are captured in Uses relationship
+variable v;
+Select v such that Uses(16,v)
+d3, d4
+5000
+3f- Variables in while clause are captured in Uses relationship
+stmt s;
+Select s such that Uses(s,"d3")
+11, 12, 13, 16
+5000
 4 - Variables in if clause are captured in Uses relationship
 variable v;
 Select v such that Uses(4,v)
-a1, a4, a5, a6, a7, a8, y, z
+a1, a4, a5, a6, a7, a8, a9, x, y, z
 5000
 4a - Variables in if clause are captured in Uses relationship
 stmt s;
@@ -36,12 +66,12 @@ Select s such that Uses(s,   "a4"  )
 4b - Variables in if clause are captured in Uses relationship
 stmt s;
 Select s such that Uses(s,   "a6"  )
-6
+4, 6
 5000
 4c - Variables in if clause are captured in Uses relationship
 variable v;
 Select v such that Uses(6, v)
-a6, a7, a8
+a6, a7, a8, y, z
 5000
 5 - Handle white space in quotation marks for pattern clause
 assign a; variable v;
@@ -58,13 +88,43 @@ stmt s; constant c;
 Select s such that Uses(s, c)
 SemanticError
 5000
-7b - Semantically invalid query on usage of c-syn in patt
+7b - Semantically invalid query on usage of c-syn in Uses LHS
+constant c; variable v;
+Select s such that Uses(c, v)
+SemanticError
+5000
+7c - Semantically invalid query on usage of s-syn in Uses
+stmt s, s1;
+Select s such that Uses(s, s1)
+SemanticError
+5000
+7d - Semantically invalid query on usage of v-syn in Uses
+variable v1, v2;
+Select v2 such that Uses(v1, v2)
+SemanticError
+5000
+8a - Semantically invalid query on usage of c-syn in patt
 assign a; constant c;
 Select a pattern a(c, _)
 SemanticError
 5000
-8 - Semantically invalid query on usage of s-syn in patt
+8b - Semantically invalid query on usage of s-syn in patt as LHS param
 assign a; stmt s;
 Select s pattern a(s, _)
+SemanticError
+5000
+8c - Semantically invalid query on usage of s-syn in patt 
+stmt s;
+Select s pattern s(_, _)
+SemanticError
+5000
+8d - Semantically invalid query on usage of if-syn in patt as LHS param
+assign a; if s;
+Select s pattern a(s, _)
+SemanticError
+5000
+8e - Semantically invalid query on usage of p-syn in patt as LHS param
+assign a; procedure p;
+Select p pattern a(p, _)
 SemanticError
 5000

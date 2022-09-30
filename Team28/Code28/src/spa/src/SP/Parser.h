@@ -4,6 +4,7 @@
 #include "Token.h"
 
 #include <vector>
+#include <map>
 
 class Parser {
 protected:
@@ -16,6 +17,8 @@ public:
 };
 
 class ProgramParser : public Parser {
+    void checkCall(std::string proc, std::vector<std::string> path, std::map<std::string, std::vector<std::string>> &callmap);
+
 public:
     ProgramParser(int offset, std::vector<Token *> tokens)
         : Parser(offset, tokens){};
@@ -24,12 +27,10 @@ public:
 
 class ProcedureParser : public Parser {
     int startline;
-    std::vector<std::string> allCalls;
 
 public:
     ProcedureParser(int offset, std::vector<Token *> tokens, int startline);
     ProcedureNode *parse();
-    bool checkCalls(const std::vector<std::string> &procNames);
 };
 
 class StatementParser : public Parser {

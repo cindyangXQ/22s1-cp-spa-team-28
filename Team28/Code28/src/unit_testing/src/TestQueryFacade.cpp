@@ -1128,10 +1128,10 @@ TEST_CASE("getAssignAndVar returns correct results") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getAssignAndVar('1', false) returns {('1', 'x1'), ('2', 'x1')}
+    // getAssignAndVar('(1)', false) returns {('1', 'x1'), ('2', 'x1')}
     expectedResult = {std::make_pair(stmt1, varX1),
                       std::make_pair(stmt2, varX1)};
-    output = facade.getAssignAndVar("1", false);
+    output = facade.getAssignAndVar("(1)", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
@@ -1141,9 +1141,9 @@ TEST_CASE("getAssignAndVar returns correct results") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getAssignAndVar('x1', false) returns {('3', 'x2')}
+    // getAssignAndVar('(x1)', false) returns {('3', 'x2')}
     expectedResult = {std::make_pair(stmt3, varX2)};
-    output = facade.getAssignAndVar("x1", false);
+    output = facade.getAssignAndVar("(x1)", false);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 

@@ -266,7 +266,7 @@ TEST_CASE("CallsTTable can initialise, store and retrieve correctly") {
 
     // Calls* ("foo", "bar")
     Relationship<std::string, std::string> test = Relationship(
-        RelationshipReference::CALLS, std::string("foo"), std::string("bar"));
+        RelationshipReference::CALLS_T, std::string("foo"), std::string("bar"));
     callsTTable.store(&test);
 
     // successfully stored Calls* ("foo", "bar")
@@ -276,4 +276,43 @@ TEST_CASE("CallsTTable can initialise, store and retrieve correctly") {
     // values in maps are correct
     REQUIRE(callsTTable.retrieveLeft("foo").count("bar") == 1);
     REQUIRE(callsTTable.retrieveRight("bar").count("foo") == 1);
+}
+
+TEST_CASE("NextTable can initialise, store and retrieve correctly") {
+    NextTable nextTable;
+
+    // Next (1, 2)
+    Relationship<int, int> test = Relationship(
+        RelationshipReference::NEXT, 1, 2);
+    nextTable.store(&test);
+
+    // successfully stored Next (1, 2)
+    REQUIRE(nextTable.retrieveLeft(1).size() == 1);
+    REQUIRE(nextTable.retrieveRight(2).size() == 1);
+
+    // values in maps are correct
+    REQUIRE(nextTable.retrieveLeft(1).count(2) == 1);
+    REQUIRE(nextTable.retrieveRight(2).count(1) == 1);
+}
+
+TEST_CASE("NextTTable can initialise, store and retrieve correctly") {
+    NextTTable nextTTable;
+
+    // Next* (1, 2)
+    Relationship<int, int> test1 = Relationship(
+        RelationshipReference::NEXT_T, 1, 2);
+    nextTTable.store(&test1);
+    // Next* (1, 3), implicitly Next* (2, 3) but not testing latter
+    Relationship<int, int> test2 =
+        Relationship(RelationshipReference::NEXT_T, 1, 3);
+    nextTTable.store(&test2);
+
+    // successfully stored Next* (1, 2)
+    REQUIRE(nextTTable.retrieveLeft(1).size() == 2);
+    REQUIRE(nextTTable.retrieveRight(2).size() == 1);
+
+    // values in maps are correct
+    REQUIRE(nextTTable.retrieveLeft(1).count(2) == 1);
+    REQUIRE(nextTTable.retrieveLeft(1).count(3) == 1);
+    REQUIRE(nextTTable.retrieveRight(2).count(1) == 1);
 }

@@ -16,6 +16,12 @@ Storage::Storage() {
     UsesPTable *usesP = new UsesPTable();
     CallsTable *calls = new CallsTable();
     CallsTTable *callsT = new CallsTTable();
+    BranchInTable *branchIn = new BranchInTable();
+    BranchOutTable *branchOut = new BranchOutTable();
+    NextTable *next = new NextTable();
+    NextTTable *nextT = new NextTTable();
+    IfControlVarTable *ifControl = new IfControlVarTable();
+    WhileControlVarTable *whileControl = new WhileControlVarTable();
 
     /*
      * TODO relook typecasting
@@ -35,6 +41,12 @@ Storage::Storage() {
     this->tables[TableName::USES_P] = (Table<TableValue> *)usesP;
     this->tables[TableName::CALLS] = (Table<TableValue> *)calls;
     this->tables[TableName::CALLS_T] = (Table<TableValue> *)callsT;
+    this->tables[TableName::BRANCH_IN] = (Table<TableValue> *)branchIn;
+    this->tables[TableName::BRANCH_OUT] = (Table<TableValue> *)branchOut;
+    this->tables[TableName::NEXT] = (Table<TableValue> *)next;
+    this->tables[TableName::NEXT_T] = (Table<TableValue> *)nextT;
+    this->tables[TableName::I_CONTROL] = (Table<TableValue> *)ifControl;
+    this->tables[TableName::W_CONTROL] = (Table<TableValue> *)whileControl;
 };
 
 Table<TableValue> *Storage::getTable(TableName name) {

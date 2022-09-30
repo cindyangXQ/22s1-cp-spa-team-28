@@ -115,3 +115,57 @@ void PopulateFacade::storeUsesP(
         modifiesPTable->store(use);
     }
 }
+
+void PopulateFacade::storeCalls(
+    std::vector<Relationship<std::string, std::string> *> *calls) {
+    CallsTable *callsTable =
+        (CallsTable *)this->storage->getTable(TableName::CALLS);
+    for (Relationship<std::string, std::string> *call : *calls) {
+        callsTable->store(call);
+    }
+}
+
+void PopulateFacade::storeCallsT(
+    std::vector<Relationship<std::string, std::string> *> *callsT) {
+    CallsTable *callsTTable =
+        (CallsTable *)this->storage->getTable(TableName::CALLS_T);
+    for (Relationship<std::string, std::string> *call : *callsT) {
+        callsTTable->store(call);
+    }
+}
+
+void PopulateFacade::storeBranchIn(
+    std::vector<Relationship<int, int> *> *branchIn) {
+    BranchInTable *branchinTable =
+        (BranchInTable *)this->storage->getTable(TableName::BRANCH_IN);
+    for (Relationship<int, int> *branchin : *branchIn) {
+        branchinTable->store(branchin);
+    }
+}
+
+void PopulateFacade::storeBranchOut(
+    std::vector<Relationship<int, int> *> *branchOut) {
+    BranchOutTable *branchoutTable =
+        (BranchOutTable *)this->storage->getTable(TableName::BRANCH_OUT);
+    for (Relationship<int, int> *branchout : *branchOut) {
+        branchoutTable->store(branchout);
+    }
+}
+
+void PopulateFacade::storeIfControlVar(
+    std::vector<Relationship<int, std::string> *> *usesS) {
+    IfControlVarTable *ifControlVarTable =
+        (IfControlVarTable *)this->storage->getTable(TableName::I_CONTROL);
+    for (Relationship<int, std::string> *use : *usesS) {
+        ifControlVarTable->store(use);
+    }
+}
+
+void PopulateFacade::storeWhileControlVar(
+    std::vector<Relationship<int, std::string> *> *usesS) {
+    WhileControlVarTable *whileControlVarTable =
+        (WhileControlVarTable *)this->storage->getTable(TableName::W_CONTROL);
+    for (Relationship<int, std::string> *use : *usesS) {
+        whileControlVarTable->store(use);
+    }
+}

@@ -17,6 +17,8 @@
 #include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/ProcToProcRelationshipsTable.h" 
+#include "../Tables/RelationshipsTable/BranchTable.h" 
+#include "../Tables/RelationshipsTable/UsesControlVarTable.h" 
 #include "../Tables/StatementsTable/StatementsTable.h"
 #include "../Tables/Table.h"
 
@@ -38,7 +40,13 @@ enum class TableName {
     USES_S,
     USES_P,
     CALLS,
-    CALLS_T
+    CALLS_T,
+    BRANCH_IN,
+    BRANCH_OUT,
+    NEXT,
+    NEXT_T,
+    W_CONTROL,
+    I_CONTROL
 };
 
 /*

@@ -34,3 +34,5 @@ typedef StmtToStmtRelationshipsTable ParentTable;
 typedef StmtToStmtRelationshipsTable ParentTTable;
 typedef StmtToStmtRelationshipsTable FollowsTable;
 typedef StmtToStmtRelationshipsTable FollowsTTable;
+typedef StmtToStmtRelationshipsTable NextTable;
+typedef StmtToStmtRelationshipsTable NextTTable;

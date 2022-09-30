@@ -3,6 +3,7 @@
 #include "ExprParser.h"
 #include "Token.h"
 #include <vector>
+#include <map>
 
 std::string REL_LIST[] = {"!", ">", "<", "==", "!=", ">=", "<=", "&&", "||"};
 
@@ -32,7 +33,8 @@ ProgramNode *ProgramParser::parse() {
     int line = 1;
 
     std::vector<std::string> procNames;
-    std::vector<ProcedureParser *> allProcCalls;
+
+    std::map<std::string, std::vector<std::string>> procCallsMap;
 
     while (offset < tokenList.size()) {
         ProcedureParser *parser = new ProcedureParser(offset, tokenList, line);
@@ -45,7 +47,6 @@ ProgramNode *ProgramParser::parse() {
             }
         }
         procNames.push_back(temp->getName());
-        allProcCalls.push_back(parser);
 
         procList.push_back(temp);
 
@@ -53,12 +54,42 @@ ProgramNode *ProgramParser::parse() {
         offset = parser->getOffset();
     }
 
-    // Check if all call statements call existing procedures.
-    for (size_t i = 0; i < allProcCalls.size(); i++) {
-        allProcCalls[i]->checkCalls(procNames);
+    for (size_t i = 0; i < procList.size(); i++) {
+        procCallsMap[procList[i]->getName()] = procList[i]->getAllCalls();
     }
 
+    for (size_t i = 0; i < procNames.size(); i++) {
+        std::vector<std::string> path;
+        
+        // Detect cyclic/recursive call
+        checkCall(procNames[i], path, procCallsMap);
+
+        // Detect undeclared procedure call
+        for (size_t j = 0; j < procCallsMap[procNames[i]].size(); j++) {
+            if (find(begin(procNames), end(procNames),
+                     procCallsMap[procNames[i]][j]) == end(procNames)) {
+                throw "calling undeclared procedure is not allowed";
+            }
+        }
+    }
+    
     return new ProgramNode(procList);
+}
+
+void ProgramParser::checkCall(
+    std::string proc,
+    std::vector<std::string> path,
+    std::map<std::string, std::vector<std::string>> &callmap) {
+    if (find(begin(path), end(path), proc) != end(path)) {
+        throw "cyclic calling is not allowed";
+    }
+
+    path.push_back(proc);
+    
+    std::vector<std::string> calls = callmap[proc];
+    for (size_t i = 0; i < calls.size(); i++) {
+        checkCall(calls[i], path, callmap);
+    }
 }
 
 ProcedureNode *ProcedureParser::parse() {
@@ -66,6 +97,7 @@ ProcedureNode *ProcedureParser::parse() {
     std::vector<Token *> tokenList = this->tokens;
 
     std::vector<StatementNode *> stmtList;
+    std::vector<std::string> allCalls;
 
     Token *firstToken = tokenList.at(offset++);
     Token *secondToken = tokenList.at(offset++);
@@ -80,7 +112,7 @@ ProcedureNode *ProcedureParser::parse() {
                 if (temp->getVariable() == secondToken->getValue()) {
                     throw "recursive call is not allowed";
                 }
-                this->allCalls.push_back(temp->getVariable());
+                allCalls.push_back(temp->getVariable());
             }
             stmtList.push_back(temp);
 
@@ -98,24 +130,11 @@ ProcedureNode *ProcedureParser::parse() {
         throw "procedure wrong syntax";
     }
     offset++;
-    return new ProcedureNode(secondToken->getValue(), stmtList);
-}
+    
+    ProcedureNode* result = new ProcedureNode(secondToken->getValue(), stmtList);
+    result->setAllCalls(allCalls);
 
-bool ProcedureParser::checkCalls(const std::vector<std::string> &procNames) {
-    for (size_t i = 0; i < allCalls.size(); i++) {
-        std::string temp = allCalls[i];
-        bool isCallValid = false;
-        for (size_t j = 0; j < procNames.size(); j++) {
-            if (temp == procNames[j]) {
-                isCallValid = true;
-                break;
-            }
-        }
-        if (!isCallValid) {
-            throw "calling undeclared procedure is not allowed";
-        }
-    }
-    return true;
+    return result;
 }
 
 StatementNode *StatementParser::parse() {

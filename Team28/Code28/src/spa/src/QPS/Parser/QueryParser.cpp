@@ -121,6 +121,14 @@ std::vector<PatternClause> QueryParser::parsePatternClause(std::string *clause,
             throw SemanticError("Pattern only accepts assign synonym");
         }
         Reference entRef = getReference(matches[2].str(), syns);
+        if (syn.entity == EntityName::ASSIGN) {
+            if (entRef.isSynonym && entRef.syn.entity != EntityName::VARIABLE) {
+                throw SemanticError("Pattern-assign first argument must be an entity reference or wildcard");
+            }
+            else if (entRef.type == ReferenceType::STMT_REF) {
+                throw SemanticError("Pattern-assign first argument must be an entity reference or wildcard");
+            }
+        }
         Expression expression = matches[4].str();
         *clause = Utils::removeString(*clause, patternClause);
 
@@ -129,8 +137,7 @@ std::vector<PatternClause> QueryParser::parsePatternClause(std::string *clause,
     return clauses;
 }
 
-std::vector<Synonym>
-QueryParser::parseSynonyms(std::vector<std::string> tokens) {
+std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens) {
     if (tokens.size() % 2 == 1) {
         throw SyntaxError("syntax error in declaration clause");
     }
@@ -170,7 +177,8 @@ Reference QueryParser::getReference(std::string input,
     throw SyntaxError("Invalid reference format");
 }
 
-Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
+Synonym QueryParser::getSynonym(std::string input, 
+                                std::vector<Synonym> syns) {
     for (int i = 0; i < syns.size(); i++) {
         Synonym synonym = syns[i];
         if (input.compare(synonym.name) == 0) {
@@ -188,19 +196,20 @@ bool QueryParser::isValidSuchThatClause(RelationshipReference relRef,
                                         Reference left, Reference right) {
     if (relRef == RelationshipReference::EMPTY) {
         return true;
-    } else if (relRef == RelationshipReference::FOLLOWS ||
-               relRef == RelationshipReference::FOLLOWS_T ||
-               relRef == RelationshipReference::PARENT ||
-               relRef == RelationshipReference::PARENT_T) {
-        return (left.type != ReferenceType::ENT_REF &&
-                right.type != ReferenceType::ENT_REF);
-    } else if (relRef == RelationshipReference::USES ||
-               relRef == RelationshipReference::MODIFIES) {
-        if (left.type == ReferenceType::WILDCARD) {
-            return false;
-        }
-        return (right.type != ReferenceType::STMT_REF);
+    } 
+    bool isLeftValid;
+    bool isRightValid;
+    if (left.isSynonym) {
+        isLeftValid = relationshipLeftArgMap.find(relRef)->second.count(left.syn.entity);
+    } else {
+        isLeftValid = relationshipLeftRefMap.find(relRef)->second.count(left.type);
     }
+    if (right.isSynonym) {
+        isRightValid = relationshipRightArgMap.find(relRef)->second.count(right.syn.entity);
+    } else {
+        isRightValid = relationshipRightRefMap.find(relRef)->second.count(right.type);
+    }
+    return isLeftValid && isRightValid;
 }
 
 bool QueryParser::isDuplicateSynonymName(std::vector<Synonym> syns) {
