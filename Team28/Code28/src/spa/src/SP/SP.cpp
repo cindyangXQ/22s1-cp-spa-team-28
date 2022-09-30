@@ -34,5 +34,8 @@ std::string SP::convertExpression(std::string input) {
     std::vector<Token *> tokens = tokenizer.tokenize();
     ExprParser parser(0, tokens, false);
     ExpressionNode *expr = parser.parse();
+    if (parser.getOffset() != tokens.size()) {
+        throw "expression syntax error";
+    }
     return expr->toString();
 }
