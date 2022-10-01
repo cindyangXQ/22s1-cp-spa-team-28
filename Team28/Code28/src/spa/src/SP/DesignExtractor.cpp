@@ -171,10 +171,10 @@ std::vector<Relationship<std::string, std::string> *> UsesPExtractor::extract() 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         std::string procName = procList[i]->getName();
-        std::vector<std::string> *used = SPUtils::usesP(procList[i], procList);
-        for (size_t j = 0; j < used->size(); j++) {
+        std::vector<std::string> used = SPUtils::usesP(procList[i], procList);
+        for (size_t j = 0; j < used.size(); j++) {
             result.push_back(new Relationship<std::string, std::string>(
-                RelationshipReference::USES, procName, used->at(j)));
+                RelationshipReference::USES, procName, used.at(j)));
         }
     }
 
@@ -201,10 +201,10 @@ std::vector<Relationship<std::string, std::string> *> ModPExtractor::extract() {
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         std::string procName = procList[i]->getName();
-        std::vector<std::string> *modified = SPUtils::modifiesP(procList[i], procList);
-        for (size_t j = 0; j < modified->size(); j++) {
+        std::vector<std::string> modified = SPUtils::modifiesP(procList[i], procList);
+        for (size_t j = 0; j < modified.size(); j++) {
             result.push_back(new Relationship<std::string, std::string>(
-                RelationshipReference::MODIFIES, procName, modified->at(j)));
+                RelationshipReference::MODIFIES, procName, modified.at(j)));
         }
     }
 
@@ -212,7 +212,7 @@ std::vector<Relationship<std::string, std::string> *> ModPExtractor::extract() {
 }
 
 void DesignExtractor::extractAll() {
-    ProcedureExtractor(this->program, this->storage).populate();
+    /*ProcedureExtractor(this->program, this->storage).populate();
     StatementExtractor(this->program, this->storage).populate();
     VariableExtractor(this->program, this->storage).populate();
     ConstantExtractor(this->program, this->storage).populate();
@@ -220,8 +220,10 @@ void DesignExtractor::extractAll() {
     FollowsExtrT(this->program, this->storage).populate();
     ParentExtractor(this->program, this->storage).populate();
     ParentExtrT(this->program, this->storage).populate();
-    UsesSExtractor(this->program, this->storage).populate();
-    ModSExtractor(this->program, this->storage).populate();
+    UsesSExtractor(this->program, this->storage).populate();*/
+    UsesPExtractor(this->program, this->storage).populate();
+    //ModSExtractor(this->program, this->storage).populate();
+    ModPExtractor(this->program, this->storage).populate();
 }
 
 void ProcedureExtractor::populate() {

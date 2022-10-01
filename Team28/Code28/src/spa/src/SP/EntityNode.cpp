@@ -188,18 +188,18 @@ void CallStatementNode::getStatementsInto(std::vector<Statement *> &result) {
 void CallStatementNode::getUsesPInto(std::vector<std::string> &result,
                                      std::vector<ProcedureNode *> &procList) {
     ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
-    std::vector<std::string> *temp = SPUtils::usesP(procedure, procList);
-    for (size_t i = 0; i < temp->size(); i++) {
-        result.push_back(temp->at(i));
+    std::vector<std::string> temp = SPUtils::usesP(procedure, procList);
+    for (size_t i = 0; i < temp.size(); i++) {
+        result.push_back(temp[i]);
     }
 }
 
 void CallStatementNode::getModifiesPInto(
     std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
     ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
-    std::vector<std::string> *temp = SPUtils::modifiesP(procedure, procList);
-    for (size_t i = 0; i < temp->size(); i++) {
-        result.push_back(temp->at(i));
+    std::vector<std::string> temp = SPUtils::modifiesP(procedure, procList);
+    for (size_t i = 0; i < temp.size(); i++) {
+        result.push_back(temp.at(i));
     }
 }
 
