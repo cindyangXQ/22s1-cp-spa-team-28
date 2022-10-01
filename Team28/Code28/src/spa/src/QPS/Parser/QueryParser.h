@@ -20,9 +20,11 @@ public:
     static Declaration parseDeclaration(std::vector<std::string> clauses);
     static SelectType parseSelectClause(std::string *clause,
                                         std::vector<Synonym> syns);
-    static SuchThatClause parseSuchThatClause(std::string *clause,
+    static std::vector<SuchThatClause>
+    parseSuchThatClause(std::string *clause,
                                               std::vector<Synonym> syns);
-    static PatternClause parsePatternClause(std::string *clause,
+    static std::vector<PatternClause>
+    parsePatternClause(std::string *clause,
                                             std::vector<Synonym> syns);
 
 private:

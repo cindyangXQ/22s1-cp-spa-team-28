@@ -265,3 +265,42 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     REQUIRE(result_zero.size() == 0);
 }
+
+TEST_CASE("Query evaluator can evaluate query with single such that clause "
+          "with synonyms that are the same") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
+
+    SolvableQuery solvableQ_follow =
+        QueryParser::parse("stmt s; Select s such that Follows(s, s)");
+    QueryResult queryResult_follow = queryEvaluator.evaluate(&solvableQ_follow);
+    std::vector<std::string> result_follow =
+        queryEvaluator.interpretQueryResult(&queryResult_follow);
+
+    REQUIRE(result_follow.size() == 0);
+
+    SolvableQuery solvableQ_followT =
+        QueryParser::parse("stmt s; Select s such that Follows*(s, s)");
+    QueryResult queryResult_followT = queryEvaluator.evaluate(&solvableQ_followT);
+    std::vector<std::string> result_followT =
+        queryEvaluator.interpretQueryResult(&queryResult_followT);
+
+    REQUIRE(result_followT.size() == 0);
+
+    SolvableQuery solvableQ_parent =
+        QueryParser::parse("stmt s; Select s such that Parent*(s, s)");
+    QueryResult queryResult_parent = queryEvaluator.evaluate(&solvableQ_parent);
+    std::vector<std::string> result_parent =
+        queryEvaluator.interpretQueryResult(&queryResult_parent);
+
+    REQUIRE(result_parent.size() == 0);
+
+    SolvableQuery solvableQ_parentT =
+        QueryParser::parse("stmt s; Select s such that Parent*(s, s)");
+    QueryResult queryResult_parentT = queryEvaluator.evaluate(&solvableQ_parentT);
+    std::vector<std::string> result_parentT =
+        queryEvaluator.interpretQueryResult(&queryResult_parentT);
+
+    REQUIRE(result_parentT.size() == 0);
+}

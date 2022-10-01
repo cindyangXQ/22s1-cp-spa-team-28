@@ -1,11 +1,17 @@
 #include "QueryEvaluator.h"
 
 QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
-    ClauseResult suchThatResult =
-        suchThatEvaluator.evaluate(&solvableQ->suchThatCl);
-    ClauseResult patternResult =
-        patternEvaluator.evaluate(&solvableQ->patternCl);
-    std::vector<ClauseResult> clauseResultList{suchThatResult, patternResult};
+    std::vector<ClauseResult> clauseResultList;
+    for (size_t i = 0; i < solvableQ->suchThatCls.size(); i++) {
+        ClauseResult suchThatResult =
+            suchThatEvaluator.evaluate(&solvableQ->suchThatCls[i]);
+        clauseResultList.push_back(suchThatResult);
+    }
+    for (size_t i = 0; i < solvableQ->patternCls.size(); i++) {
+        ClauseResult patternResult =
+            patternEvaluator.evaluate(&solvableQ->patternCls[i]);
+        clauseResultList.push_back(patternResult);
+    }
     return QueryResult(solvableQ->selectType, clauseResultList);
 }
 

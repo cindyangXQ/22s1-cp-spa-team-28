@@ -462,3 +462,31 @@ QueryFacade::getAssignAndVar(std::string expression, bool isExactExpr) {
     }
     return assignments->getAssignAndVar(expression);
 };
+
+std::vector<Value> QueryFacade::getWhile(std::string varName) {
+    WhileControlVarTable *whiles =
+        (WhileControlVarTable *)this->storage->getTable(TableName::W_CONTROL);
+
+    return whiles->getStmt(varName);
+}
+
+std::vector<std::pair<Value, Value>> QueryFacade::getWhileAndVar() {
+    WhileControlVarTable *whiles =
+        (WhileControlVarTable *)this->storage->getTable(TableName::W_CONTROL);
+
+    return whiles->getStmtAndVar();
+};
+
+std::vector<Value> QueryFacade::getIf(std::string varName) {
+    IfControlVarTable *ifs =
+        (IfControlVarTable *)this->storage->getTable(TableName::I_CONTROL);
+
+    return ifs->getStmt(varName);
+}
+
+std::vector<std::pair<Value, Value>> QueryFacade::getIfAndVar() {
+    IfControlVarTable *ifs =
+        (IfControlVarTable *)this->storage->getTable(TableName::I_CONTROL);
+
+    return ifs->getStmtAndVar();
+};

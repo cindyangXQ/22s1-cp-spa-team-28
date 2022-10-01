@@ -14,6 +14,7 @@ public:
     PatternType patternType;
     Reference entRef;
     Expression expression;
+    bool isExact;
     PatternClause();
-    PatternClause(Synonym syn, Reference entRef, Expression expression);
+    PatternClause(Synonym syn, Reference entRef, Expression expression, bool isExact);
 };

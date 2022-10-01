@@ -97,8 +97,32 @@ public:
      * Return list of possible (Assignment, Variable) pairs which satisfy the
      * given expression.
      */
-    std::vector<std::pair<Value, Value>>
-    getAssignAndVar(std::string expression, bool isExactExpr);
+    std::vector<std::pair<Value, Value>> getAssignAndVar(std::string expression,
+                                                         bool isExactExpr);
+
+    /*
+     * Return list of possible values of Whiles that satisfy the given
+     * varName and expression.
+     */
+    std::vector<Value> getWhile(std::string varName);
+
+    /*
+     * Return list of possible (While, Variable) pairs which satisfy the
+     * given expression.
+     */
+    std::vector<std::pair<Value, Value>> getWhileAndVar();
+
+    /*
+     * Return list of possible values of Ifs that satisfy the given
+     * varName and expression.
+     */
+    std::vector<Value> getIf(std::string varName);
+
+    /*
+     * Return list of possible (If, Variable) pairs which satisfy the
+     * given expression.
+     */
+    std::vector<std::pair<Value, Value>> getIfAndVar();
 
 private:
     Storage *storage;
