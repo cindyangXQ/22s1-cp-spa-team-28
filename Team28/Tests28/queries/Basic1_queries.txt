@@ -588,3 +588,43 @@ stmt s; assign a;
 Select a such that Modifies (_, _) pattern a("zzzzzzzzzz",_)
 SyntaxError
 5000
+117 - Pattern exact match variable
+assign a;
+Select a pattern a (_, "a")
+3, 7
+5000
+118 - Pattern exact match constant
+assign a;
+Select a pattern a (_, "5")
+7
+5000
+119 - Pattern exact match full expression
+assign a;
+Select a pattern a (_, "10 + x1 * zzzzzzzzzz / a + 5 * a - 3 * x1")
+7
+5000
+120 - Pattern exact match subexpression 1
+assign a;
+Select a pattern a (_, "3 * x1")
+7
+5000
+121 - Pattern exact match subexpression 2
+assign a;
+Select a pattern a (_, "x1 * zzzzzzzzzz / a")
+7
+5000
+122 - Pattern exact match subexpression 3
+assign a;
+Select a pattern a (_, "x1 * zzzzzzzzzz")
+7
+5000
+123 - Pattern exact match subexpression 4
+assign a;
+Select a pattern a (_, "x1 * zzzzzzzzzz / a + 5 * a - 3 * x1")
+7
+5000
+124 - Pattern exact match subexpression 5
+assign a;
+Select a pattern a (_, "10 + x1 * zzzzzzzzzz / a")
+7
+5000
