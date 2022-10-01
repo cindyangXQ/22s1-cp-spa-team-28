@@ -40,12 +40,12 @@ Select s such that Follows ( 5      , s)
 5000
 9 - Select all statements following 4
 stmt s;
-Select s such that Follows ( 4       ,   s)
+Select s such that Follows ( 4      ,   s)
 7
 5000
 10 - Select all statements following 8
 stmt s;
-Select s such that Follows ( 8      ,   s)
+Select s such that Follows ( 8  ,   s)
 14
 5000
 11 - Select all statements following 16
@@ -65,12 +65,12 @@ Select s such that Follows ( s      , 3)
 5000
 14 - Select all statements that follow before 6
 stmt s;
-Select s such that Follows ( s      ,   6)
+Select s such that Follows ( s              ,   6)
 5
 5000
 15 - Select all statements that follow before 16
 stmt s;
-Select s such that Follows ( s      ,   16)
+Select s such that Follows ( s                      ,   16)
 
 5000
 16 - Select all statements that follow before 9
