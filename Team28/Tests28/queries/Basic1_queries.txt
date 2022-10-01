@@ -626,5 +626,5 @@ Select a pattern a (_, "x1 * zzzzzzzzzz / a + 5 * a - 3 * x1")
 124 - Pattern exact match subexpression 5
 assign a;
 Select a pattern a (_, "10 + x1 * zzzzzzzzzz / a")
-7
+
 5000
