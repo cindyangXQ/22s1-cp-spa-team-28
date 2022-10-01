@@ -71,6 +71,8 @@ public:
                               std::vector<ProcedureNode *> &procList){};
     virtual std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
+    virtual void getModifiesPInto(std::vector<std::string> &result,
+                              std::vector<ProcedureNode *> &procList){};
 };
 
 class ProcedureNode : public EntityNode {
@@ -114,6 +116,8 @@ public:
     void getAssignmentsInto(std::vector<Assignment *> &result) {};
     std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
+    void getModifiesPInto(std::vector<std::string> &result,
+                          std::vector<ProcedureNode *> &procList);
 };
 
 class PrintStatementNode : public StatementNode {
@@ -147,6 +151,8 @@ public:
     void getAssignmentsInto(std::vector<Assignment *> &result){};
     void getUsesPInto(std::vector<std::string> &result,
                       std::vector<ProcedureNode *> &procList);
+    void getModifiesPInto(std::vector<std::string> &result,
+                          std::vector<ProcedureNode *> &procList);
 };
 
 class ExpressionNode : public EntityNode {
@@ -187,6 +193,8 @@ public:
                       std::vector<ProcedureNode *> &procList);
     std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
+    void getModifiesPInto(std::vector<std::string> &result,
+                          std::vector<ProcedureNode *> &procList);
 };
 
 class WhileStatementNode : public StatementNode {
@@ -213,6 +221,8 @@ public:
                       std::vector<ProcedureNode *> &procList);
     std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
+    void getModifiesPInto(std::vector<std::string> &result,
+                          std::vector<ProcedureNode *> &procList);
 };
 
 class IfStatementNode : public StatementNode {
@@ -241,4 +251,6 @@ public:
                       std::vector<ProcedureNode *> &procList);
     std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
+    void getModifiesPInto(std::vector<std::string> &result,
+                          std::vector<ProcedureNode *> &procList);
 };

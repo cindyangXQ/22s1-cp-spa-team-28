@@ -107,3 +107,11 @@ public:
     std::vector<Relationship<int, std::string> *> extract();
     void populate();
 };
+
+class ModPExtractor : public DesignExtractor {
+public:
+    ModPExtractor(ProgramNode *program, PopulateFacade *storage)
+        : DesignExtractor(program, storage){};
+    std::vector<Relationship<std::string, std::string> *> extract();
+    void populate();
+};

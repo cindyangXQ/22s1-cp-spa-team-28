@@ -135,6 +135,11 @@ std::vector<std::string> *ReadStatementNode::getModsInto(
     return mdfd;
 }
 
+void ReadStatementNode::getModifiesPInto(
+    std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
+    result.push_back(this->getVariable());
+}
+
 // Print Statement
 PrintStatementNode::PrintStatementNode(VariableNode *VariableNode, int line) {
     this->var = VariableNode;
@@ -184,6 +189,15 @@ void CallStatementNode::getUsesPInto(std::vector<std::string> &result,
                                      std::vector<ProcedureNode *> &procList) {
     ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
     std::vector<std::string> *temp = SPUtils::usesP(procedure, procList);
+    for (size_t i = 0; i < temp->size(); i++) {
+        result.push_back(temp->at(i));
+    }
+}
+
+void CallStatementNode::getModifiesPInto(
+    std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
+    ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
+    std::vector<std::string> *temp = SPUtils::modifiesP(procedure, procList);
     for (size_t i = 0; i < temp->size(); i++) {
         result.push_back(temp->at(i));
     }
@@ -257,6 +271,11 @@ std::vector<std::string> *AssignStatementNode::getModsInto(
     std::vector<std::string> *mdfd = new std::vector<std::string>();
     mdfd->push_back(this->getVariable());
     return mdfd;
+}
+
+void AssignStatementNode::getModifiesPInto(
+    std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
+    result.push_back(this->getVariable());
 }
 
 // While Statement
@@ -367,6 +386,14 @@ std::vector<std::string> *WhileStatementNode::getModsInto(
     }
 
     return descendants;
+}
+
+void WhileStatementNode::getModifiesPInto(
+    std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
+    std::vector<StatementNode *> stmtList = this->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getModifiesPInto(result, procList);
+    }
 }
 
 // If Statement
@@ -499,6 +526,14 @@ std::vector<std::string> *IfStatementNode::getModsInto(
     }
 
     return descendants;
+}
+
+void IfStatementNode::getModifiesPInto(std::vector<std::string> &result,
+                      std::vector<ProcedureNode *> &procList) {
+    std::vector<StatementNode *> stmtList = this->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getModifiesPInto(result, procList);
+    }
 }
 
 // Expression

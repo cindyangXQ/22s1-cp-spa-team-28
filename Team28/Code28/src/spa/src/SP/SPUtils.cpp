@@ -73,12 +73,24 @@ SPUtils::parentT(StatementNode *parentNode,
     return descendants;
 }
 
-std::vector<std::string> * SPUtils::usesP(ProcedureNode *procedure,
-    std::vector<ProcedureNode *> &procList) {
+std::vector<std::string> *
+SPUtils::usesP(ProcedureNode *procedure,
+               std::vector<ProcedureNode *> &procList) {
     std::vector<std::string> result;
     std::vector<StatementNode *> stmtList = procedure->getStmtList();
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getUsesPInto(result, procList);
+    }
+    return &result;
+}
+
+std::vector<std::string> *
+SPUtils::modifiesP(ProcedureNode *procedure,
+                   std::vector<ProcedureNode *> &procList) {
+    std::vector<std::string> result;
+    std::vector<StatementNode *> stmtList = procedure->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getModifiesPInto(result, procList);
     }
     return &result;
 }
