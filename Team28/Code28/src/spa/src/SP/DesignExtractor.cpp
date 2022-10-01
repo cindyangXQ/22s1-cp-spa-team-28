@@ -3,6 +3,7 @@
 #include "SPUtils.h"
 #include <algorithm>
 #include <vector>
+#include <map>
 
 DesignExtractor::DesignExtractor(ProgramNode *program,
                                  PopulateFacade *storage) {
@@ -179,6 +180,53 @@ std::vector<Relationship<int, std::string> *> ModSExtractor::extract() {
     return result;
 }
 
+std::vector<Relationship<std::string, std::string> *>
+CallsExtractor::extract() {
+    std::vector<Relationship<std::string, std::string> *> result;
+
+    std::vector<ProcedureNode *> procList = this->program->getProcList();
+    
+
+    return result;
+}
+
+std::vector<Relationship<std::string, std::string>*> CallsExtrT::extract() {
+    std::vector<Relationship<std::string, std::string> *> result;
+    
+    std::vector<ProcedureNode *> procList = this->program->getProcList();
+    std::map<std::string, std::vector<std::string>> procCallsMap;
+
+    for (size_t i = 0; i < procList.size(); i++) {
+        procCallsMap[procList[i]->getName()] = procList[i]->getAllCalls();
+    }
+
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::string procName = procList.at(i)->getName();
+        std::vector<std::string> curr, next, visited;
+        curr.push_back(procName);
+
+        while (curr.size() != 0) {
+            next.empty();
+            for (size_t j = 0; j < curr.size(); j++) {
+                std::vector<std::string> calls = procCallsMap[curr.at(j)];
+                
+                for (size_t k = 0; k < calls.size(); k++) {
+                    if (find(begin(visited), end(visited), calls.at(k)) !=
+                        end(visited)) {
+                        continue;
+                    }
+                    visited.push_back(calls.at(k));
+                    next.push_back(calls.at(k));
+                    result.push_back(new Relationship<std::string, std::string>(
+                        RelationshipReference::CALLS_T, procName, calls.at(k)));
+                }
+            }
+            curr = next;
+        }
+    }
+    
+}
+
 void DesignExtractor::extractAll() {
     ProcedureExtractor(this->program, this->storage).populate();
     StatementExtractor(this->program, this->storage).populate();
@@ -190,6 +238,8 @@ void DesignExtractor::extractAll() {
     ParentExtrT(this->program, this->storage).populate();
     UsesSExtractor(this->program, this->storage).populate();
     ModSExtractor(this->program, this->storage).populate();
+    CallsExtractor(this->program, this->storage).populate();
+    CallsExtrT(this->program, this->storage).populate();
 }
 
 void ProcedureExtractor::populate() {
@@ -243,4 +293,16 @@ void UsesSExtractor::populate() {
 void ModSExtractor::populate() {
     std::vector<Relationship<int, std::string> *> ModifiesS = this->extract();
     this->storage->storeModifiesS(&ModifiesS);
+}
+
+void CallsExtractor::populate() { 
+    std::vector<Relationship<std::string, std::string> *> Calls =
+        this->extract();
+    this->storage->storeCalls(&Calls);
+}
+
+void CallsExtrT::populate() {
+    std::vector<Relationship<std::string, std::string> *> CallsT =
+        this->extract();
+    this->storage->storeCallsT(&CallsT);
 }
