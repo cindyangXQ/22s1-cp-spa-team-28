@@ -185,7 +185,15 @@ CallsExtractor::extract() {
     std::vector<Relationship<std::string, std::string> *> result;
 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
-    
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::string name = procList.at(i)->getName();
+        std::vector<std::string> calls = procList.at(i)->getAllCalls();
+
+        for (size_t j = 0; j < calls.size(); j++) {
+            result.push_back(new Relationship<std::string, std::string>(
+                RelationshipReference::CALLS, name, calls.at(j)));
+        }
+    }
 
     return result;
 }
@@ -202,11 +210,11 @@ std::vector<Relationship<std::string, std::string>*> CallsExtrT::extract() {
 
     for (size_t i = 0; i < procList.size(); i++) {
         std::string procName = procList.at(i)->getName();
-        std::vector<std::string> curr, next, visited;
+        std::vector<std::string> curr, visited;
         curr.push_back(procName);
 
         while (curr.size() != 0) {
-            next.empty();
+            std::vector<std::string> next;
             for (size_t j = 0; j < curr.size(); j++) {
                 std::vector<std::string> calls = procCallsMap[curr.at(j)];
                 
@@ -224,7 +232,8 @@ std::vector<Relationship<std::string, std::string>*> CallsExtrT::extract() {
             curr = next;
         }
     }
-    
+
+    return result;
 }
 
 void DesignExtractor::extractAll() {

@@ -377,6 +377,112 @@ TEST_CASE("extract modifiesS small program, ASSIGN and IF and WHILE and READ") {
     }
 }
 
+TEST_CASE("Test extract Calls") { 
+    std::string sourceProgram = 
+        "procedure a { call b; call c; call f; call g;}"
+        "procedure b { call e; call f; call c;}"
+        "procedure c { call g;}"
+        "procedure d { call a;}"
+        "procedure e { call c;}"
+        "procedure f { read x;}"
+        "procedure g { print y;}";
+
+   std::vector<Relationship<std::string, std::string> *> expected;
+   expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS, "a", "b"));
+   expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS, "a", "c"));
+   expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS, "a", "f"));
+   expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS, "a", "g"));
+   expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS, "b", "e"));
+   expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS, "b", "f"));
+   expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS, "b", "c"));
+   expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS, "c", "g"));
+   expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS, "d", "a"));
+   expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS, "e", "c"));
+
+   std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+   ProgramNode *program = ProgramParser(0, tokens).parse();
+   CallsExtractor extr(program, nullptr);
+   std::vector<Relationship<std::string, std::string> *> extracted = extr.extract();
+   REQUIRE(expected.size() == extracted.size());
+   for (int i = 0; i < expected.size(); i++) {
+       REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+       REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+       REQUIRE(expected[i]->getRelationshipReference() ==
+               extracted[i]->getRelationshipReference());
+   }
+}
+
+TEST_CASE("Test extract CallsT") {
+    std::string sourceProgram = "procedure a { call b; call c; call f; call g;}"
+                                "procedure b { call e; call f; call c;}"
+                                "procedure c { call g;}"
+                                "procedure d { call a;}"
+                                "procedure e { call c;}"
+                                "procedure f { read x;}"
+                                "procedure g { print y;}";
+
+    std::vector<Relationship<std::string, std::string> *> expected;
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "a", "b"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "a", "c"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "a", "f"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "a", "g"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "a", "e"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "b", "e"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "b", "f"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "b", "c"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "b", "g"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "c", "g"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "d", "a"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "d", "b"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "d", "c"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "d", "f"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "d", "g"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "d", "e"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "e", "c"));
+    expected.push_back(new Relationship<std::string, std::string>(
+        RelationshipReference::CALLS_T, "e", "g"));
+
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    ProgramNode *program = ProgramParser(0, tokens).parse();
+    CallsExtrT extr(program, nullptr);
+    std::vector<Relationship<std::string, std::string> *> extracted =
+        extr.extract();
+    REQUIRE(expected.size() == extracted.size());
+    for (int i = 0; i < expected.size(); i++) {
+        REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+        REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+        REQUIRE(expected[i]->getRelationshipReference() ==
+                extracted[i]->getRelationshipReference());
+    }
+}
+
 TEST_CASE("Extract program with if-else statements") {
     // Follow relationship
     std::vector<Relationship<int, int> *> expected;
