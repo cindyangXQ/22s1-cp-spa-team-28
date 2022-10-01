@@ -141,7 +141,7 @@ TEST_CASE("getStmtAndVar returns correct results") {
     std::vector<std::pair<Value, Value>> expected;
     std::vector<std::pair<Value, Value>> output;
 
-    // getStmt("_") returns {"10", "2", "3"}
+    // getStmtAndVar("_") returns {("10", "z"), ("2", "x"), ("2", "y"), ("3", "x")}
     expected = {std::make_pair(stmt10, varZ),
                 std::make_pair(stmt2, varX),
                 std::make_pair(stmt2, varY),

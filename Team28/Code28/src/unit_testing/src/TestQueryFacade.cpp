@@ -1010,8 +1010,8 @@ TEST_CASE("ProcToVar: SolveBoth queries for Calls('proc1', 'proc2') return "
     std::vector<std::pair<Value, Value>> expectedResult;
     std::vector<std::pair<Value, Value>> output;
 
-    // SolveBoth(Calls, Proc1, Proc2) for Calls('proc1', 'proc2') returns {('proc1',
-    // 'proc2')}
+    // SolveBoth(Calls, Proc1, Proc2) for Calls('proc1', 'proc2') returns
+    // {('proc1', 'proc2')}
     leftEntityName = EntityName::PROCEDURE;
     rightEntityName = EntityName::PROCEDURE;
     expectedResult = {std::make_pair(value1, value2)};
@@ -1150,6 +1150,154 @@ TEST_CASE("getAssignAndVar returns correct results") {
     // getAssignAndVar('(x1)', true) returns {}
     expectedResult = {};
     output = facade.getAssignAndVar("(x1)", true);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("GetWhile returns correct results") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    WhileControlVarTable *whiles =
+        (WhileControlVarTable *)storage.getTable(TableName::W_CONTROL);
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    whiles->store(&test1);
+    whiles->store(&test2);
+    whiles->store(&test3);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // getWhile("x") returns {"1"}
+    output = facade.getWhile("x");
+    expectedResult = {Value(ValueType::STMT_NUM, "1")};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getWhile("_") returns {"1", "2", "3"}
+    output = facade.getWhile("_");
+    expectedResult = {Value(ValueType::STMT_NUM, "1"),
+                      Value(ValueType::STMT_NUM, "2"),
+                      Value(ValueType::STMT_NUM, "3")};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getWhile("invalid") returns {}
+    output = facade.getWhile("invalid");
+    expectedResult = {};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("GetWhileAndVar returns correct results") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    WhileControlVarTable *whiles =
+        (WhileControlVarTable *)storage.getTable(TableName::W_CONTROL);
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    whiles->store(&test1);
+    whiles->store(&test2);
+    whiles->store(&test3);
+
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    Value varX = Value(ValueType::VAR_NAME, "x");
+    Value varY = Value(ValueType::VAR_NAME, "y");
+    Value varZ = Value(ValueType::VAR_NAME, "z");
+    Value stmt1 = Value(ValueType::STMT_NUM, "1");
+    Value stmt2 = Value(ValueType::STMT_NUM, "2");
+    Value stmt3 = Value(ValueType::STMT_NUM, "3");
+
+    // getWhileAndVar returns {("1","x"), ("2","y"), ("3","z"),}
+    output = facade.getWhileAndVar();
+    expectedResult = {std::make_pair(stmt1, varX), std::make_pair(stmt2, varY),
+                      std::make_pair(stmt3, varZ)};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("GetIf returns correct results") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    IfControlVarTable *ifs =
+        (IfControlVarTable *)storage.getTable(TableName::I_CONTROL);
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    ifs->store(&test1);
+    ifs->store(&test2);
+    ifs->store(&test3);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // getIf("x") returns {"1"}
+    output = facade.getIf("x");
+    expectedResult = {Value(ValueType::STMT_NUM, "1")};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getIf("_") returns {"1", "2", "3"}
+    output = facade.getIf("_");
+    expectedResult = {Value(ValueType::STMT_NUM, "1"),
+                      Value(ValueType::STMT_NUM, "2"),
+                      Value(ValueType::STMT_NUM, "3")};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getIf("invalid") returns {}
+    output = facade.getIf("invalid");
+    expectedResult = {};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("GetIfAndVar returns correct results") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    IfControlVarTable *ifs =
+        (IfControlVarTable *)storage.getTable(TableName::I_CONTROL);
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    ifs->store(&test1);
+    ifs->store(&test2);
+    ifs->store(&test3);
+
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    Value varX = Value(ValueType::VAR_NAME, "x");
+    Value varY = Value(ValueType::VAR_NAME, "y");
+    Value varZ = Value(ValueType::VAR_NAME, "z");
+    Value stmt1 = Value(ValueType::STMT_NUM, "1");
+    Value stmt2 = Value(ValueType::STMT_NUM, "2");
+    Value stmt3 = Value(ValueType::STMT_NUM, "3");
+
+    // getIfAndVar returns {("1","x"), ("2","y"), ("3","z"),}
+    output = facade.getIfAndVar();
+    expectedResult = {std::make_pair(stmt1, varX), std::make_pair(stmt2, varY),
+                      std::make_pair(stmt3, varZ)};
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
