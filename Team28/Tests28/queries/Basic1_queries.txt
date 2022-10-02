@@ -536,36 +536,36 @@ Select a such that Modifies(a, "i") pattern a(_, _" a"_)
 106 - Undeclared syn
 stmt s; assign a1;
 Select a such that Uses(a, "zzzzzzzzzz") pattern a("zzzzzzzzzz", _)
-SyntaxError
+SemanticError
 5000
 107 - Select typo
-stmt s; assign a1;
+stmt s; assign a;
 Sect a such that Uses(a, "zzzzzzzzzz") pattern a("zzzzzzzzzz", _)
 SyntaxError
 5000
 108 - SuchThat typo
-stmt s; assign a1;
+stmt s; assign a;
 Select a suh that Uses(a, "zzzzzzzzzz") pattern a("zzzzzzzzzz", _)
 SyntaxError
 5000
 109 - Bracketing wrong
-stmt s; assign a1;
+stmt s; assign a;
 Select a such that Uses(a, "zzzzzzzzzz")) pattern a("zzzzzzzzzz", _)
 SyntaxError
 5000
 110 - Select not capitalised
-stmt s; assign a1;
+stmt s; assign a;
 select a such that Uses(a, "zzzzzzzzzz") pattern a("zzzzzzzzzz", _)
 SyntaxError
 5000
 111 - Uses not capitalised
-stmt s; assign a1;
+stmt s; assign a;
 Select a such that uses(a, "zzzzzzzzzz") pattern a("zzzzzzzzzz", _)
 SyntaxError
 5000
 112 - Pattern caps 
 stmt s; assign a;
-Select a such that Modifies (_, _) Pattern a("zzzzzzzzzz",_)
+Select a such that Modifies (1, _) Pattern a("zzzzzzzzzz",_)
 SyntaxError
 5000
 113 - SuchThat missing
@@ -573,10 +573,10 @@ stmt s; assign a;
 Select a Modifies (_, _) pattern a("zzzzzzzzzz",_)
 SyntaxError
 5000
-114 - Select Syn missing
+114 - Select Syn missing -> undeclared syn
 stmt s; assign a;
 Select such that Modifies (_, _) pattern a("zzzzzzzzzz",_)
-SyntaxError
+SemanticError
 5000
 115 - Pattern syn missing
 stmt s; assign a;
@@ -586,7 +586,7 @@ SyntaxError
 116 - Modifies wrong wildcard
 stmt s; assign a;
 Select a such that Modifies (_, _) pattern a("zzzzzzzzzz",_)
-SyntaxError
+SemanticError
 5000
 117 - Pattern exact match variable
 assign a;
