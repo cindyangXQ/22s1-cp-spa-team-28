@@ -193,3 +193,9 @@ TEST_CASE("cyclic calling is not allowed") {
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "cyclic calling is not allowed");
 }
+
+TEST_CASE("Invalid source program, bracket not in pair") {
+    std::string sourceProgram = "procedure a { b = x+8);}";
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "assignment statement wrong syntax");
+}
