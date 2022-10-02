@@ -234,11 +234,9 @@ TEST_CASE("Parser can parse pattern clause") {
     std::string missing_bracket_left2 = "pattern a(v, \"(x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_bracket_left2, syns));
     
-    /*
     std::string missing_bracket_right = "pattern a(v, _\"x)\"_)";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_bracket_right, syns));
 
     std::string missing_bracket_right2 = "pattern a(v, \"x)\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_bracket_right2, syns));
-    */
 }
