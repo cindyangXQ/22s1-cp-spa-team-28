@@ -110,27 +110,31 @@ std::vector<PatternClause> QueryParser::parsePatternClause(std::string *clause,
     while (std::regex_search(*clause, std::regex("\\b(pattern)\\b"))) {
         std::smatch matches;
         std::regex_match(*clause, matches, patternClauseRegex);
-        std::string patternClause = matches[1];
+        std::string patternClause = matches[1].str();
 
         std::regex_match(patternClause, matches, patternRegex);
-        if (matches.size() != 5) {
+        if (matches.size() != 3) {
             throw SyntaxError("Invalid pattern clause syntax");
         }
 
         Synonym syn = getSynonym(matches[1].str(), syns);
-        if (syn.entity != EntityName::ASSIGN) {
-            throw SemanticError("Pattern only accepts assign synonym");
+        if (!patternArgRegexMap.count(syn.entity)) {
+            throw SemanticError("Pattern only accepts assign, while and if synonym");
         }
-        Reference entRef = getReference(matches[2].str(), syns);
-        if (syn.entity == EntityName::ASSIGN) {
-            if (entRef.isSynonym && entRef.syn.entity != EntityName::VARIABLE) {
-                throw SemanticError("Pattern-assign first argument must be an entity reference or wildcard");
-            }
-            else if (entRef.type == ReferenceType::STMT_REF) {
-                throw SemanticError("Pattern-assign first argument must be an entity reference or wildcard");
-            }
+        std::string arguments = matches[2].str();
+        std::regex_match(arguments, matches, patternArgRegexMap.find(syn.entity)->second);
+        if (matches.size() != patternArgNumMap.find(syn.entity)->second) {
+            throw SyntaxError("Invalid pattern clause syntax");
         }
-        Expression expr = matches[4].str();
+
+        Reference entRef = getReference(matches[1].str(), syns);
+        if (entRef.isSynonym && entRef.syn.entity != EntityName::VARIABLE) {
+            throw SemanticError("Pattern first argument must be an entity reference or wildcard");
+        }
+        else if (entRef.type == ReferenceType::STMT_REF) {
+            throw SemanticError("Pattern first argument must be an entity reference or wildcard");
+        }
+        Expression expr = matches[2].str();
         bool isExact = false;
 
         expr = Utils::removeTrailingSpaces(expr);
