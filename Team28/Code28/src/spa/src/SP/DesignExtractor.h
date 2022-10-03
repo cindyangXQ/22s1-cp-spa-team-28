@@ -92,10 +92,42 @@ public:
     void populate();
 };
 
+class UsesPExtractor : public DesignExtractor {
+public:
+    UsesPExtractor(ProgramNode *program, PopulateFacade *storage)
+        : DesignExtractor(program, storage){};
+    std::vector<Relationship<std::string, std::string> *> extract();
+    void populate();
+};
+
 class ModSExtractor : public DesignExtractor {
 public:
     ModSExtractor(ProgramNode *program, PopulateFacade *storage)
         : DesignExtractor(program, storage){};
     std::vector<Relationship<int, std::string> *> extract();
+    void populate();
+};
+
+class ModPExtractor : public DesignExtractor {
+public:
+    ModPExtractor(ProgramNode *program, PopulateFacade *storage)
+        : DesignExtractor(program, storage){};
+    std::vector<Relationship<std::string, std::string> *> extract();
+    void populate();
+};
+
+class CallsExtractor : public DesignExtractor {
+public:
+    CallsExtractor(ProgramNode *program, PopulateFacade *storage)
+        : DesignExtractor(program, storage){};
+    std::vector<Relationship<std::string, std::string> *> extract();
+    void populate();
+};
+
+class CallsExtrT : public DesignExtractor {
+public:
+    CallsExtrT(ProgramNode *program, PopulateFacade *storage)
+        : DesignExtractor(program, storage){};
+    std::vector<Relationship<std::string, std::string> *> extract();
     void populate();
 };
