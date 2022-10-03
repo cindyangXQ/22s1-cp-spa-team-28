@@ -1,0 +1,20 @@
+1 - Retrieve correct left Calls
+procedure p, q;
+Select p such that Calls (p, _)
+First, Second
+5000
+2 - Retrieve correct right Calls
+procedure p, q;
+Select p such that Calls (_, p)
+Second, Third
+5000
+3 - Solve Calls + Modifies
+procedure p;
+Select p such that Calls (p, "Third") and Modifies (p, "i")
+Second
+5000
+4 - Retrieve Calls* correctly
+procedure p;
+Select p such that Calls* (p, "Third")
+First, Second
+5000
