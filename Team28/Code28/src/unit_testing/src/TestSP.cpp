@@ -26,3 +26,10 @@ TEST_CASE("test expr converter") {
     std::string expected = "((((a)+(b))+((c)/(d)))+((e)*(f)))";
     REQUIRE(SP::convertExpression("a+b+c/d+e*f") == expected);
 }
+
+TEST_CASE("expression with wrong syntax in expr converter") {
+    REQUIRE_THROWS(SP::convertExpression(")"), "expression syntax error");
+    REQUIRE_THROWS(SP::convertExpression("x)"), "expression syntax error");
+    REQUIRE_THROWS(SP::convertExpression("(x+1)*8+(y*9)-"),
+                   "expression syntax error");
+}

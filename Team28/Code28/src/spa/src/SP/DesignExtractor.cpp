@@ -3,6 +3,7 @@
 #include "SPUtils.h"
 #include <algorithm>
 #include <vector>
+#include <map>
 
 DesignExtractor::DesignExtractor(ProgramNode *program,
                                  PopulateFacade *storage) {
@@ -211,8 +212,64 @@ std::vector<Relationship<std::string, std::string> *> ModPExtractor::extract() {
     return result;
 }
 
+std::vector<Relationship<std::string, std::string> *>
+CallsExtractor::extract() {
+    std::vector<Relationship<std::string, std::string> *> result;
+
+    std::vector<ProcedureNode *> procList = this->program->getProcList();
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::string name = procList.at(i)->getName();
+        std::vector<std::string> calls = procList.at(i)->getAllCalls();
+
+        for (size_t j = 0; j < calls.size(); j++) {
+            result.push_back(new Relationship<std::string, std::string>(
+                RelationshipReference::CALLS, name, calls.at(j)));
+        }
+    }
+
+    return result;
+}
+
+std::vector<Relationship<std::string, std::string>*> CallsExtrT::extract() {
+    std::vector<Relationship<std::string, std::string> *> result;
+    
+    std::vector<ProcedureNode *> procList = this->program->getProcList();
+    std::map<std::string, std::vector<std::string>> procCallsMap;
+
+    for (size_t i = 0; i < procList.size(); i++) {
+        procCallsMap[procList[i]->getName()] = procList[i]->getAllCalls();
+    }
+
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::string procName = procList.at(i)->getName();
+        std::vector<std::string> curr, visited;
+        curr.push_back(procName);
+
+        while (curr.size() != 0) {
+            std::vector<std::string> next;
+            for (size_t j = 0; j < curr.size(); j++) {
+                std::vector<std::string> calls = procCallsMap[curr.at(j)];
+                
+                for (size_t k = 0; k < calls.size(); k++) {
+                    if (find(begin(visited), end(visited), calls.at(k)) !=
+                        end(visited)) {
+                        continue;
+                    }
+                    visited.push_back(calls.at(k));
+                    next.push_back(calls.at(k));
+                    result.push_back(new Relationship<std::string, std::string>(
+                        RelationshipReference::CALLS_T, procName, calls.at(k)));
+                }
+            }
+            curr = next;
+        }
+    }
+
+    return result;
+}
+
 void DesignExtractor::extractAll() {
-    /*ProcedureExtractor(this->program, this->storage).populate();
+    ProcedureExtractor(this->program, this->storage).populate();
     StatementExtractor(this->program, this->storage).populate();
     VariableExtractor(this->program, this->storage).populate();
     ConstantExtractor(this->program, this->storage).populate();
@@ -220,10 +277,12 @@ void DesignExtractor::extractAll() {
     FollowsExtrT(this->program, this->storage).populate();
     ParentExtractor(this->program, this->storage).populate();
     ParentExtrT(this->program, this->storage).populate();
-    UsesSExtractor(this->program, this->storage).populate();*/
+    UsesSExtractor(this->program, this->storage).populate();
     UsesPExtractor(this->program, this->storage).populate();
-    //ModSExtractor(this->program, this->storage).populate();
+    ModSExtractor(this->program, this->storage).populate();
     ModPExtractor(this->program, this->storage).populate();
+    CallsExtractor(this->program, this->storage).populate();
+    CallsExtrT(this->program, this->storage).populate();
 }
 
 void ProcedureExtractor::populate() {
@@ -287,4 +346,16 @@ void ModSExtractor::populate() {
 void ModPExtractor::populate() {
     std::vector<Relationship<std::string, std::string> *> ModifiesP = this->extract();
     this->storage->storeModifiesP(&ModifiesP);
+}
+
+void CallsExtractor::populate() { 
+    std::vector<Relationship<std::string, std::string> *> Calls =
+        this->extract();
+    this->storage->storeCalls(&Calls);
+}
+
+void CallsExtrT::populate() {
+    std::vector<Relationship<std::string, std::string> *> CallsT =
+        this->extract();
+    this->storage->storeCallsT(&CallsT);
 }
