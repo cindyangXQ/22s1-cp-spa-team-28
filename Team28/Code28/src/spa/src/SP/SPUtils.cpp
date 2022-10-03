@@ -73,6 +73,28 @@ SPUtils::parentT(StatementNode *parentNode,
     return descendants;
 }
 
+std::vector<std::string>
+SPUtils::usesP(ProcedureNode *procedure,
+               std::vector<ProcedureNode *> &procList) {
+    std::vector<std::string> result;
+    std::vector<StatementNode *> stmtList = procedure->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getUsesPInto(result, procList);
+    }
+    return result;
+}
+
+std::vector<std::string>
+SPUtils::modifiesP(ProcedureNode *procedure,
+                   std::vector<ProcedureNode *> &procList) {
+    std::vector<std::string> result;
+    std::vector<StatementNode *> stmtList = procedure->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getModifiesPInto(result, procList);
+    }
+    return result;
+}
+
 bool SPUtils::compareStmtList(const std::vector<StatementNode *> &list1,
                                    const std::vector<StatementNode *> &list2) {
     if (list1.size() != list2.size()) {
@@ -97,4 +119,15 @@ bool SPUtils::compareProcList(std::vector<ProcedureNode *> &list1,
         }
     }
     return true;
+}
+
+
+ProcedureNode *SPUtils::findProc(std::string procName,
+                                 std::vector<ProcedureNode *> &procList) {
+    for (int i = 0; i < procList.size(); i++) {
+        if (procList[i]->getName() == procName) {
+            return procList[i];
+        }
+    }
+    throw "procedure does not exist";
 }
