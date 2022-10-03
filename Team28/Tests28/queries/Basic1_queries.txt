@@ -603,27 +603,52 @@ assign a;
 Select a pattern a (_, "10 + x1 * zzzzzzzzzz / a + 5 * a - 3 * x1")
 7
 5000
-120 - Pattern exact match subexpression 1
+120 - Pattern partial match subexpression 1
+assign a;
+Select a pattern a (_, _"3 * x1"_)
+7
+5000
+121 - Pattern partial match subexpression 2
+assign a;
+Select a pattern a (_, _"x1 * zzzzzzzzzz / a"_)
+7
+5000
+122 - Pattern partial match subexpression 3
+assign a;
+Select a pattern a (_, _"x1 * zzzzzzzzzz"_)
+7
+5000
+123 - Pattern partial match subexpression 4
+assign a;
+Select a pattern a (_, _"x1 * zzzzzzzzzz / a + 5 * a - 3 * x1"_)
+7
+5000
+124 - Pattern partial match subexpression 5
+assign a;
+Select a pattern a (_, _"10 + x1 * zzzzzzzzzz / a"_)
+
+5000
+125 - Pattern exact match subexpression 1
 assign a;
 Select a pattern a (_, "3 * x1")
-7
+
 5000
-121 - Pattern exact match subexpression 2
+126 - Pattern exact match subexpression 2
 assign a;
 Select a pattern a (_, "x1 * zzzzzzzzzz / a")
-7
+
 5000
-122 - Pattern exact match subexpression 3
+127 - Pattern exact match subexpression 3
 assign a;
 Select a pattern a (_, "x1 * zzzzzzzzzz")
-7
+
 5000
-123 - Pattern exact match subexpression 4
+128 - Pattern exact match subexpression 4
 assign a;
 Select a pattern a (_, "x1 * zzzzzzzzzz / a + 5 * a - 3 * x1")
-7
+
 5000
-124 - Pattern exact match subexpression 5
+129 - Pattern exact match subexpression 5
 assign a;
 Select a pattern a (_, "10 + x1 * zzzzzzzzzz / a")
 
