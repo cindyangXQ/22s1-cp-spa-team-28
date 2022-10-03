@@ -287,7 +287,7 @@ const std::regex selectClauseRegex("(\\s*Select\\s+" // 'Select'
 // For arguments extraction
 const std::regex suchThatRegex(
     "\\s*such\\s+that\\s+"
-    "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|)\\s*" // relRef
+    "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Calls|Calls\\*|Next|Next\\*|Affect|Affect\\*)\\s*" // relRef
     "\\(\\s*"
     "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef | stmtRef
     "\\s*,\\s*"
@@ -296,7 +296,7 @@ const std::regex suchThatRegex(
 // For clause extraction
 const std::regex suchThatClauseRegex(
     ".*?(such\\s+that\\s+"
-    "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|)\\s*" // relRef
+    "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Calls|Calls\\*|Next|Next\\*|Affect|Affect\\*)\\s*" // relRef
     "\\(\\s*"
     "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef | stmtRef
     "\\s*,\\s*"

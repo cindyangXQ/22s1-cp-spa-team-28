@@ -588,3 +588,74 @@ TEST_CASE("QPS can process queries with advanced pattern clause") {
     qps.evaluate(input, results);
     REQUIRE(results == correct_output);
 }
+
+TEST_CASE("QPS can process queries with procedure") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    ProceduresTable *procedures =
+        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+    VariablesTable *variables =
+        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+    ModifiesPTable *modifiesP =
+        (ModifiesPTable *)storage.getTable(TableName::MODIFIES_P);
+    UsesPTable *usesP =
+        (UsesPTable *)storage.getTable(TableName::USES_P);
+    CallsTable *call =
+        (CallsTable *)storage.getTable(TableName::CALLS);
+    CallsTTable *callT =
+        (CallsTTable *)storage.getTable(TableName::CALLS_T);
+
+    Procedure proc1 = Procedure("foo");
+    Procedure proc2 = Procedure("bar");
+    Procedure proc3 = Procedure("foobar");
+    Variable var1 = Variable("a");
+    Variable var2 = Variable("b");
+    Relationship<std::string, std::string> rs1 = Relationship(
+        RelationshipReference::MODIFIES, std::string("foo"), std::string("a"));
+    Relationship<std::string, std::string> rs2 = Relationship(
+        RelationshipReference::USES, std::string("bar"), std::string("b"));
+    Relationship<std::string, std::string> rs3 =
+        Relationship(RelationshipReference::CALLS, std::string("foo"),
+                     std::string("foobar"));
+    Relationship<std::string, std::string> rs4 =
+        Relationship(RelationshipReference::CALLS_T, std::string("bar"),
+                     std::string("foobar"));
+    procedures->store(&proc1);
+    procedures->store(&proc2);
+    procedures->store(&proc3);
+    variables->store(&var1);
+    variables->store(&var2);
+    modifiesP->store(&rs1);
+    usesP->store(&rs2);
+    call->store(&rs3);
+    callT->store(&rs4);
+
+    QPS qps = QPS(&facade);
+    std::string input;
+    std::list<std::string> results;
+    std::list<std::string> correct_output;
+
+    input = "procedure proc1, proc2; variable v; Select proc1 such that Calls*(proc1, proc2)";
+    correct_output = {"bar"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "procedure proc1, proc2; variable v; Select proc1 such that Calls(_, proc1)";
+    correct_output = {"foobar"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "procedure proc1, proc2; variable v; Select v such that Uses(\"bar\", v)";
+    correct_output = {"b"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "procedure proc1, proc2; variable v; Select proc1 such that Modifies(proc1, _)";
+    correct_output = {"foo"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+}
