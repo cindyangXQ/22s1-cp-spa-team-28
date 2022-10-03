@@ -621,12 +621,12 @@ Select a pattern a (_, _"x1 * zzzzzzzzzz"_)
 123 - Pattern partial match subexpression 4
 assign a;
 Select a pattern a (_, _"x1 * zzzzzzzzzz / a + 5 * a - 3 * x1"_)
-7
+none
 5000
 124 - Pattern partial match subexpression 5
 assign a;
 Select a pattern a (_, _"10 + x1 * zzzzzzzzzz / a"_)
-none
+7
 5000
 125 - Pattern exact match subexpression 1
 assign a;
