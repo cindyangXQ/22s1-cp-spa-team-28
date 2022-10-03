@@ -113,28 +113,23 @@ std::vector<PatternClause> QueryParser::parsePatternClause(std::string *clause,
         std::string patternClause = matches[1].str();
 
         std::regex_match(patternClause, matches, patternRegex);
-        if (matches.size() != 3) {
+        if (matches.size() != 6) {
             throw SyntaxError("Invalid pattern clause syntax");
         }
 
         Synonym syn = getSynonym(matches[1].str(), syns);
-        if (!patternArgRegexMap.count(syn.entity)) {
+        if (!patternEntityMap.count(syn.entity)) {
             throw SemanticError("Pattern only accepts assign, while and if synonym");
         }
-        std::string arguments = matches[2].str();
-        std::regex_match(arguments, matches, patternArgRegexMap.find(syn.entity)->second);
-        if (matches.size() != patternArgNumMap.find(syn.entity)->second) {
-            throw SyntaxError("Invalid pattern clause syntax");
-        }
 
-        Reference entRef = getReference(matches[1].str(), syns);
+        Reference entRef = getReference(matches[2].str(), syns);
         if (entRef.isSynonym && entRef.syn.entity != EntityName::VARIABLE) {
             throw SemanticError("Pattern first argument must be an entity reference or wildcard");
         }
         else if (entRef.type == ReferenceType::STMT_REF) {
             throw SemanticError("Pattern first argument must be an entity reference or wildcard");
         }
-        Expression expr = matches[2].str();
+        Expression expr = matches[4].str();
         bool isExact = false;
 
         expr = Utils::removeTrailingSpaces(expr);

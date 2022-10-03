@@ -317,48 +317,23 @@ const std::regex patternRegex(
     "\\s*pattern\\s+"                                             // pattern
     "([a-zA-Z][a-zA-Z0-9]*)\\s*"                                  // syn-assign or syn-while or syn-if
     "\\(\\s*"                                                     // '('
-    "(.*?)"                                                       // patternArg
-    "\\s*\\)\\s*");                                               // ')'
+    "(([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"))" // entRef
+    "\\s*,\\s*"
+    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)" // expression-spec
+    "(\\s*,\\s*_)*"
+    "\\s*\\)\\s*"
+);
 
 // For clause extraction
 const std::regex patternClauseRegex(
-    ".*?(pattern\\s+"                                             // pattern
+    ".*?(pattern\\s+"                                            // pattern
     "([a-zA-Z][a-zA-Z0-9]*)\\s*"                                  // syn-assign or syn-while or syn-if
     "\\(\\s*"                                                     // '('
-    "(.*?)"                                                       // patternArg
-    "\\s*\\)).*?");                                               // ')'
-
-const std::regex assignPatternArgRegex(
-    "^([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")"  // entRef
-    "\\s*,\\s*"  // ','
+    "(([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"))" // entRef
+    "\\s*,\\s*"
     "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)" // expression-spec
-    "\\s*"
+    "(\\s*,\\s*_)*"
+    "\\s*\\)).*?"
 );
 
-const std::regex whilePatternArgRegex(
-    "^([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")"  // entRef
-    "\\s*,\\s*"  // ','
-    "(_)"  // _
-    "\\s*$"
-);
-
-const std::regex ifPatternArgRegex(
-    "^([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")"  // entRef
-    "\\s*,\\s*"  // ','
-    "(_)"  // _
-    "\\s*,\\s*"  // ','
-    "(_)"  // _
-    "\\s*$"
-);
-
-const std::unordered_map<EntityName, std::regex> patternArgRegexMap = {
-    {EntityName::ASSIGN, assignPatternArgRegex},
-    {EntityName::IF, ifPatternArgRegex},
-    {EntityName::WHILE, whilePatternArgRegex}
-};
-
-const std::unordered_map<EntityName, int> patternArgNumMap = {
-    {EntityName::ASSIGN, 3},
-    {EntityName::IF, 4},
-    {EntityName::WHILE, 3}
-};
+const std::unordered_set<EntityName> patternEntityMap = {EntityName::ASSIGN, EntityName::IF, EntityName::WHILE};
