@@ -1,0 +1,655 @@
+1 - Select all variables
+variable     v;
+Select v
+a, x1, zzzzzzzzzz, i
+5000
+2 - Select all constants
+constant  c;
+Select c
+9, 10, 5, 3, 4, 1, 6
+5000
+3 - Select all assign statements
+assign     a;
+Select a
+2, 3, 5, 6, 7, 12
+5000
+4 - Select all whiles
+while w;
+Select w
+4, 11
+5000
+5 - Select all ifs
+if ifs;
+Select ifs
+8, 14
+5000
+6 - Select all procedures
+procedure p;
+Select p
+TE1111STTtTttttdvdcdedgvd
+5000
+7 - Select all statements
+stmt s;
+Select s
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+8 - Select all statements following 5
+stmt s;
+Select s such that Follows ( 5      , s)
+6
+5000
+9 - Select all statements following 4
+stmt s;
+Select s such that Follows ( 4      ,   s)
+7
+5000
+10 - Select all statements following 8
+stmt s;
+Select s such that Follows ( 8  ,   s)
+14
+5000
+11 - Select all statements following 16
+stmt s;
+Select s such that Follows ( 16      ,   s)
+none
+5000
+12 - Select all statements following 6
+stmt s;
+Select s such that Follows  ( 6      ,   s)
+none
+5000
+13 - Select all statements that follow before 3
+stmt s;
+Select s such that Follows ( s      , 3)
+2
+5000
+14 - Select all statements that follow before 6
+stmt s;
+Select s such that Follows ( s              ,   6)
+5
+5000
+15 - Select all statements that follow before 16
+stmt s;
+Select s such that Follows ( s                      ,   16)
+none
+5000
+16 - Select all statements that follow before 9
+stmt s;
+Select s such that Follows ( s      ,   9)
+none
+5000
+17 - Select all statements that follow before 5
+stmt s;
+Select s such that Follows  ( s      ,   5)
+none
+5000
+18 - Select statement Follows(5,6)
+stmt s;
+Select s such that Follows (5,6)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+19 - Select statement Follows(7, If)
+stmt s; if ifs;
+Select s such that Follows (7,ifs)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+20 - Select statement Follows(6,5)
+stmt s;
+Select s such that Follows (6,5)
+none
+5000
+21 - Select If Follows (3, w)
+if ifs; while w;
+Select ifs such that Follows (3, w)
+8, 14
+5000
+22 - Select If Follows (7, w)
+if ifs; while w;
+Select ifs such that Follows (7, w)
+none
+5000
+23 - Select If Follows (_, _)
+if ifs;
+Select ifs such that Follows (_, _)
+8, 14
+5000
+24 - Select If such that Follows (_, While)
+if ifs; while w;
+Select ifs such that Follows (_, w)
+8, 14
+5000
+25 - Follows with one wildcard
+if ifs;
+Select ifs such that Follows (_, 5)
+none
+5000
+26 - Follows with one wildcard
+stmt s;
+Select s such that Follows (_, s)
+2, 3, 4, 6, 7, 8, 10, 13, 14
+5000
+27 - Follows with one wildcard
+if ifs; while w;
+Select ifs such that Follows (w, _)
+8, 14
+5000
+28 - Follows with one wildcard
+if ifs;
+Select ifs such that Follows (6, _)
+none
+5000
+29 - Follows with one wildcard
+assign a;
+Select a such that Follows (a, _)
+2, 3, 5, 7, 12
+5000
+30 - Stmts that Follows*(1,s)
+stmt s;
+Select s such that Follows* ( 1      , s)
+2, 3, 4, 7, 8, 14
+5000
+31 - Stmts that Follows*(5,s)
+stmt s;
+Select s such that Follows* ( 5      ,   s)
+6
+5000
+32 - Stmts that Follows*(9,s)
+stmt s;
+Select s such that Follows* ( 9      ,   s)
+10
+5000
+33 - Stmts that Follows*(s,3)
+stmt s;
+Select s such that Follows* ( s      , 3)
+1, 2
+5000
+34 - Stmts that Follows*(s,6)
+stmt s;
+Select s such that Follows* ( s      ,   6)
+5
+5000
+35 - Stmts that Follows*(s,16)
+stmt s;
+Select s such that Follows* ( s      ,   16)
+none
+5000
+36 - Assigns that Follows(5,6)
+assign a;
+Select a such that Follows (5,6)
+2, 3, 5, 6, 7, 12
+5000
+37 - Stmts that Parent(s,5)
+stmt s;
+Select s such that Parent ( s      , 5)
+4
+5000
+38 - Stmts that Parent(s,10)
+stmt s;
+Select s such that Parent (s, 10)
+8
+5000
+39 - Stmts that Parent(s,16)
+stmt s;
+Select s such that Parent (s, 16)
+14
+5000
+40 - Stmts that Parent*(s,12)
+stmt s;
+Select s such that Parent* ( s      ,   12)
+8, 11
+5000
+41 - Stmts that Parent*(3,s)
+stmt s;
+Select s such that Parent ( 3      , s)
+none
+5000
+42 - Stmts that Parent(4,s)
+stmt s;
+Select s such that Parent ( 4      , s)
+5, 6
+5000
+43 - Stmts that Parent*(8,s)
+stmt s;
+Select s such that Parent* ( 8      , s)
+9, 10, 11, 12, 13
+5000
+44 - Stmts that Parent(8,s)
+stmt s;
+Select s such that Parent ( 8      , s)
+9, 10, 11
+5000
+45 - Stmts that Parent(4,6)
+stmt s;
+Select s such that Parent (4,6)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+46 - Stmts that Parent(If,9)
+stmt s; if ifs;
+Select s such that Parent (ifs, 9)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+47 - Stmts that Parent(6,5)
+stmt s;
+Select s such that Parent (6,5)
+none
+5000
+48 - Ifs that Parent(8,While)
+if ifs; while w;
+Select ifs such that Parent (8, w)
+8, 14
+5000
+49 - Ifs that Parent(7,While)
+if ifs; while w;
+Select ifs such that Parent (7, w)
+none
+5000
+49 - Ifs that Parent(_,_)
+if ifs;
+Select ifs such that Parent (_, _)
+8, 14
+5000
+50 - Ifs that Parent(_,While)
+if ifs; while w;
+Select ifs such that Parent (_, w)
+8, 14
+5000
+51 - Ifs that Parent(_,If)
+if ifs;
+Select ifs such that Parent (_, ifs)
+none
+5000
+52 - Ifs that Parent(If,While)
+if ifs; while w;
+Select ifs such that Parent (ifs, w)
+8
+5000
+53 - While that Parent(If,While)
+if ifs; while w;
+Select w such that Parent (ifs, w)
+11
+5000
+54 - Ifs that Parent(_,5)
+if ifs;
+Select ifs such that Parent (_, 5)
+8, 14
+5000
+55 - Stmts that Parent (_, s)
+stmt s;
+Select s such that Parent (_, s)
+5, 6, 9, 10, 11, 12, 13, 15, 16
+5000
+56 - Ifs that Follows(While, _)
+if ifs; while w;
+Select ifs such that Follows (w, _)
+8, 14
+5000
+57 - Ifs that Parent(6, _)
+if ifs;
+Select ifs such that Parent (6, _)
+none
+5000
+58 - Ifs that Parent(If, _)
+if a;
+Select a such that Parent (a, _)
+8, 14
+5000
+59 - Whiles that Parent(While, _)
+while a;
+Select a such that Parent (a, _)
+4, 11
+5000
+60 - Stmts that Parent*(4,s)
+stmt s;
+Select s such that Parent* ( 4      , s)
+5, 6
+5000
+61 - Stmts that Parent*(8,s)
+stmt s;
+Select s such that Parent* ( 8      , s)
+9, 10, 11, 12, 13
+5000
+62 - Assigns that Uses(a,"a")
+assign a;
+Select a such that Uses (a, "a")
+3, 7
+5000
+63 - Assigns that Uses(a,_)
+assign a;
+Select a such that Uses (a, _)
+3, 5, 6, 7, 12
+5000
+64 - Prints that Uses(Print,"zzzzzzzzzz")
+print p;
+Select p such that Uses (p, "zzzzzzzzzz")
+13, 15
+5000
+65 - Prints that Uses(Print,"zzzzzzzzzz")
+print p;
+Select p such that Uses (p, _)
+9, 10, 13, 15, 16
+5000
+66 - Ifs that Uses(If,"zzzzzzzzzz")
+if ifs;
+Select ifs such that Uses (ifs, "zzzzzzzzzz")
+8, 14
+5000
+67 - Whiles that Uses(While, "zzzzzzzzzz")
+while w;
+Select w such that Uses (w, "zzzzzzzzzz")
+4, 11
+5000
+68 - Variables that Uses(While,Variable)
+variable v; while w;
+Select v such that Uses (w, v)
+i, zzzzzzzzzz
+5000
+69 - Variables that Uses(If,Variable)
+variable v; if ifs;
+Select v such that Uses (ifs, v)
+zzzzzzzzzz, a, x1
+5000
+70 - Procedures that Uses(Procedure, "zzzzzzzzzz")
+procedure p;
+Select p such that Uses (p, "zzzzzzzzzz")
+TE1111STTtTttttdvdcdedgvd
+5000
+71 - Variables that Uses(Procedure, Variable)
+procedure p; variable v;
+Select v such that Uses (p, v)
+a, x1, zzzzzzzzzz, i
+5000
+72 - Stmts that Uses(Stmt, "   zzzzzzzzzz")
+stmt s;
+Select s such that Uses (s, "   zzzzzzzzzz")
+4, 5, 7, 8, 11, 12, 13, 14, 15
+5000
+73 - Assigns that Modifies(Assign, "zzzzzzzzzz")
+assign a;
+Select a such that Modifies (a, "zzzzzzzzzz")
+3, 5, 12
+5000
+74 - Assigns that Modifies(Assign, _)
+assign a;
+Select a such that Modifies (a, _)
+2, 3, 5, 6, 7, 12
+5000
+75 - Reads that Modifies(Read, "   zzzzzzzzzz")
+read r;
+Select r such that Modifies (r, "   zzzzzzzzzz")
+none
+5000
+76 - Reads that Modifies(Read, "a")
+read r;
+Select r such that Modifies (r, "a")
+1
+5000
+77 - Reads that Modifies(Read, _)
+read r;
+Select r such that Modifies (r, _)
+1
+5000
+78 - Ifs that Modifies(If, "zzzzzzzzzz")
+if ifs;
+Select ifs such that Modifies (ifs, "zzzzzzzzzz")
+8
+5000
+79 - Whiles that Modifies(While,"zzzzzzzzzz")
+while w;
+Select w such that Modifies (w, "zzzzzzzzzz")
+4, 11
+5000
+80 - Variables that Modifies(While,Variable)
+variable v; while w;
+Select v such that Modifies (w, v)
+zzzzzzzzzz, i
+5000
+81 - Variables that Modifies(If,Variable)
+variable v; if ifs;
+Select v such that Modifies (ifs, v)
+zzzzzzzzzz
+5000
+82 - Procedure that Modifies(Procedure,"zzzzzzzzzz")
+procedure p;
+Select p such that Modifies (p, "zzzzzzzzzz")
+TE1111STTtTttttdvdcdedgvd
+5000
+83 - Variables that Modifies(Procedure,Variable)
+procedure p; variable v;
+Select v such that Modifies (p, v)
+a, x1, zzzzzzzzzz, i
+5000
+84 - Pattern(_,_)
+assign a;
+Select a pattern a (_, _)
+2, 3, 5, 6, 7, 12
+5000
+85 - Pattern partial match variable
+assign a;
+Select a pattern a (_, _" a "_)
+3, 7
+5000
+86 - Pattern partial match constant
+assign a;
+Select a pattern a (_, _" 5"_)
+7
+5000
+87 - Pattern partial match left variable
+assign a;
+Select a pattern a ("zzzzzzzzzz", _)
+3, 12, 5
+5000
+88 - Stmts that pattern partial match variable left right
+assign a; stmt s;
+Select s pattern a ("zzzzzzzzzz", _"a"_)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+89 - Stmts that pattern partial match empty
+assign a; stmt s;
+Select s pattern a ("x1", _"a"_)
+none
+5000
+90 - Stmts that pattern partial match variable and constant left right
+assign a; stmt s;
+Select s pattern a ("x1", _"1"_)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+5000
+91 - Assigns that pattern partial match variable and constant left right
+assign a;
+Select a pattern a ("x1", _"1"_)
+2
+5000
+92 - Assigns that pattern partial match variable left right
+assign a;
+Select a pattern a ("zzzzzzzzzz", _"zzzzzzzzzz"_)
+5, 12
+5000
+93 - Assigns that pattern partial match variable left right
+assign a;
+Select a pattern a ("zzzzzzzzzz", _"a "_)
+3
+5000
+94 - Combine Modifies and pattern
+assign a;
+Select a such that Modifies (1, _) pattern a(_,_)
+2, 3, 5, 6, 7, 12
+5000
+94 - Combine UsesP and pattern
+assign a; procedure p;
+Select a such that Uses (p, "a") pattern a(_,_)
+2, 3, 5, 6, 7, 12
+5000
+95 - Combine UsesS and pattern
+assign a; stmt s;
+Select a such that Uses (s, "a") pattern a(_,_)
+2, 3, 5, 6, 7, 12
+5000
+96 - Combine UsesS wildcard and pattern right
+assign a; stmt s;
+Select a such that Uses (s, _) pattern a("zzzzzzzzzz",_)
+3, 5, 12
+5000
+97 - Combine UsesS wildcard and pattern left
+assign a; stmt s;
+Select a such that Uses (s, _) pattern a(_,_"zzzzzzzzzz"_)
+5, 7, 12
+5000
+98 - Combines UsesS wilcard and pattern both
+stmt s; assign a;
+Select a such that Uses (a, _) pattern a(_,_)
+3, 5, 6, 7, 12
+5000
+99 - Combine Follows and pattern right
+stmt s; assign a;
+Select a such that Follows (5, 6) pattern a("i",_)
+6, 7
+5000
+100 - Combine Follows and pattern left
+stmt s; assign a;
+Select a such that Follows (5, a) pattern a("i",_)
+6
+5000
+101 - Combine Follows and pattern right
+stmt s; assign a;
+Select a such that Follows (5, a) pattern a("i",_)
+6
+5000
+102 - Combine Follows and pattern both
+assign a; while w;
+Select a such that Follows (w, a) pattern a(_,_)
+7
+5000
+103 - Combine Follows* and pattern left
+assign a; while w;
+Select a such that Follows* (3, a) pattern a(_,_"   10"_)
+7
+5000
+104 - Combine Follows* and pattern left diff syn
+stmt s; assign a; assign a1;
+Select a such that Follows* (3, a) pattern a1(_,_"10"_)
+7
+5000
+105 - Combine ModifiesS and pattern left
+stmt s; assign a; assign a1;
+Select a such that Modifies(a, "i") pattern a(_, _" a"_)
+7
+5000
+106 - Undeclared syn
+stmt s; assign a1;
+Select a such that Uses(a, "zzzzzzzzzz") pattern a("zzzzzzzzzz", _)
+SemanticError
+5000
+107 - Select typo
+stmt s; assign a;
+Sect a such that Uses(a, "zzzzzzzzzz") pattern a("zzzzzzzzzz", _)
+SyntaxError
+5000
+108 - SuchThat typo
+stmt s; assign a;
+Select a suh that Uses(a, "zzzzzzzzzz") pattern a("zzzzzzzzzz", _)
+SyntaxError
+5000
+109 - Bracketing wrong
+stmt s; assign a;
+Select a such that Uses(a, "zzzzzzzzzz")) pattern a("zzzzzzzzzz", _)
+SyntaxError
+5000
+110 - Select not capitalised
+stmt s; assign a;
+select a such that Uses(a, "zzzzzzzzzz") pattern a("zzzzzzzzzz", _)
+SyntaxError
+5000
+111 - Uses not capitalised
+stmt s; assign a;
+Select a such that uses(a, "zzzzzzzzzz") pattern a("zzzzzzzzzz", _)
+SyntaxError
+5000
+112 - Pattern caps 
+stmt s; assign a;
+Select a such that Modifies (1, _) Pattern a("zzzzzzzzzz",_)
+SyntaxError
+5000
+113 - SuchThat missing
+stmt s; assign a;
+Select a Modifies (_, _) pattern a("zzzzzzzzzz",_)
+SyntaxError
+5000
+114 - Select Syn missing -> undeclared syn
+stmt s; assign a;
+Select such that Modifies (_, _) pattern a("zzzzzzzzzz",_)
+SemanticError
+5000
+115 - Pattern syn missing
+stmt s; assign a;
+Select a such that Modifies (s, _) pattern ("zzzzzzzzzz",_)
+SyntaxError
+5000
+116 - Modifies wrong wildcard
+stmt s; assign a;
+Select a such that Modifies (_, _) pattern a("zzzzzzzzzz",_)
+SemanticError
+5000
+117 - Pattern exact match variable
+assign a;
+Select a pattern a (_, "a")
+none
+5000
+118 - Pattern exact match constant
+assign a;
+Select a pattern a (_, "5")
+none
+5000
+119 - Pattern exact match full expression
+assign a;
+Select a pattern a (_, "10 + x1 * zzzzzzzzzz / a + 5 * a - 3 * x1")
+7
+5000
+120 - Pattern partial match subexpression 1
+assign a;
+Select a pattern a (_, _"3 * x1"_)
+7
+5000
+121 - Pattern partial match subexpression 2
+assign a;
+Select a pattern a (_, _"x1 * zzzzzzzzzz / a"_)
+7
+5000
+122 - Pattern partial match subexpression 3
+assign a;
+Select a pattern a (_, _"x1 * zzzzzzzzzz"_)
+7
+5000
+123 - Pattern partial match subexpression 4
+assign a;
+Select a pattern a (_, _"x1 * zzzzzzzzzz / a + 5 * a - 3 * x1"_)
+none
+5000
+124 - Pattern partial match subexpression 5
+assign a;
+Select a pattern a (_, _"10 + x1 * zzzzzzzzzz / a"_)
+7
+5000
+125 - Pattern exact match subexpression 1
+assign a;
+Select a pattern a (_, "3 * x1")
+none
+5000
+126 - Pattern exact match subexpression 2
+assign a;
+Select a pattern a (_, "x1 * zzzzzzzzzz / a")
+none
+5000
+127 - Pattern exact match subexpression 3
+assign a;
+Select a pattern a (_, "x1 * zzzzzzzzzz")
+none
+5000
+128 - Pattern exact match subexpression 4
+assign a;
+Select a pattern a (_, "x1 * zzzzzzzzzz / a + 5 * a - 3 * x1")
+none
+5000
+129 - Pattern exact match subexpression 5
+assign a;
+Select a pattern a (_, "10 + x1 * zzzzzzzzzz / a")
+none
+5000

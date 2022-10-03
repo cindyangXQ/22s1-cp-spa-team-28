@@ -188,7 +188,9 @@ Reference QueryParser::getReference(std::string input,
     if (std::all_of(input.begin(), input.end(), ::isdigit)) {
         return Reference(input);
     } else if (input[0] == '\"' && input.back() == '\"') {
-        return Reference(input.substr(1, input.size() - 2));
+        input.erase(std::remove(input.begin(), input.end(), '\"'), input.end());
+        input = Utils::removeTrailingSpaces(input);
+        return Reference(input);
     } else if (input == "_") {
         return Reference(input);
     }
