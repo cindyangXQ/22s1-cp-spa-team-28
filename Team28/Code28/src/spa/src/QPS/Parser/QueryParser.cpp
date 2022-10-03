@@ -131,7 +131,7 @@ std::vector<PatternClause> QueryParser::parsePatternClause(std::string *clause,
             }
         }
         Expression expr = matches[4].str();
-        bool isExact = false;
+        bool isExact = true;
 
         expr = Utils::removeTrailingSpaces(expr);
         if (expr.find('_') != std::string::npos) {
