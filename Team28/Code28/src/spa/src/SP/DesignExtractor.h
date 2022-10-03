@@ -111,7 +111,7 @@ public:
 class ModPExtractor : public DesignExtractor {
 public:
     ModPExtractor(ProgramNode *program, PopulateFacade *storage)
-            : DesignExtractor(program, storage){};
+        : DesignExtractor(program, storage){};
     std::vector<Relationship<std::string, std::string> *> extract();
     void populate();
 };

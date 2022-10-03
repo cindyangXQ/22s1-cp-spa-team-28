@@ -166,7 +166,8 @@ std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
     return result;
 }
 
-std::vector<Relationship<std::string, std::string> *> UsesPExtractor::extract() {
+std::vector<Relationship<std::string, std::string> *>
+UsesPExtractor::extract() {
     std::vector<Relationship<std::string, std::string> *> result;
 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
@@ -202,7 +203,8 @@ std::vector<Relationship<std::string, std::string> *> ModPExtractor::extract() {
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         std::string procName = procList[i]->getName();
-        std::vector<std::string> modified = SPUtils::modifiesP(procList[i], procList);
+        std::vector<std::string> modified =
+            SPUtils::modifiesP(procList[i], procList);
         for (size_t j = 0; j < modified.size(); j++) {
             result.push_back(new Relationship<std::string, std::string>(
                 RelationshipReference::MODIFIES, procName, modified.at(j)));
@@ -334,7 +336,8 @@ void UsesSExtractor::populate() {
 }
 
 void UsesPExtractor::populate() {
-    std::vector<Relationship<std::string, std::string> *> usesP = this->extract();
+    std::vector<Relationship<std::string, std::string> *> usesP =
+        this->extract();
     this->storage->storeUsesP(&usesP);
 }
 
@@ -344,7 +347,8 @@ void ModSExtractor::populate() {
 }
 
 void ModPExtractor::populate() {
-    std::vector<Relationship<std::string, std::string> *> ModifiesP = this->extract();
+    std::vector<Relationship<std::string, std::string> *> ModifiesP =
+        this->extract();
     this->storage->storeModifiesP(&ModifiesP);
 }
 

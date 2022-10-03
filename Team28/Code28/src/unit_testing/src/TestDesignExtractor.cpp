@@ -520,7 +520,7 @@ TEST_CASE("extract modifiesS small program, ASSIGN and IF and WHILE and READ") {
     }
 }
 
-TEST_CASE("extract modifiesP small program") {
+TEST_CASE("extract modifiesP, one procedure") {
     std::vector<Relationship<std::string, std::string> *> expected;
     expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::MODIFIES, "Bedok", "a"));
@@ -559,7 +559,7 @@ TEST_CASE("extract modifiesP small program") {
     }
 }
 
-TEST_CASE("extract modifiesP, one call") {
+TEST_CASE("extract modifiesP, two procedures one call") {
     std::vector<Relationship<std::string, std::string> *> expected;
     expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::MODIFIES, "Bedok", "a"));
@@ -610,7 +610,8 @@ TEST_CASE("extract modifiesP, one call") {
     ModPExtractor extr(program, nullptr);
     std::vector<Relationship<std::string, std::string> *> extracted =
         extr.extract();
-        REQUIRE(expected.size() == extracted.size());
+
+    REQUIRE(expected.size() == extracted.size());
     for (int i = 0; i < expected.size(); i++) {
         REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
         REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
@@ -654,7 +655,9 @@ TEST_CASE("Test extract Calls") {
    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
    ProgramNode *program = ProgramParser(0, tokens).parse();
    CallsExtractor extr(program, nullptr);
-   std::vector<Relationship<std::string, std::string> *> extracted = extr.extract();
+   std::vector<Relationship<std::string, std::string> *> extracted =
+       extr.extract();
+
    REQUIRE(expected.size() == extracted.size());
    for (int i = 0; i < expected.size(); i++) {
        REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
@@ -716,6 +719,7 @@ TEST_CASE("Test extract CallsT") {
     CallsExtrT extr(program, nullptr);
     std::vector<Relationship<std::string, std::string> *> extracted =
         extr.extract();
+
     REQUIRE(expected.size() == extracted.size());
     for (int i = 0; i < expected.size(); i++) {
         REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
