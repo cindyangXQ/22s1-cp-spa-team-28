@@ -591,12 +591,12 @@ SemanticError
 117 - Pattern exact match variable
 assign a;
 Select a pattern a (_, "a")
-3, 7
+
 5000
 118 - Pattern exact match constant
 assign a;
 Select a pattern a (_, "5")
-7
+
 5000
 119 - Pattern exact match full expression
 assign a;
