@@ -10,7 +10,7 @@ Second, Third
 5000
 3 - Solve Calls + Modifies
 procedure p;
-Select p such that Calls (p, "Third") and Modifies (p, "i")
+Select p such that Calls (p, "Third") such that Modifies (p, "i")
 Second
 5000
 4 - Retrieve Calls* correctly
