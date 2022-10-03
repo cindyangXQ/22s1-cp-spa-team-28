@@ -206,11 +206,25 @@ TEST_CASE("Parser can parse pattern clause") {
     REQUIRE(clause[0].syn.name == "a");
     REQUIRE(clause[0].syn.entity == EntityName::ASSIGN);
     REQUIRE(clause[0].expression == "(x)");
+    REQUIRE(clause[0].isExact == false);
 
+    std::string correct_input_exact = "pattern a(v, \"x\")";
+    std::vector<PatternClause> clause_exact =
+        QueryParser::parsePatternClause(&correct_input_exact, syns);
+    REQUIRE(clause_exact.size() == 1);
+    REQUIRE(clause_exact[0].entRef.isSynonym == true);
+    REQUIRE(clause_exact[0].entRef.syn.name == "v");
+    REQUIRE(clause_exact[0].entRef.syn.entity == EntityName::VARIABLE);
+    REQUIRE(clause_exact[0].syn.name == "a");
+    REQUIRE(clause_exact[0].syn.entity == EntityName::ASSIGN);
+    REQUIRE(clause_exact[0].expression == "(x)");
+    REQUIRE(clause_exact[0].isExact == true);
+    
     std::string correct_input_space = "pattern a(v, _    \"    x    \"    _)";
     std::vector<PatternClause> clause_space =
         QueryParser::parsePatternClause(&correct_input_space, syns);
     REQUIRE(clause_space[0].expression == "(x)");
+    REQUIRE(clause_space[0].isExact == false);
 
     std::string extra_bracket = "pattern a((v, \"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&extra_bracket, syns));
