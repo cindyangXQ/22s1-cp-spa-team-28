@@ -141,6 +141,9 @@ std::vector<PatternClause> QueryParser::parsePatternClause(std::string *clause,
             }
         }
         if (expr.compare("_") != 0) {
+            if (syn.entity == EntityName::WHILE || syn.entity == EntityName::IF) {
+                throw SyntaxError("Pattern-if and pattern-while second (and third) argument can only be a wildcard");
+            }
             try {
                 //Remove " at the start and end
                 expr.erase(std::remove(expr.begin(), expr.end(), '"'), expr.end());

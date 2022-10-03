@@ -1,0 +1,53 @@
+procedure main {
+    print a1;
+    while (a2 == a3) {
+        a4 = a5;
+    }
+    if (a17 == a7) then {
+        read a8;
+    } else {
+        a9 = a9 - a10;
+    }
+    while (a21 == a21) { 
+        while (a17 == a22) {
+            if (a21 == a23) then { 
+                while (a24 == a24) {
+                    a25 = a25 / a26; 
+                }
+            } else {
+                while (a24 == a28) {
+                    print a29;
+                }
+            }
+        }
+    }
+}
+
+procedure foo {
+    if (a11 == a12) then {
+        if (a2 == a13) then {
+            if (a14 == a15) then {
+                read a16;
+            } else {
+                while (a17 == a17) {
+                    while (a18 == a18) {
+                        print a19;
+                    }
+                }
+            }
+        } else {
+            print a20;
+        }
+    }
+    else {
+        read a20;
+    }
+}
+
+procedure bar {
+    if (1 == 2) then {
+        print a21;
+    } else {
+        read a22;
+    }
+}

@@ -588,3 +588,83 @@ TEST_CASE("QPS can process queries with advanced pattern clause") {
     qps.evaluate(input, results);
     REQUIRE(results == correct_output);
 }
+
+TEST_CASE("QPS can process queries with while pattern clause") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    WhileControlVarTable *whiles =
+        (WhileControlVarTable *)storage.getTable(TableName::W_CONTROL);
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    whiles->store(&test1);
+    whiles->store(&test2);
+    whiles->store(&test3);
+
+    QPS qps = QPS(&facade);
+    std::string input;
+    std::list<std::string> results;
+    std::list<std::string> correct_output;
+
+    input = "while w; variable v; Select v pattern w(v, _)";
+    correct_output = {"x", "y", "z"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "while w; variable v; Select w pattern w(_, _)";
+    correct_output = {"1", "2", "3"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "while w; variable v; Select w pattern w(\"y\", _)";
+    correct_output = {"2"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+}
+
+TEST_CASE("QPS can process queries with if pattern clause") {
+    Storage storage;
+    QueryFacade facade = QueryFacade(&storage);
+    IfControlVarTable *ifs =
+        (IfControlVarTable *)storage.getTable(TableName::I_CONTROL);
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    ifs->store(&test1);
+    ifs->store(&test2);
+    ifs->store(&test3);
+
+    QPS qps = QPS(&facade);
+    std::string input;
+    std::list<std::string> results;
+    std::list<std::string> correct_output;
+
+    input = "if ifs; variable v; Select ifs pattern ifs(v, _, _)";
+    correct_output = {"1", "2", "3"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "if ifs; variable v; Select v pattern ifs(v, _, _)";
+    correct_output = {"x", "y", "z"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+
+    input = "if ifs; variable v; Select ifs pattern ifs(\"z\", _, _)";
+    correct_output = {"3"};
+    results = {};
+    qps.evaluate(input, results);
+    REQUIRE(results == correct_output);
+}
