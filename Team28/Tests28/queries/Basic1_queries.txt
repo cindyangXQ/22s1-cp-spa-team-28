@@ -51,12 +51,12 @@ Select s such that Follows ( 8  ,   s)
 11 - Select all statements following 16
 stmt s;
 Select s such that Follows ( 16      ,   s)
-
+none
 5000
 12 - Select all statements following 6
 stmt s;
 Select s such that Follows  ( 6      ,   s)
-
+none
 5000
 13 - Select all statements that follow before 3
 stmt s;
@@ -71,17 +71,17 @@ Select s such that Follows ( s              ,   6)
 15 - Select all statements that follow before 16
 stmt s;
 Select s such that Follows ( s                      ,   16)
-
+none
 5000
 16 - Select all statements that follow before 9
 stmt s;
 Select s such that Follows ( s      ,   9)
-
+none
 5000
 17 - Select all statements that follow before 5
 stmt s;
 Select s such that Follows  ( s      ,   5)
-
+none
 5000
 18 - Select statement Follows(5,6)
 stmt s;
@@ -96,7 +96,7 @@ Select s such that Follows (7,ifs)
 20 - Select statement Follows(6,5)
 stmt s;
 Select s such that Follows (6,5)
-
+none
 5000
 21 - Select If Follows (3, w)
 if ifs; while w;
@@ -106,7 +106,7 @@ Select ifs such that Follows (3, w)
 22 - Select If Follows (7, w)
 if ifs; while w;
 Select ifs such that Follows (7, w)
-
+none
 5000
 23 - Select If Follows (_, _)
 if ifs;
@@ -121,7 +121,7 @@ Select ifs such that Follows (_, w)
 25 - Follows with one wildcard
 if ifs;
 Select ifs such that Follows (_, 5)
-
+none
 5000
 26 - Follows with one wildcard
 stmt s;
@@ -136,7 +136,7 @@ Select ifs such that Follows (w, _)
 28 - Follows with one wildcard
 if ifs;
 Select ifs such that Follows (6, _)
-
+none
 5000
 29 - Follows with one wildcard
 assign a;
@@ -171,7 +171,7 @@ Select s such that Follows* ( s      ,   6)
 35 - Stmts that Follows*(s,16)
 stmt s;
 Select s such that Follows* ( s      ,   16)
-
+none
 5000
 36 - Assigns that Follows(5,6)
 assign a;
@@ -201,7 +201,7 @@ Select s such that Parent* ( s      ,   12)
 41 - Stmts that Parent*(3,s)
 stmt s;
 Select s such that Parent ( 3      , s)
-
+none
 5000
 42 - Stmts that Parent(4,s)
 stmt s;
@@ -231,7 +231,7 @@ Select s such that Parent (ifs, 9)
 47 - Stmts that Parent(6,5)
 stmt s;
 Select s such that Parent (6,5)
-
+none
 5000
 48 - Ifs that Parent(8,While)
 if ifs; while w;
@@ -241,7 +241,7 @@ Select ifs such that Parent (8, w)
 49 - Ifs that Parent(7,While)
 if ifs; while w;
 Select ifs such that Parent (7, w)
-
+none
 5000
 49 - Ifs that Parent(_,_)
 if ifs;
@@ -256,7 +256,7 @@ Select ifs such that Parent (_, w)
 51 - Ifs that Parent(_,If)
 if ifs;
 Select ifs such that Parent (_, ifs)
-
+none
 5000
 52 - Ifs that Parent(If,While)
 if ifs; while w;
@@ -286,7 +286,7 @@ Select ifs such that Follows (w, _)
 57 - Ifs that Parent(6, _)
 if ifs;
 Select ifs such that Parent (6, _)
-
+none
 5000
 58 - Ifs that Parent(If, _)
 if a;
@@ -376,7 +376,7 @@ Select a such that Modifies (a, _)
 75 - Reads that Modifies(Read, "   zzzzzzzzzz")
 read r;
 Select r such that Modifies (r, "   zzzzzzzzzz")
-
+none
 5000
 76 - Reads that Modifies(Read, "a")
 read r;
@@ -446,7 +446,7 @@ Select s pattern a ("zzzzzzzzzz", _"a"_)
 89 - Stmts that pattern partial match empty
 assign a; stmt s;
 Select s pattern a ("x1", _"a"_)
-
+none
 5000
 90 - Stmts that pattern partial match variable and constant left right
 assign a; stmt s;
@@ -591,12 +591,12 @@ SemanticError
 117 - Pattern exact match variable
 assign a;
 Select a pattern a (_, "a")
-
+none
 5000
 118 - Pattern exact match constant
 assign a;
 Select a pattern a (_, "5")
-
+none
 5000
 119 - Pattern exact match full expression
 assign a;
@@ -626,30 +626,30 @@ Select a pattern a (_, _"x1 * zzzzzzzzzz / a + 5 * a - 3 * x1"_)
 124 - Pattern partial match subexpression 5
 assign a;
 Select a pattern a (_, _"10 + x1 * zzzzzzzzzz / a"_)
-
+none
 5000
 125 - Pattern exact match subexpression 1
 assign a;
 Select a pattern a (_, "3 * x1")
-
+none
 5000
 126 - Pattern exact match subexpression 2
 assign a;
 Select a pattern a (_, "x1 * zzzzzzzzzz / a")
-
+none
 5000
 127 - Pattern exact match subexpression 3
 assign a;
 Select a pattern a (_, "x1 * zzzzzzzzzz")
-
+none
 5000
 128 - Pattern exact match subexpression 4
 assign a;
 Select a pattern a (_, "x1 * zzzzzzzzzz / a + 5 * a - 3 * x1")
-
+none
 5000
 129 - Pattern exact match subexpression 5
 assign a;
 Select a pattern a (_, "10 + x1 * zzzzzzzzzz / a")
-
+none
 5000
