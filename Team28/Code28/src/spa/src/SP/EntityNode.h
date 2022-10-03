@@ -14,26 +14,40 @@ public:
     EntityNode();
 };
 
-class ConstantNode : public Token, public EntityNode {
-public:
-    ConstantNode(std::string s);
-    bool isConstant() { return true; }
-    bool equals(Token *other) {
-        return other->isConstant() && other->value == this->value;
-    }
-};
 
-class VariableNode : public Token, public EntityNode {
-public:
-    VariableNode(std::string s);
-    VariableNode();
-    bool isName() { return true; }
-    bool equals(Token *other) {
-        return other->isName() && other->value == this->value;
-    }
-};
-
+class ProgramNode;
 class ProcedureNode;
+class StatementNode;
+class ExpressionNode;
+class VariableNode;
+class ConstantNode;
+
+class ProgramNode : public EntityNode {
+    std::vector<ProcedureNode *> procList;
+
+public:
+    ProgramNode(std::vector<ProcedureNode *> procList);
+    ProgramNode();
+    bool equals(ProgramNode *other);
+    std::vector<ProcedureNode *> getProcList();
+};
+
+class ProcedureNode : public EntityNode {
+    std::string procName;
+    std::vector<StatementNode *> stmtList;
+    std::vector<std::string> allCalls;
+
+public:
+    ProcedureNode(std::string procName, std::vector<StatementNode *> stmtList);
+    bool equals(ProcedureNode *other);
+    std::string getName();
+    std::vector<StatementNode *> getStmtList();
+    int getEndline();
+    std::vector<std::string> getAllCalls() { return allCalls; }
+    void setAllCalls(std::vector<std::string> allCalls) {
+        this->allCalls = allCalls;
+    }
+};
 
 class StatementNode : public EntityNode {
 protected:
@@ -73,33 +87,6 @@ public:
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
     virtual void getModifiesPInto(std::vector<std::string> &result,
                               std::vector<ProcedureNode *> &procList){};
-};
-
-class ProcedureNode : public EntityNode {
-    std::string procName;
-    std::vector<StatementNode *> stmtList;
-    std::vector<std::string> allCalls;
-
-public:
-    ProcedureNode(std::string procName, std::vector<StatementNode *> stmtList);
-    bool equals(ProcedureNode *other);
-    std::string getName();
-    std::vector<StatementNode *> getStmtList();
-    int getEndline();
-    std::vector<std::string> getAllCalls() { return allCalls; }
-    void setAllCalls(std::vector<std::string> allCalls) {
-        this->allCalls = allCalls;
-    }
-};
-
-class ProgramNode : public EntityNode {
-    std::vector<ProcedureNode *> procList;
-
-public:
-    ProgramNode(std::vector<ProcedureNode *> procList);
-    ProgramNode();
-    bool equals(ProgramNode *other);
-    std::vector<ProcedureNode *> getProcList();
 };
 
 class ReadStatementNode : public StatementNode {
@@ -153,22 +140,6 @@ public:
                       std::vector<ProcedureNode *> &procList);
     void getModifiesPInto(std::vector<std::string> &result,
                           std::vector<ProcedureNode *> &procList);
-};
-
-class ExpressionNode : public EntityNode {
-    Token *token;
-
-public:
-    ExpressionNode *left;
-    ExpressionNode *right;
-    ExpressionNode(Token *token);
-    ExpressionNode();
-    bool equals(ExpressionNode *other);
-    Token *getToken() { return this->token; }
-    std::string toString();
-
-    void getVariablesInto(std::vector<std::string> &result);
-    void getConstantsInto(std::vector<std::string> &result);
 };
 
 class AssignStatementNode : public StatementNode {
@@ -253,4 +224,39 @@ public:
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
     void getModifiesPInto(std::vector<std::string> &result,
                           std::vector<ProcedureNode *> &procList);
+};
+
+class ExpressionNode : public EntityNode {
+    Token *token;
+
+public:
+    ExpressionNode *left;
+    ExpressionNode *right;
+    ExpressionNode(Token *token);
+    ExpressionNode();
+    bool equals(ExpressionNode *other);
+    Token *getToken() { return this->token; }
+    std::string toString();
+
+    void getVariablesInto(std::vector<std::string> &result);
+    void getConstantsInto(std::vector<std::string> &result);
+};
+
+class VariableNode : public Token, public EntityNode {
+public:
+    VariableNode(std::string s);
+    VariableNode();
+    bool isName() { return true; }
+    bool equals(Token *other) {
+        return other->isName() && other->value == this->value;
+    }
+};
+
+class ConstantNode : public Token, public EntityNode {
+public:
+    ConstantNode(std::string s);
+    bool isConstant() { return true; }
+    bool equals(Token *other) {
+        return other->isConstant() && other->value == this->value;
+    }
 };
