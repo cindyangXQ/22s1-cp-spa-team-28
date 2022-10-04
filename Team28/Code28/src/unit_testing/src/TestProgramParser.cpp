@@ -169,6 +169,33 @@ TEST_CASE("If Statement Parser") {
     REQUIRE(result->equals(&expected));
 }
 
+TEST_CASE("Test getAllCalls") {
+    std::string sourceProgram =
+        "procedure a{ if(x == 3) then { if (y == 3) then {while(1<x){call b;}} else{call c;}} else{ while(9<=x){call d;} }}"
+        "procedure b {while(y < 3) {call c;} call d;}"
+        "procedure c { print y; }"
+        "procedure d { print x; }";
+
+    std::vector<std::string> expecteda{"b", "c", "d"};
+    std::vector<std::string> expectedb{"c", "d"};
+    std::vector<std::string> expectedc{};
+    std::vector<std::string> expectedd{};
+
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    ProgramNode *program = ProgramParser(0, tokens).parse();
+
+    std::vector<ProcedureNode *> procList = program->getProcList();
+    std::vector<std::string> resulta = procList[0]->getAllCalls();
+    std::vector<std::string> resultb = procList[1]->getAllCalls();
+    std::vector<std::string> resultc = procList[2]->getAllCalls();
+    std::vector<std::string> resultd = procList[3]->getAllCalls();
+
+    REQUIRE(expecteda == resulta);
+    REQUIRE(expectedb == resultb);
+    REQUIRE(expectedc == resultc);
+    REQUIRE(expectedd == resultd);
+}
+
 TEST_CASE("recursive call is not allowed") {
         std::string sourceProgram = "procedure Bedok {\ncall Bedok;\n}";
         std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();

@@ -282,8 +282,10 @@ WhileStatementNode *WhileStmParser::parse() {
             if (offset >= tokens.size()) {
                 throw "while statement wrong syntax";
             }
-            if (temp->isCall()) {
-                allCalls.push_back(temp->getVariable());
+
+            std::vector<std::string> stmCalls = temp->getAllCalls();
+            for (size_t i = 0; i < stmCalls.size(); i++) {
+                allCalls.push_back(stmCalls[i]);
             }
         }
         if (stmtList.size() == 0) {
@@ -337,8 +339,9 @@ IfStatementNode *IfStmParser::parse() {
             if (offset >= tokens.size()) {
                 throw "if statement wrong syntax";
             }
-            if (temp->isCall()) {
-                allCalls.push_back(temp->getVariable());
+            std::vector<std::string> stmCalls = temp->getAllCalls();
+            for (size_t i = 0; i < stmCalls.size(); i++) {
+                allCalls.push_back(stmCalls[i]);
             }
         }
         offset++;
@@ -359,8 +362,9 @@ IfStatementNode *IfStmParser::parse() {
         if (offset >= tokens.size()) {
             throw "while statement wrong syntax";
         }
-        if (temp->isCall()) {
-            allCalls.push_back(temp->getVariable());
+        std::vector<std::string> stmCalls = temp->getAllCalls();
+        for (size_t i = 0; i < stmCalls.size(); i++) {
+            allCalls.push_back(stmCalls[i]);
         }
     }
     offset++;
