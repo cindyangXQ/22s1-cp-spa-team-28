@@ -387,3 +387,20 @@ TEST_CASE("Parser can parse multiple pattern clauses with explicit and") {
     REQUIRE(clauses.size() == 2);
     REQUIRE(input == remaining_input);
 }
+TEST_CASE("Parser can catch mismatch in explicit and") {
+    std::vector<Synonym> syns{
+        Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a"),
+        Synonym(EntityName::STMT, "s"), Synonym(EntityName::READ, "r"),
+        Synonym(EntityName::ASSIGN, "a1")};
+    std::string pattern_input = "pattern a(_, _) and Follows(s, r) such that "
+                        "Modifies(a, _) and a1(v, _\"weew\"_) such "
+                        "that Uses(s, v)";
+
+    std::vector<PatternClause> pattern_clauses;
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&pattern_input, syns, &pattern_clauses));
+    std::string such_that_input = "such that Modifies(a, _) and a1(v, _\"weew\"_) pattern a(_, _) and Follows(s, r) such that Uses(s, v)";
+
+    std::vector<SuchThatClause> such_that_clauses;
+    REQUIRE_THROWS(QueryParser::parseSuchThatClause(&such_that_input, syns,
+                                                    &such_that_clauses));
+}
