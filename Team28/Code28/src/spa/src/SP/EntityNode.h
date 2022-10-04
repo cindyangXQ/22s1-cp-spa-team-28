@@ -68,6 +68,9 @@ public:
     };
     int getLineNumber() { return this->line; };
     virtual int getEndLine() { return this->line; }
+    virtual std::vector<std::string> getAllCalls() {
+        return std::vector<std::string>{};
+    }
 
     virtual void getVariablesInto(std::vector<std::string> &result){};
     virtual void getConstantsInto(std::vector<std::string> &result){};
@@ -140,6 +143,9 @@ public:
                       std::vector<ProcedureNode *> &procList);
     void getModifiesPInto(std::vector<std::string> &result,
                           std::vector<ProcedureNode *> &procList);
+    std::vector<std::string> getAllCalls() {
+        return std::vector<std::string>{this->getVariable()};
+    }
 };
 
 class AssignStatementNode : public StatementNode {
@@ -171,6 +177,7 @@ public:
 class WhileStatementNode : public StatementNode {
     std::vector<StatementNode *> stmtList;
     ExpressionNode *cond;
+    std::vector<std::string> allCalls;
 
 public:
     WhileStatementNode(const std::vector<StatementNode *> &stmtList,
@@ -178,6 +185,10 @@ public:
     bool isWhile() { return true; };
     bool equals(StatementNode *other);
     int getEndLine();
+    std::vector<std::string> getAllCalls() { return this->allCalls; }
+    void setAllCalls(std::vector<std::string> allCalls) {
+        this->allCalls = allCalls;
+    }
     std::vector<StatementNode *> getStmtList() { return this->stmtList; };
 
     void getVariablesInto(std::vector<std::string> &result);
@@ -200,6 +211,7 @@ class IfStatementNode : public StatementNode {
     ExpressionNode *cond;
     std::vector<StatementNode *> ifBlock;
     std::vector<StatementNode *> elseBlock;
+    std::vector<std::string> allCalls;
 
 public:
     IfStatementNode(std::vector<StatementNode *> &ifBlock,
@@ -209,6 +221,10 @@ public:
     bool equals(StatementNode *other);
     int getEndLine();
     std::vector<StatementNode *> getStmtList();
+    std::vector<std::string> getAllCalls() { return allCalls; }
+    void setAllCalls(std::vector<std::string> allCalls) {
+        this->allCalls = allCalls;
+    }
 
     void getVariablesInto(std::vector<std::string> &result);
     void getConstantsInto(std::vector<std::string> &result);
