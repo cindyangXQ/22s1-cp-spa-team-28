@@ -13,7 +13,7 @@
 #include "../Table.h"
 
 template <typename Left, typename Right>
-class RelationshipsTable : public Table<Relationship<Left, Right>> {
+class RelationshipsTable : public Table {
 public:
     /*
      * Stores a Relationship to both leftToRightsMap and rightToLeftsMap.

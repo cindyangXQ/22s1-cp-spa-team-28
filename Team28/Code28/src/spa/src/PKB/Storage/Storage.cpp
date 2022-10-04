@@ -26,29 +26,25 @@ Storage::Storage() {
     /*
      * TODO relook typecasting
      */
-    this->tables[TableName::STATEMENTS] = (Table<TableValue> *)statements;
-    this->tables[TableName::ASSIGNMENTS] = (Table<TableValue> *)assignments;
-    this->tables[TableName::PROCEDURES] = (Table<TableValue> *)procedures;
-    this->tables[TableName::VARIABLES] = (Table<TableValue> *)variables;
-    this->tables[TableName::CONSTANTS] = (Table<TableValue> *)constants;
-    this->tables[TableName::PARENT] = (Table<TableValue> *)parents;
-    this->tables[TableName::PARENT_T] = (Table<TableValue> *)parentsT;
-    this->tables[TableName::FOLLOWS] = (Table<TableValue> *)follows;
-    this->tables[TableName::FOLLOWS_T] = (Table<TableValue> *)followsT;
-    this->tables[TableName::MODIFIES_S] = (Table<TableValue> *)modifiesS;
-    this->tables[TableName::MODIFIES_P] = (Table<TableValue> *)modifiesP;
-    this->tables[TableName::USES_S] = (Table<TableValue> *)usesS;
-    this->tables[TableName::USES_P] = (Table<TableValue> *)usesP;
-    this->tables[TableName::CALLS] = (Table<TableValue> *)calls;
-    this->tables[TableName::CALLS_T] = (Table<TableValue> *)callsT;
-    this->tables[TableName::BRANCH_IN] = (Table<TableValue> *)branchIn;
-    this->tables[TableName::BRANCH_OUT] = (Table<TableValue> *)branchOut;
-    this->tables[TableName::NEXT] = (Table<TableValue> *)next;
-    this->tables[TableName::NEXT_T] = (Table<TableValue> *)nextT;
-    this->tables[TableName::I_CONTROL] = (Table<TableValue> *)ifControl;
-    this->tables[TableName::W_CONTROL] = (Table<TableValue> *)whileControl;
-};
-
-Table<TableValue> *Storage::getTable(TableName name) {
-    return this->tables.at(name);
+    this->tables[TableName::STATEMENTS] = statements;
+    this->tables[TableName::ASSIGNMENTS] = assignments;
+    this->tables[TableName::PROCEDURES] = procedures;
+    this->tables[TableName::VARIABLES] = variables;
+    this->tables[TableName::CONSTANTS] = constants;
+    this->tables[TableName::PARENT] = parents;
+    this->tables[TableName::PARENT_T] = parentsT;
+    this->tables[TableName::FOLLOWS] = follows;
+    this->tables[TableName::FOLLOWS_T] = followsT;
+    this->tables[TableName::MODIFIES_S] = modifiesS;
+    this->tables[TableName::MODIFIES_P] = modifiesP;
+    this->tables[TableName::USES_S] = usesS;
+    this->tables[TableName::USES_P] = usesP;
+    this->tables[TableName::CALLS] = calls;
+    this->tables[TableName::CALLS_T] = callsT;
+    this->tables[TableName::BRANCH_IN] = branchIn;
+    this->tables[TableName::BRANCH_OUT] = branchOut;
+    this->tables[TableName::NEXT] = next;
+    this->tables[TableName::NEXT_T] = nextT;
+    this->tables[TableName::I_CONTROL] = ifControl;
+    this->tables[TableName::W_CONTROL] = whileControl;
 };

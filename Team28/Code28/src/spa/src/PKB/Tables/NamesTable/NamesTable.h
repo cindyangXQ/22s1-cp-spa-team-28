@@ -14,7 +14,7 @@
 /*
  * Class encapsulating a Table used for storing Procedures/Variables/Constants.
  */
-template <typename T> class NamesTable : public Table<Entity> {
+template <typename T> class NamesTable : public Table {
 public:
     /*
      * Stores an entity into NamesTable.

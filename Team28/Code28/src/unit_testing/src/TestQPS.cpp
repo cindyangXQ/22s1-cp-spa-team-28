@@ -8,7 +8,7 @@ TEST_CASE("QPS can process simple queries to select statements") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage.getTable<StatementsTable>(TableName::STATEMENTS);
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -26,7 +26,7 @@ TEST_CASE("QPS can process simple queries to select variables") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage.getTable<VariablesTable>(TableName::VARIABLES);
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -44,7 +44,7 @@ TEST_CASE("QPS can process simple queries to select constants") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     ConstantsTable *constants =
-        (ConstantsTable *)storage.getTable(TableName::CONSTANTS);
+        storage.getTable<ConstantsTable>(TableName::CONSTANTS);
     Constant test1 = Constant("test1");
     Constant test2 = Constant("test2");
 
@@ -62,7 +62,7 @@ TEST_CASE("QPS can process simple queries to select procedures") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     ProceduresTable *procedures =
-        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+        storage.getTable<ProceduresTable>(TableName::PROCEDURES);
     Procedure test1 = Procedure("test1");
     Procedure test2 = Procedure("test2");
 
@@ -81,7 +81,7 @@ TEST_CASE("QPS can process simple queries to select procedures when there are "
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     ProceduresTable *procedures =
-        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+        storage.getTable<ProceduresTable>(TableName::PROCEDURES);
 
     QPS qps = QPS(&facade);
 
@@ -94,7 +94,7 @@ TEST_CASE("QPS can process simple queries with semantic error") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage.getTable<VariablesTable>(TableName::VARIABLES);
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -112,7 +112,7 @@ TEST_CASE("QPS evaluate select statements") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage.getTable<StatementsTable>(TableName::STATEMENTS);
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -132,7 +132,7 @@ TEST_CASE("QPS evaluate select assign statements") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage.getTable<StatementsTable>(TableName::STATEMENTS);
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -152,7 +152,7 @@ TEST_CASE("QPS evaluate select if statements") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage.getTable<StatementsTable>(TableName::STATEMENTS);
     Statement test1 = Statement(1, StatementType::IF);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -172,7 +172,7 @@ TEST_CASE("QPS evaluate select variables") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage.getTable<VariablesTable>(TableName::VARIABLES);
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -192,7 +192,7 @@ TEST_CASE("QPS evaluate select constants") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     ConstantsTable *constants =
-        (ConstantsTable *)storage.getTable(TableName::CONSTANTS);
+        storage.getTable<ConstantsTable>(TableName::CONSTANTS);
     Constant test1 = Constant("test1");
     Constant test2 = Constant("test2");
 
@@ -212,7 +212,7 @@ TEST_CASE("QPS evaluate select procedures") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     ProceduresTable *procedures =
-        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+        storage.getTable<ProceduresTable>(TableName::PROCEDURES);
     Procedure test1 = Procedure("test1");
     Procedure test2 = Procedure("test2");
 
@@ -232,7 +232,7 @@ TEST_CASE("QPS can evaluate select procedures when there are no procedures") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     ProceduresTable *procedures =
-        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+        storage.getTable<ProceduresTable>(TableName::PROCEDURES);
 
     QPS qps = QPS(&facade);
 
@@ -246,7 +246,7 @@ TEST_CASE("QPS evaluate syntax error") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage.getTable<VariablesTable>(TableName::VARIABLES);
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -267,7 +267,7 @@ TEST_CASE("QPS evaluate semantic error") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage.getTable<VariablesTable>(TableName::VARIABLES);
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -288,9 +288,8 @@ TEST_CASE("QPS can process queries with follows relationship") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
-    FollowsTable *follows =
-        (FollowsTable *)storage.getTable(TableName::FOLLOWS);
+        storage.getTable<StatementsTable>(TableName::STATEMENTS);
+    FollowsTable *follows = storage.getTable<FollowsTable>(TableName::FOLLOWS);
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -363,11 +362,11 @@ TEST_CASE("QPS can process queries with modifies relationship") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage.getTable<StatementsTable>(TableName::STATEMENTS);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage.getTable<VariablesTable>(TableName::VARIABLES);
     ModifiesSTable *modifiesS =
-        (ModifiesSTable *)storage.getTable(TableName::MODIFIES_S);
+        storage.getTable<ModifiesSTable>(TableName::MODIFIES_S);
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -418,9 +417,9 @@ TEST_CASE("QPS can process queries with pattern clause") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     AssignmentsTable *assignments =
-        (AssignmentsTable *)storage.getTable(TableName::ASSIGNMENTS);
+        storage.getTable<AssignmentsTable>(TableName::ASSIGNMENTS);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage.getTable<VariablesTable>(TableName::VARIABLES);
 
     Variable var1 = Variable("a");
     Variable var2 = Variable("b");
@@ -465,15 +464,15 @@ TEST_CASE("QPS can process queries with such that and pattern clause") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage.getTable<StatementsTable>(TableName::STATEMENTS);
     AssignmentsTable *assignments =
-        (AssignmentsTable *)storage.getTable(TableName::ASSIGNMENTS);
+        storage.getTable<AssignmentsTable>(TableName::ASSIGNMENTS);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage.getTable<VariablesTable>(TableName::VARIABLES);
     ModifiesSTable *modifiesS =
-        (ModifiesSTable *)storage.getTable(TableName::MODIFIES_S);
-    ModifiesSTable *usesS =
-        (ModifiesSTable *)storage.getTable(TableName::USES_S);
+        (ModifiesSTable *)storage.getTable<ModifiesSTable>(
+            TableName::MODIFIES_S);
+    UsesSTable *usesS = storage.getTable<UsesSTable>(TableName::USES_S);
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -538,20 +537,22 @@ TEST_CASE("QPS can process queries with advanced pattern clause") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage.getTable<StatementsTable>(TableName::STATEMENTS);
     AssignmentsTable *assignments =
-        (AssignmentsTable *)storage.getTable(TableName::ASSIGNMENTS);
+        storage.getTable<AssignmentsTable>(TableName::ASSIGNMENTS);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage.getTable<VariablesTable>(TableName::VARIABLES);
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
     Variable var1 = Variable("a");
     Variable var2 = Variable("b");
     //(a+b*a)/a-b+1
-    Assignment assignment1 = Assignment(1, "a", "(((((a)+((b)*(a)))/(a))-(b))+(1))");
-    //b*a+(a-a/b)*b
-    Assignment assignment2 = Assignment(2, "b", "(((b)*(a))+(((a)-((a)/(b)))*(b)))");
+    Assignment assignment1 =
+        Assignment(1, "a", "(((((a)+((b)*(a)))/(a))-(b))+(1))");
+    // b*a+(a-a/b)*b
+    Assignment assignment2 =
+        Assignment(2, "b", "(((b)*(a))+(((a)-((a)/(b)))*(b)))");
     assignments->store(&assignment1);
     assignments->store(&assignment2);
     statements->store(&line1);
@@ -570,13 +571,15 @@ TEST_CASE("QPS can process queries with advanced pattern clause") {
     qps.evaluate(input, results);
     REQUIRE(results == correct_output);
 
-    input = "assign a; variable v; Select a pattern a(\"b\", \"b * a + (a - a / b) * b\")";
+    input = "assign a; variable v; Select a pattern a(\"b\", \"b * a + (a - a "
+            "/ b) * b\")";
     correct_output = {"2"};
     results = {};
     qps.evaluate(input, results);
     REQUIRE(results == correct_output);
 
-    input = "assign a; variable v; Select v pattern a(v, _\"(a - a / b)     \"_)";
+    input =
+        "assign a; variable v; Select v pattern a(v, _\"(a - a / b)     \"_)";
     correct_output = {"b"};
     results = {};
     qps.evaluate(input, results);
@@ -593,17 +596,14 @@ TEST_CASE("QPS can process queries with procedure") {
     Storage storage;
     QueryFacade facade = QueryFacade(&storage);
     ProceduresTable *procedures =
-        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+        storage.getTable<ProceduresTable>(TableName::PROCEDURES);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage.getTable<VariablesTable>(TableName::VARIABLES);
     ModifiesPTable *modifiesP =
-        (ModifiesPTable *)storage.getTable(TableName::MODIFIES_P);
-    UsesPTable *usesP =
-        (UsesPTable *)storage.getTable(TableName::USES_P);
-    CallsTable *call =
-        (CallsTable *)storage.getTable(TableName::CALLS);
-    CallsTTable *callT =
-        (CallsTTable *)storage.getTable(TableName::CALLS_T);
+        storage.getTable<ModifiesPTable>(TableName::MODIFIES_P);
+    UsesPTable *usesP = storage.getTable<UsesPTable>(TableName::USES_P);
+    CallsTable *call = storage.getTable<CallsTable>(TableName::CALLS);
+    CallsTTable *callT = storage.getTable<CallsTTable>(TableName::CALLS_T);
 
     Procedure proc1 = Procedure("foo");
     Procedure proc2 = Procedure("bar");
@@ -635,25 +635,29 @@ TEST_CASE("QPS can process queries with procedure") {
     std::list<std::string> results;
     std::list<std::string> correct_output;
 
-    input = "procedure proc1, proc2; variable v; Select proc1 such that Calls*(proc1, proc2)";
+    input = "procedure proc1, proc2; variable v; Select proc1 such that "
+            "Calls*(proc1, proc2)";
     correct_output = {"bar"};
     results = {};
     qps.evaluate(input, results);
     REQUIRE(results == correct_output);
 
-    input = "procedure proc1, proc2; variable v; Select proc1 such that Calls(_, proc1)";
+    input = "procedure proc1, proc2; variable v; Select proc1 such that "
+            "Calls(_, proc1)";
     correct_output = {"foobar"};
     results = {};
     qps.evaluate(input, results);
     REQUIRE(results == correct_output);
 
-    input = "procedure proc1, proc2; variable v; Select v such that Uses(\"bar\", v)";
+    input = "procedure proc1, proc2; variable v; Select v such that "
+            "Uses(\"bar\", v)";
     correct_output = {"b"};
     results = {};
     qps.evaluate(input, results);
     REQUIRE(results == correct_output);
 
-    input = "procedure proc1, proc2; variable v; Select proc1 such that Modifies(proc1, _)";
+    input = "procedure proc1, proc2; variable v; Select proc1 such that "
+            "Modifies(proc1, _)";
     correct_output = {"foo"};
     results = {};
     qps.evaluate(input, results);

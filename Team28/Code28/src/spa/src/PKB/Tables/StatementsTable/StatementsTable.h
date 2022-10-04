@@ -9,7 +9,7 @@
 /*
  * Class encapsulating a Table used to store SIMPLE statements.
  */
-class StatementsTable : public Table<Statement> {
+class StatementsTable : public Table {
 public:
     StatementsTable();
 

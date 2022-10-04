@@ -13,12 +13,12 @@
 
 #include "../Tables/AssignmentsTable/AssignmentsTable.h"
 #include "../Tables/NamesTable/NamesTable.h"
+#include "../Tables/RelationshipsTable/BranchTable.h"
+#include "../Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
-#include "../Tables/RelationshipsTable/ProcToProcRelationshipsTable.h" 
-#include "../Tables/RelationshipsTable/BranchTable.h" 
-#include "../Tables/RelationshipsTable/UsesControlVarTable.h" 
+#include "../Tables/RelationshipsTable/UsesControlVarTable.h"
 #include "../Tables/StatementsTable/StatementsTable.h"
 #include "../Tables/Table.h"
 
@@ -56,15 +56,18 @@ enum class TableName {
 class Storage {
 public:
     /*
-    * Explicit constructor for Storage.
-    */
+     * Explicit constructor for Storage.
+     */
     explicit Storage();
 
     /*
-    * Retrieve a table by TableName.
-    */
-    Table<TableValue> *getTable(TableName name);
+     * Retrieve a table by TableName.
+     */
+    template <typename Subclass> Subclass *getTable(TableName name) {
+        Table *table = this->tables.at(name);
+        return dynamic_cast<Subclass *>(table);
+    };
 
 private:
-    std::map<TableName, Table<TableValue> *> tables;
+    std::map<TableName, Table *> tables;
 };

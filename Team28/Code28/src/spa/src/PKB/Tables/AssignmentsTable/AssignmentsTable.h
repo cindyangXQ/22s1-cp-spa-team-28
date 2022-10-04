@@ -15,7 +15,7 @@ typedef std::pair<int, std::string> IntStringPair;
 /*
  * Class encapsulating a Table used to store SIMPLE statements.
  */
-class AssignmentsTable : public Table<Assignment> {
+class AssignmentsTable : public Table {
 public:
     AssignmentsTable();
 
