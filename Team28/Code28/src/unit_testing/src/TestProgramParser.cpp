@@ -69,6 +69,49 @@ TEST_CASE("read read; print print") {
     REQUIRE(program->equals(&expected));
 }
 
+TEST_CASE("Test Expression Parser") { 
+    std::string statement = "((x+3)*8+2)*(9/(y+a)+2);";
+    
+    VariableNode var1("x"), var2("a"), var3("y");
+    ConstantNode c1("3"), c2("8"), c3("2"), c4("9");
+    Operator op1("+"), op2("*"), op3("/");
+
+    ExpressionNode plus1(&op1);
+    plus1.left = new ExpressionNode(&var1);
+    plus1.right = new ExpressionNode(&c1);
+
+    ExpressionNode mul(&op2);
+    mul.left = &plus1;
+    mul.right = new ExpressionNode(&c2);
+
+    ExpressionNode plus2(&op1);
+    plus2.left = &mul;
+    plus2.right = new ExpressionNode(&c3);
+
+    ExpressionNode plus3(&op1);
+    plus3.left = new ExpressionNode(&var3);
+    plus3.right = new ExpressionNode(&var2);
+
+    ExpressionNode div(&op3);
+    div.left = new ExpressionNode(&c4);
+    div.right = &plus3;
+
+    ExpressionNode plus4(&op1);
+    plus4.left = &div;
+    plus4.right = new ExpressionNode(&c3);
+
+    ExpressionNode expected(&op2);
+    expected.left = &plus2;
+    expected.right = &plus4;
+
+    std::vector<Token *> tokens = Tokenizer(statement).tokenize();
+    ExprParser parser(0, tokens, false);
+    ExpressionNode *result = parser.parse();
+
+    //REQUIRE(result->equals(&expected));
+
+}
+
 TEST_CASE("Test Conditional Parser") {
     VariableNode var1("a"), var2("b");
     ConstantNode c1("2"), c2("3"), c3("5");
@@ -109,6 +152,25 @@ TEST_CASE("Test Conditional Parser") {
     ExpressionNode *cond = parser.parse();
 
     REQUIRE(cond->equals(expected));
+}
+
+TEST_CASE("Invalid expression statement") { 
+    std::string statement = "(x+3) > 2";
+    std::vector<Token *> tokens = Tokenizer(statement).tokenize();
+    ExprParser parser = ExprParser(0, tokens, false);
+    REQUIRE_THROWS(parser.parse(), "invalid expression");
+}
+
+TEST_CASE("Invalid conditional statements") { 
+    std::string statement = "((x+3)&&(y-2))";
+    std::vector<Token *> tokens = Tokenizer(statement).tokenize();
+    CondParser parser = CondParser(1, tokens);
+    REQUIRE_THROWS(parser.parse(), "invalid cond expression");
+
+    statement = "(((a<b) && (a==b)) > x)";
+    tokens = Tokenizer(statement).tokenize();
+    parser = CondParser(1, tokens);
+    REQUIRE_THROWS(parser.parse(), "invalid cond expression");
 }
 
 TEST_CASE("While Statement Parser") {
@@ -169,10 +231,45 @@ TEST_CASE("If Statement Parser") {
     REQUIRE(result->equals(&expected));
 }
 
+TEST_CASE("Test getAllCalls") {
+    std::string sourceProgram =
+        "procedure a{ if(x == 3) then { if (y == 3) then {while(1<x){call b;}} else{call c;}} else{ while(9<=x){call d;} }}"
+        "procedure b {while(y < 3) {call c;} call d;}"
+        "procedure c { print y; }"
+        "procedure d { print x; }";
+
+    std::vector<std::string> expecteda{"b", "c", "d"};
+    std::vector<std::string> expectedb{"c", "d"};
+    std::vector<std::string> expectedc{};
+    std::vector<std::string> expectedd{};
+
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    ProgramNode *program = ProgramParser(0, tokens).parse();
+
+    std::vector<ProcedureNode *> procList = program->getProcList();
+    std::vector<std::string> resulta = procList[0]->getAllCalls();
+    std::vector<std::string> resultb = procList[1]->getAllCalls();
+    std::vector<std::string> resultc = procList[2]->getAllCalls();
+    std::vector<std::string> resultd = procList[3]->getAllCalls();
+
+    REQUIRE(expecteda == resulta);
+    REQUIRE(expectedb == resultb);
+    REQUIRE(expectedc == resultc);
+    REQUIRE(expectedd == resultd);
+}
+
 TEST_CASE("recursive call is not allowed") {
         std::string sourceProgram = "procedure Bedok {\ncall Bedok;\n}";
         std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
         REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "recursive call is not allowed");
+}
+
+TEST_CASE("container with wrong cond expression") {
+    std::string statement = 
+        "while((a+b)*3){read x;}";
+    std::vector<Token *> tokens = Tokenizer(statement).tokenize();
+    WhileStmParser parser(0, tokens, 1);
+    REQUIRE_THROWS(parser.parse(), "invalid cond expression");
 }
 
 TEST_CASE("procedure of same name is not allowed") {
