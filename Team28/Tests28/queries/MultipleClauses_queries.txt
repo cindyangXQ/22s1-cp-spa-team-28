@@ -38,3 +38,33 @@ assign a; variable v; read r; while w1, w2; stmt s1, s2;
 Select r such that Uses(1, "print") such that Parent(w1, w2) such that Parent(w2, r)
 23
 5000
+8 - 3 such that clause with and
+assign a; variable v; read r; while w1, w2; stmt s1, s2;
+Select r such that Uses(1, "print") and Parent(w1, w2) and Parent(w2, r)
+23
+5000
+8 - 3 pattern clause with and
+assign a; variable v;
+Select v pattern a(v, _"a3"_) and a("a9", _"a6"_) and a(_, _) 
+a9
+5000
+9 - 2 pattern clause and 1 such that
+assign a; print p;
+Select a pattern a(_, _"a19"_) and a("a18", _"a20"_) such that Follows*(p, a)
+19
+5000
+10 - 1 such that and 2 pattern clause
+assign a; print p;
+Select a such that Follows*(p, a) pattern a(_, _"a19"_) and a("a18", _"a20"_)
+19
+5000
+11 - 2 such that clause and 1 pattern
+assign a; variable v; stmt s;
+Select v such that Modifies(s, v) and Follows(a, s) pattern a(_, _"a3"_)
+a10
+5000
+12 - 1 pattern and 2 such that clause
+assign a; variable v; stmt s;
+Select v pattern a(_, _"a3"_) such that Modifies(s, v) and Follows(a, s)
+a10
+5000
