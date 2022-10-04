@@ -20,14 +20,17 @@ public:
     static Declaration parseDeclaration(std::vector<std::string> clauses);
     static SelectType parseSelectClause(std::string *clause,
                                         std::vector<Synonym> syns);
-    static std::vector<SuchThatClause>
-    parseSuchThatClause(std::string *clause,
-                                              std::vector<Synonym> syns);
-    static std::vector<PatternClause>
-    parsePatternClause(std::string *clause,
-                                            std::vector<Synonym> syns);
+    static void parseSuchThatClause(std::string *clause,
+                                    std::vector<Synonym> syns,
+                                    std::vector<SuchThatClause> *suchThatCls);
+    static void parsePatternClause(std::string *clause,
+                                   std::vector<Synonym> syns,
+                                   std::vector<PatternClause> *patternCls);
+    static bool isSuchThatClause(std::string *clause);
+    static bool isPatternClause(std::string *clause);
 
 private:
+
     static bool isValidName(std::string name);
     static bool isValidSuchThatClause(RelationshipReference relRef,
                                       Reference left, Reference right);

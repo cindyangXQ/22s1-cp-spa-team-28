@@ -286,7 +286,7 @@ const std::regex selectClauseRegex("(\\s*Select\\s+" // 'Select'
 //          | Parent | ParentT | Follows | FollowsT
 // For arguments extraction
 const std::regex suchThatRegex(
-    "\\s*such\\s+that\\s+"
+    "^\\s*such\\s+that\\s+"
     "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Calls|Calls\\*|Next|Next\\*|Affect|Affect\\*)\\s*" // relRef
     "\\(\\s*"
     "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef | stmtRef
@@ -295,7 +295,7 @@ const std::regex suchThatRegex(
     "\\s*\\)\\s*");
 // For clause extraction
 const std::regex suchThatClauseRegex(
-    ".*?(such\\s+that\\s+"
+    "^\\s*(such\\s+that\\s+"
     "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Calls|Calls\\*|Next|Next\\*|Affect|Affect\\*)\\s*" // relRef
     "\\(\\s*"
     "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef | stmtRef
@@ -310,7 +310,7 @@ const std::regex suchThatClauseRegex(
 //  factor: var_name | const_value | '(' expr ')'
 // For arguments extraction
 const std::regex patternRegex(
-    "\\s*pattern\\s+"                                             // pattern
+    "^\\s*pattern\\s+"                                             // pattern
     "([a-zA-Z][a-zA-Z0-9]*)\\s*"                                  // syn-assign
     "\\(\\s*"                                                     // '('
     "(([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"))" // entRef
@@ -319,7 +319,7 @@ const std::regex patternRegex(
     "\\s*\\)\\s*");
 // For clause extraction
 const std::regex patternClauseRegex(
-    ".*?(pattern\\s+"                                            // pattern
+    "^\\s*(pattern\\s+"                                            // pattern
     "([a-zA-Z][a-zA-Z0-9]*)\\s*"                                  // syn-assign
     "\\(\\s*"                                                     // '('
     "(([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"))" // entRef
