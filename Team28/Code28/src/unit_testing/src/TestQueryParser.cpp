@@ -354,15 +354,36 @@ TEST_CASE("Parser can parse multiple pattern clauses") {
     REQUIRE(clauses.size() == 1);
     REQUIRE(input == remaining_input);
 }
-TEST_CASE("test") { 
-    std::string suchThat_input = "such that Modifies(a1, _) pattern a1(v1, _\"yey\"_) "
-                        "such that Follows(s1, s2) such "
-                        "that Uses(s2, v1) pattern a2(v1, _\"weew\"_)";
-    REQUIRE(QueryParser::isSuchThatClause(&suchThat_input) == true);
-    REQUIRE(QueryParser::isPatternClause(&suchThat_input) == false);
-    std::string pattern_input = "pattern a1(v1, _\"yey\"_) "
-                        "such that Follows(s1, s2) such "
-                        "that Uses(s2, v1) pattern a2(v1, _\"weew\"_)";
-    REQUIRE(QueryParser::isSuchThatClause(&pattern_input) == false);
-    REQUIRE(QueryParser::isPatternClause(&pattern_input) == true);
+TEST_CASE("Parser can parse multiple such that clauses with explicit and") { 
+    std::vector<Synonym> syns{
+        Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a"),
+        Synonym(EntityName::STMT, "s"), Synonym(EntityName::READ, "r"),
+        Synonym(EntityName::ASSIGN, "a1")};
+    std::string input =
+        "such that Modifies(a, _) and Follows(s, r) pattern a(_, _) such "
+        "that Uses(s, v) pattern a1(v, _\"weew\"_)";
+    std::string remaining_input = " pattern a(_, _) such "
+                                  "that Uses(s, v) pattern a1(v, _\"weew\"_)";
+    std::vector<SuchThatClause> clauses;
+    QueryParser::parseSuchThatClause(&input, syns, &clauses);
+    REQUIRE(clauses.size() == 2);
+    REQUIRE(clauses[0].relationship == RelationshipReference::MODIFIES);
+    REQUIRE(clauses[1].relationship == RelationshipReference::FOLLOWS);
+    REQUIRE(input == remaining_input);
+}
+
+TEST_CASE("Parser can parse multiple pattern clauses with explicit and") {
+    std::vector<Synonym> syns{
+        Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a"),
+        Synonym(EntityName::STMT, "s"), Synonym(EntityName::READ, "r"),
+        Synonym(EntityName::ASSIGN, "a1")};
+    std::string input =
+        "pattern a(_, _) and a1(v, _\"weew\"_) such that Modifies(a, _) and Follows(s, r) such "
+        "that Uses(s, v)";
+    std::string remaining_input = " such that Modifies(a, _) and Follows(s, r) such "
+        "that Uses(s, v)";
+    std::vector<PatternClause> clauses;
+    QueryParser::parsePatternClause(&input, syns, &clauses);
+    REQUIRE(clauses.size() == 2);
+    REQUIRE(input == remaining_input);
 }
