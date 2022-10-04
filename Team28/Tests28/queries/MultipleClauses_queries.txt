@@ -68,3 +68,13 @@ assign a; variable v; stmt s;
 Select v pattern a(_, _"a3"_) such that Modifies(s, v) and Follows(a, s)
 a10
 5000
+13 - multiple such that clauses
+assign a; variable v1, v2; stmt s, s1, s2; procedure p; while w1, w2;
+Select v1 such that Modifies(s, v1) and Follows(a, s1) and Uses(p, v2) such that Follows*(6, s2) and Parent*(w1, w2) such that Calls*("main", _)
+a3 a6 a9 a18 a26 a29 constant procedure read
+5000
+14 - multiple pattern clauses
+assign a1, a2, a3, a4; variable v1, v2, v3, v4;
+Select a1 pattern a1(_, "a19 + a20") and a2("a10", "5+10+   11") pattern a1("a18", _"a19"_) pattern a3 (_, _) and a4(v1, "0") and a3(v3, _"a6 * a7"_)
+19
+5000
