@@ -18,9 +18,11 @@ public:
     /*
      * Stores a Relationship to both leftToRightsMap and rightToLeftsMap.
      */
-    void store(Relationship<Left, Right> *relationship) {
-        Left left = relationship->getLeft();
-        Right right = relationship->getRight();
+    void store(TableValue *relationship) {
+        Relationship<Left, Right> *rs =
+            static_cast<Relationship<Left, Right> *>(relationship);
+        Left left = rs->getLeft();
+        Right right = rs->getRight();
         storeRightToLeftMap(left, right);
         storeLeftToRightMap(right, left);
     }

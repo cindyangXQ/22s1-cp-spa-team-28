@@ -22,7 +22,8 @@ enum class RelationshipReference {
 /*
  * A class encapsulating Relationships in SIMPLE.
  */
-template <typename Left, typename Right> class Relationship {
+template <typename Left, typename Right>
+class Relationship : public TableValue {
 public:
     /*
      * Explicit constructor for Relationship.

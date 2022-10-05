@@ -16,7 +16,7 @@ public:
     /*
      * Stores a statement into the StatementsTable.
      */
-    void store(Statement *statement);
+    void store(TableValue *statement);
 
     /*
      * Retrieves a statement from StatementsTable by index.

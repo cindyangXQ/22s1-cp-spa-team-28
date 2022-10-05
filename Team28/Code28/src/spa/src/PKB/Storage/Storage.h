@@ -65,7 +65,7 @@ public:
      */
     template <typename Subclass> Subclass *getTable(TableName name) {
         Table *table = this->tables.at(name);
-        return static_cast<Subclass *>(table);
+        return dynamic_cast<Subclass *>(table);
     };
 
 private:

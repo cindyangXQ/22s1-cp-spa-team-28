@@ -24,7 +24,7 @@ public:
      * Mapping will be done from variable -> (lineNo, expression)
      * as well as expression -> (lineNo, variable)
      */
-    void store(Assignment *assignment);
+    void store(TableValue *assignment);
 
     int getTableSize() const;
 

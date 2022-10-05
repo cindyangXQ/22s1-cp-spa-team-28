@@ -2,10 +2,12 @@
 
 #include <string>
 
+#include "../../commons/TableValue.h"
+
 /*
  * A class encapsulating Assignment in SIMPLE.
  */
-class Assignment {
+class Assignment : public TableValue {
 public:
     /*
      * Explicit constructor for Assignment.

@@ -6,15 +6,16 @@ StatementsTable::StatementsTable() = default;
 
 int StatementsTable::getTableSize() const { return this->tableSize; }
 
-void StatementsTable::store(Statement *statement) {
-    StatementType type = statement->getStatementType();
-    int index = statement->getLineNumber();
+void StatementsTable::store(TableValue *statement) {
+    Statement *stmt = static_cast<Statement *>(statement);
+    StatementType type = stmt->getStatementType();
+    int index = stmt->getLineNumber();
 
     if (type == StatementType::NONE) {
         // TODO error handling
     }
 
-    this->statements.push_back(statement);
+    this->statements.push_back(stmt);
     this->statementTypeIndexes[type].push_back(index);
     this->tableSize++;
 }
