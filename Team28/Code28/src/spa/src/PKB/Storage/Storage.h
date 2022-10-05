@@ -3,6 +3,8 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <typeindex>
+#include <typeinfo>
 #include <utility>
 
 #include "../../commons/Constant.h"
@@ -23,33 +25,6 @@
 #include "../Tables/Table.h"
 
 /*
- * Enumerates the different kinds of tables to instantiate.
- */
-enum class TableName {
-    STATEMENTS,
-    ASSIGNMENTS,
-    PROCEDURES,
-    VARIABLES,
-    CONSTANTS,
-    FOLLOWS,
-    FOLLOWS_T,
-    PARENT,
-    PARENT_T,
-    MODIFIES_S,
-    MODIFIES_P,
-    USES_S,
-    USES_P,
-    CALLS,
-    CALLS_T,
-    BRANCH_IN,
-    BRANCH_OUT,
-    NEXT,
-    NEXT_T,
-    W_CONTROL,
-    I_CONTROL
-};
-
-/*
  * Encapsulates a Storage class which is responsible for storing information to
  * tables in PKB.
  */
@@ -61,13 +36,13 @@ public:
     Storage();
 
     /*
-     * Retrieve a table by TableName.
+     * Retrieve a table by the templated class givenn
      */
-    template <typename Subclass> Subclass *getTable(TableName name) {
-        Table *table = this->tables.at(name);
+    template <typename Subclass> Subclass *getTable() {
+        Table *table = this->tables.at(typeid(Subclass));
         return dynamic_cast<Subclass *>(table);
     };
 
 private:
-    std::map<TableName, Table *> tables;
+    std::map<std::type_index, Table *> tables;
 };

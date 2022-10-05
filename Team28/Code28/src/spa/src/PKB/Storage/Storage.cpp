@@ -23,28 +23,25 @@ Storage::Storage() {
     IfControlVarTable *ifControl = new IfControlVarTable();
     WhileControlVarTable *whileControl = new WhileControlVarTable();
 
-    /*
-     * TODO relook typecasting
-     */
-    this->tables[TableName::STATEMENTS] = statements;
-    this->tables[TableName::ASSIGNMENTS] = assignments;
-    this->tables[TableName::PROCEDURES] = procedures;
-    this->tables[TableName::VARIABLES] = variables;
-    this->tables[TableName::CONSTANTS] = constants;
-    this->tables[TableName::PARENT] = parents;
-    this->tables[TableName::PARENT_T] = parentsT;
-    this->tables[TableName::FOLLOWS] = follows;
-    this->tables[TableName::FOLLOWS_T] = followsT;
-    this->tables[TableName::MODIFIES_S] = modifiesS;
-    this->tables[TableName::MODIFIES_P] = modifiesP;
-    this->tables[TableName::USES_S] = usesS;
-    this->tables[TableName::USES_P] = usesP;
-    this->tables[TableName::CALLS] = calls;
-    this->tables[TableName::CALLS_T] = callsT;
-    this->tables[TableName::BRANCH_IN] = branchIn;
-    this->tables[TableName::BRANCH_OUT] = branchOut;
-    this->tables[TableName::NEXT] = next;
-    this->tables[TableName::NEXT_T] = nextT;
-    this->tables[TableName::I_CONTROL] = ifControl;
-    this->tables[TableName::W_CONTROL] = whileControl;
+    this->tables[typeid(StatementsTable)] = statements;
+    this->tables[typeid(AssignmentsTable)] = assignments;
+    this->tables[typeid(ProceduresTable)] = procedures;
+    this->tables[typeid(VariablesTable)] = variables;
+    this->tables[typeid(ConstantsTable)] = constants;
+    this->tables[typeid(ParentTable)] = parents;
+    this->tables[typeid(ParentTTable)] = parentsT;
+    this->tables[typeid(FollowsTable)] = follows;
+    this->tables[typeid(FollowsTTable)] = followsT;
+    this->tables[typeid(ModifiesSTable)] = modifiesS;
+    this->tables[typeid(ModifiesPTable)] = modifiesP;
+    this->tables[typeid(UsesSTable)] = usesS;
+    this->tables[typeid(UsesPTable)] = usesP;
+    this->tables[typeid(CallsTable)] = calls;
+    this->tables[typeid(CallsTTable)] = callsT;
+    this->tables[typeid(BranchInTable)] = branchIn;
+    this->tables[typeid(BranchOutTable)] = branchOut;
+    this->tables[typeid(NextTable)] = next;
+    this->tables[typeid(NextTTable)] = nextT;
+    this->tables[typeid(IfControlVarTable)] = ifControl;
+    this->tables[typeid(WhileControlVarTable)] = whileControl;
 };

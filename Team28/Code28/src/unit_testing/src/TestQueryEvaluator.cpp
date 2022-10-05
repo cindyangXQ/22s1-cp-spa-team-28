@@ -14,7 +14,7 @@ TEST_CASE(
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements =
-        storage->getTable<StatementsTable>(TableName::STATEMENTS);
+        storage->getTable<StatementsTable>();
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -35,7 +35,7 @@ TEST_CASE(
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     VariablesTable *variables =
-        storage->getTable<VariablesTable>(TableName::VARIABLES);
+        storage->getTable<VariablesTable>();
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -56,7 +56,7 @@ TEST_CASE(
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     ConstantsTable *constants =
-        storage->getTable<ConstantsTable>(TableName::CONSTANTS);
+        storage->getTable<ConstantsTable>();
     Constant test1 = Constant("test1");
     Constant test2 = Constant("test2");
 
@@ -77,7 +77,7 @@ TEST_CASE(
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>(TableName::PROCEDURES);
+        storage->getTable<ProceduresTable>();
     Procedure test1 = Procedure("test1");
     Procedure test2 = Procedure("test2");
 
@@ -97,7 +97,7 @@ TEST_CASE("Evaluator can retrieve specific statement types") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements =
-        storage->getTable<StatementsTable>(TableName::STATEMENTS);
+        storage->getTable<StatementsTable>();
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
     Statement test3 = Statement(3, StatementType::WHILE);
@@ -147,8 +147,8 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements =
-        storage->getTable<StatementsTable>(TableName::STATEMENTS);
-    FollowsTable *follows = storage->getTable<FollowsTable>(TableName::FOLLOWS);
+        storage->getTable<StatementsTable>();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -175,8 +175,8 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements =
-        storage->getTable<StatementsTable>(TableName::STATEMENTS);
-    FollowsTable *follows = storage->getTable<FollowsTable>(TableName::FOLLOWS);
+        storage->getTable<StatementsTable>();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -204,8 +204,8 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements =
-        storage->getTable<StatementsTable>(TableName::STATEMENTS);
-    FollowsTable *follows = storage->getTable<FollowsTable>(TableName::FOLLOWS);
+        storage->getTable<StatementsTable>();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
