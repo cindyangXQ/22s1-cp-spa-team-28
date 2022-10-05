@@ -111,10 +111,13 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
                 return result;
             }
         } else {
+            std::unordered_set<std::string> remove_duplicates;
             std::vector<std::string> output;
             for (int k = 0; k < selectValues.size(); k++) {
-                output.push_back(selectValues[k].value);
+                remove_duplicates.insert(selectValues[k].value);
             }
+            output.insert(output.end(), remove_duplicates.begin(),
+                          remove_duplicates.end());
             return output;
         }
     }
