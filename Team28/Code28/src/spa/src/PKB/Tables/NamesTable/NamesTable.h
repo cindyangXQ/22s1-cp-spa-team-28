@@ -14,14 +14,15 @@
 /*
  * Class encapsulating a Table used for storing Procedures/Variables/Constants.
  */
-template <typename T> class NamesTable : public Table<Entity> {
+template <typename T> class NamesTable : public Table {
 public:
     /*
      * Stores an entity into NamesTable.
      */
-    void store(Entity *entity) {
-        this->names.insert(entity->getName());
-        this->nameEntityMap[entity->getName()] = entity;
+    void store(TableValue *entity) {
+        Entity *ent = static_cast<Entity *>(entity);
+        this->names.insert(ent->getName());
+        this->nameEntityMap[ent->getName()] = ent;
         this->tableSize++;
     };
 
@@ -61,6 +62,6 @@ protected:
     std::map<std::string, Entity *> nameEntityMap;
 };
 
-typedef NamesTable<Constant> ConstantsTable;
-typedef NamesTable<Variable> VariablesTable;
-typedef NamesTable<Procedure> ProceduresTable;
+class ConstantsTable : public NamesTable<Constant> {};
+class VariablesTable : public NamesTable<Variable> {};
+class ProceduresTable : public NamesTable<Procedure> {};

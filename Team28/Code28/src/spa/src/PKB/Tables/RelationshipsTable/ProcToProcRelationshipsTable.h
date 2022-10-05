@@ -31,5 +31,5 @@ public:
                                                    ProceduresTable *procedures);
 };
 
-typedef ProcToProcRelationshipsTable CallsTable;
-typedef ProcToProcRelationshipsTable CallsTTable;
+class CallsTable : public ProcToProcRelationshipsTable {};
+class CallsTTable : public ProcToProcRelationshipsTable {};

@@ -5,22 +5,22 @@
 #include "catch.hpp"
 
 TEST_CASE("storeStatement stores empty vector<Statement*> correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     std::vector<Statement *> statements = {};
 
     facade.storeStatements(&statements);
 
     StatementsTable *statementsTable =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage->getTable<StatementsTable>();
 
     // returned number of statements is equal to 0
     REQUIRE(statementsTable->getTableSize() == 0);
 }
 
 TEST_CASE("storeStatement stores Statement objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
     std::vector<Statement *> statements = {&test1, &test2};
@@ -28,7 +28,7 @@ TEST_CASE("storeStatement stores Statement objects correctly") {
     facade.storeStatements(&statements);
 
     StatementsTable *statementsTable =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage->getTable<StatementsTable>();
 
     // returned number of statements is equal to number stored
     REQUIRE(statementsTable->getTableSize() == 2);
@@ -39,8 +39,8 @@ TEST_CASE("storeStatement stores Statement objects correctly") {
 }
 
 TEST_CASE("storeAssignments store Assignment objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Assignment test1 = Assignment(1, "x1", "(1)");
     Assignment test2 = Assignment(2, "x1", "(1)");
     Assignment test3 = Assignment(3, "x2", "((x1)*(x1))");
@@ -49,7 +49,7 @@ TEST_CASE("storeAssignments store Assignment objects correctly") {
     facade.storeAssignments(&assignments);
 
     AssignmentsTable *assignmentsTable =
-        (AssignmentsTable *)storage.getTable(TableName::ASSIGNMENTS);
+        storage->getTable<AssignmentsTable>();
 
     // returned number of assignments is equal to number stored
     REQUIRE(assignmentsTable->getTableSize() == 3);
@@ -71,8 +71,8 @@ TEST_CASE("storeAssignments store Assignment objects correctly") {
 }
 
 TEST_CASE("storeVariable stores Variable objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Variable test1 = Variable("a");
     Variable test2 = Variable("b");
     Variable test3 = Variable("");
@@ -81,7 +81,7 @@ TEST_CASE("storeVariable stores Variable objects correctly") {
     facade.storeVariables(&variables);
 
     VariablesTable *variablesTable =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage->getTable<VariablesTable>();
 
     // returned number of variables is equal to number stored
     REQUIRE(variablesTable->getTableSize() == 3);
@@ -94,8 +94,8 @@ TEST_CASE("storeVariable stores Variable objects correctly") {
 }
 
 TEST_CASE("storeConstant stores Constant objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Constant test1 = Constant("a");
     Constant test2 = Constant("b");
     Constant test3 = Constant("");
@@ -104,7 +104,7 @@ TEST_CASE("storeConstant stores Constant objects correctly") {
     facade.storeConstants(&constants);
 
     ConstantsTable *constantsTable =
-        (ConstantsTable *)storage.getTable(TableName::CONSTANTS);
+        storage->getTable<ConstantsTable>();
 
     // returned number of constants is equal to number stored
     REQUIRE(constantsTable->getTableSize() == 3);
@@ -117,8 +117,8 @@ TEST_CASE("storeConstant stores Constant objects correctly") {
 }
 
 TEST_CASE("storeProcedure stores Procedure objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Procedure test1 = Procedure("a");
     Procedure test2 = Procedure("b");
     Procedure test3 = Procedure("");
@@ -127,7 +127,7 @@ TEST_CASE("storeProcedure stores Procedure objects correctly") {
     facade.storeProcedures(&procedures);
 
     ProceduresTable *proceduresTable =
-        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+        storage->getTable<ProceduresTable>();
 
     // returned number of procedures is equal to number stored
     REQUIRE(proceduresTable->getTableSize() == 3);
@@ -140,21 +140,21 @@ TEST_CASE("storeProcedure stores Procedure objects correctly") {
 }
 
 TEST_CASE("storeProcedure does not affect other tables") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Procedure test = Procedure("a");
     std::vector<Procedure *> procedures = {&test};
 
     facade.storeProcedures(&procedures);
 
     ProceduresTable *proceduresTable =
-        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+        storage->getTable<ProceduresTable>();
     VariablesTable *variablesTable =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage->getTable<VariablesTable>();
     ConstantsTable *constantsTable =
-        (ConstantsTable *)storage.getTable(TableName::CONSTANTS);
+        storage->getTable<ConstantsTable>();
     StatementsTable *statementsTable =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage->getTable<StatementsTable>();
 
     // returned number of procedures is equal to number stored
     REQUIRE(proceduresTable->getTableSize() == 1);
@@ -165,8 +165,8 @@ TEST_CASE("storeProcedure does not affect other tables") {
 }
 
 TEST_CASE("storeFollows stores Relationship<int, int> objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<int, int> test1 =
         Relationship(RelationshipReference::FOLLOWS, 1, 2);
     Relationship<int, int> test2 =
@@ -178,7 +178,7 @@ TEST_CASE("storeFollows stores Relationship<int, int> objects correctly") {
     facade.storeFollows(&follows);
 
     FollowsTable *followsTable =
-        (FollowsTable *)storage.getTable(TableName::FOLLOWS);
+        storage->getTable<FollowsTable>();
 
     // Relationship is stored correctly
     REQUIRE(followsTable->getLeftMap().size() == 3);
@@ -186,8 +186,8 @@ TEST_CASE("storeFollows stores Relationship<int, int> objects correctly") {
 }
 
 TEST_CASE("storeFollowsT stores Relationship<int, int> objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<int, int> test1 =
         Relationship(RelationshipReference::FOLLOWS_T, 1, 2);
     Relationship<int, int> test2 =
@@ -199,7 +199,7 @@ TEST_CASE("storeFollowsT stores Relationship<int, int> objects correctly") {
     facade.storeFollowsT(&followsT);
 
     FollowsTTable *followsTTable =
-        (FollowsTTable *)storage.getTable(TableName::FOLLOWS_T);
+        storage->getTable<FollowsTTable>();
 
     // Relationship is stored correctly
     REQUIRE(followsTTable->getLeftMap().size() == 3);
@@ -207,8 +207,8 @@ TEST_CASE("storeFollowsT stores Relationship<int, int> objects correctly") {
 }
 
 TEST_CASE("storeParent stores Relationship<int, int> objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<int, int> test1 =
         Relationship(RelationshipReference::PARENT, 1, 2);
     Relationship<int, int> test2 =
@@ -220,7 +220,7 @@ TEST_CASE("storeParent stores Relationship<int, int> objects correctly") {
     facade.storeParent(&parents);
 
     ParentTable *parentTable =
-        (ParentTable *)storage.getTable(TableName::PARENT);
+        storage->getTable<ParentTable>();
 
     // Relationship is stored correctly
     REQUIRE(parentTable->getLeftMap().size() == 3);
@@ -228,8 +228,8 @@ TEST_CASE("storeParent stores Relationship<int, int> objects correctly") {
 }
 
 TEST_CASE("storeParentT stores Relationship<int, int> objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<int, int> test1 =
         Relationship(RelationshipReference::PARENT_T, 1, 2);
     Relationship<int, int> test2 =
@@ -240,18 +240,18 @@ TEST_CASE("storeParentT stores Relationship<int, int> objects correctly") {
 
     facade.storeParentT(&parentsT);
 
-    FollowsTTable *followsTable =
-        (FollowsTTable *)storage.getTable(TableName::PARENT_T);
+    ParentTTable *parentTTable =
+        storage->getTable<ParentTTable>();
 
     // Relationship is stored correctly
-    REQUIRE(followsTable->getLeftMap().size() == 3);
-    REQUIRE(followsTable->getRightMap().size() == 3);
+    REQUIRE(parentTTable->getLeftMap().size() == 3);
+    REQUIRE(parentTTable->getRightMap().size() == 3);
 }
 
 TEST_CASE(
     "storeModifiesS stores Relationship<int, std::string> objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::MODIFIES, 1, std::string("a"));
     Relationship<int, std::string> test2 =
@@ -264,7 +264,7 @@ TEST_CASE(
     facade.storeModifiesS(&modifiesS);
 
     ModifiesSTable *modifiesSTable =
-        (ModifiesSTable *)storage.getTable(TableName::MODIFIES_S);
+        storage->getTable<ModifiesSTable>();
 
     // Relationship is stored correctly
     REQUIRE(modifiesSTable->getLeftMap().size() == 3);
@@ -273,8 +273,8 @@ TEST_CASE(
 
 TEST_CASE("storeModifiesP stores Relationship<std::string, std::string> "
           "objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<std::string, std::string> test1 = Relationship(
         RelationshipReference::MODIFIES, std::string("x"), std::string("a"));
     Relationship<std::string, std::string> test2 = Relationship(
@@ -287,7 +287,7 @@ TEST_CASE("storeModifiesP stores Relationship<std::string, std::string> "
     facade.storeModifiesP(&modifiesP);
 
     ModifiesPTable *modifiesPTable =
-        (ModifiesPTable *)storage.getTable(TableName::MODIFIES_P);
+        storage->getTable<ModifiesPTable>();
 
     // Relationship is stored correctly
     REQUIRE(modifiesPTable->getLeftMap().size() == 3);
@@ -296,8 +296,8 @@ TEST_CASE("storeModifiesP stores Relationship<std::string, std::string> "
 
 TEST_CASE(
     "storeUsesS stores Relationship<int, std::string> objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("a"));
     Relationship<int, std::string> test2 =
@@ -309,7 +309,7 @@ TEST_CASE(
 
     facade.storeUsesS(&usesS);
 
-    UsesSTable *usesSTable = (UsesSTable *)storage.getTable(TableName::USES_S);
+    UsesSTable *usesSTable = storage->getTable<UsesSTable>();
 
     // Relationship is stored correctly
     REQUIRE(usesSTable->getLeftMap().size() == 3);
@@ -318,8 +318,8 @@ TEST_CASE(
 
 TEST_CASE("storeUsesP stores Relationship<std::string, std::string> objects "
           "correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<std::string, std::string> test1 = Relationship(
         RelationshipReference::USES, std::string("x"), std::string("a"));
     Relationship<std::string, std::string> test2 = Relationship(
@@ -331,7 +331,7 @@ TEST_CASE("storeUsesP stores Relationship<std::string, std::string> objects "
 
     facade.storeUsesP(&usesP);
 
-    UsesPTable *usesPTable = (UsesPTable *)storage.getTable(TableName::USES_P);
+    UsesPTable *usesPTable = storage->getTable<UsesPTable>();
 
     // Relationship is stored correctly
     REQUIRE(usesPTable->getLeftMap().size() == 3);
@@ -340,8 +340,8 @@ TEST_CASE("storeUsesP stores Relationship<std::string, std::string> objects "
 
 TEST_CASE("storeCalls stores Relationship<std::string, std::string> objects "
           "correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<std::string, std::string> test1 = Relationship(
         RelationshipReference::CALLS, std::string("x"), std::string("a"));
     Relationship<std::string, std::string> test2 = Relationship(
@@ -353,7 +353,7 @@ TEST_CASE("storeCalls stores Relationship<std::string, std::string> objects "
 
     facade.storeCalls(&calls);
 
-    CallsTable *callsTable = (CallsTable *)storage.getTable(TableName::CALLS);
+    CallsTable *callsTable = storage->getTable<CallsTable>();
 
     // Relationship is stored correctly
     REQUIRE(callsTable->getLeftMap().size() == 3);
@@ -362,8 +362,8 @@ TEST_CASE("storeCalls stores Relationship<std::string, std::string> objects "
 
 TEST_CASE("storeCallsT stores Relationship<std::string, std::string> objects "
           "correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<std::string, std::string> test1 = Relationship(
         RelationshipReference::CALLS_T, std::string("x"), std::string("a"));
     Relationship<std::string, std::string> test2 = Relationship(
@@ -376,7 +376,7 @@ TEST_CASE("storeCallsT stores Relationship<std::string, std::string> objects "
     facade.storeCallsT(&calls);
 
     CallsTTable *callsTable =
-        (CallsTTable *)storage.getTable(TableName::CALLS_T);
+        storage->getTable<CallsTTable>();
 
     // Relationship is stored correctly
     REQUIRE(callsTable->getLeftMap().size() == 3);
@@ -384,8 +384,8 @@ TEST_CASE("storeCallsT stores Relationship<std::string, std::string> objects "
 }
 
 TEST_CASE("storeBranchIn stores Relationship<int, int> objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<int, int> test1 =
         Relationship(RelationshipReference::EMPTY, 1, 2);
     Relationship<int, int> test2 =
@@ -397,7 +397,7 @@ TEST_CASE("storeBranchIn stores Relationship<int, int> objects correctly") {
     facade.storeBranchIn(&branchIns);
 
     BranchInTable *branchinTable =
-        (BranchInTable *)storage.getTable(TableName::BRANCH_IN);
+        storage->getTable<BranchInTable>();
 
     // Relationship is stored correctly
     REQUIRE(branchinTable->getLeftMap().size() == 3);
@@ -406,8 +406,8 @@ TEST_CASE("storeBranchIn stores Relationship<int, int> objects correctly") {
 
 TEST_CASE(
     "storeBranchOut Follows stores Relationship<int, int> objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<int, int> test1 =
         Relationship(RelationshipReference::EMPTY, 1, 2);
     Relationship<int, int> test2 =
@@ -419,17 +419,17 @@ TEST_CASE(
     facade.storeBranchOut(&branchIns);
 
     BranchOutTable *branchoutTable =
-        (BranchOutTable *)storage.getTable(TableName::BRANCH_OUT);
+        storage->getTable<BranchOutTable>();
 
     // Relationship is stored correctly
     REQUIRE(branchoutTable->getLeftMap().size() == 3);
     REQUIRE(branchoutTable->getRightMap().size() == 3);
 }
 
-TEST_CASE(
-    "storeIfControlVar stores Relationship<int, std::string> objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+TEST_CASE("storeIfControlVar stores Relationship<int, std::string> objects "
+          "correctly") {
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("a"));
     Relationship<int, std::string> test2 =
@@ -441,25 +441,25 @@ TEST_CASE(
 
     facade.storeIfControlVar(&usesS);
 
-    IfControlVarTable *ifsTable = 
-        (IfControlVarTable *)storage.getTable(TableName::I_CONTROL);
+    IfControlVarTable *ifsTable =
+        storage->getTable<IfControlVarTable>();
 
     // Relationship is stored correctly
     REQUIRE(ifsTable->getLeftMap().size() == 3);
     REQUIRE(ifsTable->getRightMap().size() == 3);
 
     // While table is not affected
-    WhileControlVarTable *whileTable = 
-        (WhileControlVarTable *)storage.getTable(TableName::W_CONTROL);
+    WhileControlVarTable *whileTable =
+        storage->getTable<WhileControlVarTable>();
 
     REQUIRE(whileTable->getLeftMap().size() == 0);
     REQUIRE(whileTable->getRightMap().size() == 0);
 }
 
-TEST_CASE(
-    "storeWhileControlVar stores Relationship<int, std::string> objects correctly") {
-    Storage storage;
-    PopulateFacade facade = PopulateFacade(&storage);
+TEST_CASE("storeWhileControlVar stores Relationship<int, std::string> objects "
+          "correctly") {
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("a"));
     Relationship<int, std::string> test2 =
@@ -471,17 +471,17 @@ TEST_CASE(
 
     facade.storeWhileControlVar(&usesS);
 
-    WhileControlVarTable *whileTable = 
-        (WhileControlVarTable *)storage.getTable(TableName::W_CONTROL);
+    WhileControlVarTable *whileTable =
+        storage->getTable<WhileControlVarTable>();
 
     // Relationship is stored correctly
     REQUIRE(whileTable->getLeftMap().size() == 3);
     REQUIRE(whileTable->getRightMap().size() == 3);
 
     // If table is not affected
-    IfControlVarTable *ifsTable = 
-        (IfControlVarTable *)storage.getTable(TableName::I_CONTROL);
-        
+    IfControlVarTable *ifsTable =
+        storage->getTable<IfControlVarTable>();
+
     REQUIRE(ifsTable->getLeftMap().size() == 0);
     REQUIRE(ifsTable->getRightMap().size() == 0);
 }

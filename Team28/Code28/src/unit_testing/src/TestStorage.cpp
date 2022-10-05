@@ -5,9 +5,9 @@
 #include <iostream>
 
 TEST_CASE("Storage stores and retrieves Constants correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     ConstantsTable *constants =
-        (ConstantsTable *)storage.getTable(TableName::CONSTANTS);
+        storage->getTable<ConstantsTable>();
     Constant test = Constant("Test");
 
     // ConstantsTable is initialised correctly
@@ -22,9 +22,9 @@ TEST_CASE("Storage stores and retrieves Constants correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves Statements correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage->getTable<StatementsTable>();
     Statement test = Statement(1, StatementType::ASSIGN);
 
     // StatementsTable is initialised correctly
@@ -39,9 +39,9 @@ TEST_CASE("Storage stores and retrieves Statements correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves Assignments correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     AssignmentsTable *assignments =
-        (AssignmentsTable *)storage.getTable(TableName::ASSIGNMENTS);
+        storage->getTable<AssignmentsTable>();
     Assignment test = Assignment(1, "x1", "(1)");
 
     assignments->store(&test);
@@ -56,9 +56,9 @@ TEST_CASE("Storage stores and retrieves Assignments correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves Variables correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage->getTable<VariablesTable>();
     Variable test = Variable("test");
 
     // StatementsTable is initialised correctly
@@ -73,9 +73,9 @@ TEST_CASE("Storage stores and retrieves Variables correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves Procedures correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     ProceduresTable *procedures =
-        (ProceduresTable *)storage.getTable(TableName::VARIABLES);
+        storage->getTable<ProceduresTable>();
     Procedure test = Procedure("test");
 
     // ProceduresTable is initialised correctly
@@ -90,8 +90,8 @@ TEST_CASE("Storage stores and retrieves Procedures correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves Parent correctly") {
-    Storage storage;
-    ParentTable *parents = (ParentTable *)storage.getTable(TableName::PARENT);
+    Storage *storage = new Storage();
+    ParentTable *parents = storage->getTable<ParentTable>();
     Relationship<int, int> test =
         Relationship(RelationshipReference::PARENT, 1, 2);
 
@@ -103,9 +103,9 @@ TEST_CASE("Storage stores and retrieves Parent correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves ParentT correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     ParentTTable *parentsT =
-        (ParentTTable *)storage.getTable(TableName::PARENT_T);
+        storage->getTable<ParentTTable>();
     Relationship<int, int> test =
         Relationship(RelationshipReference::PARENT_T, 1, 2);
 
@@ -117,9 +117,8 @@ TEST_CASE("Storage stores and retrieves ParentT correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves Follows correctly") {
-    Storage storage;
-    FollowsTable *follows =
-        (FollowsTable *)storage.getTable(TableName::FOLLOWS);
+    Storage *storage = new Storage();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
     Relationship<int, int> test =
         Relationship(RelationshipReference::FOLLOWS, 1, 2);
 
@@ -131,9 +130,9 @@ TEST_CASE("Storage stores and retrieves Follows correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves FollowsT correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     FollowsTTable *followsT =
-        (FollowsTTable *)storage.getTable(TableName::FOLLOWS_T);
+        storage->getTable<FollowsTTable>();
     Relationship<int, int> test =
         Relationship(RelationshipReference::FOLLOWS_T, 1, 2);
 
@@ -145,9 +144,9 @@ TEST_CASE("Storage stores and retrieves FollowsT correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves ModifiesS correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     ModifiesSTable *modifiesS =
-        (ModifiesSTable *)storage.getTable(TableName::MODIFIES_S);
+        storage->getTable<ModifiesSTable>();
     Relationship<int, std::string> test =
         Relationship(RelationshipReference::MODIFIES, 1, std::string("v"));
 
@@ -159,9 +158,9 @@ TEST_CASE("Storage stores and retrieves ModifiesS correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves ModifiesP correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     ModifiesPTable *modifiesP =
-        (ModifiesPTable *)storage.getTable(TableName::MODIFIES_P);
+        storage->getTable<ModifiesPTable>();
     Relationship<std::string, std::string> test = Relationship(
         RelationshipReference::MODIFIES, std::string("main"), std::string("v"));
 
@@ -173,8 +172,8 @@ TEST_CASE("Storage stores and retrieves ModifiesP correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves UsesS correctly") {
-    Storage storage;
-    UsesSTable *usesS = (UsesSTable *)storage.getTable(TableName::USES_S);
+    Storage *storage = new Storage();
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
     Relationship<int, std::string> test =
         Relationship(RelationshipReference::USES, 1, std::string("v"));
 
@@ -186,8 +185,8 @@ TEST_CASE("Storage stores and retrieves UsesS correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves UsesP correctly") {
-    Storage storage;
-    UsesPTable *usesP = (UsesPTable *)storage.getTable(TableName::USES_P);
+    Storage *storage = new Storage();
+    UsesPTable *usesP = storage->getTable<UsesPTable>();
     Relationship<std::string, std::string> test = Relationship(
         RelationshipReference::USES, std::string("main"), std::string("v"));
 
@@ -199,8 +198,8 @@ TEST_CASE("Storage stores and retrieves UsesP correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves Calls correctly") {
-    Storage storage;
-    CallsTable *calls = (CallsTable *)storage.getTable(TableName::CALLS);
+    Storage *storage = new Storage();
+    CallsTable *calls = storage->getTable<CallsTable>();
     Relationship<std::string, std::string> test =
         Relationship(RelationshipReference::CALLS, std::string("proc1"),
                      std::string("proc2"));
@@ -213,8 +212,8 @@ TEST_CASE("Storage stores and retrieves Calls correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves CallsT correctly") {
-    Storage storage;
-    CallsTTable *callsT = (CallsTTable *)storage.getTable(TableName::CALLS);
+    Storage *storage = new Storage();
+    CallsTTable *callsT = storage->getTable<CallsTTable>();
     Relationship<std::string, std::string> test =
         Relationship(RelationshipReference::CALLS_T, std::string("proc1"),
                      std::string("proc2"));
@@ -227,9 +226,9 @@ TEST_CASE("Storage stores and retrieves CallsT correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves BranchIn correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     BranchInTable *branchIn =
-        (BranchInTable *)storage.getTable(TableName::BRANCH_IN);
+        storage->getTable<BranchInTable>();
     Relationship<int, int> test =
         Relationship(RelationshipReference::EMPTY, 1, 2);
 
@@ -241,9 +240,9 @@ TEST_CASE("Storage stores and retrieves BranchIn correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves BranchOut correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     BranchOutTable *branchOut =
-        (BranchOutTable *)storage.getTable(TableName::BRANCH_OUT);
+        storage->getTable<BranchOutTable>();
     Relationship<int, int> test =
         Relationship(RelationshipReference::EMPTY, 1, 2);
 
@@ -255,9 +254,8 @@ TEST_CASE("Storage stores and retrieves BranchOut correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves Next correctly") {
-    Storage storage;
-    NextTable *next =
-        (NextTable *)storage.getTable(TableName::NEXT);
+    Storage *storage = new Storage();
+    NextTable *next = storage->getTable<NextTable>();
     Relationship<int, int> test =
         Relationship(RelationshipReference::NEXT, 1, 2);
 
@@ -269,9 +267,8 @@ TEST_CASE("Storage stores and retrieves Next correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves NextT correctly") {
-    Storage storage;
-    NextTTable *nextT =
-        (NextTTable *)storage.getTable(TableName::NEXT_T);
+    Storage *storage = new Storage();
+    NextTTable *nextT = storage->getTable<NextTTable>();
     Relationship<int, int> test =
         Relationship(RelationshipReference::NEXT_T, 1, 2);
 
@@ -283,9 +280,9 @@ TEST_CASE("Storage stores and retrieves NextT correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves IfControl correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     IfControlVarTable *ifsControl =
-        (IfControlVarTable *)storage.getTable(TableName::I_CONTROL);
+        storage->getTable<IfControlVarTable>();
     Relationship<int, std::string> test =
         Relationship(RelationshipReference::USES, 1, std::string("x"));
 
@@ -297,9 +294,9 @@ TEST_CASE("Storage stores and retrieves IfControl correctly") {
 }
 
 TEST_CASE("Storage stores and retrieves WhileControl correctly") {
-    Storage storage;
+    Storage *storage = new Storage();
     WhileControlVarTable *whileControl =
-        (WhileControlVarTable *)storage.getTable(TableName::W_CONTROL);
+        storage->getTable<WhileControlVarTable>();
     Relationship<int, std::string> test =
         Relationship(RelationshipReference::USES, 1, std::string("x"));
 
