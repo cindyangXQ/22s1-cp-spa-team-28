@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TableValue.h"
+
 /*
  * Enumerates the different design entity.
  */
