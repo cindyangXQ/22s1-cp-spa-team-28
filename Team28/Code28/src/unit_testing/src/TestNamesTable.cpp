@@ -5,12 +5,6 @@
 
 #include "catch.hpp"
 
-TEST_CASE("ConstantsTable (derived from NamesTable) is initialised correctly") {
-    ConstantsTable table;
-
-    REQUIRE(table.getTableSize() == 0);
-}
-
 TEST_CASE("ConstantsTable can store and retrieve correctly") {
     ConstantsTable table;
     Constant test = Constant("Test");
@@ -21,8 +15,6 @@ TEST_CASE("ConstantsTable can store and retrieve correctly") {
     REQUIRE(*table.retrieve(test.getName()) == test);
     // invalid index returns a nullptr for retrieve()
     REQUIRE(table.retrieve("not test") == nullptr);
-    // tableSize updated correctly
-    REQUIRE(table.getTableSize() == 1);
 }
 
 TEST_CASE("VariablesTable can store and retrieve correctly") {
@@ -35,8 +27,6 @@ TEST_CASE("VariablesTable can store and retrieve correctly") {
     REQUIRE(*table.retrieve(test.getName()) == test);
     // invalid index returns a nullptr for retrieve()
     REQUIRE(table.retrieve("not test") == nullptr);
-    // tableSize updated correctly
-    REQUIRE(table.getTableSize() == 1);
 }
 
 TEST_CASE("ProceduresTable can store and retrieve correctly") {
@@ -49,8 +39,6 @@ TEST_CASE("ProceduresTable can store and retrieve correctly") {
     REQUIRE(*table.retrieve(test.getName()) == test);
     // invalid index returns a nullptr for retrieve()
     REQUIRE(table.retrieve("not test") == nullptr);
-    // tableSize updated correctly
-    REQUIRE(table.getTableSize() == 1);
 }
 
 TEST_CASE("ConstantsTable can store 10 items correctly") {
@@ -64,7 +52,6 @@ TEST_CASE("ConstantsTable can store 10 items correctly") {
 
     REQUIRE(*table.retrieve(a.getName()) == a);
     REQUIRE(*table.retrieve("b") == b);
-    REQUIRE(table.getTableSize() == 3);
 }
 
 TEST_CASE("VariablesTable can getAll statements correctly") {

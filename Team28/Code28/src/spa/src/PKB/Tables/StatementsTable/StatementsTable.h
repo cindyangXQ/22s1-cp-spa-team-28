@@ -29,11 +29,6 @@ public:
     StatementType getStatementType(const int &index);
 
     /*
-     * Returns the size of StatementsTable.
-     */
-    int getTableSize() const;
-
-    /*
      * Gets all statements in StatementsTable.
      */
     std::vector<Statement *> getAll();
@@ -49,8 +44,6 @@ public:
     std::vector<int> getStatementsByType(StatementType type);
 
 private:
-    int tableSize = 0;
-
     std::map<StatementType, std::vector<int>> statementTypeIndexes = {
         {StatementType::READ, {}},   {StatementType::PRINT, {}},
         {StatementType::ASSIGN, {}}, {StatementType::CALL, {}},

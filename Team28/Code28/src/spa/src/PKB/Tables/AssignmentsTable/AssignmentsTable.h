@@ -26,8 +26,6 @@ public:
      */
     void store(Assignment *assignment);
 
-    int getTableSize() const;
-
     /*
      * Return boolean of whether the given varName and expression exists in an
      * assignment.
@@ -63,8 +61,6 @@ public:
     getAssignAndVarExact(std::string expression);
 
 private:
-    int tableSize = 0;
-
     std::vector<Value> allLineNumbers;
     std::vector<Assignment> allAssignments;
 

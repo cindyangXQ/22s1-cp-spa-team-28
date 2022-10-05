@@ -4,8 +4,6 @@
 
 StatementsTable::StatementsTable() = default;
 
-int StatementsTable::getTableSize() const { return this->tableSize; }
-
 void StatementsTable::store(Statement *statement) {
     StatementType type = statement->getStatementType();
     int index = statement->getLineNumber();
@@ -16,7 +14,6 @@ void StatementsTable::store(Statement *statement) {
 
     this->statements.push_back(statement);
     this->statementTypeIndexes[type].push_back(index);
-    this->tableSize++;
 }
 
 Statement *StatementsTable::retrieve(const int &lineNum) {

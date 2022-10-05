@@ -10,13 +10,8 @@ TEST_CASE("Storage stores and retrieves Constants correctly") {
         (ConstantsTable *)storage.getTable(TableName::CONSTANTS);
     Constant test = Constant("Test");
 
-    // ConstantsTable is initialised correctly
-    REQUIRE(constants->getTableSize() == 0);
-
     constants->store(&test);
 
-    // Constant stored to ConstantsTable correctly
-    REQUIRE(constants->getTableSize() == 1);
     // Constant retrieved from ConstantsTable correctly
     REQUIRE(*constants->retrieve(test.getName()) == test);
 }
@@ -27,13 +22,8 @@ TEST_CASE("Storage stores and retrieves Statements correctly") {
         (StatementsTable *)storage.getTable(TableName::STATEMENTS);
     Statement test = Statement(1, StatementType::ASSIGN);
 
-    // StatementsTable is initialised correctly
-    REQUIRE(statements->getTableSize() == 0);
-
     statements->store(&test);
 
-    // Statement stored to StatementsTable correctly
-    REQUIRE(statements->getTableSize() == 1);
     // Statement retrieved from StatementsTable correctly
     REQUIRE(*statements->retrieve(test.getLineNumber()) == test);
 }
@@ -46,8 +36,6 @@ TEST_CASE("Storage stores and retrieves Assignments correctly") {
 
     assignments->store(&test);
 
-    // Assignment stored to AssignnmentsTable correctly
-    REQUIRE(assignments->getTableSize() == 1);
     // Assignment retrieved from Assignments correctly
     std::vector<Value> expectedResult = {Value(ValueType::STMT_NUM, "1")};
     std::vector<Value> output = assignments->containsVarAndExpr("x1", "(1)");
@@ -61,13 +49,8 @@ TEST_CASE("Storage stores and retrieves Variables correctly") {
         (VariablesTable *)storage.getTable(TableName::VARIABLES);
     Variable test = Variable("test");
 
-    // StatementsTable is initialised correctly
-    REQUIRE(variables->getTableSize() == 0);
-
     variables->store(&test);
 
-    // Variable stored to VariablesTable correctly
-    REQUIRE(variables->getTableSize() == 1);
     // Variable retrieved from VariablesTable correctly
     REQUIRE(*variables->retrieve(test.getName()) == test);
 }
@@ -78,13 +61,8 @@ TEST_CASE("Storage stores and retrieves Procedures correctly") {
         (ProceduresTable *)storage.getTable(TableName::VARIABLES);
     Procedure test = Procedure("test");
 
-    // ProceduresTable is initialised correctly
-    REQUIRE(procedures->getTableSize() == 0);
-
     procedures->store(&test);
 
-    // Procedure stored to ProceduresTable correctly
-    REQUIRE(procedures->getTableSize() == 1);
     // Procedure retrieved from ProceduresTable correctly
     REQUIRE(*procedures->retrieve(test.getName()) == test);
 }
@@ -256,8 +234,7 @@ TEST_CASE("Storage stores and retrieves BranchOut correctly") {
 
 TEST_CASE("Storage stores and retrieves Next correctly") {
     Storage storage;
-    NextTable *next =
-        (NextTable *)storage.getTable(TableName::NEXT);
+    NextTable *next = (NextTable *)storage.getTable(TableName::NEXT);
     Relationship<int, int> test =
         Relationship(RelationshipReference::NEXT, 1, 2);
 
@@ -270,8 +247,7 @@ TEST_CASE("Storage stores and retrieves Next correctly") {
 
 TEST_CASE("Storage stores and retrieves NextT correctly") {
     Storage storage;
-    NextTTable *nextT =
-        (NextTTable *)storage.getTable(TableName::NEXT_T);
+    NextTTable *nextT = (NextTTable *)storage.getTable(TableName::NEXT_T);
     Relationship<int, int> test =
         Relationship(RelationshipReference::NEXT_T, 1, 2);
 
