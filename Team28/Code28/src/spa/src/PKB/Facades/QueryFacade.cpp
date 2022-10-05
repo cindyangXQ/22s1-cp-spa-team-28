@@ -3,16 +3,14 @@
 QueryFacade::QueryFacade(Storage *storage) { this->storage = storage; }
 
 std::vector<Statement *> QueryFacade::getAllStatements() {
-    StatementsTable *statements =
-        this->storage->getTable<StatementsTable>();
+    StatementsTable *statements = this->storage->getTable<StatementsTable>();
 
     return statements->getAll();
 }
 
 std::vector<Statement *>
 QueryFacade::getAllStatementsByType(StatementType type) {
-    StatementsTable *statements =
-        this->storage->getTable<StatementsTable>();
+    StatementsTable *statements = this->storage->getTable<StatementsTable>();
     std::vector<int> statementTypeIndices =
         statements->getStatementsByType(type);
     std::vector<Statement *> results;
@@ -23,15 +21,13 @@ QueryFacade::getAllStatementsByType(StatementType type) {
 }
 
 Statement *QueryFacade::getStatementByLineNo(const int &lineNo) {
-    StatementsTable *statements =
-        this->storage->getTable<StatementsTable>();
+    StatementsTable *statements = this->storage->getTable<StatementsTable>();
 
     return statements->retrieve(lineNo);
 }
 
 std::vector<std::string> QueryFacade::getAllVariables() {
-    VariablesTable *variables =
-        this->storage->getTable<VariablesTable>();
+    VariablesTable *variables = this->storage->getTable<VariablesTable>();
     std::unordered_set names = variables->getAll();
     std::vector<std::string> result(names.begin(), names.end());
 
@@ -39,15 +35,13 @@ std::vector<std::string> QueryFacade::getAllVariables() {
 }
 
 Variable *QueryFacade::getVariableByName(const std::string &name) {
-    VariablesTable *variables =
-        this->storage->getTable<VariablesTable>();
+    VariablesTable *variables = this->storage->getTable<VariablesTable>();
 
     return variables->retrieve(name);
 }
 
 std::vector<std::string> QueryFacade::getAllConstants() {
-    ConstantsTable *constants =
-        this->storage->getTable<ConstantsTable>();
+    ConstantsTable *constants = this->storage->getTable<ConstantsTable>();
     std::unordered_set names = constants->getAll();
     std::vector<std::string> result(names.begin(), names.end());
 
@@ -55,15 +49,13 @@ std::vector<std::string> QueryFacade::getAllConstants() {
 }
 
 Constant *QueryFacade::getConstantByName(const std::string &name) {
-    ConstantsTable *constants =
-        this->storage->getTable<ConstantsTable>();
+    ConstantsTable *constants = this->storage->getTable<ConstantsTable>();
 
     return constants->retrieve(name);
 }
 
 std::vector<std::string> QueryFacade::getAllProcedures() {
-    ProceduresTable *procedures =
-        this->storage->getTable<ProceduresTable>();
+    ProceduresTable *procedures = this->storage->getTable<ProceduresTable>();
     std::unordered_set names = procedures->getAll();
     std::vector<std::string> result(names.begin(), names.end());
 
@@ -71,8 +63,7 @@ std::vector<std::string> QueryFacade::getAllProcedures() {
 }
 
 Procedure *QueryFacade::getProcedureByName(const std::string &name) {
-    ProceduresTable *procedures =
-        this->storage->getTable<ProceduresTable>();
+    ProceduresTable *procedures = this->storage->getTable<ProceduresTable>();
 
     return procedures->retrieve(name);
 }
@@ -84,37 +75,34 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
         // correct
         return false;
     }
+
+    Solvable *table;
+
     switch (relType) {
     case RelationshipReference::FOLLOWS: {
-        FollowsTable *follows =
-            this->storage->getTable<FollowsTable>();
-        return follows->validate(leftRef, rightRef);
+        table = this->storage->getTable<FollowsTable>();
+        break;
     }
     case RelationshipReference::FOLLOWS_T: {
-        FollowsTTable *followsT =
-            this->storage->getTable<FollowsTTable>();
-        return followsT->validate(leftRef, rightRef);
+        table = this->storage->getTable<FollowsTTable>();
+        break;
     }
     case RelationshipReference::PARENT: {
-        ParentTable *parent =
-            this->storage->getTable<ParentTable>();
-        return parent->validate(leftRef, rightRef);
+        table = this->storage->getTable<ParentTable>();
+        break;
     }
     case RelationshipReference::PARENT_T: {
-        ParentTTable *parentT =
-            this->storage->getTable<ParentTTable>();
-        return parentT->validate(leftRef, rightRef);
+        table = this->storage->getTable<ParentTTable>();
+        break;
     }
     case RelationshipReference::MODIFIES: {
         if (leftRef.type == ReferenceType::STMT_REF) {
-            ModifiesSTable *modifiesS =
-                this->storage->getTable<ModifiesSTable>();
-            return modifiesS->validate(leftRef, rightRef);
+            table = this->storage->getTable<ModifiesSTable>();
+            break;
         }
         if (leftRef.type == ReferenceType::ENT_REF) {
-            ModifiesPTable *modifiesP =
-                this->storage->getTable<ModifiesPTable>();
-            return modifiesP->validate(leftRef, rightRef);
+            table = this->storage->getTable<ModifiesPTable>();
+            break;
         }
         if (leftRef.type == ReferenceType::WILDCARD) {
             ModifiesSTable *modifiesS =
@@ -128,40 +116,35 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
     }
     case RelationshipReference::USES: {
         if (leftRef.type == ReferenceType::STMT_REF) {
-            UsesSTable *usesS =
-                this->storage->getTable<UsesSTable>();
-            return usesS->validate(leftRef, rightRef);
+            table = this->storage->getTable<UsesSTable>();
+            break;
         }
         if (leftRef.type == ReferenceType::ENT_REF) {
-            UsesPTable *usesP =
-                this->storage->getTable<UsesPTable>();
-            return usesP->validate(leftRef, rightRef);
+            table = this->storage->getTable<UsesPTable>();
+            break;
         }
         if (leftRef.type == ReferenceType::WILDCARD) {
-            UsesSTable *usesS =
-                this->storage->getTable<UsesSTable>();
-            UsesPTable *usesP =
-                this->storage->getTable<UsesPTable>();
+            UsesSTable *usesS = this->storage->getTable<UsesSTable>();
+            UsesPTable *usesP = this->storage->getTable<UsesPTable>();
             return usesS->validate(leftRef, rightRef) ||
                    usesP->validate(leftRef, rightRef);
         }
         break;
     }
     case RelationshipReference::CALLS: {
-        CallsTable *calls =
-            this->storage->getTable<CallsTable>();
-        return calls->validate(leftRef, rightRef);
+        table = this->storage->getTable<CallsTable>();
+        break;
     }
     case RelationshipReference::CALLS_T: {
-        CallsTTable *callsT =
-            this->storage->getTable<CallsTTable>();
-        return callsT->validate(leftRef, rightRef);
+        table = this->storage->getTable<CallsTTable>();
+        break;
     }
     default: {
         // TODO: throw error instead of return false
         return false;
     }
     }
+    return table->validate(leftRef, rightRef);
 }
 
 std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
@@ -172,32 +155,25 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         // correct
         return std::vector<Value>();
     }
-    StatementsTable *statements =
-        this->storage->getTable<StatementsTable>();
-    VariablesTable *variables =
-        this->storage->getTable<VariablesTable>();
-    ProceduresTable *procedures =
-        this->storage->getTable<ProceduresTable>();
+    StatementsTable *statements = this->storage->getTable<StatementsTable>();
+    VariablesTable *variables = this->storage->getTable<VariablesTable>();
+    ProceduresTable *procedures = this->storage->getTable<ProceduresTable>();
 
     switch (relType) {
     case RelationshipReference::FOLLOWS: {
-        FollowsTable *follows =
-            this->storage->getTable<FollowsTable>();
+        FollowsTable *follows = this->storage->getTable<FollowsTable>();
         return follows->solveRight(leftRef, rightSynonym, statements);
     }
     case RelationshipReference::FOLLOWS_T: {
-        FollowsTTable *followsT =
-            this->storage->getTable<FollowsTTable>();
+        FollowsTTable *followsT = this->storage->getTable<FollowsTTable>();
         return followsT->solveRight(leftRef, rightSynonym, statements);
     }
     case RelationshipReference::PARENT: {
-        ParentTable *parent =
-            this->storage->getTable<ParentTable>();
+        ParentTable *parent = this->storage->getTable<ParentTable>();
         return parent->solveRight(leftRef, rightSynonym, statements);
     }
     case RelationshipReference::PARENT_T: {
-        ParentTTable *parentT =
-            this->storage->getTable<ParentTTable>();
+        ParentTTable *parentT = this->storage->getTable<ParentTTable>();
         return parentT->solveRight(leftRef, rightSynonym, statements);
     }
     case RelationshipReference::MODIFIES: {
@@ -228,20 +204,16 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
     }
     case RelationshipReference::USES: {
         if (leftRef.type == ReferenceType::STMT_REF) {
-            UsesSTable *usesS =
-                this->storage->getTable<UsesSTable>();
+            UsesSTable *usesS = this->storage->getTable<UsesSTable>();
             return usesS->solveRight(leftRef, rightSynonym, variables);
         }
         if (leftRef.type == ReferenceType::ENT_REF) {
-            UsesPTable *usesP =
-                this->storage->getTable<UsesPTable>();
+            UsesPTable *usesP = this->storage->getTable<UsesPTable>();
             return usesP->solveRight(leftRef, rightSynonym, variables);
         }
         if (leftRef.type == ReferenceType::WILDCARD) {
-            UsesSTable *usesS =
-                this->storage->getTable<UsesSTable>();
-            UsesPTable *usesP =
-                this->storage->getTable<UsesPTable>();
+            UsesSTable *usesS = this->storage->getTable<UsesSTable>();
+            UsesPTable *usesP = this->storage->getTable<UsesPTable>();
             std::vector<Value> stmtRes =
                 usesS->solveRight(leftRef, rightSynonym, variables);
             std::vector<Value> procRes =
@@ -253,13 +225,11 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         break;
     }
     case RelationshipReference::CALLS: {
-        CallsTable *calls =
-            this->storage->getTable<CallsTable>();
+        CallsTable *calls = this->storage->getTable<CallsTable>();
         return calls->solveRight(leftRef, rightSynonym, procedures);
     }
     case RelationshipReference::CALLS_T: {
-        CallsTTable *callsT =
-            this->storage->getTable<CallsTTable>();
+        CallsTTable *callsT = this->storage->getTable<CallsTTable>();
         return callsT->solveRight(leftRef, rightSynonym, procedures);
     }
     default: {
@@ -277,30 +247,24 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
         // correct
         return std::vector<Value>();
     }
-    StatementsTable *statements =
-        this->storage->getTable<StatementsTable>();
-    ProceduresTable *procedures =
-        this->storage->getTable<ProceduresTable>();
+    StatementsTable *statements = this->storage->getTable<StatementsTable>();
+    ProceduresTable *procedures = this->storage->getTable<ProceduresTable>();
 
     switch (relType) {
     case RelationshipReference::FOLLOWS: {
-        FollowsTable *follows =
-            this->storage->getTable<FollowsTable>();
+        FollowsTable *follows = this->storage->getTable<FollowsTable>();
         return follows->solveLeft(rightRef, leftSynonym, statements);
     }
     case RelationshipReference::FOLLOWS_T: {
-        FollowsTTable *followsT =
-            this->storage->getTable<FollowsTTable>();
+        FollowsTTable *followsT = this->storage->getTable<FollowsTTable>();
         return followsT->solveLeft(rightRef, leftSynonym, statements);
     }
     case RelationshipReference::PARENT: {
-        ParentTable *parent =
-            this->storage->getTable<ParentTable>();
+        ParentTable *parent = this->storage->getTable<ParentTable>();
         return parent->solveLeft(rightRef, leftSynonym, statements);
     }
     case RelationshipReference::PARENT_T: {
-        ParentTTable *parentT =
-            this->storage->getTable<ParentTTable>();
+        ParentTTable *parentT = this->storage->getTable<ParentTTable>();
         return parentT->solveLeft(rightRef, leftSynonym, statements);
     }
     case RelationshipReference::MODIFIES: {
@@ -319,26 +283,22 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
     }
     case RelationshipReference::USES: {
         if (stmtRefSet.count(leftSynonym) == 1) {
-            UsesSTable *usesS =
-                this->storage->getTable<UsesSTable>();
+            UsesSTable *usesS = this->storage->getTable<UsesSTable>();
             return usesS->solveLeft(rightRef, leftSynonym, statements);
         }
         if (leftSynonym == EntityName::PROCEDURE) {
-            UsesPTable *usesP =
-                this->storage->getTable<UsesPTable>();
+            UsesPTable *usesP = this->storage->getTable<UsesPTable>();
             return usesP->solveLeft(rightRef, leftSynonym, procedures);
         }
         // TODO: throw error instead of returning empty list
         return std::vector<Value>();
     }
     case RelationshipReference::CALLS: {
-        CallsTable *calls =
-            this->storage->getTable<CallsTable>();
+        CallsTable *calls = this->storage->getTable<CallsTable>();
         return calls->solveLeft(rightRef, leftSynonym, procedures);
     }
     case RelationshipReference::CALLS_T: {
-        CallsTTable *callsT =
-            this->storage->getTable<CallsTTable>();
+        CallsTTable *callsT = this->storage->getTable<CallsTTable>();
         return callsT->solveLeft(rightRef, leftSynonym, procedures);
     }
     default: {
@@ -351,32 +311,25 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
 std::vector<std::pair<Value, Value>>
 QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
                        EntityName rightSynonym) {
-    StatementsTable *statements =
-        this->storage->getTable<StatementsTable>();
-    ProceduresTable *procedures =
-        this->storage->getTable<ProceduresTable>();
-    VariablesTable *variables =
-        this->storage->getTable<VariablesTable>();
+    StatementsTable *statements = this->storage->getTable<StatementsTable>();
+    ProceduresTable *procedures = this->storage->getTable<ProceduresTable>();
+    VariablesTable *variables = this->storage->getTable<VariablesTable>();
 
     switch (relType) {
     case RelationshipReference::FOLLOWS: {
-        FollowsTable *follows =
-            this->storage->getTable<FollowsTable>();
+        FollowsTable *follows = this->storage->getTable<FollowsTable>();
         return follows->solveBoth(leftSynonym, rightSynonym, statements);
     }
     case RelationshipReference::FOLLOWS_T: {
-        FollowsTTable *followsT =
-            this->storage->getTable<FollowsTTable>();
+        FollowsTTable *followsT = this->storage->getTable<FollowsTTable>();
         return followsT->solveBoth(leftSynonym, rightSynonym, statements);
     }
     case RelationshipReference::PARENT: {
-        ParentTable *parent =
-            this->storage->getTable<ParentTable>();
+        ParentTable *parent = this->storage->getTable<ParentTable>();
         return parent->solveBoth(leftSynonym, rightSynonym, statements);
     }
     case RelationshipReference::PARENT_T: {
-        ParentTTable *parentT =
-            this->storage->getTable<ParentTTable>();
+        ParentTTable *parentT = this->storage->getTable<ParentTTable>();
         return parentT->solveBoth(leftSynonym, rightSynonym, statements);
     }
     case RelationshipReference::MODIFIES: {
@@ -397,14 +350,12 @@ QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
     }
     case RelationshipReference::USES: {
         if (stmtRefSet.count(leftSynonym) == 1) {
-            UsesSTable *usesS =
-                this->storage->getTable<UsesSTable>();
+            UsesSTable *usesS = this->storage->getTable<UsesSTable>();
             return usesS->solveBoth(leftSynonym, rightSynonym, statements,
                                     variables);
         }
         if (leftSynonym == EntityName::PROCEDURE) {
-            UsesPTable *usesP =
-                this->storage->getTable<UsesPTable>();
+            UsesPTable *usesP = this->storage->getTable<UsesPTable>();
             return usesP->solveBoth(leftSynonym, rightSynonym, procedures,
                                     variables);
         }
@@ -412,13 +363,11 @@ QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
         return std::vector<std::pair<Value, Value>>();
     }
     case RelationshipReference::CALLS: {
-        CallsTable *calls =
-            this->storage->getTable<CallsTable>();
+        CallsTable *calls = this->storage->getTable<CallsTable>();
         return calls->solveBoth(leftSynonym, rightSynonym, procedures);
     }
     case RelationshipReference::CALLS_T: {
-        CallsTTable *callsT =
-            this->storage->getTable<CallsTTable>();
+        CallsTTable *callsT = this->storage->getTable<CallsTTable>();
         return callsT->solveBoth(leftSynonym, rightSynonym, procedures);
     }
     default: {
@@ -431,8 +380,7 @@ QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
 std::vector<Value> QueryFacade::getAssign(std::string varName,
                                           std::string expression,
                                           bool isExactExpr) {
-    AssignmentsTable *assignments =
-        this->storage->getTable<AssignmentsTable>();
+    AssignmentsTable *assignments = this->storage->getTable<AssignmentsTable>();
 
     if (isExactExpr) {
         return assignments->getAssignExact(varName, expression);
@@ -442,8 +390,7 @@ std::vector<Value> QueryFacade::getAssign(std::string varName,
 
 std::vector<std::pair<Value, Value>>
 QueryFacade::getAssignAndVar(std::string expression, bool isExactExpr) {
-    AssignmentsTable *assignments =
-        this->storage->getTable<AssignmentsTable>();
+    AssignmentsTable *assignments = this->storage->getTable<AssignmentsTable>();
 
     if (isExactExpr) {
         return assignments->getAssignAndVarExact(expression);
@@ -466,15 +413,13 @@ std::vector<std::pair<Value, Value>> QueryFacade::getWhileAndVar() {
 };
 
 std::vector<Value> QueryFacade::getIf(std::string varName) {
-    IfControlVarTable *ifs =
-        this->storage->getTable<IfControlVarTable>();
+    IfControlVarTable *ifs = this->storage->getTable<IfControlVarTable>();
 
     return ifs->getStmt(varName);
 }
 
 std::vector<std::pair<Value, Value>> QueryFacade::getIfAndVar() {
-    IfControlVarTable *ifs =
-        this->storage->getTable<IfControlVarTable>();
+    IfControlVarTable *ifs = this->storage->getTable<IfControlVarTable>();
 
     return ifs->getStmtAndVar();
 };

@@ -1,9 +1,11 @@
 #pragma once
 
+#include "../Solvable.h"
 #include "RelationshipsTable.h"
 
 class ProcToVarRelationshipsTable
-    : public RelationshipsTable<std::string, std::string> {
+    : public RelationshipsTable<std::string, std::string>,
+      public virtual Solvable {
 public:
     /*
      * Returns true if the relationship holds between leftReference and

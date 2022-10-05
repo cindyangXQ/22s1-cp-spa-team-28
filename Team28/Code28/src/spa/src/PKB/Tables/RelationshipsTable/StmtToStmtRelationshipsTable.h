@@ -1,8 +1,10 @@
 #pragma once
 
+#include "../Solvable.h"
 #include "RelationshipsTable.h"
 
-class StmtToStmtRelationshipsTable : public RelationshipsTable<int, int> {
+class StmtToStmtRelationshipsTable : public RelationshipsTable<int, int>,
+                                     public virtual Solvable {
 public:
     /*
      * Returns true if the relationship holds between leftReference and
@@ -36,4 +38,3 @@ class FollowsTable : public StmtToStmtRelationshipsTable {};
 class FollowsTTable : public StmtToStmtRelationshipsTable {};
 class NextTable : public StmtToStmtRelationshipsTable {};
 class NextTTable : public StmtToStmtRelationshipsTable {};
-
