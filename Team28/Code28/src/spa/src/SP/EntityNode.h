@@ -90,6 +90,8 @@ public:
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
     virtual void getModifiesPInto(std::vector<std::string> &result,
                               std::vector<ProcedureNode *> &procList){};
+    virtual void
+    getBranchInInto(std::vector<Relationship<int, int> *> &result){};
 };
 
 class ReadStatementNode : public StatementNode {
@@ -205,6 +207,7 @@ public:
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
     void getModifiesPInto(std::vector<std::string> &result,
                           std::vector<ProcedureNode *> &procList);
+    void getBranchInInto(std::vector<Relationship<int, int> *> &result);
 };
 
 class IfStatementNode : public StatementNode {
@@ -240,6 +243,7 @@ public:
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
     void getModifiesPInto(std::vector<std::string> &result,
                           std::vector<ProcedureNode *> &procList);
+    void getBranchInInto(std::vector <Relationship<int, int> *> &result);
 };
 
 class ExpressionNode : public EntityNode {

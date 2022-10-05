@@ -270,6 +270,36 @@ std::vector<Relationship<std::string, std::string>*> CallsExtrT::extract() {
     return result;
 }
 
+std::vector<Relationship<int, int> *> BranchInExtr::extract() {
+    std::vector<Relationship<int, int> *> result;
+
+    std::vector<ProcedureNode *> procList = this->program->getProcList();
+
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::vector<StatementNode *> stmtList = procList[i]->getStmtList();
+        for (size_t j = 0; j < stmtList.size(); j++) {
+            stmtList[j]->getBranchInInto(result);
+        }
+    }
+
+    return result;
+}
+
+std::vector<Relationship<int, int>*> BranchOutExtr::extract() {
+    std::vector<Relationship<int, int> *> result;
+
+    /* std::vector<ProcedureNode *> procList = this->program->getProcList();
+
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::vector<StatementNode *> stmtList = procList[i]->getStmtList();
+        for (size_t j = 0; j < stmtList.size(); j++) {
+            stmtList[j]->getBranchOutInto(result);
+        }
+    }*/
+
+    return result;
+}
+
 void DesignExtractor::extractAll() {
     ProcedureExtractor(this->program, this->storage).populate();
     StatementExtractor(this->program, this->storage).populate();
@@ -362,4 +392,15 @@ void CallsExtrT::populate() {
     std::vector<Relationship<std::string, std::string> *> CallsT =
         this->extract();
     this->storage->storeCallsT(&CallsT);
+}
+
+void BranchInExtr::populate() {
+    std::vector<Relationship<int, int> *> branchIn = this->extract();
+    this->storage->storeBranchIn(&branchIn);
+}
+
+void BranchOutExtr::populate() {
+    std::vector<Relationship<int, int> *> branchOut =
+        this->extract();
+    this->storage->storeBranchOut(&branchOut);
 }

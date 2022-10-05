@@ -790,6 +790,100 @@ TEST_CASE("Test extract Calls/* in program with container") {
     }
 }
 
+TEST_CASE("Test BranchIn extractor in simple progran") {
+    std::string sourceProgram = 
+        " procedure a {"
+        "    if(x == y) then { "
+        "        print x; x = 2 * y + 9;}"
+        "    else {"
+        "        read y; y = 2 * x + 1;}"
+        "    while ( x < 3) { x = 2; }}";
+
+    std::vector<Relationship<int, int> *> expected;
+
+    expected.push_back(&Relationship<int, int>(RelationshipReference::NEXT, 1, 2));
+    expected.push_back(&Relationship<int, int>(RelationshipReference::NEXT, 1, 4));
+    expected.push_back(&Relationship<int, int>(RelationshipReference::NEXT, 6, 7));
+
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    ProgramParser parser = ProgramParser(0, tokens);
+    ProgramNode *program = parser.parse();
+    BranchInExtr extr(program, nullptr);
+    std::vector<Relationship<int, int> *> extracted = extr.extract();
+
+    REQUIRE(expected.size() == extracted.size());
+    for (int i = 0; i < expected.size(); i++) {
+        REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+        REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+        REQUIRE(expected[i]->getRelationshipReference() ==
+                extracted[i]->getRelationshipReference());
+    }
+}
+
+TEST_CASE("Test BranchIn extractor in program with nested if-else statement") {
+    std::string sourceProgram = 
+        "procedure a {"
+        "    if (x == y) then {"  
+        "       if(x < y) then {" 
+        "          read x;" 
+        "          print y;"
+        "          while ( y == 3 ) {"
+        "            x = x+1;"
+        "            while ( x == 4) {"
+        "                y = y - 8;"
+        "            }"
+        "          }"
+        "        } else { a = a+ 1; }"
+        "        read y;"
+        "    } else {"
+        "        read = (7*a) + 5;"
+        "        while(a > 9) {"
+        "            if (x < y) then {"
+        "                read p;"
+        "                print q;"
+        "            } else {"
+        "                t = t + 1;"
+        "            }"
+        "        }"
+        "    }"
+        "}";
+
+    std::vector<Relationship<int, int> *> expected;
+
+    expected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 1, 2));
+    expected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 1, 11));
+    expected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 2, 3));
+    expected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 2, 9));
+    expected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 5, 6));
+    expected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 7, 8));
+    expected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 12, 13));
+    expected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 13, 14));
+    expected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 13, 16));
+
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    ProgramParser parser = ProgramParser(0, tokens);
+    ProgramNode *program = parser.parse();
+    BranchInExtr extr(program, nullptr);
+    std::vector<Relationship<int, int> *> extracted = extr.extract();
+
+    REQUIRE(expected.size() == extracted.size());
+    for (int i = 0; i < expected.size(); i++) {
+        REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+        REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+        REQUIRE(expected[i]->getRelationshipReference() ==
+                extracted[i]->getRelationshipReference());
+    }
+}
+
 TEST_CASE("Extract program with if-else statements") {
     // Follow relationship
     std::vector<Relationship<int, int> *> expected;

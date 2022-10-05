@@ -396,6 +396,15 @@ void WhileStatementNode::getModifiesPInto(
     }
 }
 
+void WhileStatementNode::getBranchInInto(
+    std::vector<Relationship<int, int>*>& result) {
+    result.push_back(new Relationship<int, int>(RelationshipReference::NEXT, line, line + 1));
+
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getBranchInInto(result);
+    }
+}
+
 // If Statement
 IfStatementNode::IfStatementNode(std::vector<StatementNode *> &ifBlock,
                                  std::vector<StatementNode *> &elseBlock,
@@ -533,6 +542,22 @@ void IfStatementNode::getModifiesPInto(std::vector<std::string> &result,
     std::vector<StatementNode *> stmtList = this->getStmtList();
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getModifiesPInto(result, procList);
+    }
+}
+
+void IfStatementNode::getBranchInInto(
+    std::vector<Relationship<int, int>*>& result) {
+    int startLine = this->getLineNumber();
+    int ifStart = startLine + 1;
+    int elseStart = this->elseBlock[0]->getLineNumber();
+    std::vector<StatementNode *> stmtList = getStmtList();
+
+    result.push_back(new Relationship<int, int>(RelationshipReference::NEXT, startLine, ifStart));
+    result.push_back(new Relationship<int, int>(RelationshipReference
+                                             :: NEXT, startLine, elseStart));
+    
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getBranchInInto(result);
     }
 }
 
