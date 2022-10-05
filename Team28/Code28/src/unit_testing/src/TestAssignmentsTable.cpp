@@ -11,9 +11,6 @@ TEST_CASE("AssignmentsTable can initialise, store and retrieve correctly") {
     Assignment assignment = Assignment(1, std::string("x1"), expr);
     assignmentsTable.store(&assignment);
 
-    // successfully stored x1 = 1 + 2
-    REQUIRE(assignmentsTable.getTableSize() == 1);
-
     // Stored correct values
     std::vector<Value> expectedResult = {Value(ValueType::STMT_NUM, "1")};
     std::vector<Value> output = assignmentsTable.containsVarAndExpr("x1", expr);

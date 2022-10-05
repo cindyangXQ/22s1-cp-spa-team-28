@@ -23,7 +23,6 @@ public:
         Entity *ent = static_cast<Entity *>(entity);
         this->names.insert(ent->getName());
         this->nameEntityMap[ent->getName()] = ent;
-        this->tableSize++;
     };
 
     /*
@@ -39,11 +38,6 @@ public:
     };
 
     /*
-     * Returns the size of NamesTable.
-     */
-    int getTableSize() const { return this->tableSize; };
-
-    /*
      * Gets NamedEntityMap for children.
      * TODO: Consider removing.
      */
@@ -57,7 +51,6 @@ public:
     std::unordered_set<std::string> getAll() { return this->names; }
 
 protected:
-    int tableSize = 0;
     std::unordered_set<std::string> names;
     std::map<std::string, Entity *> nameEntityMap;
 };

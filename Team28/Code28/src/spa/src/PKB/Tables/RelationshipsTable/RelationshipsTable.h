@@ -67,10 +67,6 @@ public:
         return this->rightToLeftsMap[right];
     }
 
-    int getTableSize() const {
-        return -1; // TODO change behaviour, now returning dummy value
-    }
-
     std::map<Left, std::unordered_set<Right>> getLeftMap() {
         return this->leftToRightsMap;
     }

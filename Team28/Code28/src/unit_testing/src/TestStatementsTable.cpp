@@ -2,12 +2,6 @@
 
 #include "catch.hpp"
 
-TEST_CASE("StatementsTable is initialised correctly") {
-    StatementsTable table;
-
-    REQUIRE(table.getTableSize() == 0);
-}
-
 TEST_CASE("StatementsTable store container statements correctly") {
     StatementsTable table;
     Statement whileStmt = Statement(1, StatementType::WHILE);
@@ -16,7 +10,6 @@ TEST_CASE("StatementsTable store container statements correctly") {
     table.store(&whileStmt);
     table.store(&ifStmt);
 
-    REQUIRE(table.getTableSize() == 2);
     REQUIRE(table.getStatementType(whileStmt.getLineNumber()) ==
             StatementType::WHILE);
     REQUIRE(table.getStatementType(ifStmt.getLineNumber()) ==
@@ -34,8 +27,6 @@ TEST_CASE(
     REQUIRE(*table.retrieve(test.getLineNumber()) == test);
     // invalid index returns a nullptr for retrieve()
     REQUIRE(table.retrieve(-1) == nullptr);
-    // tableSize updated correctly
-    REQUIRE(table.getTableSize() == 1);
     // test is stored in the correct bucket
     REQUIRE(table.getStatementType(test.getLineNumber()) ==
             StatementType::ASSIGN);

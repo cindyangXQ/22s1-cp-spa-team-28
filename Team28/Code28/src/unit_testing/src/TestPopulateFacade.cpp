@@ -4,20 +4,6 @@
 
 #include "catch.hpp"
 
-TEST_CASE("storeStatement stores empty vector<Statement*> correctly") {
-    Storage *storage = new Storage();
-    PopulateFacade facade = PopulateFacade(storage);
-    std::vector<Statement *> statements = {};
-
-    facade.storeStatements(&statements);
-
-    StatementsTable *statementsTable =
-        storage->getTable<StatementsTable>();
-
-    // returned number of statements is equal to 0
-    REQUIRE(statementsTable->getTableSize() == 0);
-}
-
 TEST_CASE("storeStatement stores Statement objects correctly") {
     Storage *storage = new Storage();
     PopulateFacade facade = PopulateFacade(storage);
@@ -30,8 +16,6 @@ TEST_CASE("storeStatement stores Statement objects correctly") {
     StatementsTable *statementsTable =
         storage->getTable<StatementsTable>();
 
-    // returned number of statements is equal to number stored
-    REQUIRE(statementsTable->getTableSize() == 2);
     // first statement is test1
     REQUIRE(*statementsTable->retrieve(1) == test1);
     // second statement is test2
@@ -50,9 +34,6 @@ TEST_CASE("storeAssignments store Assignment objects correctly") {
 
     AssignmentsTable *assignmentsTable =
         storage->getTable<AssignmentsTable>();
-
-    // returned number of assignments is equal to number stored
-    REQUIRE(assignmentsTable->getTableSize() == 3);
 
     std::vector<Value> expectedResult;
     std::vector<Value> output;
@@ -83,8 +64,6 @@ TEST_CASE("storeVariable stores Variable objects correctly") {
     VariablesTable *variablesTable =
         storage->getTable<VariablesTable>();
 
-    // returned number of variables is equal to number stored
-    REQUIRE(variablesTable->getTableSize() == 3);
     // first variable is test1
     REQUIRE(*variablesTable->retrieve("a") == test1);
     // second variable is test2
@@ -106,8 +85,6 @@ TEST_CASE("storeConstant stores Constant objects correctly") {
     ConstantsTable *constantsTable =
         storage->getTable<ConstantsTable>();
 
-    // returned number of constants is equal to number stored
-    REQUIRE(constantsTable->getTableSize() == 3);
     // first constant is test1
     REQUIRE(*constantsTable->retrieve("a") == test1);
     // second constant is test2
@@ -129,39 +106,12 @@ TEST_CASE("storeProcedure stores Procedure objects correctly") {
     ProceduresTable *proceduresTable =
         storage->getTable<ProceduresTable>();
 
-    // returned number of procedures is equal to number stored
-    REQUIRE(proceduresTable->getTableSize() == 3);
     // first procedure is test1
     REQUIRE(*proceduresTable->retrieve("a") == test1);
     // second procedure is test2
     REQUIRE(*proceduresTable->retrieve("b") == test2);
     // third procedure is test3
     REQUIRE(*proceduresTable->retrieve("") == test3);
-}
-
-TEST_CASE("storeProcedure does not affect other tables") {
-    Storage *storage = new Storage();
-    PopulateFacade facade = PopulateFacade(storage);
-    Procedure test = Procedure("a");
-    std::vector<Procedure *> procedures = {&test};
-
-    facade.storeProcedures(&procedures);
-
-    ProceduresTable *proceduresTable =
-        storage->getTable<ProceduresTable>();
-    VariablesTable *variablesTable =
-        storage->getTable<VariablesTable>();
-    ConstantsTable *constantsTable =
-        storage->getTable<ConstantsTable>();
-    StatementsTable *statementsTable =
-        storage->getTable<StatementsTable>();
-
-    // returned number of procedures is equal to number stored
-    REQUIRE(proceduresTable->getTableSize() == 1);
-    // returned number of other tables is equal to 0
-    REQUIRE(variablesTable->getTableSize() == 0);
-    REQUIRE(constantsTable->getTableSize() == 0);
-    REQUIRE(statementsTable->getTableSize() == 0);
 }
 
 TEST_CASE("storeFollows stores Relationship<int, int> objects correctly") {

@@ -8,11 +8,7 @@ void AssignmentsTable::store(TableValue *assignment) {
     this->allAssignments.push_back(*assign);
     this->allLineNumbers.push_back(
         Value(ValueType::STMT_NUM, std::to_string(lineNo)));
-
-    this->tableSize += 1;
 };
-
-int AssignmentsTable::getTableSize() const { return this->tableSize; };
 
 std::vector<Value>
 AssignmentsTable::containsVarAndExpr(std::string varName,
