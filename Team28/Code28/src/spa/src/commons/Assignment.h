@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "../../commons/TableValue.h"
+#include "TableValue.h"
 
 /*
  * A class encapsulating Assignment in SIMPLE.
