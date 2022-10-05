@@ -9,14 +9,14 @@
 /*
  * Class encapsulating a Table used to store SIMPLE statements.
  */
-class StatementsTable : public Table<Statement> {
+class StatementsTable : public Table {
 public:
     StatementsTable();
 
     /*
      * Stores a statement into the StatementsTable.
      */
-    void store(Statement *statement);
+    void store(TableValue *statement);
 
     /*
      * Retrieves a statement from StatementsTable by index.

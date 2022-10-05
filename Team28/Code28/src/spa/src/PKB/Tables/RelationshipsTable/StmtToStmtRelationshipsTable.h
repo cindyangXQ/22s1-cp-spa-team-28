@@ -30,9 +30,10 @@ public:
                                                    StatementsTable *statements);
 };
 
-typedef StmtToStmtRelationshipsTable ParentTable;
-typedef StmtToStmtRelationshipsTable ParentTTable;
-typedef StmtToStmtRelationshipsTable FollowsTable;
-typedef StmtToStmtRelationshipsTable FollowsTTable;
-typedef StmtToStmtRelationshipsTable NextTable;
-typedef StmtToStmtRelationshipsTable NextTTable;
+class ParentTable : public StmtToStmtRelationshipsTable {};
+class ParentTTable : public StmtToStmtRelationshipsTable {};
+class FollowsTable : public StmtToStmtRelationshipsTable {};
+class FollowsTTable : public StmtToStmtRelationshipsTable {};
+class NextTable : public StmtToStmtRelationshipsTable {};
+class NextTTable : public StmtToStmtRelationshipsTable {};
+
