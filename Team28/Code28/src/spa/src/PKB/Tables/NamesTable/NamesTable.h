@@ -62,6 +62,6 @@ protected:
     std::map<std::string, Entity *> nameEntityMap;
 };
 
-typedef NamesTable<Constant> ConstantsTable;
-typedef NamesTable<Variable> VariablesTable;
-typedef NamesTable<Procedure> ProceduresTable;
+class ConstantsTable : public NamesTable<Constant> {};
+class VariablesTable : public NamesTable<Variable> {};
+class ProceduresTable : public NamesTable<Procedure> {};
