@@ -41,4 +41,9 @@ procedure main {
     else {
         read a29;
     }
+    call call;
+}
+
+procedure call {
+    print call;
 }
