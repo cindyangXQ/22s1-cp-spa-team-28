@@ -32,5 +32,5 @@ public:
                                                    VariablesTable *variables);
 };
 
-typedef StmtToVarRelationshipsTable ModifiesSTable;
-typedef StmtToVarRelationshipsTable UsesSTable;
+class ModifiesSTable : public StmtToVarRelationshipsTable {};
+class UsesSTable : public StmtToVarRelationshipsTable {};

@@ -32,5 +32,5 @@ public:
                                                    VariablesTable *variables);
 };
 
-typedef ProcToVarRelationshipsTable ModifiesPTable;
-typedef ProcToVarRelationshipsTable UsesPTable;
+class ModifiesPTable : public ProcToVarRelationshipsTable {};
+class UsesPTable : public ProcToVarRelationshipsTable {};

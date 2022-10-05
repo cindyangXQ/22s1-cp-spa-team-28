@@ -30,5 +30,5 @@ private:
     bool isProcessed = false;
 };
 
-typedef UsesControlVarTable IfControlVarTable;
-typedef UsesControlVarTable WhileControlVarTable;
+class IfControlVarTable : public UsesControlVarTable {};
+class WhileControlVarTable : public UsesControlVarTable {};
