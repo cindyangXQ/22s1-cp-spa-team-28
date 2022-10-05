@@ -8,6 +8,4 @@
 class Table {
 public:
     virtual void store(TableValue *item) = 0;
-
-    virtual ~Table(){};
 };

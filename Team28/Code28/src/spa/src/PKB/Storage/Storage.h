@@ -58,7 +58,7 @@ public:
     /*
      * Explicit constructor for Storage.
      */
-    explicit Storage();
+    Storage();
 
     /*
      * Retrieve a table by TableName.
