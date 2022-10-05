@@ -75,7 +75,7 @@ TEST_CASE("Storage stores and retrieves Variables correctly") {
 TEST_CASE("Storage stores and retrieves Procedures correctly") {
     Storage *storage = new Storage();
     ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>(TableName::VARIABLES);
+        storage->getTable<ProceduresTable>(TableName::PROCEDURES);
     Procedure test = Procedure("test");
 
     // ProceduresTable is initialised correctly
