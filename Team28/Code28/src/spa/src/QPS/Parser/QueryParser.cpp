@@ -145,7 +145,7 @@ void QueryParser::parsePatternClause(std::string *clause,
                 
                 expr = SP::convertExpression(expr);
             }
-            catch (std::runtime_error e) {
+            catch (...) {
                 throw SyntaxError("Invalid expression syntax");
             }
         }
