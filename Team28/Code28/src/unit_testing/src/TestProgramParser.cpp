@@ -69,9 +69,9 @@ TEST_CASE("read read; print print") {
     REQUIRE(program->equals(&expected));
 }
 
-TEST_CASE("Test Expression Parser") { 
+TEST_CASE("Test Expression Parser") {
     std::string statement = "((x+3)*8+2)*(9/(y+a)+2);";
-    
+
     VariableNode var1("x"), var2("a"), var3("y");
     ConstantNode c1("3"), c2("8"), c3("2"), c4("9");
     Operator op1("+"), op2("*"), op3("/");
@@ -108,8 +108,7 @@ TEST_CASE("Test Expression Parser") {
     ExprParser parser(0, tokens, false);
     ExpressionNode *result = parser.parse();
 
-    //REQUIRE(result->equals(&expected));
-
+    // REQUIRE(result->equals(&expected));
 }
 
 TEST_CASE("Test Conditional Parser") {
@@ -154,14 +153,14 @@ TEST_CASE("Test Conditional Parser") {
     REQUIRE(cond->equals(expected));
 }
 
-TEST_CASE("Invalid expression statement") { 
+TEST_CASE("Invalid expression statement") {
     std::string statement = "(x+3) > 2";
     std::vector<Token *> tokens = Tokenizer(statement).tokenize();
     ExprParser parser = ExprParser(0, tokens, false);
     REQUIRE_THROWS(parser.parse(), "invalid expression");
 }
 
-TEST_CASE("Invalid conditional statements") { 
+TEST_CASE("Invalid conditional statements") {
     std::string statement = "((x+3)&&(y-2))";
     std::vector<Token *> tokens = Tokenizer(statement).tokenize();
     CondParser parser = CondParser(1, tokens);
@@ -233,7 +232,8 @@ TEST_CASE("If Statement Parser") {
 
 TEST_CASE("Test getAllCalls") {
     std::string sourceProgram =
-        "procedure a{ if(x == 3) then { if (y == 3) then {while(1<x){call b;}} else{call c;}} else{ while(9<=x){call d;} }}"
+        "procedure a{ if(x == 3) then { if (y == 3) then {while(1<x){call b;}} "
+        "else{call c;}} else{ while(9<=x){call d;} }}"
         "procedure b {while(y < 3) {call c;} call d;}"
         "procedure c { print y; }"
         "procedure d { print x; }";
@@ -259,40 +259,45 @@ TEST_CASE("Test getAllCalls") {
 }
 
 TEST_CASE("recursive call is not allowed") {
-        std::string sourceProgram = "procedure Bedok {\ncall Bedok;\n}";
-        std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
-        REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "recursive call is not allowed");
+    std::string sourceProgram = "procedure Bedok {\ncall Bedok;\n}";
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    REQUIRE_THROWS(ProgramParser(0, tokens).parse(),
+                   "recursive call is not allowed");
 }
 
 TEST_CASE("container with wrong cond expression") {
-    std::string statement = 
-        "while((a+b)*3){read x;}";
+    std::string statement = "while((a+b)*3){read x;}";
     std::vector<Token *> tokens = Tokenizer(statement).tokenize();
     WhileStmParser parser(0, tokens, 1);
     REQUIRE_THROWS(parser.parse(), "invalid cond expression");
 }
 
 TEST_CASE("procedure of same name is not allowed") {
-        std::string sourceProgram = "procedure Bedok {\nread a;\n}\n\nprocedure Bedok{\nprint b;\n}"; 
-        std::vector<Token*> tokens = Tokenizer(sourceProgram).tokenize();
-        REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "procedure of same name is not allowed");
+    std::string sourceProgram =
+        "procedure Bedok {\nread a;\n}\n\nprocedure Bedok{\nprint b;\n}";
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    REQUIRE_THROWS(ProgramParser(0, tokens).parse(),
+                   "procedure of same name is not allowed");
 }
 
 TEST_CASE("calling undeclared procedure is not allowed") {
     std::string sourceProgram = "procedure Bedok {\ncall a;\n}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
-    REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "calling undeclared procedure is not allowed");
+    REQUIRE_THROWS(ProgramParser(0, tokens).parse(),
+                   "calling undeclared procedure is not allowed");
 }
 
 TEST_CASE("cyclic calling is not allowed") {
     std::string sourceProgram = "procedure a{call b;} procedure b{call c; call "
                                 "d;} procedure c{call d;} procedure d{call a;}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
-    REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "cyclic calling is not allowed");
+    REQUIRE_THROWS(ProgramParser(0, tokens).parse(),
+                   "cyclic calling is not allowed");
 }
 
 TEST_CASE("Invalid source program, bracket not in pair") {
     std::string sourceProgram = "procedure a { b = x+8);}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
-    REQUIRE_THROWS(ProgramParser(0, tokens).parse(), "assignment statement wrong syntax");
+    REQUIRE_THROWS(ProgramParser(0, tokens).parse(),
+                   "assignment statement wrong syntax");
 }

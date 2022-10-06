@@ -225,7 +225,7 @@ TEST_CASE("extract usesS small program, ASSIGN and IF and WHILE and PRINT") {
     expected.push_back(new Relationship<int, std::string>(
         RelationshipReference::USES, 7, "g"));
 
-    //procedure Bedok {
+    // procedure Bedok {
     //    x = a;
     //    if (b != 2) then {
     //        x = c;
@@ -377,7 +377,7 @@ TEST_CASE("extract usesP small program") {
     expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::USES, "Bedok", "f"));
 
-    //procedure Bedok {
+    // procedure Bedok {
     //    read a;
     //    print b;
     //    x = c;
@@ -434,23 +434,23 @@ TEST_CASE("extract usesP, one call") {
     expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::USES, "Queenstown", "k"));
 
-    //procedure Bedok {
+    // procedure Bedok {
     //    read a;
     //    print b;
     //    x = c;
     //    if (d != 2) then {
-    //        x = e; 
+    //        x = e;
     //    } else {
     //        x = f;
     //    }
     //    call Queenstown;
     //}
-    //procedure Queenstown {
+    // procedure Queenstown {
     //    read g;
     //    print h;
     //    x = i;
-    //    while (j != 2) { 
-    //        x = k; 
+    //    while (j != 2) {
+    //        x = k;
     //    }
     //}
     std::string sourceProgram =
@@ -460,7 +460,8 @@ TEST_CASE("extract usesP, one call") {
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
     UsesPExtractor extr(program, nullptr);
-    std::vector<Relationship<std::string, std::string> *> extracted = extr.extract();
+    std::vector<Relationship<std::string, std::string> *> extracted =
+        extr.extract();
 
     REQUIRE(expected.size() == extracted.size());
     for (int i = 0; i < expected.size(); i++) {
@@ -490,7 +491,7 @@ TEST_CASE("extract modifiesS small program, ASSIGN and IF and WHILE and READ") {
     expected.push_back(new Relationship<int, std::string>(
         RelationshipReference::MODIFIES, 7, "g"));
 
-    //procedure Bedok {
+    // procedure Bedok {
     //    a = 1;
     //    if(b != 2) then {
     //        c = 3;
@@ -620,51 +621,50 @@ TEST_CASE("extract modifiesP, two procedures one call") {
     }
 }
 
-TEST_CASE("Test extract Calls") { 
-    std::string sourceProgram = 
-        "procedure a { call b; call c; call f; call g;}"
-        "procedure b { call e; call f; call c;}"
-        "procedure c { call g;}"
-        "procedure d { call a;}"
-        "procedure e { call c;}"
-        "procedure f { read x;}"
-        "procedure g { print y;}";
+TEST_CASE("Test extract Calls") {
+    std::string sourceProgram = "procedure a { call b; call c; call f; call g;}"
+                                "procedure b { call e; call f; call c;}"
+                                "procedure c { call g;}"
+                                "procedure d { call a;}"
+                                "procedure e { call c;}"
+                                "procedure f { read x;}"
+                                "procedure g { print y;}";
 
-   std::vector<Relationship<std::string, std::string> *> expected;
-   expected.push_back(new Relationship<std::string, std::string>(
+    std::vector<Relationship<std::string, std::string> *> expected;
+    expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS, "a", "b"));
-   expected.push_back(new Relationship<std::string, std::string>(
+    expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS, "a", "c"));
-   expected.push_back(new Relationship<std::string, std::string>(
+    expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS, "a", "f"));
-   expected.push_back(new Relationship<std::string, std::string>(
+    expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS, "a", "g"));
-   expected.push_back(new Relationship<std::string, std::string>(
+    expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS, "b", "e"));
-   expected.push_back(new Relationship<std::string, std::string>(
+    expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS, "b", "f"));
-   expected.push_back(new Relationship<std::string, std::string>(
+    expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS, "b", "c"));
-   expected.push_back(new Relationship<std::string, std::string>(
+    expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS, "c", "g"));
-   expected.push_back(new Relationship<std::string, std::string>(
+    expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS, "d", "a"));
-   expected.push_back(new Relationship<std::string, std::string>(
+    expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS, "e", "c"));
 
-   std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
-   ProgramNode *program = ProgramParser(0, tokens).parse();
-   CallsExtractor extr(program, nullptr);
-   std::vector<Relationship<std::string, std::string> *> extracted =
-       extr.extract();
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    ProgramNode *program = ProgramParser(0, tokens).parse();
+    CallsExtractor extr(program, nullptr);
+    std::vector<Relationship<std::string, std::string> *> extracted =
+        extr.extract();
 
-   REQUIRE(expected.size() == extracted.size());
-   for (int i = 0; i < expected.size(); i++) {
-       REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
-       REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
-       REQUIRE(expected[i]->getRelationshipReference() ==
-               extracted[i]->getRelationshipReference());
-   }
+    REQUIRE(expected.size() == extracted.size());
+    for (int i = 0; i < expected.size(); i++) {
+        REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+        REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+        REQUIRE(expected[i]->getRelationshipReference() ==
+                extracted[i]->getRelationshipReference());
+    }
 }
 
 TEST_CASE("Test extract CallsT") {
@@ -730,13 +730,16 @@ TEST_CASE("Test extract CallsT") {
 }
 
 TEST_CASE("Test extract Calls/* in program with container") {
-    std::string sourceProgram = "procedure a { if(x == 9) then {call b;} else { if (y == 2) then {call c;} else {call f; while(t>0){call g;}}}}"
-                                "procedure b { if(x == y) then {call e;} else { while(y<=9){call f;}} call c;}"
-                                "procedure c { call g;}"
-                                "procedure d { call a;}"
-                                "procedure e { call c;}"
-                                "procedure f { read x;}"
-                                "procedure g { print y;}";
+    std::string sourceProgram =
+        "procedure a { if(x == 9) then {call b;} else { if (y == 2) then {call "
+        "c;} else {call f; while(t>0){call g;}}}}"
+        "procedure b { if(x == y) then {call e;} else { while(y<=9){call f;}} "
+        "call c;}"
+        "procedure c { call g;}"
+        "procedure d { call a;}"
+        "procedure e { call c;}"
+        "procedure f { read x;}"
+        "procedure g { print y;}";
     std::vector<Relationship<std::string, std::string> *> expected;
     expected.push_back(new Relationship<std::string, std::string>(
         RelationshipReference::CALLS_T, "a", "b"));
@@ -790,20 +793,23 @@ TEST_CASE("Test extract Calls/* in program with container") {
     }
 }
 
-TEST_CASE("Test BranchIn extractor in simple progran") {
-    std::string sourceProgram = 
-        " procedure a {"
-        "    if(x == y) then { "
-        "        print x; x = 2 * y + 9;}"
-        "    else {"
-        "        read y; y = 2 * x + 1;}"
-        "    while ( x < 3) { x = 2; }}";
+TEST_CASE("Test BranchIn/Out extractor in simple progran") {
+    std::string sourceProgram = " procedure a {"
+                                "    if(x == y) then { "
+                                "        print x; x = 2 * y + 9;}"
+                                "    else {"
+                                "        read y; y = 2 * x + 1;}"
+                                "    while ( x < 3) { x = 2; }}";
 
-    std::vector<Relationship<int, int> *> expected;
+    // Branch In
+    std::vector<Relationship<int, int> *> inexpected;
 
-    expected.push_back(&Relationship<int, int>(RelationshipReference::NEXT, 1, 2));
-    expected.push_back(&Relationship<int, int>(RelationshipReference::NEXT, 1, 4));
-    expected.push_back(&Relationship<int, int>(RelationshipReference::NEXT, 6, 7));
+    inexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 1, 2));
+    inexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 1, 4));
+    inexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 6, 7));
 
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramParser parser = ProgramParser(0, tokens);
@@ -811,43 +817,64 @@ TEST_CASE("Test BranchIn extractor in simple progran") {
     BranchInExtr extr(program, nullptr);
     std::vector<Relationship<int, int> *> extracted = extr.extract();
 
-    REQUIRE(expected.size() == extracted.size());
-    for (int i = 0; i < expected.size(); i++) {
-        REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
-        REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
-        REQUIRE(expected[i]->getRelationshipReference() ==
+    REQUIRE(inexpected.size() == extracted.size());
+    for (int i = 0; i < inexpected.size(); i++) {
+        REQUIRE(inexpected[i]->getLeft() == extracted[i]->getLeft());
+        REQUIRE(inexpected[i]->getRight() == extracted[i]->getRight());
+        REQUIRE(inexpected[i]->getRelationshipReference() ==
+                extracted[i]->getRelationshipReference());
+    }
+
+    // Branch Out
+    std::vector<Relationship<int, int> *> outexpected;
+    outexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 3, 6));
+    outexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 5, 6));
+    outexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 7, 6));
+
+    BranchOutExtr outextr(program, nullptr);
+    extracted = outextr.extract();
+
+    REQUIRE(outexpected.size() == extracted.size());
+    for (int i = 0; i < inexpected.size(); i++) {
+        REQUIRE(outexpected[i]->getLeft() == extracted[i]->getLeft());
+        REQUIRE(outexpected[i]->getRight() == extracted[i]->getRight());
+        REQUIRE(outexpected[i]->getRelationshipReference() ==
                 extracted[i]->getRelationshipReference());
     }
 }
 
 TEST_CASE("Test BranchIn extractor in program with nested if-else statement") {
-    std::string sourceProgram = 
-        "procedure a {"
-        "    if (x == y) then {"  
-        "       if(x < y) then {" 
-        "          read x;" 
-        "          print y;"
-        "          while ( y == 3 ) {"
-        "            x = x+1;"
-        "            while ( x == 4) {"
-        "                y = y - 8;"
-        "            }"
-        "          }"
-        "        } else { a = a+ 1; }"
-        "        read y;"
-        "    } else {"
-        "        read = (7*a) + 5;"
-        "        while(a > 9) {"
-        "            if (x < y) then {"
-        "                read p;"
-        "                print q;"
-        "            } else {"
-        "                t = t + 1;"
-        "            }"
-        "        }"
-        "    }"
-        "}";
+    std::string sourceProgram = "procedure a {"
+                                "    if (x == y) then {"
+                                "       if(x < y) then {"
+                                "          read x;"
+                                "          print y;"
+                                "          while ( y == 3 ) {"
+                                "            x = x+1;"
+                                "            while ( x == 4) {"
+                                "                y = y - 8;"
+                                "            }"
+                                "          }"
+                                "        } else { a = a+ 1; }"
+                                "        read y;"
+                                "    } else {"
+                                "        read = (7*a) + 5;"
+                                "        while(a > 9) {"
+                                "            if (x < y) then {"
+                                "                read p;"
+                                "                print q;"
+                                "            } else {"
+                                "                t = t + 1;"
+                                "            }"
+                                "        }"
+                                "    }"
+                                "    print b;"
+                                "}";
 
+    // Branch In
     std::vector<Relationship<int, int> *> expected;
 
     expected.push_back(
@@ -882,6 +909,39 @@ TEST_CASE("Test BranchIn extractor in program with nested if-else statement") {
         REQUIRE(expected[i]->getRelationshipReference() ==
                 extracted[i]->getRelationshipReference());
     }
+
+    // BranchOut
+    std::vector<Relationship<int, int> *> outexpected;
+
+    outexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 10, 17));
+    outexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 12, 17));
+    outexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 5, 10));
+    outexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 9, 10));
+    outexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 7, 5));
+    outexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 8, 7));
+    outexpected.push_back(
+        &Relationship<int, int>(RelationshipReference::NEXT, 13, 12));
+
+    BranchOutExtr outextr(program, nullptr);
+    extracted = outextr.extract();
+
+    REQUIRE(outexpected.size() == extracted.size());
+    for (int i = 0; i < outexpected.size(); i++) {
+        REQUIRE(outexpected[i]->getLeft() == extracted[i]->getLeft());
+        REQUIRE(outexpected[i]->getRight() == extracted[i]->getRight());
+        REQUIRE(outexpected[i]->getRelationshipReference() ==
+                extracted[i]->getRelationshipReference());
+    }
+}
+
+TEST_CASE("Extract BranchIn/Out from program with multiple procedures") {
+
 }
 
 TEST_CASE("Extract program with if-else statements") {

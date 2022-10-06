@@ -44,9 +44,7 @@ std::vector<StatementNode *> ProcedureNode::getStmtList() {
     return this->stmtList;
 }
 
-int ProcedureNode::getEndline() {
-    return stmtList.back()->getEndLine();
-}
+int ProcedureNode::getEndline() { return stmtList.back()->getEndLine(); }
 
 // Statement
 std::vector<std::string> *StatementNode::getUsesInto(
@@ -82,7 +80,7 @@ bool WhileStatementNode::equals(StatementNode *other) {
         WhileStatementNode *temp = static_cast<WhileStatementNode *>(other);
         return this->cond->equals(temp->cond) &&
                SPUtils::compareStmtList(this->getStmtList(),
-                                             temp->getStmtList());
+                                        temp->getStmtList());
     } else {
         return false;
     }
@@ -230,7 +228,8 @@ void AssignStatementNode::getStatementsInto(std::vector<Statement *> &result) {
     result.push_back(new Statement(line, StatementType::ASSIGN));
 }
 
-void AssignStatementNode::getAssignmentsInto(std::vector<Assignment *> &result) {
+void AssignStatementNode::getAssignmentsInto(
+    std::vector<Assignment *> &result) {
     int lineNo = this->getLineNumber();
     std::string leftVar = this->getVariable();
     std::string expression = this->getExpressionString();
@@ -397,12 +396,26 @@ void WhileStatementNode::getModifiesPInto(
 }
 
 void WhileStatementNode::getBranchInInto(
-    std::vector<Relationship<int, int>*>& result) {
-    result.push_back(new Relationship<int, int>(RelationshipReference::NEXT, line, line + 1));
+    std::vector<Relationship<int, int> *> &result) {
+    result.push_back(new Relationship<int, int>(RelationshipReference::NEXT,
+                                                line, line + 1));
 
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getBranchInInto(result);
     }
+}
+
+void WhileStatementNode::getBranchOutInto(
+    std::vector<Relationship<int, int> *> &result, bool is_last) {
+    result.push_back(new Relationship<int, int>(
+        RelationshipReference::NEXT, stmtList.back()->getLineNumber(), line));
+
+    std::vector<StatementNode *> stmtList = getStmtList();
+    for (size_t i = 0; i < stmtList.size() - 1; i++) {
+        stmtList.at(i)->getBranchOutInto(result, false);
+    }
+
+    stmtList.back()->getBranchOutInto(result, true);
 }
 
 // If Statement
@@ -415,9 +428,7 @@ IfStatementNode::IfStatementNode(std::vector<StatementNode *> &ifBlock,
     this->line = line;
 }
 
-int IfStatementNode::getEndLine() {
-    return elseBlock.back()->getEndLine();
-}
+int IfStatementNode::getEndLine() { return elseBlock.back()->getEndLine(); }
 
 std::vector<StatementNode *> IfStatementNode::getStmtList() {
     std::vector<StatementNode *> stmtList;
@@ -538,7 +549,7 @@ std::vector<std::string> *IfStatementNode::getModsInto(
 }
 
 void IfStatementNode::getModifiesPInto(std::vector<std::string> &result,
-                      std::vector<ProcedureNode *> &procList) {
+                                       std::vector<ProcedureNode *> &procList) {
     std::vector<StatementNode *> stmtList = this->getStmtList();
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getModifiesPInto(result, procList);
@@ -546,19 +557,38 @@ void IfStatementNode::getModifiesPInto(std::vector<std::string> &result,
 }
 
 void IfStatementNode::getBranchInInto(
-    std::vector<Relationship<int, int>*>& result) {
+    std::vector<Relationship<int, int> *> &result) {
     int startLine = this->getLineNumber();
     int ifStart = startLine + 1;
     int elseStart = this->elseBlock[0]->getLineNumber();
     std::vector<StatementNode *> stmtList = getStmtList();
 
-    result.push_back(new Relationship<int, int>(RelationshipReference::NEXT, startLine, ifStart));
-    result.push_back(new Relationship<int, int>(RelationshipReference
-                                             :: NEXT, startLine, elseStart));
-    
+    result.push_back(new Relationship<int, int>(RelationshipReference::NEXT,
+                                                startLine, ifStart));
+    result.push_back(new Relationship<int, int>(RelationshipReference ::NEXT,
+                                                startLine, elseStart));
+
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getBranchInInto(result);
     }
+}
+
+void IfStatementNode::getBranchOutInto(
+    std::vector<Relationship<int, int> *> &result, bool is_last) {
+    if (!is_last) {
+        result.push_back(new Relationship<int, int>(
+            RelationshipReference::NEXT, ifBlock.back()->getLineNumber(),
+            getEndLine() + 1));
+        result.push_back(new Relationship<int, int>(
+            RelationshipReference::NEXT, elseBlock.back()->getLineNumber(),
+            getEndLine() + 1));
+    }
+
+    std::vector<StatementNode *> stmtList = getStmtList();
+    for (size_t i = 0; i < stmtList.size() - 1; i++) {
+        stmtList.at(i)->getBranchOutInto(result, false);
+    }
+    stmtList.back()->getBranchOutInto(result, true);
 }
 
 // Expression

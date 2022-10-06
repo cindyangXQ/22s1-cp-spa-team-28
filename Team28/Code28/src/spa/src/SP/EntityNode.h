@@ -14,7 +14,6 @@ public:
     EntityNode();
 };
 
-
 class ProgramNode;
 class ProcedureNode;
 class StatementNode;
@@ -89,9 +88,11 @@ public:
     virtual std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
     virtual void getModifiesPInto(std::vector<std::string> &result,
-                              std::vector<ProcedureNode *> &procList){};
+                                  std::vector<ProcedureNode *> &procList){};
     virtual void
     getBranchInInto(std::vector<Relationship<int, int> *> &result){};
+    virtual void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
+                                  bool is_last){};
 };
 
 class ReadStatementNode : public StatementNode {
@@ -105,7 +106,7 @@ public:
 
     void getVariablesInto(std::vector<std::string> &result);
     void getStatementsInto(std::vector<Statement *> &result);
-    void getAssignmentsInto(std::vector<Assignment *> &result) {};
+    void getAssignmentsInto(std::vector<Assignment *> &result){};
     std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
     void getModifiesPInto(std::vector<std::string> &result,
@@ -123,7 +124,7 @@ public:
 
     void getVariablesInto(std::vector<std::string> &result);
     void getStatementsInto(std::vector<Statement *> &result);
-    void getAssignmentsInto(std::vector<Assignment *> &result) {};
+    void getAssignmentsInto(std::vector<Assignment *> &result){};
     std::vector<std::string> *
     getUsesInto(std::vector<Relationship<int, std::string> *> &result);
     void getUsesPInto(std::vector<std::string> &result,
@@ -208,6 +209,8 @@ public:
     void getModifiesPInto(std::vector<std::string> &result,
                           std::vector<ProcedureNode *> &procList);
     void getBranchInInto(std::vector<Relationship<int, int> *> &result);
+    void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
+                          bool is_last);
 };
 
 class IfStatementNode : public StatementNode {
@@ -243,7 +246,9 @@ public:
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
     void getModifiesPInto(std::vector<std::string> &result,
                           std::vector<ProcedureNode *> &procList);
-    void getBranchInInto(std::vector <Relationship<int, int> *> &result);
+    void getBranchInInto(std::vector<Relationship<int, int> *> &result);
+    void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
+                          bool is_last);
 };
 
 class ExpressionNode : public EntityNode {

@@ -1,7 +1,7 @@
 #include "SPUtils.h"
 
 void SPUtils::follows(const std::vector<StatementNode *> &stmtList,
-                           std::vector<Relationship<int, int> *> &result) {
+                      std::vector<Relationship<int, int> *> &result) {
     std::vector<int> lineNumbers;
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getFollowsInto(result);
@@ -15,7 +15,7 @@ void SPUtils::follows(const std::vector<StatementNode *> &stmtList,
 }
 
 void SPUtils::followsT(const std::vector<StatementNode *> &stmtList,
-                            std::vector<Relationship<int, int> *> &result) {
+                       std::vector<Relationship<int, int> *> &result) {
     std::vector<int> lineNumbers;
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getFollowsTInto(result);
@@ -32,7 +32,7 @@ void SPUtils::followsT(const std::vector<StatementNode *> &stmtList,
 }
 
 void SPUtils::parent(StatementNode *parentNode,
-                          std::vector<Relationship<int, int> *> &result) {
+                     std::vector<Relationship<int, int> *> &result) {
     int parentLineNo = parentNode->getLineNumber();
     std::vector<StatementNode *> children = parentNode->getStmtList();
 
@@ -47,14 +47,13 @@ void SPUtils::parent(StatementNode *parentNode,
 
 std::vector<int> *
 SPUtils::parentT(StatementNode *parentNode,
-                      std::vector<Relationship<int, int> *> &result) {
+                 std::vector<Relationship<int, int> *> &result) {
     int parentLineNo = parentNode->getLineNumber();
     std::vector<StatementNode *> children = parentNode->getStmtList();
     std::vector<int> *descendants = new std::vector<int>();
 
     for (size_t i = 0; i < children.size(); i++) {
-        std::vector<int> *grandchildren =
-            SPUtils::parentT(children[i], result);
+        std::vector<int> *grandchildren = SPUtils::parentT(children[i], result);
         for (size_t j = 0; j < grandchildren->size(); j++) {
             int grandchild = grandchildren->at(j);
             Relationship<int, int> *addGrandchild = new Relationship<int, int>(
@@ -96,7 +95,7 @@ SPUtils::modifiesP(ProcedureNode *procedure,
 }
 
 bool SPUtils::compareStmtList(const std::vector<StatementNode *> &list1,
-                                   const std::vector<StatementNode *> &list2) {
+                              const std::vector<StatementNode *> &list2) {
     if (list1.size() != list2.size()) {
         return false;
     }
@@ -109,7 +108,7 @@ bool SPUtils::compareStmtList(const std::vector<StatementNode *> &list1,
 }
 // DRY
 bool SPUtils::compareProcList(std::vector<ProcedureNode *> &list1,
-                                   std::vector<ProcedureNode *> &list2) {
+                              std::vector<ProcedureNode *> &list2) {
     if (list1.size() != list2.size()) {
         return false;
     }
@@ -120,7 +119,6 @@ bool SPUtils::compareProcList(std::vector<ProcedureNode *> &list1,
     }
     return true;
 }
-
 
 ProcedureNode *SPUtils::findProc(std::string procName,
                                  std::vector<ProcedureNode *> &procList) {
