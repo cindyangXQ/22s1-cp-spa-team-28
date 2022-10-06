@@ -9,7 +9,7 @@ TEST_CASE("QueryParser is parsing correctly") {
         QueryParser::parse("assign a; constant c; variable v; Select a such "
                            "that Modifies(1, v) pattern a(v, _\"x\"_)");
 
-    REQUIRE(solvableQ.selectType.entity == EntityName::ASSIGN);
+    REQUIRE(solvableQ.selectClause.syns[0].entity == EntityName::ASSIGN);
     REQUIRE_THROWS(
         QueryParser::parse("assign a; constant c; variable v; Select a;"));
     REQUIRE_THROWS(
@@ -58,7 +58,8 @@ TEST_CASE("QueryParser can parse select clause") {
                               Synonym(EntityName::ASSIGN, "a")};
 
     std::string correct = "Select v";
-    SelectType selectedSynonym = QueryParser::parseSelectClause(&correct, syns);
+    SelectClause selectClause = QueryParser::parseSelectClause(&correct, syns);
+    Synonym selectedSynonym = selectClause.syns[0];
     REQUIRE(selectedSynonym.entity == EntityName::VARIABLE);
     REQUIRE(selectedSynonym.name == "v");
 
