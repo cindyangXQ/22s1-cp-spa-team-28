@@ -805,11 +805,11 @@ TEST_CASE("Test BranchIn/Out extractor in simple progran") {
     std::vector<Relationship<int, int> *> inexpected;
 
     inexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 1, 2));
+        new Relationship<int, int>(RelationshipReference::NEXT, 1, 2));
     inexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 1, 4));
+        new Relationship<int, int>(RelationshipReference::NEXT, 1, 4));
     inexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 6, 7));
+        new Relationship<int, int>(RelationshipReference::NEXT, 6, 7));
 
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramParser parser = ProgramParser(0, tokens);
@@ -828,11 +828,11 @@ TEST_CASE("Test BranchIn/Out extractor in simple progran") {
     // Branch Out
     std::vector<Relationship<int, int> *> outexpected;
     outexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 3, 6));
+        new Relationship<int, int>(RelationshipReference::NEXT, 3, 6));
     outexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 5, 6));
+        new Relationship<int, int>(RelationshipReference::NEXT, 5, 6));
     outexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 7, 6));
+        new Relationship<int, int>(RelationshipReference::NEXT, 7, 6));
 
     BranchOutExtr outextr(program, nullptr);
     extracted = outextr.extract();
@@ -878,23 +878,23 @@ TEST_CASE("Test BranchIn extractor in program with nested if-else statement") {
     std::vector<Relationship<int, int> *> expected;
 
     expected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 1, 2));
+        new Relationship<int, int>(RelationshipReference::NEXT, 1, 2));
     expected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 1, 11));
+        new Relationship<int, int>(RelationshipReference::NEXT, 1, 11));
     expected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 2, 3));
+        new Relationship<int, int>(RelationshipReference::NEXT, 2, 3));
     expected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 2, 9));
+        new Relationship<int, int>(RelationshipReference::NEXT, 2, 9));
     expected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 5, 6));
+        new Relationship<int, int>(RelationshipReference::NEXT, 5, 6));
     expected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 7, 8));
+        new Relationship<int, int>(RelationshipReference::NEXT, 7, 8));
     expected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 12, 13));
+        new Relationship<int, int>(RelationshipReference::NEXT, 12, 13));
     expected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 13, 14));
+        new Relationship<int, int>(RelationshipReference::NEXT, 13, 14));
     expected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 13, 16));
+        new Relationship<int, int>(RelationshipReference::NEXT, 13, 16));
 
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramParser parser = ProgramParser(0, tokens);
@@ -914,19 +914,19 @@ TEST_CASE("Test BranchIn extractor in program with nested if-else statement") {
     std::vector<Relationship<int, int> *> outexpected;
 
     outexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 10, 17));
+        new Relationship<int, int>(RelationshipReference::NEXT, 10, 17));
     outexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 12, 17));
+        new Relationship<int, int>(RelationshipReference::NEXT, 12, 17));
     outexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 5, 10));
+        new Relationship<int, int>(RelationshipReference::NEXT, 5, 10));
     outexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 9, 10));
+        new Relationship<int, int>(RelationshipReference::NEXT, 9, 10));
     outexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 7, 5));
+        new Relationship<int, int>(RelationshipReference::NEXT, 7, 5));
     outexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 8, 7));
+        new Relationship<int, int>(RelationshipReference::NEXT, 8, 7));
     outexpected.push_back(
-        &Relationship<int, int>(RelationshipReference::NEXT, 13, 12));
+        new Relationship<int, int>(RelationshipReference::NEXT, 13, 12));
 
     BranchOutExtr outextr(program, nullptr);
     extracted = outextr.extract();
