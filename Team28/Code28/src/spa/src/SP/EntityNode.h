@@ -92,7 +92,7 @@ public:
     virtual void
     getBranchInInto(std::vector<Relationship<int, int> *> &result){};
     virtual void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
-                                  bool is_last){};
+                                  int nextLine){};
 };
 
 class ReadStatementNode : public StatementNode {
@@ -210,7 +210,7 @@ public:
                           std::vector<ProcedureNode *> &procList);
     void getBranchInInto(std::vector<Relationship<int, int> *> &result);
     void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
-                          bool is_last);
+                          int nextLine);
 };
 
 class IfStatementNode : public StatementNode {
@@ -248,7 +248,8 @@ public:
                           std::vector<ProcedureNode *> &procList);
     void getBranchInInto(std::vector<Relationship<int, int> *> &result);
     void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
-                          bool is_last);
+                          int nextLine);
+    int getIfEndLine() { return ifBlock.back()->getEndLine(); }
 };
 
 class ExpressionNode : public EntityNode {

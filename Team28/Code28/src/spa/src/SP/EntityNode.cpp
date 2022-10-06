@@ -406,16 +406,20 @@ void WhileStatementNode::getBranchInInto(
 }
 
 void WhileStatementNode::getBranchOutInto(
-    std::vector<Relationship<int, int> *> &result, bool is_last) {
-    result.push_back(new Relationship<int, int>(
-        RelationshipReference::NEXT, stmtList.back()->getLineNumber(), line));
-
+    std::vector<Relationship<int, int> *> &result, int nextLine) {
     std::vector<StatementNode *> stmtList = getStmtList();
-    for (size_t i = 0; i < stmtList.size() - 1; i++) {
-        stmtList.at(i)->getBranchOutInto(result, false);
+
+    if (!stmtList.back()->isIf()) {
+        result.push_back(
+            new Relationship<int, int>(RelationshipReference::NEXT,
+                                       stmtList.back()->getLineNumber(), line));
     }
 
-    stmtList.back()->getBranchOutInto(result, true);
+    for (size_t i = 0; i < stmtList.size() - 1; i++) {
+        stmtList.at(i)->getBranchOutInto(result, stmtList.at(i+1)->getLineNumber());
+    }
+
+     stmtList.back()->getBranchOutInto(result, line);
 }
 
 // If Statement
@@ -574,21 +578,31 @@ void IfStatementNode::getBranchInInto(
 }
 
 void IfStatementNode::getBranchOutInto(
-    std::vector<Relationship<int, int> *> &result, bool is_last) {
-    if (!is_last) {
-        result.push_back(new Relationship<int, int>(
-            RelationshipReference::NEXT, ifBlock.back()->getLineNumber(),
-            getEndLine() + 1));
-        result.push_back(new Relationship<int, int>(
-            RelationshipReference::NEXT, elseBlock.back()->getLineNumber(),
-            getEndLine() + 1));
+    std::vector<Relationship<int, int> *> &result, int nextLine) {
+
+    if (nextLine != -1) {
+        if (!ifBlock.back()->isIf()) {
+            result.push_back(new Relationship<int, int>(
+                RelationshipReference::NEXT, ifBlock.back()->getLineNumber(),
+                nextLine));
+        }
+        if (!elseBlock.back()->isIf()) {
+            result.push_back(new Relationship<int, int>(
+                RelationshipReference::NEXT, elseBlock.back()->getLineNumber(),
+                nextLine));
+        }
     }
 
-    std::vector<StatementNode *> stmtList = getStmtList();
-    for (size_t i = 0; i < stmtList.size() - 1; i++) {
-        stmtList.at(i)->getBranchOutInto(result, false);
+    for (size_t i = 0; i < ifBlock.size() - 1; i++) {
+        ifBlock.at(i)->getBranchOutInto(result, ifBlock.at(i+1)->getLineNumber());
     }
-    stmtList.back()->getBranchOutInto(result, true);
+    ifBlock.back()->getBranchOutInto(result, nextLine);
+
+    for (size_t i = 0; i < elseBlock.size() - 1; i++) {
+        elseBlock.at(i)->getBranchOutInto(result,
+                                        elseBlock.at(i + 1)->getLineNumber());
+    }
+    elseBlock.back()->getBranchOutInto(result, nextLine);
 }
 
 // Expression

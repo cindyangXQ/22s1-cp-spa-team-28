@@ -293,9 +293,9 @@ std::vector<Relationship<int, int> *> BranchOutExtr::extract() {
     for (size_t i = 0; i < procList.size(); i++) {
         std::vector<StatementNode *> stmtList = procList[i]->getStmtList();
         for (size_t j = 0; j < stmtList.size() - 1; j++) {
-            stmtList[j]->getBranchOutInto(result, false);
+            stmtList[j]->getBranchOutInto(result, stmtList[j+1]->getLineNumber());
         }
-        stmtList.back()->getBranchOutInto(result, true);
+        stmtList.back()->getBranchOutInto(result, -1);
     }
 
     return result;
