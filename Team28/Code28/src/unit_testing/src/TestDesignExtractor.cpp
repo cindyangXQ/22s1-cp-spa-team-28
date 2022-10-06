@@ -940,10 +940,6 @@ TEST_CASE("Test BranchIn extractor in program with nested if-else statement") {
     }
 }
 
-TEST_CASE("Extract BranchIn/Out from program with multiple procedures") {
-
-}
-
 TEST_CASE("Extract program with if-else statements") {
     // Follow relationship
     std::vector<Relationship<int, int> *> expected;
