@@ -126,4 +126,7 @@ public:
 
 private:
     Storage *storage;
+
+    bool validateWildcard(Reference leftRef, Reference rightRef,
+                          Solvable *sTable, Solvable *pTable);
 };

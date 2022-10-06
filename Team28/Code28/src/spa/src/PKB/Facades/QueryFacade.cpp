@@ -1,5 +1,11 @@
 #include "QueryFacade.h"
 
+bool QueryFacade::validateWildcard(Reference leftRef, Reference rightRef,
+                                   Solvable *sTable, Solvable *pTable) {
+    return sTable->validate(leftRef, rightRef) ||
+           pTable->validate(leftRef, rightRef);
+}
+
 QueryFacade::QueryFacade(Storage *storage) { this->storage = storage; }
 
 std::vector<Statement *> QueryFacade::getAllStatements() {
@@ -105,12 +111,9 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
             break;
         }
         if (leftRef.type == ReferenceType::WILDCARD) {
-            ModifiesSTable *modifiesS =
-                this->storage->getTable<ModifiesSTable>();
-            ModifiesPTable *modifiesP =
-                this->storage->getTable<ModifiesPTable>();
-            return modifiesS->validate(leftRef, rightRef) ||
-                   modifiesP->validate(leftRef, rightRef);
+            return validateWildcard(leftRef, rightRef,
+                                    this->storage->getTable<ModifiesSTable>(),
+                                    this->storage->getTable<ModifiesPTable>());
         }
         break;
     }
@@ -124,10 +127,9 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
             break;
         }
         if (leftRef.type == ReferenceType::WILDCARD) {
-            UsesSTable *usesS = this->storage->getTable<UsesSTable>();
-            UsesPTable *usesP = this->storage->getTable<UsesPTable>();
-            return usesS->validate(leftRef, rightRef) ||
-                   usesP->validate(leftRef, rightRef);
+            return validateWildcard(leftRef, rightRef,
+                                    this->storage->getTable<UsesSTable>(),
+                                    this->storage->getTable<UsesPTable>());
         }
         break;
     }
