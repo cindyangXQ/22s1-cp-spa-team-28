@@ -17,7 +17,7 @@ public:
      * Returns list of possible values that the right synonym can be.
      */
     std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym,
-                                  ProceduresTable *procedures);
+                                  Storage *storage);
 
     /*
      * Returns list of possible values that the left synonym can be.

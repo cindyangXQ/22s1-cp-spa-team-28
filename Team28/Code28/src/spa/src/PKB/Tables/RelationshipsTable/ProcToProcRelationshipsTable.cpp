@@ -21,11 +21,12 @@ bool ProcToProcRelationshipsTable::validate(Reference leftRef,
 };
 
 std::vector<Value> ProcToProcRelationshipsTable::solveRight(
-    Reference leftRef, EntityName rightSynonym, ProceduresTable *procedures) {
+    Reference leftRef, EntityName rightSynonym, Storage *storage) {
     // Validate rightSynonym is a procedure. TODO: throw error if not
     if (rightSynonym != EntityName::PROCEDURE) {
         return std::vector<Value>();
     }
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     // TODO: iterate through set don't convert to vector
     std::unordered_set<std::string> possibleRightsSet = procedures->getAll();
     std::vector<std::string> possibleRights = std::vector<std::string>(

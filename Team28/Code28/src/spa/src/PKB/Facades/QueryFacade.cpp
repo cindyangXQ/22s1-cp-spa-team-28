@@ -157,47 +157,42 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         // correct
         return std::vector<Value>();
     }
-    StatementsTable *statements = this->storage->getTable<StatementsTable>();
-    VariablesTable *variables = this->storage->getTable<VariablesTable>();
-    ProceduresTable *procedures = this->storage->getTable<ProceduresTable>();
+
+    Solvable *table;
 
     switch (relType) {
     case RelationshipReference::FOLLOWS: {
-        FollowsTable *follows = this->storage->getTable<FollowsTable>();
-        return follows->solveRight(leftRef, rightSynonym, statements);
+        table = this->storage->getTable<FollowsTable>();
+        break;
     }
     case RelationshipReference::FOLLOWS_T: {
-        FollowsTTable *followsT = this->storage->getTable<FollowsTTable>();
-        return followsT->solveRight(leftRef, rightSynonym, statements);
+        table = this->storage->getTable<FollowsTTable>();
+        break;
     }
     case RelationshipReference::PARENT: {
-        ParentTable *parent = this->storage->getTable<ParentTable>();
-        return parent->solveRight(leftRef, rightSynonym, statements);
+        table = this->storage->getTable<ParentTable>();
+        break;
     }
     case RelationshipReference::PARENT_T: {
-        ParentTTable *parentT = this->storage->getTable<ParentTTable>();
-        return parentT->solveRight(leftRef, rightSynonym, statements);
+        table = this->storage->getTable<ParentTTable>();
+        break;
     }
     case RelationshipReference::MODIFIES: {
         if (leftRef.type == ReferenceType::STMT_REF) {
-            ModifiesSTable *modifiesS =
-                this->storage->getTable<ModifiesSTable>();
-            return modifiesS->solveRight(leftRef, rightSynonym, variables);
+            table = this->storage->getTable<ModifiesSTable>();
+            break;
         }
         if (leftRef.type == ReferenceType::ENT_REF) {
-            ModifiesPTable *modifiesP =
-                this->storage->getTable<ModifiesPTable>();
-            return modifiesP->solveRight(leftRef, rightSynonym, variables);
+            table = this->storage->getTable<ModifiesPTable>();
+            break;
         }
         if (leftRef.type == ReferenceType::WILDCARD) {
-            ModifiesSTable *modifiesS =
-                this->storage->getTable<ModifiesSTable>();
-            ModifiesPTable *modifiesP =
-                this->storage->getTable<ModifiesPTable>();
+            Solvable *modifiesS = this->storage->getTable<ModifiesSTable>();
+            Solvable *modifiesP = this->storage->getTable<ModifiesPTable>();
             std::vector<Value> stmtRes =
-                modifiesS->solveRight(leftRef, rightSynonym, variables);
+                modifiesS->solveRight(leftRef, rightSynonym, this->storage);
             std::vector<Value> procRes =
-                modifiesP->solveRight(leftRef, rightSynonym, variables);
+                modifiesP->solveRight(leftRef, rightSynonym, this->storage);
             std::vector<Value> result(stmtRes);
             result.insert(result.end(), procRes.begin(), procRes.end());
             return result;
@@ -206,20 +201,20 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
     }
     case RelationshipReference::USES: {
         if (leftRef.type == ReferenceType::STMT_REF) {
-            UsesSTable *usesS = this->storage->getTable<UsesSTable>();
-            return usesS->solveRight(leftRef, rightSynonym, variables);
+            table = this->storage->getTable<UsesSTable>();
+            break;
         }
         if (leftRef.type == ReferenceType::ENT_REF) {
-            UsesPTable *usesP = this->storage->getTable<UsesPTable>();
-            return usesP->solveRight(leftRef, rightSynonym, variables);
+            table = this->storage->getTable<UsesPTable>();
+            break;
         }
         if (leftRef.type == ReferenceType::WILDCARD) {
-            UsesSTable *usesS = this->storage->getTable<UsesSTable>();
-            UsesPTable *usesP = this->storage->getTable<UsesPTable>();
+            Solvable *usesS = this->storage->getTable<UsesSTable>();
+            Solvable *usesP = this->storage->getTable<UsesPTable>();
             std::vector<Value> stmtRes =
-                usesS->solveRight(leftRef, rightSynonym, variables);
+                usesS->solveRight(leftRef, rightSynonym, this->storage);
             std::vector<Value> procRes =
-                usesP->solveRight(leftRef, rightSynonym, variables);
+                usesP->solveRight(leftRef, rightSynonym, this->storage);
             std::vector<Value> result(stmtRes);
             result.insert(result.end(), procRes.begin(), procRes.end());
             return result;
@@ -227,18 +222,19 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         break;
     }
     case RelationshipReference::CALLS: {
-        CallsTable *calls = this->storage->getTable<CallsTable>();
-        return calls->solveRight(leftRef, rightSynonym, procedures);
+        table = this->storage->getTable<CallsTable>();
+        break;
     }
     case RelationshipReference::CALLS_T: {
-        CallsTTable *callsT = this->storage->getTable<CallsTTable>();
-        return callsT->solveRight(leftRef, rightSynonym, procedures);
+        table = this->storage->getTable<CallsTTable>();
+        break;
     }
     default: {
         // TODO: throw error instead of return false
         return std::vector<Value>();
     }
     }
+    return table->solveRight(leftRef, rightSynonym, this->storage);
 }
 
 std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,

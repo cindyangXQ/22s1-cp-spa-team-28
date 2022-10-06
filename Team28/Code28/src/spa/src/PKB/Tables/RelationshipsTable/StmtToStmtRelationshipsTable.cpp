@@ -21,11 +21,12 @@ bool StmtToStmtRelationshipsTable::validate(Reference leftRef,
 };
 
 std::vector<Value> StmtToStmtRelationshipsTable::solveRight(
-    Reference leftRef, EntityName rightSynonym, StatementsTable *statements) {
+    Reference leftRef, EntityName rightSynonym, Storage *storage) {
     // Validate rightSynonym is a statement. TODO: throw error if not
     if (stmtRefSet.count(rightSynonym) == 0) {
         return std::vector<Value>();
     }
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     std::vector<int> possibleRights;
     if (rightSynonym == EntityName::STMT) {
         possibleRights = statements->getAllLineNumbers();

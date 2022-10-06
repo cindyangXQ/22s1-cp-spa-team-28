@@ -21,11 +21,12 @@ bool ProcToVarRelationshipsTable::validate(Reference leftRef,
 };
 
 std::vector<Value> ProcToVarRelationshipsTable::solveRight(
-    Reference leftRef, EntityName rightSynonym, VariablesTable *variables) {
+    Reference leftRef, EntityName rightSynonym, Storage *storage) {
     // Validate rightSynonym is a variable. TODO: throw error if not
     if (rightSynonym != EntityName::VARIABLE) {
         return std::vector<Value>();
     }
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     // TODO: iterate through set don't convert to vector
     std::unordered_set<std::string> possibleRightsSet = variables->getAll();
     std::vector<std::string> possibleRights = std::vector<std::string>(
