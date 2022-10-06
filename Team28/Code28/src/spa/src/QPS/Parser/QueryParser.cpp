@@ -60,11 +60,30 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
         if (matches.size() == 0) {
             throw SyntaxError("Invalid select clause syntax");
         }
+        std::string selectValue = matches[1];
         std::vector<Synonym> selectedSyns;
-        selectedSyns.push_back(QueryParser::getSynonym(matches[1], syns));
         *clause = Utils::removeString(*clause, selectClause);
-
-        return SelectClause(selectedSyns, SelectType::SINGLE);
+        if (selectValue.compare("BOOLEAN") == 0) {
+            return SelectClause(selectedSyns, SelectType::BOOLEAN);
+        }
+        else if (std::regex_search(selectValue, selectTupleRegex)) {
+            selectValue = selectValue.substr(1, selectValue.size() - 2);
+            std::vector<std::string> synonymStrings = Utils::splitString(selectValue, ',');
+            for (int i = 0; i < synonymStrings.size(); i++) {
+                std::string syn = synonymStrings[i];
+                if (!std::regex_search(syn, synRegex)) {
+                    throw SyntaxError("Invalid select value");
+                }
+                Synonym selectedSyn = QueryParser::getSynonym(Utils::removeTrailingSpaces(syn), syns);
+                selectedSyns.push_back(selectedSyn);
+            }
+            return SelectClause(selectedSyns, SelectType::TUPLE);
+        }
+        else if (std::regex_search(selectValue, synRegex)) {
+            selectValue = Utils::removeTrailingSpaces(selectValue);
+            selectedSyns.push_back(QueryParser::getSynonym(selectValue, syns));
+            return SelectClause(selectedSyns, SelectType::SINGLE);
+        }
     }
     throw SyntaxError("Expected select clause");
 }
@@ -142,7 +161,6 @@ void QueryParser::parsePatternClause(std::string *clause,
             try {
                 //Remove " at the start and end
                 expr.erase(std::remove(expr.begin(), expr.end(), '"'), expr.end());
-                
                 expr = SP::convertExpression(expr);
             }
             catch (std::runtime_error e) {
