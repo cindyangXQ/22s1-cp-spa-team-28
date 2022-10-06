@@ -127,6 +127,9 @@ public:
 private:
     Storage *storage;
 
+    /*
+     * Helper method for validating wildcard, checks against P and S tables.
+     */
     bool validateWildcard(Reference leftRef, Reference rightRef,
                           Solvable *sTable, Solvable *pTable);
 };
