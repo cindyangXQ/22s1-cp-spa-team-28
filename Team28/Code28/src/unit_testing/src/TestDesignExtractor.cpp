@@ -793,7 +793,7 @@ TEST_CASE("Test extract Calls/* in program with container") {
     }
 }
 
-TEST_CASE("Test BranchIn/Out extractor in simple progran") {
+TEST_CASE("Test BranchIn/Out extractor in simple program") {
     std::string sourceProgram = " procedure a {"
                                 "    if(x == y) then { "
                                 "        print x; x = 2 * y + 9;}"

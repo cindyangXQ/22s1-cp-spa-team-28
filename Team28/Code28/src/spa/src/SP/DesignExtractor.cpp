@@ -166,6 +166,34 @@ std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
     return result;
 }
 
+std::vector<Relationship<int, std::string>*> UsesSExtractor::ifConVar() {
+    std::vector<Relationship<int, std::string> *> result;
+
+    std::vector<ProcedureNode *> procList = this->program->getProcList();
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
+        for (size_t j = 0; j < stmtList.size(); j++) {
+            stmtList[j]->getIfConVar(result);
+        }
+    }
+
+    return result;
+}
+
+std::vector<Relationship<int, std::string>*> UsesSExtractor::whileConVar() {
+    std::vector<Relationship<int, std::string> *> result;
+
+    std::vector<ProcedureNode *> procList = this->program->getProcList();
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
+        for (size_t j = 0; j < stmtList.size(); j++) {
+            stmtList[j]->getWhileConVar(result);
+        }
+    }
+
+    return result;
+}
+
 std::vector<Relationship<std::string, std::string> *>
 UsesPExtractor::extract() {
     std::vector<Relationship<std::string, std::string> *> result;
@@ -364,6 +392,11 @@ void ParentExtrT::populate() {
 void UsesSExtractor::populate() {
     std::vector<Relationship<int, std::string> *> usesS = this->extract();
     this->storage->storeUsesS(&usesS);
+
+    std::vector<Relationship<int, std::string> *> ifConVar = this->ifConVar();
+    this->storage->storeIfControlVar(&ifConVar);
+    std::vector<Relationship<int, std::string> *> whileConVar = this->whileConVar();
+    this->storage->storeWhileControlVar(&whileConVar);
 }
 
 void UsesPExtractor::populate() {

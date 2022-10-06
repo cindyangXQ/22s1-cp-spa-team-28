@@ -395,6 +395,18 @@ void WhileStatementNode::getModifiesPInto(
     }
 }
 
+void WhileStatementNode::getWhileConVar(
+    std::vector<Relationship<int, std::string>*>& result) {
+    std::vector<std::string> condVars;
+    cond->getVariablesInto(condVars);
+    int lineNo = this->getLineNumber();
+
+    for (size_t i = 0; i < condVars.size(); i++) {
+        result.push_back(new Relationship<int, std::string>(
+            RelationshipReference::USES, lineNo, condVars[i]));
+    }
+}
+
 void WhileStatementNode::getBranchInInto(
     std::vector<Relationship<int, int> *> &result) {
     result.push_back(new Relationship<int, int>(RelationshipReference::NEXT,
@@ -557,6 +569,18 @@ void IfStatementNode::getModifiesPInto(std::vector<std::string> &result,
     std::vector<StatementNode *> stmtList = this->getStmtList();
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getModifiesPInto(result, procList);
+    }
+}
+
+void IfStatementNode::getIfConVar(
+    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<std::string> condVars;
+    cond->getVariablesInto(condVars);
+    int lineNo = this->getLineNumber();
+
+    for (size_t i = 0; i < condVars.size(); i++) {
+        result.push_back(new Relationship<int, std::string>(
+            RelationshipReference::USES, lineNo, condVars[i]));
     }
 }
 

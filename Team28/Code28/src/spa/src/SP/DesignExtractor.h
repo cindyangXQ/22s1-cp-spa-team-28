@@ -89,6 +89,8 @@ public:
     UsesSExtractor(ProgramNode *program, PopulateFacade *storage)
         : DesignExtractor(program, storage){};
     std::vector<Relationship<int, std::string> *> extract();
+    std::vector<Relationship<int, std::string> *> ifConVar();
+    std::vector<Relationship<int, std::string> *> whileConVar();
     void populate();
 };
 
