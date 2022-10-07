@@ -66,6 +66,7 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
     for (int i = 0; i < clauseResultList.size(); i++) {
         result = ClauseTable::joinTables(result, clauseResultList[i].table);
     }
+
     if (result.size() == 0) {
         if (type == SelectType::BOOLEAN) {
             return {"FALSE"};

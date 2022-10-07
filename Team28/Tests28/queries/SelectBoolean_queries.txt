@@ -28,3 +28,8 @@ assign a; variable v; stmt s;
 Select <a, v> such that Modifies(a,v)
 1 read,13 a9,14 a10,19 a18,2 constant,3 procedure,7 a3,9 a6
 5000
+5 - Select tuple with false constraints
+assign a; variable v; stmt s;
+Select <a, v> such that Modifies(a,v) pattern a(_, _"12312321321"_)
+none
+5000
