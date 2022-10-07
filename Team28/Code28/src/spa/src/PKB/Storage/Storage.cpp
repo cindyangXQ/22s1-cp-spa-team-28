@@ -23,32 +23,34 @@ Storage::Storage() {
     IfControlVarTable *ifControl = new IfControlVarTable();
     WhileControlVarTable *whileControl = new WhileControlVarTable();
 
-    /*
-     * TODO relook typecasting
-     */
-    this->tables[TableName::STATEMENTS] = (Table<TableValue> *)statements;
-    this->tables[TableName::ASSIGNMENTS] = (Table<TableValue> *)assignments;
-    this->tables[TableName::PROCEDURES] = (Table<TableValue> *)procedures;
-    this->tables[TableName::VARIABLES] = (Table<TableValue> *)variables;
-    this->tables[TableName::CONSTANTS] = (Table<TableValue> *)constants;
-    this->tables[TableName::PARENT] = (Table<TableValue> *)parents;
-    this->tables[TableName::PARENT_T] = (Table<TableValue> *)parentsT;
-    this->tables[TableName::FOLLOWS] = (Table<TableValue> *)follows;
-    this->tables[TableName::FOLLOWS_T] = (Table<TableValue> *)followsT;
-    this->tables[TableName::MODIFIES_S] = (Table<TableValue> *)modifiesS;
-    this->tables[TableName::MODIFIES_P] = (Table<TableValue> *)modifiesP;
-    this->tables[TableName::USES_S] = (Table<TableValue> *)usesS;
-    this->tables[TableName::USES_P] = (Table<TableValue> *)usesP;
-    this->tables[TableName::CALLS] = (Table<TableValue> *)calls;
-    this->tables[TableName::CALLS_T] = (Table<TableValue> *)callsT;
-    this->tables[TableName::BRANCH_IN] = (Table<TableValue> *)branchIn;
-    this->tables[TableName::BRANCH_OUT] = (Table<TableValue> *)branchOut;
-    this->tables[TableName::NEXT] = (Table<TableValue> *)next;
-    this->tables[TableName::NEXT_T] = (Table<TableValue> *)nextT;
-    this->tables[TableName::I_CONTROL] = (Table<TableValue> *)ifControl;
-    this->tables[TableName::W_CONTROL] = (Table<TableValue> *)whileControl;
+    this->tables[typeid(StatementsTable)] = statements;
+    this->tables[typeid(AssignmentsTable)] = assignments;
+    this->tables[typeid(ProceduresTable)] = procedures;
+    this->tables[typeid(VariablesTable)] = variables;
+    this->tables[typeid(ConstantsTable)] = constants;
+    this->tables[typeid(ParentTable)] = parents;
+    this->tables[typeid(ParentTTable)] = parentsT;
+    this->tables[typeid(FollowsTable)] = follows;
+    this->tables[typeid(FollowsTTable)] = followsT;
+    this->tables[typeid(ModifiesSTable)] = modifiesS;
+    this->tables[typeid(ModifiesPTable)] = modifiesP;
+    this->tables[typeid(UsesSTable)] = usesS;
+    this->tables[typeid(UsesPTable)] = usesP;
+    this->tables[typeid(CallsTable)] = calls;
+    this->tables[typeid(CallsTTable)] = callsT;
+    this->tables[typeid(BranchInTable)] = branchIn;
+    this->tables[typeid(BranchOutTable)] = branchOut;
+    this->tables[typeid(NextTable)] = next;
+    this->tables[typeid(NextTTable)] = nextT;
+    this->tables[typeid(IfControlVarTable)] = ifControl;
+    this->tables[typeid(WhileControlVarTable)] = whileControl;
+
+    this->storageView = new StorageView();
+    this->storageView->setTable<StatementsTable>(statements);
+    this->storageView->setTable<ProceduresTable>(procedures);
+    this->storageView->setTable<VariablesTable>(variables);
 };
 
-Table<TableValue> *Storage::getTable(TableName name) {
-    return this->tables.at(name);
-};
+StorageView* Storage::getStorageView() {
+    return this->storageView;
+}

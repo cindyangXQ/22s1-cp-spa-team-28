@@ -21,11 +21,12 @@ bool StmtToStmtRelationshipsTable::validate(Reference leftRef,
 };
 
 std::vector<Value> StmtToStmtRelationshipsTable::solveRight(
-    Reference leftRef, EntityName rightSynonym, StatementsTable *statements) {
+    Reference leftRef, EntityName rightSynonym, StorageView *storage) {
     // Validate rightSynonym is a statement. TODO: throw error if not
     if (stmtRefSet.count(rightSynonym) == 0) {
         return std::vector<Value>();
     }
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     std::vector<int> possibleRights;
     if (rightSynonym == EntityName::STMT) {
         possibleRights = statements->getAllLineNumbers();
@@ -50,8 +51,9 @@ std::vector<Value> StmtToStmtRelationshipsTable::solveRight(
 };
 
 std::vector<Value> StmtToStmtRelationshipsTable::solveLeft(
-    Reference rightRef, EntityName leftSynonym, StatementsTable *statements) {
+    Reference rightRef, EntityName leftSynonym, StorageView* storage) {
     // Validate leftSynonym is a statement. TODO: throw error if not
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     if (stmtRefSet.count(leftSynonym) == 0) {
         return std::vector<Value>();
     }
@@ -80,13 +82,14 @@ std::vector<Value> StmtToStmtRelationshipsTable::solveLeft(
 
 std::vector<std::pair<Value, Value>>
 StmtToStmtRelationshipsTable::solveBoth(EntityName leftSynonym,
-                                               EntityName rightSynonym,
-                                        StatementsTable *statements) {
+                                        EntityName rightSynonym,
+                                        StorageView* storage) {
     // Validate leftSynonym is a statement. TODO: throw error if not
     if (stmtRefSet.count(leftSynonym) == 0 ||
         stmtRefSet.count(rightSynonym) == 0) {
         return std::vector<std::pair<Value, Value>>();
     }
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     std::vector<int> possibleLefts;
     std::vector<int> possibleRights;
     if (leftSynonym == EntityName::STMT) {

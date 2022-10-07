@@ -1,8 +1,10 @@
 #pragma once
 
+#include "../Solvable.h"
 #include "RelationshipsTable.h"
 
-class StmtToStmtRelationshipsTable : public RelationshipsTable<int, int> {
+class StmtToStmtRelationshipsTable : public RelationshipsTable<int, int>,
+                                     public virtual Solvable {
 public:
     /*
      * Returns true if the relationship holds between leftReference and
@@ -14,25 +16,25 @@ public:
      * Returns list of possible values that the right synonym can be.
      */
     std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym,
-                                  StatementsTable *statements);
+                                  StorageView *storage);
 
     /*
      * Returns list of possible values that the left synonym can be.
      */
     std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym,
-                                 StatementsTable *statements);
+                                 StorageView *storage);
 
     /*
      * Returns list of possible (Value, Value) that the pair of synonyms can be.
      */
     std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym,
                                                    EntityName rightSynonym,
-                                                   StatementsTable *statements);
+                                                   StorageView *storage);
 };
 
-typedef StmtToStmtRelationshipsTable ParentTable;
-typedef StmtToStmtRelationshipsTable ParentTTable;
-typedef StmtToStmtRelationshipsTable FollowsTable;
-typedef StmtToStmtRelationshipsTable FollowsTTable;
-typedef StmtToStmtRelationshipsTable NextTable;
-typedef StmtToStmtRelationshipsTable NextTTable;
+class ParentTable : public StmtToStmtRelationshipsTable {};
+class ParentTTable : public StmtToStmtRelationshipsTable {};
+class FollowsTable : public StmtToStmtRelationshipsTable {};
+class FollowsTTable : public StmtToStmtRelationshipsTable {};
+class NextTable : public StmtToStmtRelationshipsTable {};
+class NextTTable : public StmtToStmtRelationshipsTable {};

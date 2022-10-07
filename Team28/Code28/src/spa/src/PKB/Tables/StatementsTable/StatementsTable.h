@@ -9,14 +9,14 @@
 /*
  * Class encapsulating a Table used to store SIMPLE statements.
  */
-class StatementsTable : public Table<Statement> {
+class StatementsTable : public Table {
 public:
     StatementsTable();
 
     /*
      * Stores a statement into the StatementsTable.
      */
-    void store(Statement *statement);
+    void store(TableValue *statement);
 
     /*
      * Retrieves a statement from StatementsTable by index.
@@ -27,11 +27,6 @@ public:
      * Retrieves type of a statement from StatementsTable by index.
      */
     StatementType getStatementType(const int &index);
-
-    /*
-     * Returns the size of StatementsTable.
-     */
-    int getTableSize() const;
 
     /*
      * Gets all statements in StatementsTable.
@@ -49,8 +44,6 @@ public:
     std::vector<int> getStatementsByType(StatementType type);
 
 private:
-    int tableSize = 0;
-
     std::map<StatementType, std::vector<int>> statementTypeIndexes = {
         {StatementType::READ, {}},   {StatementType::PRINT, {}},
         {StatementType::ASSIGN, {}}, {StatementType::CALL, {}},

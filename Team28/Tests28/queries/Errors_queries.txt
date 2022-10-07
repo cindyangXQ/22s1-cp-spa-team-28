@@ -148,3 +148,18 @@ variable v; assign a;
 Select v pattern a(1, _"yey"_))
 SyntaxError
 5000
+31 - SPA catches syntax errors in explicit and (pattern and such that)
+variable v; assign a;
+Select v pattern a(1, _"yey"_) and Modifies(a, v)
+SyntaxError
+5000
+31 - SPA catches syntax errors in explicit and (such that and pattern)
+variable v; assign a;
+Select v such that Modifies(a, v) and pattern a(1, _"yey"_)
+SyntaxError
+5000
+31 - SPA catches syntax errors in explicit and (miss spell and)
+variable v; assign a;
+Select v such that Modifies(a, v) ad pattern a(1, _"yey"_)
+SyntaxError
+5000

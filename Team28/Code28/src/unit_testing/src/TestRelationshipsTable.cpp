@@ -6,12 +6,6 @@
 #include "PKB/Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
 
-TEST_CASE("RelationshipsTable can be initialised correctly") {
-    RelationshipsTable<int, int> table;
-
-    REQUIRE(table.getTableSize() == -1);
-}
-
 TEST_CASE("RelationshipsTable can store and retrieve correctly") {
     RelationshipsTable<int, int> table;
     Relationship<int, int> test =
