@@ -31,13 +31,34 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
             haveTableToJoin = true;
         }
     }
+
     if (!haveTableToJoin) {
         if (type == SelectType::BOOLEAN) {
             return std::vector<std::string>{"TRUE"};
         } else if (type == SelectType::SINGLE) {
             return QueryEvaluator::getAll(queryResult->selectClause.syns[0]);
         } else {
-            // TODO
+            std::vector<Synonym> selectedSynonyms =
+                queryResult->selectClause.syns;
+            std::vector<std::vector<std::string>> allResults;
+            for (int i = 0; i < selectedSynonyms.size(); i++) {
+                allResults.push_back(
+                    QueryEvaluator::getAll(selectedSynonyms[i]));
+                if (allResults[i].size() == 0) {
+                    return {};
+                }
+            }
+            std::vector<std::string> output = allResults[0];
+            for (int i = 1; i < allResults.size(); i++) {
+                std::vector<std::string> tmp = {};
+                for (int j = 0; j < output.size(); j++) {
+                    for (int k = 0; k < allResults[i].size(); k++) {
+                        tmp.push_back(output[j] + " " + allResults[i][k]);
+                    }
+                }
+                output = tmp;
+            }
+            return output;
         }
     }
 
