@@ -400,10 +400,14 @@ void WhileStatementNode::getWhileConVar(
     std::vector<std::string> condVars;
     cond->getVariablesInto(condVars);
     int lineNo = this->getLineNumber();
-
     for (size_t i = 0; i < condVars.size(); i++) {
         result.push_back(new Relationship<int, std::string>(
             RelationshipReference::USES, lineNo, condVars[i]));
+    }
+
+    std::vector<StatementNode *> stmtList = this->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getWhileConVar(result);
     }
 }
 
@@ -577,10 +581,14 @@ void IfStatementNode::getIfConVar(
     std::vector<std::string> condVars;
     cond->getVariablesInto(condVars);
     int lineNo = this->getLineNumber();
-
     for (size_t i = 0; i < condVars.size(); i++) {
         result.push_back(new Relationship<int, std::string>(
             RelationshipReference::USES, lineNo, condVars[i]));
+    }
+
+    std::vector<StatementNode *> stmtList = this->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getIfConVar(result);
     }
 }
 
