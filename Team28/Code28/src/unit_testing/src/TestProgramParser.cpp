@@ -1,6 +1,6 @@
-#include "SP/ExprParser.h"
-#include "SP/Parser.h"
-#include "SP/Tokenizer.h"
+#include "SP/ProgramParser/ExprParser.h"
+#include "SP/ProgramParser/Parser.h"
+#include "SP/Tokenizer/Tokenizer.h"
 #include "catch.hpp"
 
 #include <vector>

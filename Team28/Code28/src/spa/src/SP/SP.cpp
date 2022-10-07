@@ -1,11 +1,11 @@
 #include "SP.h"
 
-#include "DesignExtractor.h"
-#include "EntityNode.h"
-#include "ExprParser.h"
-#include "Parser.h"
-#include "Token.h"
-#include "Tokenizer.h"
+#include "./DesignExtractor/DesignExtractor.h"
+#include "./ProgramParser/EntityNode.h"
+#include "./ProgramParser/ExprParser.h"
+#include "./ProgramParser/Parser.h"
+#include "./Tokenizer/Token.h"
+#include "./Tokenizer/Tokenizer.h"
 
 #include <fstream>
 #include <sstream>

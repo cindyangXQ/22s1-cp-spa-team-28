@@ -1,5 +1,5 @@
 #include "EntityNode.h"
-#include "SPUtils.h"
+#include "../SPUtils.h"
 #include <vector>
 
 EntityNode::EntityNode() {}

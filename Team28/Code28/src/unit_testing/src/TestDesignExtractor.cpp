@@ -1,9 +1,9 @@
-#include "SP/DesignExtractor.h"
+#include "SP/DesignExtractor/DesignExtractor.h"
 #include "SP/SPUtils.h"
 #include "catch.hpp"
 
-#include "SP/Parser.h"
-#include "SP/Tokenizer.h"
+#include "SP/ProgramParser/Parser.h"
+#include "SP/Tokenizer/Tokenizer.h"
 
 #include <iostream>
 

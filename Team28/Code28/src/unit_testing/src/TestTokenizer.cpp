@@ -1,5 +1,5 @@
-#include "SP/EntityNode.h"
-#include "SP/Tokenizer.h"
+#include "SP/ProgramParser/EntityNode.h"
+#include "SP/Tokenizer/Tokenizer.h"
 #include "catch.hpp"
 
 #include <iostream>

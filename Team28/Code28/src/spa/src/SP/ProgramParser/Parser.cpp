@@ -1,7 +1,7 @@
 #include "Parser.h"
 #include "EntityNode.h"
 #include "ExprParser.h"
-#include "Token.h"
+#include "../Tokenizer/Token.h"
 #include <vector>
 #include <map>
 

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../commons/Assignment.h"
-#include "../commons/Constant.h"
-#include "../commons/Relationship.h"
-#include "../commons/Statement.h"
-#include "../commons/Variable.h"
-#include "Token.h"
+#include "../../commons/Assignment.h"
+#include "../../commons/Constant.h"
+#include "../../commons/Relationship.h"
+#include "../../commons/Statement.h"
+#include "../../commons/Variable.h"
+#include "../Tokenizer/Token.h"
 #include <string>
 #include <vector>
 
