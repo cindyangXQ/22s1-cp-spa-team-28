@@ -82,7 +82,7 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
         return false;
     }
 
-    Solvable *table;
+    Solvable *table = nullptr;
 
     switch (relType) {
     case RelationshipReference::FOLLOWS: {
@@ -158,7 +158,7 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         return std::vector<Value>();
     }
 
-    Solvable *table;
+    Solvable *table = nullptr;
 
     switch (relType) {
     case RelationshipReference::FOLLOWS: {
@@ -189,10 +189,10 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         if (leftRef.type == ReferenceType::WILDCARD) {
             Solvable *modifiesS = this->storage->getTable<ModifiesSTable>();
             Solvable *modifiesP = this->storage->getTable<ModifiesPTable>();
-            std::vector<Value> stmtRes =
-                modifiesS->solveRight(leftRef, rightSynonym, this->storage->getStorageView());
-            std::vector<Value> procRes =
-                modifiesP->solveRight(leftRef, rightSynonym, this->storage->getStorageView());
+            std::vector<Value> stmtRes = modifiesS->solveRight(
+                leftRef, rightSynonym, this->storage->getStorageView());
+            std::vector<Value> procRes = modifiesP->solveRight(
+                leftRef, rightSynonym, this->storage->getStorageView());
             std::vector<Value> result(stmtRes);
             result.insert(result.end(), procRes.begin(), procRes.end());
             return result;
@@ -211,10 +211,10 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         if (leftRef.type == ReferenceType::WILDCARD) {
             Solvable *usesS = this->storage->getTable<UsesSTable>();
             Solvable *usesP = this->storage->getTable<UsesPTable>();
-            std::vector<Value> stmtRes =
-                usesS->solveRight(leftRef, rightSynonym, this->storage->getStorageView());
-            std::vector<Value> procRes =
-                usesP->solveRight(leftRef, rightSynonym, this->storage->getStorageView());
+            std::vector<Value> stmtRes = usesS->solveRight(
+                leftRef, rightSynonym, this->storage->getStorageView());
+            std::vector<Value> procRes = usesP->solveRight(
+                leftRef, rightSynonym, this->storage->getStorageView());
             std::vector<Value> result(stmtRes);
             result.insert(result.end(), procRes.begin(), procRes.end());
             return result;
@@ -234,7 +234,8 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         return std::vector<Value>();
     }
     }
-    return table->solveRight(leftRef, rightSynonym, this->storage->getStorageView());
+    return table->solveRight(leftRef, rightSynonym,
+                             this->storage->getStorageView());
 }
 
 std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
@@ -245,7 +246,7 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
         // correct
         return std::vector<Value>();
     }
-    Solvable *table;
+    Solvable *table = nullptr;
 
     switch (relType) {
     case RelationshipReference::FOLLOWS: {
@@ -301,13 +302,14 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
         return std::vector<Value>();
     }
     }
-    return table->solveLeft(rightRef, leftSynonym, this->storage->getStorageView());
+    return table->solveLeft(rightRef, leftSynonym,
+                            this->storage->getStorageView());
 }
 
 std::vector<std::pair<Value, Value>>
 QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
                        EntityName rightSynonym) {
-    Solvable *table;
+    Solvable *table = nullptr;
 
     switch (relType) {
     case RelationshipReference::FOLLOWS: {
@@ -363,7 +365,8 @@ QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
         return std::vector<std::pair<Value, Value>>();
     }
     }
-    return table->solveBoth(leftSynonym, rightSynonym, this->storage->getStorageView());
+    return table->solveBoth(leftSynonym, rightSynonym,
+                            this->storage->getStorageView());
 }
 
 std::vector<Value> QueryFacade::getAssign(std::string varName,
