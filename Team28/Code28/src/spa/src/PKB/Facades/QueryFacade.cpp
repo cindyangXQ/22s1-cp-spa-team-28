@@ -6,6 +6,30 @@ bool QueryFacade::validateWildcard(Reference leftRef, Reference rightRef,
            pTable->validate(leftRef, rightRef);
 }
 
+
+std::vector<Value> 
+QueryFacade::concatSolveRightResults(std::vector<Solvable*> solvables,
+    Reference leftRef, EntityName rightSynonym) {
+    std::vector<Value> result = {};
+    std::vector<Value> intermediateRes = {};
+    for (Solvable* solvable : solvables) {
+        intermediateRes = solvable->solveRight(
+            leftRef, rightSynonym, this->storage->getStorageView());
+        result.insert(result.end(), intermediateRes.begin(), intermediateRes.end());
+    }
+    return result;
+};
+
+ReferenceType QueryFacade::getRefType(EntityName leftSynonym) {
+    if (stmtRefSet.count(leftSynonym) == 1) {
+        return ReferenceType::STMT_REF;
+    }
+    if (leftSynonym == EntityName::PROCEDURE) {
+        return ReferenceType::ENT_REF;
+    }
+    return ReferenceType::WILDCARD;
+}
+
 QueryFacade::QueryFacade(Storage *storage) { this->storage = storage; }
 
 std::vector<Statement *> QueryFacade::getAllStatements() {
@@ -82,70 +106,17 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
         return false;
     }
 
-    Solvable *table = nullptr;
+    if (relType == RelationshipReference::MODIFIES && leftRef.type == ReferenceType::WILDCARD) {
+        std::vector<Solvable*> modifies = this->storage->getModifiesTable();
+        return validateWildcard(leftRef, rightRef, modifies.at(0), modifies.at(1));
+    }
 
-    switch (relType) {
-    case RelationshipReference::FOLLOWS: {
-        table = this->storage->getTable<FollowsTable>();
-        break;
+    if (relType == RelationshipReference::USES && leftRef.type == ReferenceType::WILDCARD) {
+        std::vector<Solvable*> uses = this->storage->getUsesTable();
+        return validateWildcard(leftRef, rightRef, uses.at(0), uses.at(1));
     }
-    case RelationshipReference::FOLLOWS_T: {
-        table = this->storage->getTable<FollowsTTable>();
-        break;
-    }
-    case RelationshipReference::PARENT: {
-        table = this->storage->getTable<ParentTable>();
-        break;
-    }
-    case RelationshipReference::PARENT_T: {
-        table = this->storage->getTable<ParentTTable>();
-        break;
-    }
-    case RelationshipReference::MODIFIES: {
-        if (leftRef.type == ReferenceType::STMT_REF) {
-            table = this->storage->getTable<ModifiesSTable>();
-            break;
-        }
-        if (leftRef.type == ReferenceType::ENT_REF) {
-            table = this->storage->getTable<ModifiesPTable>();
-            break;
-        }
-        if (leftRef.type == ReferenceType::WILDCARD) {
-            return validateWildcard(leftRef, rightRef,
-                                    this->storage->getTable<ModifiesSTable>(),
-                                    this->storage->getTable<ModifiesPTable>());
-        }
-        break;
-    }
-    case RelationshipReference::USES: {
-        if (leftRef.type == ReferenceType::STMT_REF) {
-            table = this->storage->getTable<UsesSTable>();
-            break;
-        }
-        if (leftRef.type == ReferenceType::ENT_REF) {
-            table = this->storage->getTable<UsesPTable>();
-            break;
-        }
-        if (leftRef.type == ReferenceType::WILDCARD) {
-            return validateWildcard(leftRef, rightRef,
-                                    this->storage->getTable<UsesSTable>(),
-                                    this->storage->getTable<UsesPTable>());
-        }
-        break;
-    }
-    case RelationshipReference::CALLS: {
-        table = this->storage->getTable<CallsTable>();
-        break;
-    }
-    case RelationshipReference::CALLS_T: {
-        table = this->storage->getTable<CallsTTable>();
-        break;
-    }
-    default: {
-        // TODO: throw error instead of return false
-        return false;
-    }
-    }
+
+    Solvable *table = this->storage->getRsTable(relType, leftRef.type);
     return table->validate(leftRef, rightRef);
 }
 
@@ -158,82 +129,18 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         return std::vector<Value>();
     }
 
-    Solvable *table = nullptr;
+    if (relType == RelationshipReference::MODIFIES && leftRef.type == ReferenceType::WILDCARD) {
+        std::vector<Solvable*> modifies = this->storage->getModifiesTable();
+        return concatSolveRightResults(modifies, leftRef, rightSynonym);
+    }
 
-    switch (relType) {
-    case RelationshipReference::FOLLOWS: {
-        table = this->storage->getTable<FollowsTable>();
-        break;
+    if (relType == RelationshipReference::USES && leftRef.type == ReferenceType::WILDCARD) {
+        std::vector<Solvable*> uses = this->storage->getUsesTable();
+        return concatSolveRightResults(uses, leftRef, rightSynonym);
     }
-    case RelationshipReference::FOLLOWS_T: {
-        table = this->storage->getTable<FollowsTTable>();
-        break;
-    }
-    case RelationshipReference::PARENT: {
-        table = this->storage->getTable<ParentTable>();
-        break;
-    }
-    case RelationshipReference::PARENT_T: {
-        table = this->storage->getTable<ParentTTable>();
-        break;
-    }
-    case RelationshipReference::MODIFIES: {
-        if (leftRef.type == ReferenceType::STMT_REF) {
-            table = this->storage->getTable<ModifiesSTable>();
-            break;
-        }
-        if (leftRef.type == ReferenceType::ENT_REF) {
-            table = this->storage->getTable<ModifiesPTable>();
-            break;
-        }
-        if (leftRef.type == ReferenceType::WILDCARD) {
-            Solvable *modifiesS = this->storage->getTable<ModifiesSTable>();
-            Solvable *modifiesP = this->storage->getTable<ModifiesPTable>();
-            std::vector<Value> stmtRes = modifiesS->solveRight(
-                leftRef, rightSynonym, this->storage->getStorageView());
-            std::vector<Value> procRes = modifiesP->solveRight(
-                leftRef, rightSynonym, this->storage->getStorageView());
-            std::vector<Value> result(stmtRes);
-            result.insert(result.end(), procRes.begin(), procRes.end());
-            return result;
-        }
-        break;
-    }
-    case RelationshipReference::USES: {
-        if (leftRef.type == ReferenceType::STMT_REF) {
-            table = this->storage->getTable<UsesSTable>();
-            break;
-        }
-        if (leftRef.type == ReferenceType::ENT_REF) {
-            table = this->storage->getTable<UsesPTable>();
-            break;
-        }
-        if (leftRef.type == ReferenceType::WILDCARD) {
-            Solvable *usesS = this->storage->getTable<UsesSTable>();
-            Solvable *usesP = this->storage->getTable<UsesPTable>();
-            std::vector<Value> stmtRes = usesS->solveRight(
-                leftRef, rightSynonym, this->storage->getStorageView());
-            std::vector<Value> procRes = usesP->solveRight(
-                leftRef, rightSynonym, this->storage->getStorageView());
-            std::vector<Value> result(stmtRes);
-            result.insert(result.end(), procRes.begin(), procRes.end());
-            return result;
-        }
-        break;
-    }
-    case RelationshipReference::CALLS: {
-        table = this->storage->getTable<CallsTable>();
-        break;
-    }
-    case RelationshipReference::CALLS_T: {
-        table = this->storage->getTable<CallsTTable>();
-        break;
-    }
-    default: {
-        // TODO: throw error instead of return false
-        return std::vector<Value>();
-    }
-    }
+
+    Solvable *table = this->storage->getRsTable(relType, leftRef.type);
+    
     return table->solveRight(leftRef, rightSynonym,
                              this->storage->getStorageView());
 }
@@ -246,62 +153,14 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
         // correct
         return std::vector<Value>();
     }
-    Solvable *table = nullptr;
+    ReferenceType leftRef = this->getRefType(leftSynonym);
+    if (leftRef == ReferenceType::WILDCARD && (relType == RelationshipReference::USES ||
+        relType == RelationshipReference::MODIFIES)) {
+        // TODO: Throw error instead of return empty list if needed.
+        return std::vector<Value>();
+    }
 
-    switch (relType) {
-    case RelationshipReference::FOLLOWS: {
-        table = this->storage->getTable<FollowsTable>();
-        break;
-    }
-    case RelationshipReference::FOLLOWS_T: {
-        table = this->storage->getTable<FollowsTTable>();
-        break;
-    }
-    case RelationshipReference::PARENT: {
-        table = this->storage->getTable<ParentTable>();
-        break;
-    }
-    case RelationshipReference::PARENT_T: {
-        table = this->storage->getTable<ParentTTable>();
-        break;
-    }
-    case RelationshipReference::MODIFIES: {
-        if (stmtRefSet.count(leftSynonym) == 1) {
-            table = this->storage->getTable<ModifiesSTable>();
-            break;
-        }
-        if (leftSynonym == EntityName::PROCEDURE) {
-            table = this->storage->getTable<ModifiesPTable>();
-            break;
-        }
-        // TODO: throw error instead of returning empty list
-        return std::vector<Value>();
-    }
-    case RelationshipReference::USES: {
-        if (stmtRefSet.count(leftSynonym) == 1) {
-            table = this->storage->getTable<UsesSTable>();
-            break;
-        }
-        if (leftSynonym == EntityName::PROCEDURE) {
-            table = this->storage->getTable<UsesPTable>();
-            break;
-        }
-        // TODO: throw error instead of returning empty list
-        return std::vector<Value>();
-    }
-    case RelationshipReference::CALLS: {
-        table = this->storage->getTable<CallsTable>();
-        break;
-    }
-    case RelationshipReference::CALLS_T: {
-        table = this->storage->getTable<CallsTTable>();
-        break;
-    }
-    default: {
-        // TODO: throw error instead of return false
-        return std::vector<Value>();
-    }
-    }
+    Solvable *table = this->storage->getRsTable(relType, leftRef);
     return table->solveLeft(rightRef, leftSynonym,
                             this->storage->getStorageView());
 }
@@ -309,62 +168,14 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
 std::vector<std::pair<Value, Value>>
 QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
                        EntityName rightSynonym) {
-    Solvable *table = nullptr;
-
-    switch (relType) {
-    case RelationshipReference::FOLLOWS: {
-        table = this->storage->getTable<FollowsTable>();
-        break;
-    }
-    case RelationshipReference::FOLLOWS_T: {
-        table = this->storage->getTable<FollowsTTable>();
-        break;
-    }
-    case RelationshipReference::PARENT: {
-        table = this->storage->getTable<ParentTable>();
-        break;
-    }
-    case RelationshipReference::PARENT_T: {
-        table = this->storage->getTable<ParentTTable>();
-        break;
-    }
-    case RelationshipReference::MODIFIES: {
-        if (stmtRefSet.count(leftSynonym) == 1) {
-            table = this->storage->getTable<ModifiesSTable>();
-            break;
-        }
-        if (leftSynonym == EntityName::PROCEDURE) {
-            table = this->storage->getTable<ModifiesPTable>();
-            break;
-        }
-        // TODO: throw error instead of returning empty list
+    
+    ReferenceType leftRef = this->getRefType(leftSynonym);
+    if (leftRef == ReferenceType::WILDCARD && (relType == RelationshipReference::USES ||
+        relType == RelationshipReference::MODIFIES)) {
+        // TODO: Throw error instead of return empty list if needed.
         return std::vector<std::pair<Value, Value>>();
     }
-    case RelationshipReference::USES: {
-        if (stmtRefSet.count(leftSynonym) == 1) {
-            table = this->storage->getTable<UsesSTable>();
-            break;
-        }
-        if (leftSynonym == EntityName::PROCEDURE) {
-            table = this->storage->getTable<UsesPTable>();
-            break;
-        }
-        // TODO: throw error instead of returning empty list
-        return std::vector<std::pair<Value, Value>>();
-    }
-    case RelationshipReference::CALLS: {
-        table = this->storage->getTable<CallsTable>();
-        break;
-    }
-    case RelationshipReference::CALLS_T: {
-        table = this->storage->getTable<CallsTTable>();
-        break;
-    }
-    default: {
-        // TODO: throw error instead of return false
-        return std::vector<std::pair<Value, Value>>();
-    }
-    }
+    Solvable *table = this->storage->getRsTable(relType, leftRef);
     return table->solveBoth(leftSynonym, rightSynonym,
                             this->storage->getStorageView());
 }
