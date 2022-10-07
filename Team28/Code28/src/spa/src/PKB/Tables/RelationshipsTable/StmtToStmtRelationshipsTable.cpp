@@ -51,7 +51,7 @@ std::vector<Value> StmtToStmtRelationshipsTable::solveRight(
 };
 
 std::vector<Value> StmtToStmtRelationshipsTable::solveLeft(
-    Reference rightRef, EntityName leftSynonym, StorageView* storage) {
+    Reference rightRef, EntityName leftSynonym, StorageView *storage) {
     // Validate leftSynonym is a statement. TODO: throw error if not
     StatementsTable *statements = storage->getTable<StatementsTable>();
     if (stmtRefSet.count(leftSynonym) == 0) {
@@ -80,10 +80,8 @@ std::vector<Value> StmtToStmtRelationshipsTable::solveLeft(
     return result;
 };
 
-std::vector<std::pair<Value, Value>>
-StmtToStmtRelationshipsTable::solveBoth(EntityName leftSynonym,
-                                        EntityName rightSynonym,
-                                        StorageView* storage) {
+std::vector<std::pair<Value, Value>> StmtToStmtRelationshipsTable::solveBoth(
+    EntityName leftSynonym, EntityName rightSynonym, StorageView *storage) {
     // Validate leftSynonym is a statement. TODO: throw error if not
     if (stmtRefSet.count(leftSynonym) == 0 ||
         stmtRefSet.count(rightSynonym) == 0) {

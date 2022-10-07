@@ -72,10 +72,8 @@ std::vector<Value> ProcToProcRelationshipsTable::solveLeft(
     return result;
 };
 
-std::vector<std::pair<Value, Value>>
-ProcToProcRelationshipsTable::solveBoth(EntityName leftSynonym,
-                                        EntityName rightSynonym,
-                                        StorageView *storage) {
+std::vector<std::pair<Value, Value>> ProcToProcRelationshipsTable::solveBoth(
+    EntityName leftSynonym, EntityName rightSynonym, StorageView *storage) {
     // Validate synonyms are both procedures here. TODO: throw error if not
     if (leftSynonym != EntityName::PROCEDURE ||
         rightSynonym != EntityName::PROCEDURE) {

@@ -10,6 +10,7 @@
 #include "../../commons/Constant.h"
 #include "../../commons/Entity.h"
 #include "../../commons/Procedure.h"
+#include "../../commons/Relationship.h"
 #include "../../commons/TableValue.h"
 #include "../../commons/Variable.h"
 
@@ -38,12 +39,37 @@ public:
     Storage();
 
     /*
-     * Retrieve a table by the templated class givenn
+     * Retrieve a table by the templated class given
      */
     template <typename Subclass> Subclass *getTable() {
         Table *table = this->tables.at(typeid(Subclass));
         return dynamic_cast<Subclass *>(table);
     };
+
+    /*
+     * Retrieve a table by the RelationshipReference
+     */
+    Solvable *getRsTable(RelationshipReference rsRef, ReferenceType leftType);
+
+    /*
+     * Retrieve a Modifies table by Reference Type
+     */
+    Solvable *getModifiesOnType(ReferenceType leftType);
+
+    /*
+     * Retrieve a Uses table by Reference Type
+     */
+    Solvable *getUsesOnType(ReferenceType leftType);
+
+    /*
+     * Retrieves Modifies Tables
+     */
+    std::vector<Solvable *> getModifiesTables();
+
+    /*
+     * Retrieves Uses Tables
+     */
+    std::vector<Solvable *> getUsesTables();
 
     /*
      * Returns the StorageView
@@ -52,5 +78,10 @@ public:
 
 private:
     std::map<std::type_index, Table *> tables;
-    StorageView* storageView;
+    /*
+     * Mapping of RelationshipReference to Solvable tables.
+     * Note: Modifies and Uses are complex and won't be mapped here.
+     */
+    std::map<RelationshipReference, Solvable *> rsTables;
+    StorageView *storageView;
 };

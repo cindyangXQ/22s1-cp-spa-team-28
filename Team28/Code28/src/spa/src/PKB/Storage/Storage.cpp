@@ -45,12 +45,60 @@ Storage::Storage() {
     this->tables[typeid(IfControlVarTable)] = ifControl;
     this->tables[typeid(WhileControlVarTable)] = whileControl;
 
+    this->rsTables[RelationshipReference::FOLLOWS] = follows;
+    this->rsTables[RelationshipReference::FOLLOWS_T] = followsT;
+    this->rsTables[RelationshipReference::PARENT] = parents;
+    this->rsTables[RelationshipReference::PARENT_T] = parentsT;
+    this->rsTables[RelationshipReference::CALLS] = calls;
+    this->rsTables[RelationshipReference::CALLS_T] = callsT;
+    this->rsTables[RelationshipReference::NEXT] = next;
+    this->rsTables[RelationshipReference::NEXT_T] = nextT;
+
     this->storageView = new StorageView();
     this->storageView->setTable<StatementsTable>(statements);
     this->storageView->setTable<ProceduresTable>(procedures);
     this->storageView->setTable<VariablesTable>(variables);
 };
 
-StorageView* Storage::getStorageView() {
-    return this->storageView;
-}
+Solvable *Storage::getRsTable(RelationshipReference rsRef,
+                              ReferenceType leftType) {
+    if (rsRef == RelationshipReference::MODIFIES) {
+        return this->getModifiesOnType(leftType);
+    }
+    if (rsRef == RelationshipReference::USES) {
+        return this->getUsesOnType(leftType);
+    }
+    return this->rsTables.at(rsRef);
+};
+
+Solvable *Storage::getModifiesOnType(ReferenceType leftType) {
+    if (leftType == ReferenceType::STMT_REF) {
+        return this->getTable<ModifiesSTable>();
+    }
+    if (leftType == ReferenceType::ENT_REF) {
+        return this->getTable<ModifiesPTable>();
+    }
+    return nullptr;
+};
+
+Solvable *Storage::getUsesOnType(ReferenceType leftType) {
+    if (leftType == ReferenceType::STMT_REF) {
+        return this->getTable<UsesSTable>();
+    }
+    if (leftType == ReferenceType::ENT_REF) {
+        return this->getTable<UsesPTable>();
+    }
+    return nullptr;
+};
+
+std::vector<Solvable *> Storage::getModifiesTables() {
+    return std::vector<Solvable *>{this->getTable<ModifiesSTable>(),
+                                   this->getTable<ModifiesPTable>()};
+};
+
+std::vector<Solvable *> Storage::getUsesTables() {
+    return std::vector<Solvable *>{this->getTable<UsesSTable>(),
+                                   this->getTable<UsesPTable>()};
+};
+
+StorageView *Storage::getStorageView() { return this->storageView; }
