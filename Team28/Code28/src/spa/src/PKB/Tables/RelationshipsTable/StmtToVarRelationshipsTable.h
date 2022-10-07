@@ -16,21 +16,20 @@ public:
      * Returns list of possible values that the right synonym can be.
      */
     std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym,
-                                  Storage *storage);
+                                  StorageView *storage);
 
     /*
      * Returns list of possible values that the left synonym can be.
      */
     std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym,
-                                 StatementsTable *statements);
+                                 StorageView *storage);
 
     /*
      * Returns list of possible (Value, Value) that the pair of synonyms can be.
      */
     std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym,
                                                    EntityName rightSynonym,
-                                                   StatementsTable *statements,
-                                                   VariablesTable *variables);
+                                                   StorageView *storage);
 };
 
 class ModifiesSTable : public StmtToVarRelationshipsTable {};

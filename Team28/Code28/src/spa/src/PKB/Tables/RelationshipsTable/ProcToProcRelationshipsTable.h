@@ -17,20 +17,20 @@ public:
      * Returns list of possible values that the right synonym can be.
      */
     std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym,
-                                  Storage *storage);
+                                  StorageView *storage);
 
     /*
      * Returns list of possible values that the left synonym can be.
      */
     std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym,
-                                 ProceduresTable *procedures);
+                                 StorageView *storage);
 
     /*
      * Returns list of possible (Value, Value) that the pair of synonyms can be.
      */
     std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym,
                                                    EntityName rightSynonym,
-                                                   ProceduresTable *procedures);
+                                                   StorageView *storage);
 };
 
 class CallsTable : public ProcToProcRelationshipsTable {};

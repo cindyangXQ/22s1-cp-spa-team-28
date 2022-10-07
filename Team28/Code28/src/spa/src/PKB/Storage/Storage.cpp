@@ -44,4 +44,13 @@ Storage::Storage() {
     this->tables[typeid(NextTTable)] = nextT;
     this->tables[typeid(IfControlVarTable)] = ifControl;
     this->tables[typeid(WhileControlVarTable)] = whileControl;
+
+    this->storageView = new StorageView();
+    this->storageView->setTable<StatementsTable>(statements);
+    this->storageView->setTable<ProceduresTable>(procedures);
+    this->storageView->setTable<VariablesTable>(variables);
 };
+
+StorageView* Storage::getStorageView() {
+    return this->storageView;
+}
