@@ -13,32 +13,24 @@
 #include "../../commons/TableValue.h"
 #include "../../commons/Variable.h"
 
-#include "../Tables/AssignmentsTable/AssignmentsTable.h"
 #include "../Tables/NamesTable/NamesTable.h"
-#include "../Tables/RelationshipsTable/BranchTable.h"
-#include "../Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
-#include "../Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
-#include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
-#include "../Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
-#include "../Tables/RelationshipsTable/UsesControlVarTable.h"
 #include "../Tables/StatementsTable/StatementsTable.h"
 #include "../Tables/Table.h"
 
-#include "StorageView.h"
-
 /*
- * Encapsulates a Storage class which is responsible for storing information to
- * tables in PKB.
+ * Encapsulates a StorageView class which is a read-only Storage that allows
+ * other tables in PKB to retrieve values from entities, statements and proc
+ * tables.
  */
-class Storage {
+class StorageView {
 public:
     /*
      * Explicit constructor for Storage.
      */
-    Storage();
+    StorageView(){};
 
     /*
-     * Retrieve a table by the templated class givenn
+     * Retrieve a table by the templated class given
      */
     template <typename Subclass> Subclass *getTable() {
         Table *table = this->tables.at(typeid(Subclass));
@@ -46,11 +38,12 @@ public:
     };
 
     /*
-     * Returns the StorageView
+     * Sets a pointer to a table by the templated class given
      */
-    StorageView *getStorageView();
+    template <typename Subclass> void setTable(Table *table) {
+        this->tables[typeid(Subclass)] = table;
+    };
 
 private:
     std::map<std::type_index, Table *> tables;
-    StorageView* storageView;
 };
