@@ -107,12 +107,12 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
     }
 
     if (relType == RelationshipReference::MODIFIES && leftRef.type == ReferenceType::WILDCARD) {
-        std::vector<Solvable*> modifies = this->storage->getModifiesTable();
+        std::vector<Solvable*> modifies = this->storage->getModifiesTables();
         return validateWildcard(leftRef, rightRef, modifies.at(0), modifies.at(1));
     }
 
     if (relType == RelationshipReference::USES && leftRef.type == ReferenceType::WILDCARD) {
-        std::vector<Solvable*> uses = this->storage->getUsesTable();
+        std::vector<Solvable*> uses = this->storage->getUsesTables();
         return validateWildcard(leftRef, rightRef, uses.at(0), uses.at(1));
     }
 
@@ -130,12 +130,12 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
     }
 
     if (relType == RelationshipReference::MODIFIES && leftRef.type == ReferenceType::WILDCARD) {
-        std::vector<Solvable*> modifies = this->storage->getModifiesTable();
+        std::vector<Solvable*> modifies = this->storage->getModifiesTables();
         return concatSolveRightResults(modifies, leftRef, rightSynonym);
     }
 
     if (relType == RelationshipReference::USES && leftRef.type == ReferenceType::WILDCARD) {
-        std::vector<Solvable*> uses = this->storage->getUsesTable();
+        std::vector<Solvable*> uses = this->storage->getUsesTables();
         return concatSolveRightResults(uses, leftRef, rightSynonym);
     }
 
