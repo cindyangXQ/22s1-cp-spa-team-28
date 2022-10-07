@@ -13,7 +13,12 @@ assign a; variable v; stmt s;
 Select BOOLEAN such that Modifies(s, v) pattern a(_, _"12312321321"_) such that Follows(a, s)
 FALSE
 5000
-3 - Pattern false 
+4 - Select boolean with no constraints
+assign a; variable v; stmt s;
+Select BOOLEAN
+TRUE
+5000
+5 - Select tuple with no constraints
 assign a; variable v; stmt s;
 Select <a, v>
 1 a12, 1 a1, 1 a10, 1 a11, 1 a13, 1 a14, 1 a15, 1 a16, 1 a17, 1 a18, 1 a19, 1 a2, 1 a20, 1 a21, 1 a22, 1 a23, 1 a24, 1 a25, 1 a26, 1 a27, 1 a28, 1 a29, 1 a3, 1 a4, 1 print, 1 a5, 1 a6, 1 procedure, 1 a7, 1 a8, 1 a9, 1 call, 1 constant, 1 read, 1 variable, 2 a12, 2 a1, 2 a10, 2 a11, 2 a13, 2 a14, 2 a15, 2 a16, 2 a17, 2 a18, 2 a19, 2 a2, 2 a20, 2 a21, 2 a22, 2 a23, 2 a24, 2 a25, 2 a26, 2 a27, 2 a28, 2 a29, 2 a3, 2 a4, 2 print, 2 a5, 2 a6, 2 procedure, 2 a7, 2 a8, 2 a9, 2 call, 2 constant, 2 read, 2 variable, 3 a12, 3 a1, 3 a10, 3 a11, 3 a13, 3 a14, 3 a15, 3 a16, 3 a17, 3 a18, 3 a19, 3 a2, 3 a20, 3 a21, 3 a22, 3 a23, 3 a24, 3 a25, 3 a26, 3 a27, 3 a28, 3 a29, 3 a3, 3 a4, 3 print, 3 a5, 3 a6, 3 procedure, 3 a7, 3 a8, 3 a9, 3 call, 3 constant, 3 read, 3 variable, 7 a12, 7 a1, 7 a10, 7 a11, 7 a13, 7 a14, 7 a15, 7 a16, 7 a17, 7 a18, 7 a19, 7 a2, 7 a20, 7 a21, 7 a22, 7 a23, 7 a24, 7 a25, 7 a26, 7 a27, 7 a28, 7 a29, 7 a3, 7 a4, 7 print, 7 a5, 7 a6, 7 procedure, 7 a7, 7 a8, 7 a9, 7 call, 7 constant, 7 read, 7 variable, 9 a12, 9 a1, 9 a10, 9 a11, 9 a13, 9 a14, 9 a15, 9 a16, 9 a17, 9 a18, 9 a19, 9 a2, 9 a20, 9 a21, 9 a22, 9 a23, 9 a24, 9 a25, 9 a26, 9 a27, 9 a28, 9 a29, 9 a3, 9 a4, 9 print, 9 a5, 9 a6, 9 procedure, 9 a7, 9 a8, 9 a9, 9 call, 9 constant, 9 read, 9 variable, 13 a12, 13 a1, 13 a10, 13 a11, 13 a13, 13 a14, 13 a15, 13 a16, 13 a17, 13 a18, 13 a19, 13 a2, 13 a20, 13 a21, 13 a22, 13 a23, 13 a24, 13 a25, 13 a26, 13 a27, 13 a28, 13 a29, 13 a3, 13 a4, 13 print, 13 a5, 13 a6, 13 procedure, 13 a7, 13 a8, 13 a9, 13 call, 13 constant, 13 read, 13 variable, 14 a12, 14 a1, 14 a10, 14 a11, 14 a13, 14 a14, 14 a15, 14 a16, 14 a17, 14 a18, 14 a19, 14 a2, 14 a20, 14 a21, 14 a22, 14 a23, 14 a24, 14 a25, 14 a26, 14 a27, 14 a28, 14 a29, 14 a3, 14 a4, 14 print, 14 a5, 14 a6, 14 procedure, 14 a7, 14 a8, 14 a9, 14 call, 14 constant, 14 read, 14 variable, 19 a12, 19 a1, 19 a10, 19 a11, 19 a13, 19 a14, 19 a15, 19 a16, 19 a17, 19 a18, 19 a19, 19 a2, 19 a20, 19 a21, 19 a22, 19 a23, 19 a24, 19 a25, 19 a26, 19 a27, 19 a28, 19 a29, 19 a3, 19 a4, 19 print, 19 a5, 19 a6, 19 procedure, 19 a7, 19 a8, 19 a9, 19 call, 19 constant, 19 read, 19 variable
