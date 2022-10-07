@@ -19,14 +19,15 @@
 
 /*
  * Encapsulates a StorageView class which is a read-only Storage that allows
- * other tables in PKB to retrieve values from entities, statements and proc tables.
+ * other tables in PKB to retrieve values from entities, statements and proc
+ * tables.
  */
 class StorageView {
 public:
     /*
      * Explicit constructor for Storage.
      */
-    StorageView() {};
+    StorageView(){};
 
     /*
      * Retrieve a table by the templated class given
@@ -36,11 +37,10 @@ public:
         return dynamic_cast<Subclass *>(table);
     };
 
-
     /*
      * Sets a pointer to a table by the templated class given
      */
-    template <typename Subclass> void *setTable(Table *table) {
+    template <typename Subclass> void setTable(Table *table) {
         this->tables[typeid(Subclass)] = table;
     };
 
