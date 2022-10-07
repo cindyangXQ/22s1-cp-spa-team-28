@@ -1,6 +1,6 @@
 #include "EntityNode.h"
-#include "Tokenizer.h"
 #include "ExprParser.h"
+#include "Tokenizer.h"
 
 class SPUtils {
 public:
@@ -10,7 +10,9 @@ public:
                          std::vector<Relationship<int, int> *> &result);
     static void parent(StatementNode *parentNode,
                        std::vector<Relationship<int, int> *> &result);
-    static std::vector<int> * parentT(StatementNode *parentNode, std::vector<Relationship<int, int> *> &result);
+    static std::vector<int> *
+    parentT(StatementNode *parentNode,
+            std::vector<Relationship<int, int> *> &result);
     static std::vector<std::string>
     usesP(ProcedureNode *procedure, std::vector<ProcedureNode *> &procList);
     static std::vector<std::string>

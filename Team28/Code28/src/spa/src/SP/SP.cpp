@@ -26,7 +26,6 @@ void SP::parse(std::string filename) {
         std::cout << "Parsing failed. Exiting program." << std::endl;
         exit(1);
     }
-
 }
 
 std::string SP::convertExpression(std::string input) {

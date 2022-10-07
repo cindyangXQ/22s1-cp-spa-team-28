@@ -1,5 +1,5 @@
-#include "SP/Tokenizer.h"
 #include "SP/EntityNode.h"
+#include "SP/Tokenizer.h"
 #include "catch.hpp"
 
 #include <iostream>
@@ -56,7 +56,7 @@ TEST_CASE("Source program with keyword as variable name") {
                                 "   procedure = call + print * read;"
                                 "   if (if == else) then { read read; }"
                                 "   else { print read;}}";
-    
+
     std::vector<Token *> expected;
     expected.push_back(new Keyword("procedure"));
     expected.push_back(new VariableNode("procedure"));
@@ -94,11 +94,10 @@ TEST_CASE("Source program with keyword as variable name") {
 
     std::vector<Token *> result = Tokenizer(sourceProgram).tokenize();
     REQUIRE(expected.size() == result.size());
-    
+
     for (size_t i = 0; i < expected.size(); i++) {
         REQUIRE(expected[i]->equals(expected[i]));
     }
-    
 }
 
 TEST_CASE("invalid source program") {

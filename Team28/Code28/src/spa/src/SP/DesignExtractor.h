@@ -131,3 +131,19 @@ public:
     std::vector<Relationship<std::string, std::string> *> extract();
     void populate();
 };
+
+class BranchInExtr : public DesignExtractor {
+public:
+    BranchInExtr(ProgramNode *program, PopulateFacade *storage)
+        : DesignExtractor(program, storage){};
+    std::vector<Relationship<int, int> *> extract();
+    void populate();
+};
+
+class BranchOutExtr : public DesignExtractor {
+public:
+    BranchOutExtr(ProgramNode *program, PopulateFacade *storage)
+        : DesignExtractor(program, storage){};
+    std::vector<Relationship<int, int> *> extract();
+    void populate();
+};
