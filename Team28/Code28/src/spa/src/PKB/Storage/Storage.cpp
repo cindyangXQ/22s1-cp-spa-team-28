@@ -90,14 +90,14 @@ Solvable* Storage::getUsesOnType(ReferenceType leftType) {
     return nullptr;
 };
 
-std::vector<Solvable*> Storage::getModifiesTable() {
+std::vector<Solvable*> Storage::getModifiesTables() {
     return std::vector<Solvable*> {
         this->getTable<ModifiesSTable>(),
         this->getTable<ModifiesPTable>()
     };
 };
 
-std::vector<Solvable*> Storage::getUsesTable() {
+std::vector<Solvable*> Storage::getUsesTables() {
     return std::vector<Solvable*> {
         this->getTable<UsesSTable>(),
         this->getTable<UsesPTable>()

@@ -64,12 +64,12 @@ public:
     /*
      * Retrieves Modifies Tables
      */
-    std::vector<Solvable*> getModifiesTable();
+    std::vector<Solvable*> getModifiesTables();
 
     /*
      * Retrieves Uses Tables
      */
-    std::vector<Solvable*> getUsesTable();
+    std::vector<Solvable*> getUsesTables();
 
     /*
      * Returns the StorageView
