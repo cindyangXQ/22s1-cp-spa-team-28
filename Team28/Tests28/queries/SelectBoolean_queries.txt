@@ -1,0 +1,15 @@
+1 - 2 such that clause
+assign a; variable v; stmt s;
+Select BOOLEAN such that Modifies(s, v) pattern a(_, _"a3"_) such that Follows(a, s)
+TRUE
+5000
+2a - All false clauses
+assign a; variable v; stmt s; read r1, r2;
+Select BOOLEAN such that Follows(r1, r2) pattern a(_, _"12123123"_) such that Follows(s, s)
+FALSE
+5000
+3 - Pattern false 
+assign a; variable v; stmt s;
+Select BOOLEAN such that Modifies(s, v) pattern a(_, _"12312321321"_) such that Follows(a, s)
+FALSE
+5000

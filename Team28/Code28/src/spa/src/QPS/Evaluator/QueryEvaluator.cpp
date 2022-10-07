@@ -17,99 +17,47 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
 
 std::vector<std::string>
 QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
-    bool allClauseResultEmpty = true;
     std::vector<ClauseResult> clauseResultList = queryResult->clauseResultList;
+    SelectType type = queryResult->selectClause.selectType;
+    bool haveTableToJoin = false;
+
     for (int i = 0; i < clauseResultList.size(); i++) {
-        if (clauseResultList[i].isEmpty) {
+        if (clauseResultList[i].isEmpty && type == SelectType::BOOLEAN) {
+            return std::vector<std::string>{"FALSE"};
+        } else if (clauseResultList[i].isEmpty) {
             return std::vector<std::string>{};
         }
-        if (clauseResultList[i].table.size() > 0) {
-            allClauseResultEmpty = false;
+        if (clauseResultList[i].table.header.size() > 0) {
+            haveTableToJoin = true;
+        }
+    }
+    if (!haveTableToJoin) {
+        if (type == SelectType::BOOLEAN) {
+            return std::vector<std::string>{"TRUE"};
+        } else if (type == SelectType::SINGLE) {
+            return QueryEvaluator::getAll(queryResult->selectClause.syns[0]);
+        } else {
+            // TODO
         }
     }
 
-    if (allClauseResultEmpty || clauseResultList.size() == 0) {
-        EntityName type = queryResult->selectClause.syns[0].entity;
-        if (type == EntityName::STMT) {
-            std::vector<Statement *> statementList =
-                (std::vector<Statement *>)this->queryFacade->getAllStatements();
-            std::vector<std::string> result;
-            for (int i = 0; i < statementList.size(); i++) {
-                result.push_back(
-                    std::to_string(statementList[i]->getLineNumber()));
-            }
-            return result;
-        } else if (type == EntityName::VARIABLE) {
-            std::vector<std::string> variableList =
-                this->queryFacade->getAllVariables();
-            return variableList;
-        } else if (type == EntityName::CONSTANT) {
-            std::vector<std::string> constantList =
-                this->queryFacade->getAllConstants();
-            return constantList;
-        } else if (type == EntityName::PROCEDURE) {
-            std::vector<std::string> procedureList =
-                this->queryFacade->getAllProcedures();
-            return procedureList;
-        } else {
-            StatementType stmtType = Statement::getStmtTypeFromEntityName(type);
-            std::vector<Statement *> statementList =
-                (std::vector<Statement *>)this->queryFacade
-                    ->getAllStatementsByType(stmtType);
-            std::vector<std::string> result;
-            for (int i = 0; i < statementList.size(); i++) {
-                result.push_back(
-                    std::to_string(statementList[i]->getLineNumber()));
-            }
-            return result;
-        }
-    }
-    ClauseTable result = clauseResultList[0].table;
-    for (int i = 1; i < clauseResultList.size(); i++) {
+    ClauseTable result = ClauseTable();
+    for (int i = 0; i < clauseResultList.size(); i++) {
         result = ClauseTable::joinTables(result, clauseResultList[i].table);
     }
     if (result.size() == 0) {
-        return std::vector<std::string>{};
-    } else {
+        if (type == SelectType::BOOLEAN) {
+            return {"FALSE"};
+        } else {
+            return std::vector<std::string>{};
+        }
+    } else if (type == SelectType::BOOLEAN) {
+        return {"TRUE"};
+    } else if (type == SelectType::SINGLE) {
         Synonym selectedSynonym = queryResult->selectClause.syns[0];
-        EntityName type = selectedSynonym.entity;
-        std::vector<Value> selectValues =
-            result.getValues(selectedSynonym);
+        std::vector<Value> selectValues = result.getValues(selectedSynonym);
         if (selectValues.size() == 0) {
-            if (type == EntityName::STMT) {
-                std::vector<Statement *> statementList =
-                    (std::vector<Statement *>)this->queryFacade
-                        ->getAllStatements();
-                std::vector<std::string> result;
-                for (int i = 0; i < statementList.size(); i++) {
-                    result.push_back(
-                        std::to_string(statementList[i]->getLineNumber()));
-                }
-                return result;
-            } else if (type == EntityName::VARIABLE) {
-                std::vector<std::string> variableList =
-                    this->queryFacade->getAllVariables();
-                return variableList;
-            } else if (type == EntityName::CONSTANT) {
-                std::vector<std::string> constantList =
-                    this->queryFacade->getAllConstants();
-                return constantList;
-            } else if (type == EntityName::PROCEDURE) {
-                std::vector<std::string> procedureList =
-                    this->queryFacade->getAllProcedures();
-                return procedureList;
-            } else {
-                StatementType stmtType = Statement::getStmtTypeFromEntityName(type);
-                std::vector<Statement *> statementList =
-                    (std::vector<Statement *>)this->queryFacade
-                        ->getAllStatementsByType(stmtType);
-                std::vector<std::string> result;
-                for (int i = 0; i < statementList.size(); i++) {
-                    result.push_back(
-                        std::to_string(statementList[i]->getLineNumber()));
-                }
-                return result;
-            }
+            return QueryEvaluator::getAll(queryResult->selectClause.syns[0]);
         } else {
             std::unordered_set<std::string> remove_duplicates;
             std::vector<std::string> output;
@@ -120,5 +68,43 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
                           remove_duplicates.end());
             return output;
         }
+    } else {
+        std::vector<Synonym> selectSynonyms = queryResult->selectClause.syns;
+        //TODO
+    }
+}
+
+std::vector<std::string> QueryEvaluator::getAll(Synonym select) {
+    EntityName type = select.entity;
+    if (type == EntityName::STMT) {
+        std::vector<Statement *> statementList =
+            (std::vector<Statement *>)this->queryFacade->getAllStatements();
+        std::vector<std::string> result;
+        for (int i = 0; i < statementList.size(); i++) {
+            result.push_back(std::to_string(statementList[i]->getLineNumber()));
+        }
+        return result;
+    } else if (type == EntityName::VARIABLE) {
+        std::vector<std::string> variableList =
+            this->queryFacade->getAllVariables();
+        return variableList;
+    } else if (type == EntityName::CONSTANT) {
+        std::vector<std::string> constantList =
+            this->queryFacade->getAllConstants();
+        return constantList;
+    } else if (type == EntityName::PROCEDURE) {
+        std::vector<std::string> procedureList =
+            this->queryFacade->getAllProcedures();
+        return procedureList;
+    } else {
+        StatementType stmtType = Statement::getStmtTypeFromEntityName(type);
+        std::vector<Statement *> statementList =
+            (std::vector<Statement *>)this->queryFacade->getAllStatementsByType(
+                stmtType);
+        std::vector<std::string> result;
+        for (int i = 0; i < statementList.size(); i++) {
+            result.push_back(std::to_string(statementList[i]->getLineNumber()));
+        }
+        return result;
     }
 }
