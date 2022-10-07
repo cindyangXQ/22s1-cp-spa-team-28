@@ -91,7 +91,27 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
         }
     } else {
         std::vector<Synonym> selectSynonyms = queryResult->selectClause.syns;
-        //TODO
+        for (int i = 0; i < selectSynonyms.size(); i++) {
+            ClauseTable table = ClauseTable({selectSynonyms[i]});
+            std::vector<std::string> all_values =
+                QueryEvaluator::getAll(selectSynonyms[i]);
+            for (int j = 0; j < all_values.size(); j++) {
+                table.insert(
+                    Tuple({Value(ValueType::WILDCARD, all_values[j])}));
+            }
+            
+            result = ClauseTable::joinTables(result, table);
+        }
+        std::vector<int> indices = result.getIndices(selectSynonyms);
+        std::vector<std::string> output;
+        for (int i = 0; i < result.size(); i++) {
+            std::string tuple = "";
+            for (int j = 0; j < indices.size(); j++) {
+                tuple += result.rows[i].values[indices[j]].value + " ";
+            }
+            output.push_back(Utils::removeTrailingSpaces(tuple));            
+        }
+        return output;
     }
 }
 

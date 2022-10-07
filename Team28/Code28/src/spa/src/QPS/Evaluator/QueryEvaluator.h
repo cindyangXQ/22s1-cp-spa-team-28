@@ -2,6 +2,7 @@
 
 #include "../../PKB/Facades/QueryFacade.h"
 #include "../Parser/SolvableQuery.h"
+#include "../Utils.h"
 #include "PatternEvaluator.h"
 #include "QueryResult.h"
 #include "SuchThatEvaluator.h"
