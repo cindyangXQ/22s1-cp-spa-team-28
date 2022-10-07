@@ -6,16 +6,17 @@ bool QueryFacade::validateWildcard(Reference leftRef, Reference rightRef,
            pTable->validate(leftRef, rightRef);
 }
 
-
-std::vector<Value> 
-QueryFacade::concatSolveRightResults(std::vector<Solvable*> solvables,
-    Reference leftRef, EntityName rightSynonym) {
+std::vector<Value>
+QueryFacade::concatSolveRightResults(std::vector<Solvable *> solvables,
+                                     Reference leftRef,
+                                     EntityName rightSynonym) {
     std::vector<Value> result = {};
     std::vector<Value> intermediateRes = {};
-    for (Solvable* solvable : solvables) {
-        intermediateRes = solvable->solveRight(
-            leftRef, rightSynonym, this->storage->getStorageView());
-        result.insert(result.end(), intermediateRes.begin(), intermediateRes.end());
+    for (Solvable *solvable : solvables) {
+        intermediateRes = solvable->solveRight(leftRef, rightSynonym,
+                                               this->storage->getStorageView());
+        result.insert(result.end(), intermediateRes.begin(),
+                      intermediateRes.end());
     }
     return result;
 };
@@ -106,13 +107,16 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
         return false;
     }
 
-    if (relType == RelationshipReference::MODIFIES && leftRef.type == ReferenceType::WILDCARD) {
-        std::vector<Solvable*> modifies = this->storage->getModifiesTables();
-        return validateWildcard(leftRef, rightRef, modifies.at(0), modifies.at(1));
+    if (relType == RelationshipReference::MODIFIES &&
+        leftRef.type == ReferenceType::WILDCARD) {
+        std::vector<Solvable *> modifies = this->storage->getModifiesTables();
+        return validateWildcard(leftRef, rightRef, modifies.at(0),
+                                modifies.at(1));
     }
 
-    if (relType == RelationshipReference::USES && leftRef.type == ReferenceType::WILDCARD) {
-        std::vector<Solvable*> uses = this->storage->getUsesTables();
+    if (relType == RelationshipReference::USES &&
+        leftRef.type == ReferenceType::WILDCARD) {
+        std::vector<Solvable *> uses = this->storage->getUsesTables();
         return validateWildcard(leftRef, rightRef, uses.at(0), uses.at(1));
     }
 
@@ -129,18 +133,20 @@ std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
         return std::vector<Value>();
     }
 
-    if (relType == RelationshipReference::MODIFIES && leftRef.type == ReferenceType::WILDCARD) {
-        std::vector<Solvable*> modifies = this->storage->getModifiesTables();
+    if (relType == RelationshipReference::MODIFIES &&
+        leftRef.type == ReferenceType::WILDCARD) {
+        std::vector<Solvable *> modifies = this->storage->getModifiesTables();
         return concatSolveRightResults(modifies, leftRef, rightSynonym);
     }
 
-    if (relType == RelationshipReference::USES && leftRef.type == ReferenceType::WILDCARD) {
-        std::vector<Solvable*> uses = this->storage->getUsesTables();
+    if (relType == RelationshipReference::USES &&
+        leftRef.type == ReferenceType::WILDCARD) {
+        std::vector<Solvable *> uses = this->storage->getUsesTables();
         return concatSolveRightResults(uses, leftRef, rightSynonym);
     }
 
     Solvable *table = this->storage->getRsTable(relType, leftRef.type);
-    
+
     return table->solveRight(leftRef, rightSynonym,
                              this->storage->getStorageView());
 }
@@ -154,8 +160,9 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
         return std::vector<Value>();
     }
     ReferenceType leftRef = this->getRefType(leftSynonym);
-    if (leftRef == ReferenceType::WILDCARD && (relType == RelationshipReference::USES ||
-        relType == RelationshipReference::MODIFIES)) {
+    if (leftRef == ReferenceType::WILDCARD &&
+        (relType == RelationshipReference::USES ||
+         relType == RelationshipReference::MODIFIES)) {
         // TODO: Throw error instead of return empty list if needed.
         return std::vector<Value>();
     }
@@ -168,10 +175,11 @@ std::vector<Value> QueryFacade::solveLeft(RelationshipReference relType,
 std::vector<std::pair<Value, Value>>
 QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
                        EntityName rightSynonym) {
-    
+
     ReferenceType leftRef = this->getRefType(leftSynonym);
-    if (leftRef == ReferenceType::WILDCARD && (relType == RelationshipReference::USES ||
-        relType == RelationshipReference::MODIFIES)) {
+    if (leftRef == ReferenceType::WILDCARD &&
+        (relType == RelationshipReference::USES ||
+         relType == RelationshipReference::MODIFIES)) {
         // TODO: Throw error instead of return empty list if needed.
         return std::vector<std::pair<Value, Value>>();
     }

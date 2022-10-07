@@ -137,12 +137,12 @@ private:
      * Helper method to concatenate solveRight results from a vector
      * of Solvable
      */
-    std::vector<Value> concatSolveRightResults(std::vector<Solvable*> solvables,
-        Reference leftRef, EntityName rightSynonym);
+    std::vector<Value>
+    concatSolveRightResults(std::vector<Solvable *> solvables,
+                            Reference leftRef, EntityName rightSynonym);
 
     /*
      * Helper method to check RefType of given leftSynonym.
      */
     ReferenceType getRefType(EntityName leftSynonym);
-    
 };

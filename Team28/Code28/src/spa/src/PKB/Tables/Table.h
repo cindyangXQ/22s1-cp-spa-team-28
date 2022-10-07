@@ -3,7 +3,7 @@
 #include "../../commons/TableValue.h"
 
 /*
- * An interface of tables which acts as our database.
+ * A superclass for tables which acts as our database.
  */
 class Table {
 public:

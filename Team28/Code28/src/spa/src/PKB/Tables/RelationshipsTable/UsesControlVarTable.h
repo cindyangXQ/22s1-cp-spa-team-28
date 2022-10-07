@@ -1,7 +1,7 @@
 #pragma once
 
-#include <algorithm>
 #include "StmtToVarRelationshipsTable.h"
+#include <algorithm>
 
 class UsesControlVarTable : public StmtToVarRelationshipsTable {
 public:
@@ -13,7 +13,7 @@ public:
     std::vector<Value> getAllStmts();
 
     /*
-     * Return list of possible values of control statements that 
+     * Return list of possible values of control statements that
      * satisfies the given control variable varName.
      */
     std::vector<Value> getStmt(std::string varName);

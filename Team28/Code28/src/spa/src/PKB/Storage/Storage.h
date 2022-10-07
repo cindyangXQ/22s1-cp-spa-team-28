@@ -54,22 +54,22 @@ public:
     /*
      * Retrieve a Modifies table by Reference Type
      */
-    Solvable* getModifiesOnType(ReferenceType leftType);
+    Solvable *getModifiesOnType(ReferenceType leftType);
 
     /*
      * Retrieve a Uses table by Reference Type
      */
-    Solvable* getUsesOnType(ReferenceType leftType);
+    Solvable *getUsesOnType(ReferenceType leftType);
 
     /*
      * Retrieves Modifies Tables
      */
-    std::vector<Solvable*> getModifiesTables();
+    std::vector<Solvable *> getModifiesTables();
 
     /*
      * Retrieves Uses Tables
      */
-    std::vector<Solvable*> getUsesTables();
+    std::vector<Solvable *> getUsesTables();
 
     /*
      * Returns the StorageView
@@ -83,5 +83,5 @@ private:
      * Note: Modifies and Uses are complex and won't be mapped here.
      */
     std::map<RelationshipReference, Solvable *> rsTables;
-    StorageView* storageView;
+    StorageView *storageView;
 };

@@ -60,7 +60,8 @@ Storage::Storage() {
     this->storageView->setTable<VariablesTable>(variables);
 };
 
-Solvable* Storage::getRsTable(RelationshipReference rsRef, ReferenceType leftType) {
+Solvable *Storage::getRsTable(RelationshipReference rsRef,
+                              ReferenceType leftType) {
     if (rsRef == RelationshipReference::MODIFIES) {
         return this->getModifiesOnType(leftType);
     }
@@ -70,7 +71,7 @@ Solvable* Storage::getRsTable(RelationshipReference rsRef, ReferenceType leftTyp
     return this->rsTables.at(rsRef);
 };
 
-Solvable* Storage::getModifiesOnType(ReferenceType leftType) {
+Solvable *Storage::getModifiesOnType(ReferenceType leftType) {
     if (leftType == ReferenceType::STMT_REF) {
         return this->getTable<ModifiesSTable>();
     }
@@ -80,7 +81,7 @@ Solvable* Storage::getModifiesOnType(ReferenceType leftType) {
     return nullptr;
 };
 
-Solvable* Storage::getUsesOnType(ReferenceType leftType) {
+Solvable *Storage::getUsesOnType(ReferenceType leftType) {
     if (leftType == ReferenceType::STMT_REF) {
         return this->getTable<UsesSTable>();
     }
@@ -90,20 +91,14 @@ Solvable* Storage::getUsesOnType(ReferenceType leftType) {
     return nullptr;
 };
 
-std::vector<Solvable*> Storage::getModifiesTables() {
-    return std::vector<Solvable*> {
-        this->getTable<ModifiesSTable>(),
-        this->getTable<ModifiesPTable>()
-    };
+std::vector<Solvable *> Storage::getModifiesTables() {
+    return std::vector<Solvable *>{this->getTable<ModifiesSTable>(),
+                                   this->getTable<ModifiesPTable>()};
 };
 
-std::vector<Solvable*> Storage::getUsesTables() {
-    return std::vector<Solvable*> {
-        this->getTable<UsesSTable>(),
-        this->getTable<UsesPTable>()
-    };
+std::vector<Solvable *> Storage::getUsesTables() {
+    return std::vector<Solvable *>{this->getTable<UsesSTable>(),
+                                   this->getTable<UsesPTable>()};
 };
 
-StorageView* Storage::getStorageView() {
-    return this->storageView;
-}
+StorageView *Storage::getStorageView() { return this->storageView; }
