@@ -3,155 +3,93 @@
 PopulateFacade::PopulateFacade(Storage *storage) { this->storage = storage; };
 
 void PopulateFacade::storeStatements(std::vector<Statement *> *statements) {
-    StatementsTable *statementsTable =
-        this->storage->getTable<StatementsTable>();
-
-    for (Statement *statement : *statements) {
-        statementsTable->store(statement);
-    }
+    storeHelper<Statement, StatementsTable>(statements);
 };
 
 void PopulateFacade::storeAssignments(std::vector<Assignment *> *assignments) {
-    AssignmentsTable *assignmentsTable =
-        this->storage->getTable<AssignmentsTable>();
-
-    for (Assignment *assignment : *assignments) {
-        assignmentsTable->store(assignment);
-    }
+    storeHelper<Assignment, AssignmentsTable>(assignments);
 };
 
 void PopulateFacade::storeVariables(std::vector<Variable *> *variables) {
-    VariablesTable *variableTable = this->storage->getTable<VariablesTable>();
-    for (Variable *variable : *variables) {
-        variableTable->store(variable);
-    }
+    storeHelper<Variable, VariablesTable>(variables);
 };
 
 void PopulateFacade::storeConstants(std::vector<Constant *> *constants) {
-    ConstantsTable *constantsTable = this->storage->getTable<ConstantsTable>();
-    for (Constant *constant : *constants) {
-        constantsTable->store(constant);
-    }
+    storeHelper<Constant, ConstantsTable>(constants);
 };
 
 void PopulateFacade::storeProcedures(std::vector<Procedure *> *procedures) {
-    ProceduresTable *proceduresTable =
-        this->storage->getTable<ProceduresTable>();
-    for (Procedure *procedure : *procedures) {
-        proceduresTable->store(procedure);
-    }
+    storeHelper<Procedure, ProceduresTable>(procedures);
 };
 
 void PopulateFacade::storeFollows(
     std::vector<Relationship<int, int> *> *follows) {
-    FollowsTable *followsTable = this->storage->getTable<FollowsTable>();
-    for (Relationship<int, int> *follow : *follows) {
-        followsTable->store(follow);
-    }
+    storeHelper<Relationship<int, int>, FollowsTable>(follows);
 }
 
 void PopulateFacade::storeFollowsT(
     std::vector<Relationship<int, int> *> *followsT) {
-    FollowsTTable *followsTTable = this->storage->getTable<FollowsTTable>();
-    for (Relationship<int, int> *follow : *followsT) {
-        followsTTable->store(follow);
-    }
+    storeHelper<Relationship<int, int>, FollowsTTable>(followsT);
 }
 
 void PopulateFacade::storeParent(
     std::vector<Relationship<int, int> *> *parents) {
-    ParentTable *parentTable = this->storage->getTable<ParentTable>();
-    for (Relationship<int, int> *parent : *parents) {
-        parentTable->store(parent);
-    }
+    storeHelper<Relationship<int, int>, ParentTable>(parents);
 }
 
 void PopulateFacade::storeParentT(
     std::vector<Relationship<int, int> *> *parentsT) {
-    ParentTTable *parentTTable = this->storage->getTable<ParentTTable>();
-    for (Relationship<int, int> *parent : *parentsT) {
-        parentTTable->store(parent);
-    }
+    storeHelper<Relationship<int, int>, ParentTTable>(parentsT);
 }
 
 void PopulateFacade::storeModifiesS(
     std::vector<Relationship<int, std::string> *> *modifiesS) {
-    ModifiesSTable *modifiesSTable = this->storage->getTable<ModifiesSTable>();
-    for (Relationship<int, std::string> *modify : *modifiesS) {
-        modifiesSTable->store(modify);
-    }
+    storeHelper<Relationship<int, std::string>, ModifiesSTable>(modifiesS);
 }
 
 void PopulateFacade::storeModifiesP(
     std::vector<Relationship<std::string, std::string> *> *modifiesP) {
-    ModifiesPTable *modifiesPTable = this->storage->getTable<ModifiesPTable>();
-    for (Relationship<std::string, std::string> *modify : *modifiesP) {
-        modifiesPTable->store(modify);
-    }
+    storeHelper<Relationship<std::string, std::string>, ModifiesPTable>(
+        modifiesP);
 }
 
 void PopulateFacade::storeUsesS(
     std::vector<Relationship<int, std::string> *> *usesS) {
-    UsesSTable *usesSTable = this->storage->getTable<UsesSTable>();
-    for (Relationship<int, std::string> *use : *usesS) {
-        usesSTable->store(use);
-    }
+    storeHelper<Relationship<int, std::string>, UsesSTable>(usesS);
 }
 
 void PopulateFacade::storeUsesP(
     std::vector<Relationship<std::string, std::string> *> *usesP) {
-    UsesPTable *modifiesPTable = this->storage->getTable<UsesPTable>();
-    for (Relationship<std::string, std::string> *use : *usesP) {
-        modifiesPTable->store(use);
-    }
+    storeHelper<Relationship<std::string, std::string>, UsesPTable>(usesP);
 }
 
 void PopulateFacade::storeCalls(
     std::vector<Relationship<std::string, std::string> *> *calls) {
-    CallsTable *callsTable = this->storage->getTable<CallsTable>();
-    for (Relationship<std::string, std::string> *call : *calls) {
-        callsTable->store(call);
-    }
+    storeHelper<Relationship<std::string, std::string>, CallsTable>(calls);
 }
 
 void PopulateFacade::storeCallsT(
     std::vector<Relationship<std::string, std::string> *> *callsT) {
-    CallsTTable *callsTTable = this->storage->getTable<CallsTTable>();
-    for (Relationship<std::string, std::string> *call : *callsT) {
-        callsTTable->store(call);
-    }
+    storeHelper<Relationship<std::string, std::string>, CallsTTable>(callsT);
 }
 
 void PopulateFacade::storeBranchIn(
     std::vector<Relationship<int, int> *> *branchIn) {
-    BranchInTable *branchinTable = this->storage->getTable<BranchInTable>();
-    for (Relationship<int, int> *branchin : *branchIn) {
-        branchinTable->store(branchin);
-    }
+    storeHelper<Relationship<int, int>, BranchInTable>(branchIn);
 }
 
 void PopulateFacade::storeBranchOut(
     std::vector<Relationship<int, int> *> *branchOut) {
-    BranchOutTable *branchoutTable = this->storage->getTable<BranchOutTable>();
-    for (Relationship<int, int> *branchout : *branchOut) {
-        branchoutTable->store(branchout);
-    }
+    storeHelper<Relationship<int, int>, BranchOutTable>(branchOut);
 }
 
 void PopulateFacade::storeIfControlVar(
-    std::vector<Relationship<int, std::string> *> *usesS) {
-    IfControlVarTable *ifControlVarTable =
-        this->storage->getTable<IfControlVarTable>();
-    for (Relationship<int, std::string> *use : *usesS) {
-        ifControlVarTable->store(use);
-    }
+    std::vector<Relationship<int, std::string> *> *ifControls) {
+    storeHelper<Relationship<int, std::string>, IfControlVarTable>(ifControls);
 }
 
 void PopulateFacade::storeWhileControlVar(
-    std::vector<Relationship<int, std::string> *> *usesS) {
-    WhileControlVarTable *whileControlVarTable =
-        this->storage->getTable<WhileControlVarTable>();
-    for (Relationship<int, std::string> *use : *usesS) {
-        whileControlVarTable->store(use);
-    }
+    std::vector<Relationship<int, std::string> *> *whileControls) {
+    storeHelper<Relationship<int, std::string>, WhileControlVarTable>(
+        whileControls);
 }

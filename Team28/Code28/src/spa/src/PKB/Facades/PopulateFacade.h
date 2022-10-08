@@ -109,15 +109,23 @@ public:
     /*
      * Stores the given usesS relations in a IfControlVarTable.
      */
-    void
-    storeIfControlVar(std::vector<Relationship<int, std::string> *> *usesS);
+    void storeIfControlVar(std::vector<Relationship<int, std::string> *> *ifControls);
 
     /*
      * Stores the given usesS relations in a WhileControlVarTable.
      */
     void
-    storeWhileControlVar(std::vector<Relationship<int, std::string> *> *usesS);
+    storeWhileControlVar(std::vector<Relationship<int, std::string> *> *whileControls);
 
 private:
     Storage *storage;
+
+    template <typename T, typename Subclass>
+    void storeHelper(std::vector<T *> *items) {
+        Table *table = this->storage->getTable<Subclass>();
+
+        for (T *item : *items) {
+            table->store(item);
+        }
+    }
 };
