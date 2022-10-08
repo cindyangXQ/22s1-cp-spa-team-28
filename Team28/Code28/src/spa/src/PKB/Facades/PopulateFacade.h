@@ -109,13 +109,13 @@ public:
     /*
      * Stores the given usesS relations in a IfControlVarTable.
      */
-    void storeIfControlVar(std::vector<Relationship<int, std::string> *> *ifs);
+    void storeIfControlVar(std::vector<Relationship<int, std::string> *> *ifControls);
 
     /*
      * Stores the given usesS relations in a WhileControlVarTable.
      */
     void
-    storeWhileControlVar(std::vector<Relationship<int, std::string> *> *whiles);
+    storeWhileControlVar(std::vector<Relationship<int, std::string> *> *whileControls);
 
 private:
     Storage *storage;

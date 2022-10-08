@@ -84,11 +84,12 @@ void PopulateFacade::storeBranchOut(
 }
 
 void PopulateFacade::storeIfControlVar(
-    std::vector<Relationship<int, std::string> *> *ifs) {
-    storeHelper<Relationship<int, std::string>, IfControlVarTable>(ifs);
+    std::vector<Relationship<int, std::string> *> *ifControls) {
+    storeHelper<Relationship<int, std::string>, IfControlVarTable>(ifControls);
 }
 
 void PopulateFacade::storeWhileControlVar(
-    std::vector<Relationship<int, std::string> *> *whiles) {
-    storeHelper<Relationship<int, std::string>, WhileControlVarTable>(whiles);
+    std::vector<Relationship<int, std::string> *> *whileControls) {
+    storeHelper<Relationship<int, std::string>, WhileControlVarTable>(
+        whileControls);
 }
