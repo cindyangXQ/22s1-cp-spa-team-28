@@ -1,3 +1,4 @@
+#include "SP/EntityNode.h"
 #include "SP/Tokenizer.h"
 #include "catch.hpp"
 
@@ -46,5 +47,75 @@ TEST_CASE("Tokenize an extra spacing small program") {
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     for (int i = 0; i < small_expected->size(); i++) {
         REQUIRE(tokens[i]->equals(small_expected[i]));
+    }
+}
+
+TEST_CASE("Source program with keyword as variable name") {
+    std::string sourceProgram = "procedure procedure {"
+                                "   call call;"
+                                "   procedure = call + print * read;"
+                                "   if (if == else) then { read read; }"
+                                "   else { print read;}}";
+
+    std::vector<Token *> expected;
+    expected.push_back(new Keyword("procedure"));
+    expected.push_back(new VariableNode("procedure"));
+    expected.push_back(new Symbol("{"));
+    expected.push_back(new Keyword("call"));
+    expected.push_back(new VariableNode("call"));
+    expected.push_back(new Symbol(";"));
+    expected.push_back(new VariableNode("procedure"));
+    expected.push_back(new Operator("="));
+    expected.push_back(new VariableNode("call"));
+    expected.push_back(new Operator("+"));
+    expected.push_back(new VariableNode("print"));
+    expected.push_back(new Operator("*"));
+    expected.push_back(new VariableNode("read"));
+    expected.push_back(new Symbol(";"));
+    expected.push_back(new Keyword("if"));
+    expected.push_back(new Symbol("("));
+    expected.push_back(new VariableNode("if"));
+    expected.push_back(new Operator("=="));
+    expected.push_back(new VariableNode("else"));
+    expected.push_back(new Symbol(")"));
+    expected.push_back(new Keyword("then"));
+    expected.push_back(new Symbol("{"));
+    expected.push_back(new Keyword("read"));
+    expected.push_back(new VariableNode("read"));
+    expected.push_back(new Symbol(";"));
+    expected.push_back(new Symbol("}"));
+    expected.push_back(new Keyword("else"));
+    expected.push_back(new Symbol("{"));
+    expected.push_back(new Keyword("print"));
+    expected.push_back(new VariableNode("read"));
+    expected.push_back(new Symbol(";"));
+    expected.push_back(new Symbol("}"));
+    expected.push_back(new Symbol("}"));
+
+    std::vector<Token *> result = Tokenizer(sourceProgram).tokenize();
+    REQUIRE(expected.size() == result.size());
+
+    for (size_t i = 0; i < expected.size(); i++) {
+        REQUIRE(expected[i]->equals(expected[i]));
+    }
+}
+
+TEST_CASE("invalid source program") {
+    // invalid operator
+    std::string sourceProgram = "hello === 1";
+    try {
+        Tokenizer(sourceProgram).tokenize();
+        FAIL();
+    } catch (char *e) {
+        REQUIRE(strcmp(e, "invalid operator") == 0);
+    }
+
+    // invalid character
+    sourceProgram = "~hello;";
+    try {
+        Tokenizer(sourceProgram).tokenize();
+        FAIL();
+    } catch (char *e) {
+        REQUIRE(strcmp(e, "invalid character") == 0);
     }
 }

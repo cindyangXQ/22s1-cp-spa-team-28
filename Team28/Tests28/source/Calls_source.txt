@@ -1,0 +1,18 @@
+procedure      First              {
+      read x;
+	  read  z;
+	call         Second;
+}
+
+procedure		Second      {
+	x =  0;
+	i =       5;
+	while       (i   !=0) {
+		  x = x   + 2*y;
+		call Third;
+	}
+}
+
+procedure        Third {
+	print z;		  
+} 

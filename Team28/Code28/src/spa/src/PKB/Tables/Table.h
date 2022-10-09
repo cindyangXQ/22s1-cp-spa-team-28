@@ -1,10 +1,11 @@
 #pragma once
 
-/*
- * An interface of tables which acts as our database.
- */
-template <typename T> class Table {
-    virtual void store(T *item) = 0;
+#include "../../commons/TableValue.h"
 
-    virtual int getTableSize() const = 0;
+/*
+ * A superclass for tables which acts as our database.
+ */
+class Table {
+public:
+    virtual void store(TableValue *item) = 0;
 };

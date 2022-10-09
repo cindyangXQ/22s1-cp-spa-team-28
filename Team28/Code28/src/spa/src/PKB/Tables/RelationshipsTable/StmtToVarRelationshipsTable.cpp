@@ -19,11 +19,12 @@ bool StmtToVarRelationshipsTable::validate(Reference leftRef,
 };
 
 std::vector<Value> StmtToVarRelationshipsTable::solveRight(
-    Reference leftRef, EntityName rightSynonym, VariablesTable *variables) {
+    Reference leftRef, EntityName rightSynonym, StorageView *storage) {
     // Validate rightSynonym is a variable. TODO: throw error if not
     if (rightSynonym != EntityName::VARIABLE) {
         return std::vector<Value>();
     }
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     // TODO: iterate through set don't convert to vector
     std::unordered_set<std::string> possibleRightsSet = variables->getAll();
     std::vector<std::string> possibleRights = std::vector<std::string>(
@@ -44,11 +45,12 @@ std::vector<Value> StmtToVarRelationshipsTable::solveRight(
 };
 
 std::vector<Value> StmtToVarRelationshipsTable::solveLeft(
-    Reference rightRef, EntityName leftSynonym, StatementsTable *statements) {
+    Reference rightRef, EntityName leftSynonym, StorageView *storage) {
     // Validate leftSynonym is a statement. TODO: throw error if not
     if (stmtRefSet.count(leftSynonym) == 0) {
         return std::vector<Value>();
     }
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     std::vector<int> possibleLefts;
     if (leftSynonym == EntityName::STMT) {
         possibleLefts = statements->getAllLineNumbers();
@@ -73,13 +75,14 @@ std::vector<Value> StmtToVarRelationshipsTable::solveLeft(
 };
 
 std::vector<std::pair<Value, Value>> StmtToVarRelationshipsTable::solveBoth(
-    EntityName leftSynonym, EntityName rightSynonym,
-    StatementsTable *statements, VariablesTable *variables) {
+    EntityName leftSynonym, EntityName rightSynonym, StorageView *storage) {
     // Validate leftSynonym is a statement. TODO: throw error if not
     if (stmtRefSet.count(leftSynonym) == 0 ||
         rightSynonym != EntityName::VARIABLE) {
         return std::vector<std::pair<Value, Value>>();
     }
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     std::vector<int> possibleLefts;
     // TODO: iterate through set don't convert to vector
     std::unordered_set<std::string> possibleRightsSet = variables->getAll();

@@ -128,3 +128,8 @@ assign a; procedure p;
 Select p pattern a(p, _)
 SemanticError
 5000
+9 - Expression syntax error 
+assign a;
+Select a pattern a(_ _" + temp"_)
+SyntaxError
+5000

@@ -2,16 +2,13 @@
 
 AssignmentsTable::AssignmentsTable() = default;
 
-void AssignmentsTable::store(Assignment *assignment) {
-    int lineNo = assignment->getLineNo();
-    this->allAssignments.push_back(*assignment);
+void AssignmentsTable::store(TableValue *assignment) {
+    Assignment *assign = static_cast<Assignment *>(assignment);
+    int lineNo = assign->getLineNo();
+    this->allAssignments.push_back(*assign);
     this->allLineNumbers.push_back(
         Value(ValueType::STMT_NUM, std::to_string(lineNo)));
-
-    this->tableSize += 1;
 };
-
-int AssignmentsTable::getTableSize() const { return this->tableSize; };
 
 std::vector<Value>
 AssignmentsTable::containsVarAndExpr(std::string varName,

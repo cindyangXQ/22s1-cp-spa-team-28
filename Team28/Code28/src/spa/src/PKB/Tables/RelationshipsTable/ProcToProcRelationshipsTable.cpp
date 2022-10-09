@@ -21,11 +21,12 @@ bool ProcToProcRelationshipsTable::validate(Reference leftRef,
 };
 
 std::vector<Value> ProcToProcRelationshipsTable::solveRight(
-    Reference leftRef, EntityName rightSynonym, ProceduresTable *procedures) {
+    Reference leftRef, EntityName rightSynonym, StorageView *storage) {
     // Validate rightSynonym is a procedure. TODO: throw error if not
     if (rightSynonym != EntityName::PROCEDURE) {
         return std::vector<Value>();
     }
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     // TODO: iterate through set don't convert to vector
     std::unordered_set<std::string> possibleRightsSet = procedures->getAll();
     std::vector<std::string> possibleRights = std::vector<std::string>(
@@ -46,11 +47,12 @@ std::vector<Value> ProcToProcRelationshipsTable::solveRight(
 }
 
 std::vector<Value> ProcToProcRelationshipsTable::solveLeft(
-    Reference rightRef, EntityName leftSynonym, ProceduresTable *procedures) {
+    Reference rightRef, EntityName leftSynonym, StorageView *storage) {
     // Validate leftSynonym is a procedure. TODO: throw error if not
     if (leftSynonym != EntityName::PROCEDURE) {
         return std::vector<Value>();
     }
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     // TODO: iterate through set don't convert to vector
     std::unordered_set<std::string> possibleLeftsSet = procedures->getAll();
     std::vector<std::string> possibleLefts = std::vector<std::string>(
@@ -70,15 +72,14 @@ std::vector<Value> ProcToProcRelationshipsTable::solveLeft(
     return result;
 };
 
-std::vector<std::pair<Value, Value>>
-ProcToProcRelationshipsTable::solveBoth(EntityName leftSynonym,
-                                        EntityName rightSynonym,
-                                        ProceduresTable *procedures) {
+std::vector<std::pair<Value, Value>> ProcToProcRelationshipsTable::solveBoth(
+    EntityName leftSynonym, EntityName rightSynonym, StorageView *storage) {
     // Validate synonyms are both procedures here. TODO: throw error if not
     if (leftSynonym != EntityName::PROCEDURE ||
         rightSynonym != EntityName::PROCEDURE) {
         return std::vector<std::pair<Value, Value>>();
     }
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     // TODO: iterate through set don't convert to vector
     std::unordered_set<std::string> allProcedures = procedures->getAll();
     std::vector<std::string> possibleLefts =

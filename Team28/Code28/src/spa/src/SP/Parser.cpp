@@ -108,13 +108,15 @@ ProcedureNode *ProcedureParser::parse() {
         while (!tokenList.at(offset)->equals("}")) {
             StatementParser parser = StatementParser(offset, tokenList, line);
             StatementNode *temp = parser.parse();
-            if (temp->isCall()) {
-                if (temp->getVariable() == secondToken->getValue()) {
+            stmtList.push_back(temp);
+
+            std::vector<std::string> stmCalls = temp->getAllCalls();
+            for (size_t i = 0; i < stmCalls.size(); i++) {
+                if (stmCalls[i] == secondToken->getValue()) {
                     throw "recursive call is not allowed";
                 }
-                allCalls.push_back(temp->getVariable());
+                allCalls.push_back(stmCalls[i]);
             }
-            stmtList.push_back(temp);
 
             line = temp->getEndLine() + 1;
 
@@ -243,6 +245,7 @@ AssignStatementNode *AssignStmParser::parse() {
 }
 
 WhileStatementNode *WhileStmParser::parse() {
+    std::vector<std::string> allCalls;
     Token *firstToken = tokens.at(offset++);
     Token *secondToken = tokens.at(offset++);
     ExpressionNode *cond;
@@ -279,18 +282,27 @@ WhileStatementNode *WhileStmParser::parse() {
             if (offset >= tokens.size()) {
                 throw "while statement wrong syntax";
             }
+
+            std::vector<std::string> stmCalls = temp->getAllCalls();
+            for (size_t i = 0; i < stmCalls.size(); i++) {
+                allCalls.push_back(stmCalls[i]);
+            }
         }
         if (stmtList.size() == 0) {
             throw "while statement wrong syntax";
         }
         offset++;
-        return new WhileStatementNode(stmtList, cond, startline);
+        WhileStatementNode* result = new WhileStatementNode(stmtList, cond, startline);
+        result->setAllCalls(allCalls);
+        return result;
     } else {
         throw "while statement wrong syntax";
     }
 }
 
 IfStatementNode *IfStmParser::parse() {
+    std::vector<std::string> allCalls;
+
     Token *firstToken = tokens.at(offset++);
     Token *secondToken = tokens.at(offset++);
     ExpressionNode *cond;
@@ -327,6 +339,10 @@ IfStatementNode *IfStmParser::parse() {
             if (offset >= tokens.size()) {
                 throw "if statement wrong syntax";
             }
+            std::vector<std::string> stmCalls = temp->getAllCalls();
+            for (size_t i = 0; i < stmCalls.size(); i++) {
+                allCalls.push_back(stmCalls[i]);
+            }
         }
         offset++;
     } else {
@@ -346,6 +362,10 @@ IfStatementNode *IfStmParser::parse() {
         if (offset >= tokens.size()) {
             throw "while statement wrong syntax";
         }
+        std::vector<std::string> stmCalls = temp->getAllCalls();
+        for (size_t i = 0; i < stmCalls.size(); i++) {
+            allCalls.push_back(stmCalls[i]);
+        }
     }
     offset++;
     if (ifStmtList.size() == 0 || elseStmtList.size() == 0) {
@@ -353,5 +373,6 @@ IfStatementNode *IfStmParser::parse() {
     }
     IfStatementNode *result =
         new IfStatementNode(ifStmtList, elseStmtList, cond, startline);
+    result->setAllCalls(allCalls);
     return result;
 }

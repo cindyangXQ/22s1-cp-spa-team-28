@@ -3,51 +3,29 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <typeindex>
+#include <typeinfo>
 #include <utility>
 
 #include "../../commons/Constant.h"
 #include "../../commons/Entity.h"
 #include "../../commons/Procedure.h"
+#include "../../commons/Relationship.h"
 #include "../../commons/TableValue.h"
 #include "../../commons/Variable.h"
 
 #include "../Tables/AssignmentsTable/AssignmentsTable.h"
 #include "../Tables/NamesTable/NamesTable.h"
+#include "../Tables/RelationshipsTable/BranchTable.h"
+#include "../Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
-#include "../Tables/RelationshipsTable/ProcToProcRelationshipsTable.h" 
-#include "../Tables/RelationshipsTable/BranchTable.h" 
-#include "../Tables/RelationshipsTable/UsesControlVarTable.h" 
+#include "../Tables/RelationshipsTable/UsesControlVarTable.h"
 #include "../Tables/StatementsTable/StatementsTable.h"
 #include "../Tables/Table.h"
 
-/*
- * Enumerates the different kinds of tables to instantiate.
- */
-enum class TableName {
-    STATEMENTS,
-    ASSIGNMENTS,
-    PROCEDURES,
-    VARIABLES,
-    CONSTANTS,
-    FOLLOWS,
-    FOLLOWS_T,
-    PARENT,
-    PARENT_T,
-    MODIFIES_S,
-    MODIFIES_P,
-    USES_S,
-    USES_P,
-    CALLS,
-    CALLS_T,
-    BRANCH_IN,
-    BRANCH_OUT,
-    NEXT,
-    NEXT_T,
-    W_CONTROL,
-    I_CONTROL
-};
+#include "StorageView.h"
 
 /*
  * Encapsulates a Storage class which is responsible for storing information to
@@ -56,15 +34,58 @@ enum class TableName {
 class Storage {
 public:
     /*
-    * Explicit constructor for Storage.
-    */
-    explicit Storage();
+     * Explicit constructor for Storage.
+     */
+    Storage();
 
     /*
-    * Retrieve a table by TableName.
-    */
-    Table<TableValue> *getTable(TableName name);
+     * Retrieve a table by the templated class given
+     */
+    template <typename Subclass> Subclass *getTable() {
+        Table *table = this->tables.at(typeid(Subclass));
+        return dynamic_cast<Subclass *>(table);
+    };
+
+    /*
+     * Retrieve a table by the RelationshipReference
+     */
+    Solvable *getRsTable(RelationshipReference rsRef, ReferenceType leftType);
+
+    /*
+     * Retrieves Modifies Tables
+     */
+    std::vector<Solvable *> getModifiesTables();
+
+    /*
+     * Retrieves Uses Tables
+     */
+    std::vector<Solvable *> getUsesTables();
+
+    /*
+     * Returns the StorageView
+     */
+    StorageView *getStorageView();
 
 private:
-    std::map<TableName, Table<TableValue> *> tables;
+    std::map<std::type_index, Table *> tables;
+    /*
+     * Mapping of RelationshipReference to Solvable tables.
+     * Note: Modifies and Uses are complex and won't be mapped here.
+     */
+    std::map<RelationshipReference, Solvable *> rsTables;
+    StorageView *storageView;
+
+    /*
+     * Template method for getting tables used for Uses and Modifies.
+     */
+    template <typename STable, typename PTable>
+    Solvable *getOnType(ReferenceType leftType) {
+        if (leftType == ReferenceType::STMT_REF) {
+            return this->getTable<STable>();
+        }
+        if (leftType == ReferenceType::ENT_REF) {
+            return this->getTable<PTable>();
+        }
+        return nullptr;
+    }
 };

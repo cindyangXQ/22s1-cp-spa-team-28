@@ -11,10 +11,10 @@
 
 TEST_CASE(
     "Query evaluator can evaluate query with only select statement clause") {
-    Storage storage;
-    QueryFacade facade = QueryFacade(&storage);
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage->getTable<StatementsTable>();
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -32,10 +32,10 @@ TEST_CASE(
 
 TEST_CASE(
     "Query evaluator can evaluate query with only select variable clause") {
-    Storage storage;
-    QueryFacade facade = QueryFacade(&storage);
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
     VariablesTable *variables =
-        (VariablesTable *)storage.getTable(TableName::VARIABLES);
+        storage->getTable<VariablesTable>();
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -53,10 +53,10 @@ TEST_CASE(
 
 TEST_CASE(
     "Query evaluator can evaluate query with only select constant clause") {
-    Storage storage;
-    QueryFacade facade = QueryFacade(&storage);
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
     ConstantsTable *constants =
-        (ConstantsTable *)storage.getTable(TableName::CONSTANTS);
+        storage->getTable<ConstantsTable>();
     Constant test1 = Constant("test1");
     Constant test2 = Constant("test2");
 
@@ -74,10 +74,10 @@ TEST_CASE(
 
 TEST_CASE(
     "Query evaluator can evaluate query with only select procedure clause") {
-    Storage storage;
-    QueryFacade facade = QueryFacade(&storage);
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
     ProceduresTable *procedures =
-        (ProceduresTable *)storage.getTable(TableName::PROCEDURES);
+        storage->getTable<ProceduresTable>();
     Procedure test1 = Procedure("test1");
     Procedure test2 = Procedure("test2");
 
@@ -94,10 +94,10 @@ TEST_CASE(
 }
 
 TEST_CASE("Evaluator can retrieve specific statement types") {
-    Storage storage;
-    QueryFacade facade = QueryFacade(&storage);
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
+        storage->getTable<StatementsTable>();
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
     Statement test3 = Statement(3, StatementType::WHILE);
@@ -144,12 +144,11 @@ TEST_CASE("Evaluator can retrieve specific statement types") {
 }
 
 TEST_CASE("Query evaluator can evaluate query with single such that clause") {
-    Storage storage;
-    QueryFacade facade = QueryFacade(&storage);
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
-    FollowsTable *follows =
-        (FollowsTable *)storage.getTable(TableName::FOLLOWS);
+        storage->getTable<StatementsTable>();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -173,12 +172,11 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause") {
 }
 TEST_CASE("Query evaluator can evaluate query with single such that clause "
           "that is false") {
-    Storage storage;
-    QueryFacade facade = QueryFacade(&storage);
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
-    FollowsTable *follows =
-        (FollowsTable *)storage.getTable(TableName::FOLLOWS);
+        storage->getTable<StatementsTable>();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -203,12 +201,11 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
 TEST_CASE("Query evaluator can evaluate query with single such that clause "
           "with synonym") {
-    Storage storage;
-    QueryFacade facade = QueryFacade(&storage);
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements =
-        (StatementsTable *)storage.getTable(TableName::STATEMENTS);
-    FollowsTable *follows =
-        (FollowsTable *)storage.getTable(TableName::FOLLOWS);
+        storage->getTable<StatementsTable>();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -268,8 +265,8 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
 TEST_CASE("Query evaluator can evaluate query with single such that clause "
           "with synonyms that are the same") {
-    Storage storage;
-    QueryFacade facade = QueryFacade(&storage);
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
 
     SolvableQuery solvableQ_follow =
@@ -282,7 +279,8 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQ_followT =
         QueryParser::parse("stmt s; Select s such that Follows*(s, s)");
-    QueryResult queryResult_followT = queryEvaluator.evaluate(&solvableQ_followT);
+    QueryResult queryResult_followT =
+        queryEvaluator.evaluate(&solvableQ_followT);
     std::vector<std::string> result_followT =
         queryEvaluator.interpretQueryResult(&queryResult_followT);
 
@@ -298,7 +296,8 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQ_parentT =
         QueryParser::parse("stmt s; Select s such that Parent*(s, s)");
-    QueryResult queryResult_parentT = queryEvaluator.evaluate(&solvableQ_parentT);
+    QueryResult queryResult_parentT =
+        queryEvaluator.evaluate(&solvableQ_parentT);
     std::vector<std::string> result_parentT =
         queryEvaluator.interpretQueryResult(&queryResult_parentT);
 

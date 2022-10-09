@@ -286,25 +286,21 @@ const std::regex selectClauseRegex("(\\s*Select\\s+" // 'Select'
 //          | Parent | ParentT | Follows | FollowsT
 // For arguments extraction
 const std::regex suchThatRegex(
-    "\\s*such\\s+that\\s+"
-    "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|)\\s*" // relRef
+    "(^\\s*such\\s+that\\s+|^\\s*and\\s+)"
+    "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Calls|Calls\\*|Next|Next\\*|Affect|Affect\\*)\\s*" // relRef
     "\\(\\s*"
-    "(\\s*[a-zA-z\\d]+\\s*|[a-zA-z\\d]+|_|\\s*0|[1-9]\\d*\\s*|\"\\s*[a-zA-Z][a-"
-    "zA-Z0-9]*\\s*\")" // entRef | stmtRef
+    "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef | stmtRef
     "\\s*,\\s*"
-    "(\\s*[a-zA-z\\d]+\\s*|[a-zA-z\\d]+|_|\\s*0|[1-9]\\d*\\s*|\"\\s*[a-zA-Z][a-"
-    "zA-Z0-9]*\\s*\")" // entRef | stmtRef
+    "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef | stmtRef
     "\\s*\\)\\s*");
 // For clause extraction
 const std::regex suchThatClauseRegex(
-    ".*?(such\\s+that\\s+"
-    "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|)\\s*" // relRef
+    "(^\\s*(such\\s+that\\s+|^\\s*and\\s+)"
+    "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Calls|Calls\\*|Next|Next\\*|Affect|Affect\\*)\\s*" // relRef
     "\\(\\s*"
-    "(\\s*[a-zA-z\\d]+\\s*|[a-zA-z\\d]+|_|\\s*0|[1-9]\\d*\\s*|\"\\s*[a-zA-Z][a-"
-    "zA-Z0-9]*\\s*\")" // entRef | stmtRef
+    "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef | stmtRef
     "\\s*,\\s*"
-    "(\\s*[a-zA-z\\d]+\\s*|[a-zA-z\\d]+|_|\\s*0|[1-9]\\d*\\s*|\"\\s*[a-zA-Z][a-"
-    "zA-Z0-9]*\\s*\")" // entRef | stmtRef
+    "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef | stmtRef
     "\\s*\\)).*?");
 
 //  pattern-cl : 'pattern' syn-assign '(' entRef ',' expression-spec ')'
@@ -314,24 +310,24 @@ const std::regex suchThatClauseRegex(
 //  factor: var_name | const_value | '(' expr ')'
 // For arguments extraction
 const std::regex patternRegex(
-    "\\s*pattern\\s+"                                             // pattern
+    "(^\\s*pattern\\s+|^\\s*and\\s+)"                             // pattern or and
     "([a-zA-Z][a-zA-Z0-9]*)\\s*"                                  // syn-assign or syn-while or syn-if
     "\\(\\s*"                                                     // '('
     "(([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"))" // entRef
     "\\s*,\\s*"
-    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)" // expression-spec
+    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)"       // expression-spec
     "(\\s*,\\s*_)*"
     "\\s*\\)\\s*"
 );
 
 // For clause extraction
 const std::regex patternClauseRegex(
-    ".*?(pattern\\s+"                                            // pattern
+    "(^\\s*(pattern\\s+|^\\s*and\\s+)"                            // pattern or and
     "([a-zA-Z][a-zA-Z0-9]*)\\s*"                                  // syn-assign or syn-while or syn-if
     "\\(\\s*"                                                     // '('
     "(([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"))" // entRef
     "\\s*,\\s*"
-    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)" // expression-spec
+    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)"       // expression-spec
     "(\\s*,\\s*_)*"
     "\\s*\\)).*?"
 );

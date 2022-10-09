@@ -15,7 +15,7 @@ typedef std::pair<int, std::string> IntStringPair;
 /*
  * Class encapsulating a Table used to store SIMPLE statements.
  */
-class AssignmentsTable : public Table<Assignment> {
+class AssignmentsTable : public Table {
 public:
     AssignmentsTable();
 
@@ -24,9 +24,7 @@ public:
      * Mapping will be done from variable -> (lineNo, expression)
      * as well as expression -> (lineNo, variable)
      */
-    void store(Assignment *assignment);
-
-    int getTableSize() const;
+    void store(TableValue *assignment);
 
     /*
      * Return boolean of whether the given varName and expression exists in an
@@ -63,8 +61,6 @@ public:
     getAssignAndVarExact(std::string expression);
 
 private:
-    int tableSize = 0;
-
     std::vector<Value> allLineNumbers;
     std::vector<Assignment> allAssignments;
 

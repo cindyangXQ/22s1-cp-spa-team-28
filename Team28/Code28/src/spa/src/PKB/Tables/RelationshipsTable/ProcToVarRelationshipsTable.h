@@ -1,9 +1,11 @@
 #pragma once
 
+#include "../Solvable.h"
 #include "RelationshipsTable.h"
 
 class ProcToVarRelationshipsTable
-    : public RelationshipsTable<std::string, std::string> {
+    : public RelationshipsTable<std::string, std::string>,
+      public virtual Solvable {
 public:
     /*
      * Returns true if the relationship holds between leftReference and
@@ -15,22 +17,21 @@ public:
      * Returns list of possible values that the right synonym can be.
      */
     std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym,
-                                  VariablesTable *variables);
+                                  StorageView *storage);
 
     /*
      * Returns list of possible values that the left synonym can be.
      */
     std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym,
-                                 ProceduresTable *procedures);
+                                 StorageView *storage);
 
     /*
      * Returns list of possible (Value, Value) that the pair of synonyms can be.
      */
     std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym,
                                                    EntityName rightSynonym,
-                                                   ProceduresTable *procedures,
-                                                   VariablesTable *variables);
+                                                   StorageView *storage);
 };
 
-typedef ProcToVarRelationshipsTable ModifiesPTable;
-typedef ProcToVarRelationshipsTable UsesPTable;
+class ModifiesPTable : public ProcToVarRelationshipsTable {};
+class UsesPTable : public ProcToVarRelationshipsTable {};

@@ -85,20 +85,20 @@ public:
     storeUsesP(std::vector<Relationship<std::string, std::string> *> *usesP);
 
     /*
-    * Stores the given Calls relations in a CallsTable.
-    */
+     * Stores the given Calls relations in a CallsTable.
+     */
     void
     storeCalls(std::vector<Relationship<std::string, std::string> *> *calls);
 
     /*
-    * Stores the given CallsT relations in a CallsTTable.
-    */
+     * Stores the given CallsT relations in a CallsTTable.
+     */
     void
     storeCallsT(std::vector<Relationship<std::string, std::string> *> *callsT);
 
     /*
-    * Stores the given branch ins in a BranchInTable.
-    */
+     * Stores the given branch ins in a BranchInTable.
+     */
     void storeBranchIn(std::vector<Relationship<int, int> *> *branchIn);
 
     /*
@@ -109,13 +109,23 @@ public:
     /*
      * Stores the given usesS relations in a IfControlVarTable.
      */
-    void storeIfControlVar(std::vector<Relationship<int, std::string> *> *usesS);
+    void storeIfControlVar(std::vector<Relationship<int, std::string> *> *ifControls);
 
     /*
      * Stores the given usesS relations in a WhileControlVarTable.
      */
-    void storeWhileControlVar(std::vector<Relationship<int, std::string> *> *usesS);
+    void
+    storeWhileControlVar(std::vector<Relationship<int, std::string> *> *whileControls);
 
 private:
     Storage *storage;
+
+    template <typename T, typename Subclass>
+    void storeHelper(std::vector<T *> *items) {
+        Table *table = this->storage->getTable<Subclass>();
+
+        for (T *item : *items) {
+            table->store(item);
+        }
+    }
 };

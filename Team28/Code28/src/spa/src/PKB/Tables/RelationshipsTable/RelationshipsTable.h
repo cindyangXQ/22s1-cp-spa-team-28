@@ -13,14 +13,16 @@
 #include "../Table.h"
 
 template <typename Left, typename Right>
-class RelationshipsTable : public Table<Relationship<Left, Right>> {
+class RelationshipsTable : public Table {
 public:
     /*
      * Stores a Relationship to both leftToRightsMap and rightToLeftsMap.
      */
-    void store(Relationship<Left, Right> *relationship) {
-        Left left = relationship->getLeft();
-        Right right = relationship->getRight();
+    void store(TableValue *relationship) {
+        Relationship<Left, Right> *rs =
+            static_cast<Relationship<Left, Right> *>(relationship);
+        Left left = rs->getLeft();
+        Right right = rs->getRight();
         storeRightToLeftMap(left, right);
         storeLeftToRightMap(right, left);
     }
@@ -63,10 +65,6 @@ public:
      */
     std::unordered_set<Left> retrieveRight(Right right) {
         return this->rightToLeftsMap[right];
-    }
-
-    int getTableSize() const {
-        return -1; // TODO change behaviour, now returning dummy value
     }
 
     std::map<Left, std::unordered_set<Right>> getLeftMap() {
