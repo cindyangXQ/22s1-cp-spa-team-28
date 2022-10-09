@@ -63,32 +63,12 @@ Storage::Storage() {
 Solvable *Storage::getRsTable(RelationshipReference rsRef,
                               ReferenceType leftType) {
     if (rsRef == RelationshipReference::MODIFIES) {
-        return this->getModifiesOnType(leftType);
+        return this->getOnType<ModifiesSTable, ModifiesPTable>(leftType);
     }
     if (rsRef == RelationshipReference::USES) {
-        return this->getUsesOnType(leftType);
+        return this->getOnType<UsesSTable, UsesPTable>(leftType);
     }
     return this->rsTables.at(rsRef);
-};
-
-Solvable *Storage::getModifiesOnType(ReferenceType leftType) {
-    if (leftType == ReferenceType::STMT_REF) {
-        return this->getTable<ModifiesSTable>();
-    }
-    if (leftType == ReferenceType::ENT_REF) {
-        return this->getTable<ModifiesPTable>();
-    }
-    return nullptr;
-};
-
-Solvable *Storage::getUsesOnType(ReferenceType leftType) {
-    if (leftType == ReferenceType::STMT_REF) {
-        return this->getTable<UsesSTable>();
-    }
-    if (leftType == ReferenceType::ENT_REF) {
-        return this->getTable<UsesPTable>();
-    }
-    return nullptr;
 };
 
 std::vector<Solvable *> Storage::getModifiesTables() {
