@@ -75,6 +75,9 @@ private:
     std::map<RelationshipReference, Solvable *> rsTables;
     StorageView *storageView;
 
+    /*
+     * Template method for getting tables used for Uses and Modifies.
+     */
     template <typename STable, typename PTable>
     Solvable *getOnType(ReferenceType leftType) {
         if (leftType == ReferenceType::STMT_REF) {
