@@ -103,11 +103,15 @@ TEST_CASE("QueryParser can parse tuple select clause") {
     REQUIRE(selectClauseMany.selectType == SelectType::TUPLE);
     REQUIRE(selectClauseMany.syns.size() == 5);
 
-    std::string too_few = "Select <v>";
-    REQUIRE_THROWS(QueryParser::parseSelectClause(&too_few, syns));
+    std::string one = "Select <v>";
+    SelectClause selectClauseOne = QueryParser::parseSelectClause(&one, syns);
+    REQUIRE(selectClauseOne.selectType == SelectType::TUPLE);
+    REQUIRE(selectClauseOne.syns.size() == 1);
 
-    //std::string duplicate = "Select <v, a1, a1>";
-    //REQUIRE_THROWS(QueryParser::parseSelectClause(&duplicate, syns));
+    std::string duplicate = "Select <v, a1, a1>";
+    SelectClause selectClauseDuplicate = QueryParser::parseSelectClause(&duplicate, syns);
+    REQUIRE(selectClauseDuplicate.selectType == SelectType::TUPLE);
+    REQUIRE(selectClauseDuplicate.syns.size() == 3);
 
     std::string wrong_syntax = "Select <v, a1, <a2>>";
     REQUIRE_THROWS(QueryParser::parseSelectClause(&wrong_syntax, syns));
