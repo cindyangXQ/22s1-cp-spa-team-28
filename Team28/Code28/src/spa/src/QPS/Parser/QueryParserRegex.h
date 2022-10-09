@@ -277,19 +277,16 @@ const std::regex
 // For arguments extraction
 const std::regex selectRegex("\\s*Select\\s+"                 // 'Select'
                              "([a-zA-Z][a-zA-Z0-9]*|BOOLEAN|" // synonym or BOOLEAN
-                             "<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"  // or <synonym, synonym (, synonym)*>
-                             ",\\s*[a-zA-Z][a-zA-Z0-9]*\\s*" 
+                             "<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"  // or <synonym (, synonym)*>
                              "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*>)\\s*");
 // For clause extraction
 const std::regex selectClauseRegex("(\\s*Select\\s+"                // 'Select'
                                    "([a-zA-Z][a-zA-Z0-9]*|BOOLEAN|" // synonym or BOOLEAN
-                                   "<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"  // or <synonym, synonym (, synonym)*>
-                                   ",\\s*[a-zA-Z][a-zA-Z0-9]*\\s*" 
+                                   "<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"  // or <synonym (, synonym)*>
                                    "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*>)\\s*).*?");
 
 // For select tuple
 const std::regex selectTupleRegex("<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"
-                                  ",\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"
                                   "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*>");
 
 // suchthat-cl : 'such' 'that' relRef
