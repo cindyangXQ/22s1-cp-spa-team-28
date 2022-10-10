@@ -310,19 +310,26 @@ const std::regex suchThatClauseRegex(
 //  factor: var_name | const_value | '(' expr ')'
 // For arguments extraction
 const std::regex patternRegex(
-    "(^\\s*pattern\\s+|^\\s*and\\s+)"                                             // pattern or and
-    "([a-zA-Z][a-zA-Z0-9]*)\\s*"                                  // syn-assign
+    "(^\\s*pattern\\s+|^\\s*and\\s+)"                             // pattern or and
+    "([a-zA-Z][a-zA-Z0-9]*)\\s*"                                  // syn-assign or syn-while or syn-if
     "\\(\\s*"                                                     // '('
     "(([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"))" // entRef
     "\\s*,\\s*"
-    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)" // expression-spec
-    "\\s*\\)\\s*");
+    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)"       // expression-spec
+    "(\\s*,\\s*_)*"
+    "\\s*\\)\\s*"
+);
+
 // For clause extraction
 const std::regex patternClauseRegex(
-    "(^\\s*(pattern\\s+|^\\s*and\\s+)"                                            // pattern or and
-    "([a-zA-Z][a-zA-Z0-9]*)\\s*"                                  // syn-assign
+    "(^\\s*(pattern\\s+|^\\s*and\\s+)"                            // pattern or and
+    "([a-zA-Z][a-zA-Z0-9]*)\\s*"                                  // syn-assign or syn-while or syn-if
     "\\(\\s*"                                                     // '('
     "(([a-zA-Z][a-zA-Z0-9]*|_|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"))" // entRef
     "\\s*,\\s*"
-    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)" // expression-spec
-    "\\s*\\)).*?");
+    "(\\s*\".*?\"\\s*|\\s*_\\s*|\\s*_\\s*\".*?\"\\s*_\\s*)"       // expression-spec
+    "(\\s*,\\s*_)*"
+    "\\s*\\)).*?"
+);
+
+const std::unordered_set<EntityName> patternEntityMap = {EntityName::ASSIGN, EntityName::IF, EntityName::WHILE};

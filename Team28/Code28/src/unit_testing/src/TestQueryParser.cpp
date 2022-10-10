@@ -404,3 +404,50 @@ TEST_CASE("Parser can catch mismatch in explicit and") {
     REQUIRE_THROWS(QueryParser::parseSuchThatClause(&such_that_input, syns,
                                                     &such_that_clauses));
 }
+
+TEST_CASE("Parser can parse while pattern clauses") {
+    std::vector<Synonym> syns{Synonym(EntityName::WHILE, "w"),
+                              Synonym(EntityName::WHILE, "w1"),
+                              Synonym(EntityName::VARIABLE, "v"), 
+                              Synonym(EntityName::VARIABLE, "v2")};
+
+    std::string correct_input = "pattern w(v, _)";
+    std::vector<PatternClause> clause;
+    QueryParser::parsePatternClause(&correct_input, syns, &clause);
+    REQUIRE(clause[0].expression == "_");
+    REQUIRE(clause[0].patternType == PatternType::WHILE);
+
+    std::string correct_input_space = "pattern w(_,    _      )";
+    std::vector<PatternClause> clause_space;
+    QueryParser::parsePatternClause(&correct_input_space, syns, &clause_space);
+    REQUIRE(clause_space[0].expression == "_");
+    REQUIRE(clause_space[0].patternType == PatternType::WHILE);
+
+    std::string non_wild_card_expression = "pattern w(v, \"x\")";
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&non_wild_card_expression, syns, &clause));
+}
+
+TEST_CASE("Parser can parse if pattern clauses") {
+    std::vector<Synonym> syns{Synonym(EntityName::IF, "ifs"),
+                              Synonym(EntityName::IF, "ifs2"),
+                              Synonym(EntityName::VARIABLE, "v"), 
+                              Synonym(EntityName::VARIABLE, "v2")};
+
+    std::string correct_input = "pattern ifs(v, _, _)";
+    std::vector<PatternClause> clause;
+    QueryParser::parsePatternClause(&correct_input, syns, &clause);
+    REQUIRE(clause[0].expression == "_");
+    REQUIRE(clause[0].patternType == PatternType::IF);
+
+    std::string correct_input_space = "pattern ifs(   _    ,   _   ,     _    )";
+    std::vector<PatternClause> clause_space;
+    QueryParser::parsePatternClause(&correct_input_space, syns, &clause_space);
+    REQUIRE(clause_space[0].expression == "_");
+    REQUIRE(clause_space[0].patternType == PatternType::IF);
+
+    std::string non_wild_card_expression_left = "pattern ifs(v, \"x\", _)";
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&non_wild_card_expression_left, syns, &clause));
+
+    std::string non_wild_card_expression_right = "pattern ifs(v, _, \"x\")";
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&non_wild_card_expression_left, syns, &clause));
+}

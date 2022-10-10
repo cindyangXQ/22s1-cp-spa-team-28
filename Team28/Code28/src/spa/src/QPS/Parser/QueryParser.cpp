@@ -107,25 +107,24 @@ void QueryParser::parsePatternClause(std::string *clause,
     while (std::regex_search(*clause, std::regex("^\\s*pattern\\s+|^\\s*and\\s+"))) {
         std::smatch matches;
         std::regex_match(*clause, matches, patternClauseRegex);
-        std::string patternClause = matches[1];
+        std::string patternClause = matches[1].str();
 
         std::regex_match(patternClause, matches, patternRegex);
-        if (matches.size() != 6) {
+        if (matches.size() != 7) {
             throw SyntaxError("Invalid pattern clause syntax");
         }
 
         Synonym syn = getSynonym(matches[2].str(), syns);
-        if (syn.entity != EntityName::ASSIGN) {
-            throw SemanticError("Pattern only accepts assign synonym");
+        if (!patternEntityMap.count(syn.entity)) {
+            throw SemanticError("Pattern only accepts assign, while and if synonym");
         }
+
         Reference entRef = getReference(matches[3].str(), syns);
-        if (syn.entity == EntityName::ASSIGN) {
-            if (entRef.isSynonym && entRef.syn.entity != EntityName::VARIABLE) {
-                throw SemanticError("Pattern-assign first argument must be an entity reference or wildcard");
-            }
-            else if (entRef.type == ReferenceType::STMT_REF) {
-                throw SemanticError("Pattern-assign first argument must be an entity reference or wildcard");
-            }
+        if (entRef.isSynonym && entRef.syn.entity != EntityName::VARIABLE) {
+            throw SemanticError("Pattern first argument must be an entity reference or wildcard");
+        }
+        else if (entRef.type == ReferenceType::STMT_REF) {
+            throw SemanticError("Pattern first argument must be an entity reference or wildcard");
         }
         Expression expr = matches[5].str();
         bool isExact = true;
@@ -139,6 +138,9 @@ void QueryParser::parsePatternClause(std::string *clause,
             }
         }
         if (expr.compare("_") != 0) {
+            if (syn.entity == EntityName::WHILE || syn.entity == EntityName::IF) {
+                throw SyntaxError("Pattern-if and pattern-while second (and third) argument can only be a wildcard");
+            }
             try {
                 //Remove " at the start and end
                 expr.erase(std::remove(expr.begin(), expr.end(), '"'), expr.end());

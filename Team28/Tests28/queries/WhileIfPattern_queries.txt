@@ -1,0 +1,35 @@
+1 - 1 while pattern
+while w; if ifs; variable v;
+Select w pattern w(v, _)
+2, 7, 8, 10, 12, 18, 19 
+5000
+2 - 1 if pattern
+while w; if ifs; variable v;
+Select ifs pattern ifs(_, _, _)
+4, 9, 14, 15, 16, 23 
+5000
+3 - 2 while pattern
+while w1, w2; if ifs; variable v;
+Select v pattern w1(v, _) pattern w2(v, _)
+a3, a17, a24
+5000
+4 - 2 if pattern
+while w; if ifs1, ifs2; variable v;
+Select v pattern ifs1(v, _, _) pattern ifs2(v, _, _)
+a2, a17
+5000
+5 - 1 overlapping synonym
+while w; if ifs; variable v;
+Select ifs pattern ifs(v, _, _) pattern w(v, _)
+4, 9, 15, 16
+5000
+6 - no overlapping synonym
+while w; if ifs; variable v;
+Select ifs pattern w(_, _) pattern ifs("a999", _, _) 
+none
+5000
+7 - additional such that clause
+while w; if ifs; variable v;
+Select v pattern w(v, _) pattern ifs(v, _, _) such that Parent*(w, ifs)
+a21
+5000

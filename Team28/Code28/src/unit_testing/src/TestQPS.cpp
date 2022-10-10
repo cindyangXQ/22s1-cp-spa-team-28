@@ -784,3 +784,111 @@ TEST_CASE("QPS can process queries with procedure") {
     correct_output_set.insert(correct_output.begin(), correct_output.end());
     REQUIRE(results_set == correct_output_set);
 }
+
+TEST_CASE("QPS can process queries with while pattern clause") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    WhileControlVarTable *whiles =
+        storage->getTable<WhileControlVarTable>();
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    whiles->store(&test1);
+    whiles->store(&test2);
+    whiles->store(&test3);
+
+    QPS qps = QPS(&facade);
+    std::string input;
+    std::list<std::string> results;
+    std::list<std::string> correct_output;
+    std::unordered_set<std::string> results_set;
+    std::unordered_set<std::string> correct_output_set;
+
+    input = "while w; variable v; Select v pattern w(v, _)";
+    correct_output = {"x", "y", "z"};
+    results = {};
+    qps.evaluate(input, results);
+    results_set.clear();
+    correct_output_set.clear();
+    results_set.insert(results.begin(), results.end());
+    correct_output_set.insert(correct_output.begin(), correct_output.end());
+    REQUIRE(results_set == correct_output_set);
+
+    input = "while w; variable v; Select w pattern w(_, _)";
+    correct_output = {"1", "2", "3"};
+    results = {};
+    qps.evaluate(input, results);
+    results_set.clear();
+    correct_output_set.clear();
+    results_set.insert(results.begin(), results.end());
+    correct_output_set.insert(correct_output.begin(), correct_output.end());
+    REQUIRE(results_set == correct_output_set);
+
+    input = "while w; variable v; Select w pattern w(\"y\", _)";
+    correct_output = {"2"};
+    results = {};
+    qps.evaluate(input, results);
+    results_set.clear();
+    correct_output_set.clear();
+    results_set.insert(results.begin(), results.end());
+    correct_output_set.insert(correct_output.begin(), correct_output.end());
+    REQUIRE(results_set == correct_output_set);
+}
+
+TEST_CASE("QPS can process queries with if pattern clause") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    IfControlVarTable *ifs =
+        storage->getTable<IfControlVarTable>();
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    ifs->store(&test1);
+    ifs->store(&test2);
+    ifs->store(&test3);
+
+    QPS qps = QPS(&facade);
+    std::string input;
+    std::list<std::string> results;
+    std::list<std::string> correct_output;
+    std::unordered_set<std::string> results_set;
+    std::unordered_set<std::string> correct_output_set;
+
+    input = "if ifs; variable v; Select ifs pattern ifs(v, _, _)";
+    correct_output = {"1", "2", "3"};
+    results = {};
+    qps.evaluate(input, results);
+    results_set.clear();
+    correct_output_set.clear();
+    results_set.insert(results.begin(), results.end());
+    correct_output_set.insert(correct_output.begin(), correct_output.end());
+    REQUIRE(results_set == correct_output_set);
+
+    input = "if ifs; variable v; Select v pattern ifs(v, _, _)";
+    correct_output = {"x", "y", "z"};
+    results = {};
+    qps.evaluate(input, results);
+    results_set.clear();
+    correct_output_set.clear();
+    results_set.insert(results.begin(), results.end());
+    correct_output_set.insert(correct_output.begin(), correct_output.end());
+    REQUIRE(results_set == correct_output_set);
+
+    input = "if ifs; variable v; Select ifs pattern ifs(\"z\", _, _)";
+    correct_output = {"3"};
+    results = {};
+    qps.evaluate(input, results);
+    results_set.clear();
+    correct_output_set.clear();
+    results_set.insert(results.begin(), results.end());
+    correct_output_set.insert(correct_output.begin(), correct_output.end());
+    REQUIRE(results_set == correct_output_set);
+}
