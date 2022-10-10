@@ -75,6 +75,10 @@ public:
         return this->rightToLeftsMap;
     }
 
+    bool isValueExist(Left left) {
+        return this->retrieveLeft(left).size() != 0;
+    }
+
 protected:
     std::map<Left, std::unordered_set<Right>> leftToRightsMap;
     std::map<Right, std::unordered_set<Left>> rightToLeftsMap;

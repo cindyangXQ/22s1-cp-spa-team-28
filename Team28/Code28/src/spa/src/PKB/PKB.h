@@ -19,6 +19,11 @@ public:
      */
     explicit PKB();
 
+    /*
+     * Populates the NextTable based on existing relationships in knowledge base.
+     */
+    void populateNext();
+
 private:
     Storage *storage;
 };

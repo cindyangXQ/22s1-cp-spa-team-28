@@ -58,6 +58,9 @@ Storage::Storage() {
     this->storageView->setTable<StatementsTable>(statements);
     this->storageView->setTable<ProceduresTable>(procedures);
     this->storageView->setTable<VariablesTable>(variables);
+    this->storageView->setTable<FollowsTable>(follows);
+    this->storageView->setTable<BranchInTable>(branchIn);
+    this->storageView->setTable<BranchOutTable>(branchOut);
 };
 
 Solvable *Storage::getRsTable(RelationshipReference rsRef,
