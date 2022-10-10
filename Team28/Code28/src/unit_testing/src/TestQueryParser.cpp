@@ -9,7 +9,7 @@ TEST_CASE("QueryParser is parsing correctly") {
         QueryParser::parse("assign a; constant c; variable v; Select a such "
                            "that Modifies(1, v) pattern a(v, _\"x\"_)");
 
-    REQUIRE(solvableQ.selectType.entity == EntityName::ASSIGN);
+    REQUIRE(solvableQ.selectClause.syns[0].entity == EntityName::ASSIGN);
     REQUIRE_THROWS(
         QueryParser::parse("assign a; constant c; variable v; Select a;"));
     REQUIRE_THROWS(
@@ -58,7 +58,8 @@ TEST_CASE("QueryParser can parse select clause") {
                               Synonym(EntityName::ASSIGN, "a")};
 
     std::string correct = "Select v";
-    SelectType selectedSynonym = QueryParser::parseSelectClause(&correct, syns);
+    SelectClause selectClause = QueryParser::parseSelectClause(&correct, syns);
+    Synonym selectedSynonym = selectClause.syns[0];
     REQUIRE(selectedSynonym.entity == EntityName::VARIABLE);
     REQUIRE(selectedSynonym.name == "v");
 
@@ -67,6 +68,59 @@ TEST_CASE("QueryParser can parse select clause") {
 
     std::string missing_synonym = "Select";
     REQUIRE_THROWS(QueryParser::parseSelectClause(&missing_synonym, syns));
+}
+
+TEST_CASE("QueryParser can parse boolean select clause") {
+    std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
+                              Synonym(EntityName::ASSIGN, "a")};
+
+    std::string correct = "Select BOOLEAN";
+    SelectClause selectClause = QueryParser::parseSelectClause(&correct, syns);
+    REQUIRE(selectClause.selectType == SelectType::BOOLEAN);
+    REQUIRE(selectClause.syns.size() == 0);
+
+    std::string misspelled = "Select BOOLAN";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&misspelled, syns));
+
+    std::string misspelled2 = "Select BoOlEaN";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&misspelled2, syns));
+}
+
+TEST_CASE("QueryParser can parse tuple select clause") {
+    std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
+                              Synonym(EntityName::ASSIGN, "a"), 
+                              Synonym(EntityName::ASSIGN, "a1"),
+                              Synonym(EntityName::ASSIGN, "a2"),
+                              Synonym(EntityName::PROCEDURE, "p")};
+
+    std::string correct = "Select <v, a>";
+    SelectClause selectClause = QueryParser::parseSelectClause(&correct, syns);
+    REQUIRE(selectClause.selectType == SelectType::TUPLE);
+    REQUIRE(selectClause.syns.size() == 2);
+
+    std::string many = "Select <v, a, p, a1, a2>";
+    SelectClause selectClauseMany = QueryParser::parseSelectClause(&many, syns);
+    REQUIRE(selectClauseMany.selectType == SelectType::TUPLE);
+    REQUIRE(selectClauseMany.syns.size() == 5);
+
+    std::string one = "Select <v>";
+    SelectClause selectClauseOne = QueryParser::parseSelectClause(&one, syns);
+    REQUIRE(selectClauseOne.selectType == SelectType::TUPLE);
+    REQUIRE(selectClauseOne.syns.size() == 1);
+
+    std::string duplicate = "Select <v, a1, a1>";
+    SelectClause selectClauseDuplicate = QueryParser::parseSelectClause(&duplicate, syns);
+    REQUIRE(selectClauseDuplicate.selectType == SelectType::TUPLE);
+    REQUIRE(selectClauseDuplicate.syns.size() == 3);
+
+    std::string wrong_syntax = "Select <v, a1, <a2>>";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&wrong_syntax, syns));
+
+    std::string wrong_syntax2 = "Select <v, a1, <a2>, p>";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&wrong_syntax2, syns));
+
+    std::string wrong_syntax3 = "Select <v, <a2, p>, a1>";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&wrong_syntax3, syns));
 }
 
 TEST_CASE("Parser can parse such that clause") {

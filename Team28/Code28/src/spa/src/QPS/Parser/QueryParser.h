@@ -18,7 +18,7 @@ class QueryParser {
 public:
     static SolvableQuery parse(std::string query);
     static Declaration parseDeclaration(std::vector<std::string> clauses);
-    static SelectType parseSelectClause(std::string *clause,
+    static SelectClause parseSelectClause(std::string *clause,
                                         std::vector<Synonym> syns);
     static void parseSuchThatClause(std::string *clause,
                                     std::vector<Synonym> syns,

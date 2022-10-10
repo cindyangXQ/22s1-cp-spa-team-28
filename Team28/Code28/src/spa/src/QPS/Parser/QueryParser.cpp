@@ -9,7 +9,7 @@ SolvableQuery QueryParser::parse(std::string query) {
     size_t size = clauses.size();
 
     Declaration decl;
-    SelectType selectType;
+    SelectClause selectClause;
     std::vector<SuchThatClause> suchThatCls;
     std::vector<PatternClause> patternCls;
 
@@ -19,7 +19,7 @@ SolvableQuery QueryParser::parse(std::string query) {
 
     // Extract main clause
     std::string mainClause = Utils::removeTrailingSpaces(clauses[size - 1]);
-    selectType = QueryParser::parseSelectClause(&mainClause, decl.syns);
+    selectClause = QueryParser::parseSelectClause(&mainClause, decl.syns);
     while (!Utils::removeTrailingSpaces(mainClause).empty()) {
         if (QueryParser::isSuchThatClause(&mainClause)) {
             QueryParser::parseSuchThatClause(&mainClause, decl.syns, &suchThatCls);
@@ -30,7 +30,7 @@ SolvableQuery QueryParser::parse(std::string query) {
         }       
     }
 
-    return SolvableQuery(decl, selectType, suchThatCls, patternCls);
+    return SolvableQuery(decl, selectClause, suchThatCls, patternCls);
 }
 
 Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
@@ -49,7 +49,7 @@ Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
     return Declaration(all_syns);
 }
 
-SelectType QueryParser::parseSelectClause(std::string *clause,
+SelectClause QueryParser::parseSelectClause(std::string *clause,
                                           std::vector<Synonym> syns) {
     if (std::regex_search(*clause, std::regex("\\b(Select)\\b"))) {
         std::smatch matches;
@@ -60,11 +60,30 @@ SelectType QueryParser::parseSelectClause(std::string *clause,
         if (matches.size() == 0) {
             throw SyntaxError("Invalid select clause syntax");
         }
-        SelectType selectType = QueryParser::getSynonym(matches[1], syns);
-
+        std::string selectValue = matches[1];
+        std::vector<Synonym> selectedSyns;
         *clause = Utils::removeString(*clause, selectClause);
-
-        return selectType;
+        if (selectValue.compare("BOOLEAN") == 0) {
+            return SelectClause(selectedSyns, SelectType::BOOLEAN);
+        }
+        else if (std::regex_search(selectValue, selectTupleRegex)) {
+            selectValue = selectValue.substr(1, selectValue.size() - 2);
+            std::vector<std::string> synonymStrings = Utils::splitString(selectValue, ',');
+            for (int i = 0; i < synonymStrings.size(); i++) {
+                std::string syn = synonymStrings[i];
+                if (!std::regex_search(syn, synRegex)) {
+                    throw SyntaxError("Invalid select value");
+                }
+                Synonym selectedSyn = QueryParser::getSynonym(Utils::removeTrailingSpaces(syn), syns);
+                selectedSyns.push_back(selectedSyn);
+            }
+            return SelectClause(selectedSyns, SelectType::TUPLE);
+        }
+        else if (std::regex_search(selectValue, synRegex)) {
+            selectValue = Utils::removeTrailingSpaces(selectValue);
+            selectedSyns.push_back(QueryParser::getSynonym(selectValue, syns));
+            return SelectClause(selectedSyns, SelectType::SINGLE);
+        }
     }
     throw SyntaxError("Expected select clause");
 }
@@ -144,7 +163,6 @@ void QueryParser::parsePatternClause(std::string *clause,
             try {
                 //Remove " at the start and end
                 expr.erase(std::remove(expr.begin(), expr.end(), '"'), expr.end());
-                
                 expr = SP::convertExpression(expr);
             }
             catch (...) {
