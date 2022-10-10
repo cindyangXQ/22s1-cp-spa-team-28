@@ -1,6 +1,5 @@
 #include "PatternClause.h"
 
-PatternClause::PatternClause() { this->patternType = PatternType::EMPTY; }
 PatternClause::PatternClause(Synonym syn, Reference entRef,
                              Expression expression, bool isExact) {
     if (syn.entity == EntityName::ASSIGN) {

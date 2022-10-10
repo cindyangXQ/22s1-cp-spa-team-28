@@ -1,9 +1,7 @@
 #include "PatternEvaluator.h"
 
 ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
-    if (patternCl->patternType == PatternType::EMPTY) {
-        return ClauseResult(false);
-    } else if (patternCl->patternType == PatternType::ASSIGN) {
+    if (patternCl->patternType == PatternType::ASSIGN) {
         if (patternCl->entRef.isSynonym) {
             ClauseResult clauseResult = ClauseResult(
                 std::vector{patternCl->syn, patternCl->entRef.syn});

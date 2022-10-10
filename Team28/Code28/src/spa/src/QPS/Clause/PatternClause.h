@@ -3,7 +3,7 @@
 #include "../../commons/Reference.h"
 #include "../../commons/Synonym.h"
 
-enum class PatternType { ASSIGN, EMPTY, WHILE, IF };
+enum class PatternType { ASSIGN, WHILE, IF };
 typedef std::string Expression;
 /*
  * Class encapsulating the logic of the pattern clause.
