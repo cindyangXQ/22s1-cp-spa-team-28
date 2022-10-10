@@ -5,13 +5,14 @@
 
 TEST_CASE("CFG Traverses Correctly - 1") {
     Storage *storage = new Storage();
-    NextTable* nextTable = storage->getTable<NextTable>();
-    FollowsTable* followsTable = storage->getTable<FollowsTable>();
-    BranchInTable* branchIn = storage->getTable<BranchInTable>();
-    BranchOutTable* branchOut = storage->getTable<BranchOutTable>();
+    NextTable *nextTable = storage->getTable<NextTable>();
+    FollowsTable *followsTable = storage->getTable<FollowsTable>();
+    BranchInTable *branchIn = storage->getTable<BranchInTable>();
+    BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
 
-    // Follows 
-    Relationship<int, int> relation = Relationship(RelationshipReference::FOLLOWS, 1, 2);;
+    // Follows
+    Relationship<int, int> relation =
+        Relationship(RelationshipReference::FOLLOWS, 1, 2);
     followsTable->store(&relation);
     relation = Relationship(RelationshipReference::FOLLOWS, 2, 3);
     followsTable->store(&relation);
@@ -42,7 +43,7 @@ TEST_CASE("CFG Traverses Correctly - 1") {
     relation = Relationship(RelationshipReference::NEXT, 9, 10);
     branchOut->store(&relation);
 
-    StorageView* storageView = storage->getStorageView();
+    StorageView *storageView = storage->getStorageView();
     ControlFlowGraph cfg = ControlFlowGraph(nextTable, storageView);
 
     cfg.populateNext();
@@ -60,5 +61,4 @@ TEST_CASE("CFG Traverses Correctly - 1") {
     REQUIRE(nextTable->validate(Reference("9"), Reference("10")));
     REQUIRE(nextTable->validate(Reference("10"), Reference("11")));
     REQUIRE(nextTable->validate(Reference("11"), Reference("12")));
-
 }

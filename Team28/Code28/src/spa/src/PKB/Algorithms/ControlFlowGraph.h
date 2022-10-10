@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Storage/StorageView.h"
-#include "../Tables/Table.h"
 #include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
+#include "../Tables/Table.h"
 
 /*
  * Encapsulates a CFG class which is responsible for extracting the
@@ -13,7 +13,7 @@ public:
     /*
      * Explicit constructor for Storage.
      */
-    ControlFlowGraph(NextTable* nextTable, StorageView* storage);
+    ControlFlowGraph(NextTable *nextTable, StorageView *storage);
 
     /*
      * Populates NextTable based on relationships currently found in Storage.
@@ -22,10 +22,10 @@ public:
     void populateNext();
 
 private:
-    NextTable* next;
-    FollowsTable* follows;
-    BranchInTable* branchIn;
-    BranchOutTable* branchOut;
+    NextTable *next;
+    FollowsTable *follows;
+    BranchInTable *branchIn;
+    BranchOutTable *branchOut;
 
     std::map<int, bool> visited;
 
@@ -37,7 +37,7 @@ private:
     /*
      * Helper method for DFS to find neighbouring statements in given table.
      */
-    template <typename Subclass> void DFSHelper(int i, Subclass* table) {
+    template <typename Subclass> void DFSHelper(int i, Subclass *table) {
         for (int j : table->retrieveLeft(i)) {
             Relationship<int, int> rs =
                 Relationship(RelationshipReference::NEXT, i, j);
