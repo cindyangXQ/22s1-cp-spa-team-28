@@ -22,6 +22,5 @@ public:
 
     QPS(QueryFacade *Facade) : evaluator(QueryEvaluator(Facade)){};
 
-    std::string processQuery(std::string input);
     void evaluate(std::string query, std::list<std::string> &results);
 };
