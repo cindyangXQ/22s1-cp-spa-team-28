@@ -11,5 +11,6 @@ PKB::PKB() {
 void PKB::populateNext() {
     NextTable* nextTable = this->storage->getTable<NextTable>();
     StorageView* storageView = this->storage->getStorageView();
-    ControlFlowGraph::populateNext(nextTable, storageView);
+    ControlFlowGraph cfg = ControlFlowGraph(nextTable, storageView);
+    cfg.populateNext();
 }
