@@ -9,3 +9,8 @@ TEST_CASE("PKB is initialised correctly") {
     REQUIRE(pkb.populateFacade != nullptr);
     REQUIRE(pkb.queryFacade != nullptr);
 }
+
+TEST_CASE("PKB::populateNext can populate NextTable") {
+    PKB pkb = PKB();
+    pkb.populateNext();
+}
