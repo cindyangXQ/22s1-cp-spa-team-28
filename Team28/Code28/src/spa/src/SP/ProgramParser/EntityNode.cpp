@@ -432,6 +432,22 @@ void WhileStatementNode::getModifiesPInto(
     }
 }
 
+void WhileStatementNode::getWhileConVar(
+    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<std::string> condVars;
+    cond->getVariablesInto(condVars);
+    int lineNo = this->getLineNumber();
+    for (size_t i = 0; i < condVars.size(); i++) {
+        result.push_back(new Relationship<int, std::string>(
+            RelationshipReference::USES, lineNo, condVars[i]));
+    }
+
+    std::vector<StatementNode *> stmtList = this->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getWhileConVar(result);
+    }
+}
+
 void WhileStatementNode::getBranchInInto(
     std::vector<Relationship<int, int> *> &result) {
     result.push_back(new Relationship<int, int>(RelationshipReference::NEXT,
@@ -453,10 +469,11 @@ void WhileStatementNode::getBranchOutInto(
     }
 
     for (size_t i = 0; i < stmtList.size() - 1; i++) {
-        stmtList.at(i)->getBranchOutInto(result, stmtList.at(i+1)->getLineNumber());
+        stmtList.at(i)->getBranchOutInto(result,
+                                         stmtList.at(i + 1)->getLineNumber());
     }
 
-     stmtList.back()->getBranchOutInto(result, line);
+    stmtList.back()->getBranchOutInto(result, line);
 }
 
 void WhileStatementNode::cleanup() {
@@ -605,6 +622,22 @@ void IfStatementNode::getModifiesPInto(std::vector<std::string> &result,
     }
 }
 
+void IfStatementNode::getIfConVar(
+    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<std::string> condVars;
+    cond->getVariablesInto(condVars);
+    int lineNo = this->getLineNumber();
+    for (size_t i = 0; i < condVars.size(); i++) {
+        result.push_back(new Relationship<int, std::string>(
+            RelationshipReference::USES, lineNo, condVars[i]));
+    }
+
+    std::vector<StatementNode *> stmtList = this->getStmtList();
+    for (size_t i = 0; i < stmtList.size(); i++) {
+        stmtList[i]->getIfConVar(result);
+    }
+}
+
 void IfStatementNode::getBranchInInto(
     std::vector<Relationship<int, int> *> &result) {
     int startLine = this->getLineNumber();
@@ -639,13 +672,14 @@ void IfStatementNode::getBranchOutInto(
     }
 
     for (size_t i = 0; i < ifBlock.size() - 1; i++) {
-        ifBlock.at(i)->getBranchOutInto(result, ifBlock.at(i+1)->getLineNumber());
+        ifBlock.at(i)->getBranchOutInto(result,
+                                        ifBlock.at(i + 1)->getLineNumber());
     }
     ifBlock.back()->getBranchOutInto(result, nextLine);
 
     for (size_t i = 0; i < elseBlock.size() - 1; i++) {
         elseBlock.at(i)->getBranchOutInto(result,
-                                        elseBlock.at(i + 1)->getLineNumber());
+                                          elseBlock.at(i + 1)->getLineNumber());
     }
     elseBlock.back()->getBranchOutInto(result, nextLine);
 }

@@ -3,8 +3,8 @@
 #include "EntityNode.h"
 #include "../Tokenizer/Token.h"
 
-#include <vector>
 #include <map>
+#include <vector>
 
 class Parser {
 protected:
@@ -17,7 +17,8 @@ public:
 };
 
 class ProgramParser : public Parser {
-    void checkCall(std::string proc, std::vector<std::string> path, std::map<std::string, std::vector<std::string>> &callmap);
+    void checkCall(std::string proc, std::vector<std::string> path,
+                   std::map<std::string, std::vector<std::string>> &callmap);
 
 public:
     ProgramParser(int offset, std::vector<Token *> tokens)

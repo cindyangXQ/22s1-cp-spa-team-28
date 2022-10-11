@@ -5,10 +5,10 @@
 
 class QueryResult {
 public:
-    SelectType selectType;
+    SelectClause selectClause;
     std::vector<ClauseResult> clauseResultList;
     QueryResult();
-    explicit QueryResult(SelectType selectType,
+    explicit QueryResult(SelectClause selectClause,
                          std::vector<ClauseResult> clauseResultList)
-        : selectType(selectType), clauseResultList(clauseResultList){};
+        : selectClause(selectClause), clauseResultList(clauseResultList){};
 };

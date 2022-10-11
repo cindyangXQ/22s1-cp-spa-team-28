@@ -15,7 +15,8 @@ ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
             relRef == RelationshipReference::USES ||
             relRef == RelationshipReference::MODIFIES) {
             if (left.isSynonym && right.isSynonym) {
-                if (left.syn.entity == right.syn.entity && left.syn.name == right.syn.name) {
+                if (left.syn.entity == right.syn.entity &&
+                    left.syn.name == right.syn.name) {
                     return ClauseResult(true);
                 }
             }

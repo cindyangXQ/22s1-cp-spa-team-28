@@ -16,7 +16,6 @@
 
 #include "../Tables/AssignmentsTable/AssignmentsTable.h"
 #include "../Tables/NamesTable/NamesTable.h"
-#include "../Tables/RelationshipsTable/BranchTable.h"
 #include "../Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
@@ -52,16 +51,6 @@ public:
     Solvable *getRsTable(RelationshipReference rsRef, ReferenceType leftType);
 
     /*
-     * Retrieve a Modifies table by Reference Type
-     */
-    Solvable *getModifiesOnType(ReferenceType leftType);
-
-    /*
-     * Retrieve a Uses table by Reference Type
-     */
-    Solvable *getUsesOnType(ReferenceType leftType);
-
-    /*
      * Retrieves Modifies Tables
      */
     std::vector<Solvable *> getModifiesTables();
@@ -84,4 +73,18 @@ private:
      */
     std::map<RelationshipReference, Solvable *> rsTables;
     StorageView *storageView;
+
+    /*
+     * Template method for getting tables used for Uses and Modifies.
+     */
+    template <typename STable, typename PTable>
+    Solvable *getOnType(ReferenceType leftType) {
+        if (leftType == ReferenceType::STMT_REF) {
+            return this->getTable<STable>();
+        }
+        if (leftType == ReferenceType::ENT_REF) {
+            return this->getTable<PTable>();
+        }
+        return nullptr;
+    }
 };

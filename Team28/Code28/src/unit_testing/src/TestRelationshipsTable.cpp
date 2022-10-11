@@ -276,8 +276,8 @@ TEST_CASE("NextTable can initialise, store and retrieve correctly") {
     NextTable nextTable;
 
     // Next (1, 2)
-    Relationship<int, int> test = Relationship(
-        RelationshipReference::NEXT, 1, 2);
+    Relationship<int, int> test =
+        Relationship(RelationshipReference::NEXT, 1, 2);
     nextTable.store(&test);
 
     // successfully stored Next (1, 2)
@@ -293,8 +293,8 @@ TEST_CASE("NextTTable can initialise, store and retrieve correctly") {
     NextTTable nextTTable;
 
     // Next* (1, 2)
-    Relationship<int, int> test1 = Relationship(
-        RelationshipReference::NEXT_T, 1, 2);
+    Relationship<int, int> test1 =
+        Relationship(RelationshipReference::NEXT_T, 1, 2);
     nextTTable.store(&test1);
     // Next* (1, 3), implicitly Next* (2, 3) but not testing latter
     Relationship<int, int> test2 =

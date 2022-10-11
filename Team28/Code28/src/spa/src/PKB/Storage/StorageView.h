@@ -13,8 +13,6 @@
 #include "../../commons/TableValue.h"
 #include "../../commons/Variable.h"
 
-#include "../Tables/NamesTable/NamesTable.h"
-#include "../Tables/StatementsTable/StatementsTable.h"
 #include "../Tables/Table.h"
 
 /*

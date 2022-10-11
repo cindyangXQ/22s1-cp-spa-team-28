@@ -18,8 +18,8 @@ class QueryParser {
 public:
     static SolvableQuery parse(std::string query);
     static Declaration parseDeclaration(std::vector<std::string> clauses);
-    static SelectType parseSelectClause(std::string *clause,
-                                        std::vector<Synonym> syns);
+    static SelectClause parseSelectClause(std::string *clause,
+                                          std::vector<Synonym> syns);
     static void parseSuchThatClause(std::string *clause,
                                     std::vector<Synonym> syns,
                                     std::vector<SuchThatClause> *suchThatCls);
@@ -30,7 +30,6 @@ public:
     static bool isPatternClause(std::string *clause);
 
 private:
-
     static bool isValidName(std::string name);
     static bool isValidSuchThatClause(RelationshipReference relRef,
                                       Reference left, Reference right);

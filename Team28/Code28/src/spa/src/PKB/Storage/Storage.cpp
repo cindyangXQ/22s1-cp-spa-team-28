@@ -58,37 +58,20 @@ Storage::Storage() {
     this->storageView->setTable<StatementsTable>(statements);
     this->storageView->setTable<ProceduresTable>(procedures);
     this->storageView->setTable<VariablesTable>(variables);
+    this->storageView->setTable<FollowsTable>(follows);
+    this->storageView->setTable<BranchInTable>(branchIn);
+    this->storageView->setTable<BranchOutTable>(branchOut);
 };
 
 Solvable *Storage::getRsTable(RelationshipReference rsRef,
                               ReferenceType leftType) {
     if (rsRef == RelationshipReference::MODIFIES) {
-        return this->getModifiesOnType(leftType);
+        return this->getOnType<ModifiesSTable, ModifiesPTable>(leftType);
     }
     if (rsRef == RelationshipReference::USES) {
-        return this->getUsesOnType(leftType);
+        return this->getOnType<UsesSTable, UsesPTable>(leftType);
     }
     return this->rsTables.at(rsRef);
-};
-
-Solvable *Storage::getModifiesOnType(ReferenceType leftType) {
-    if (leftType == ReferenceType::STMT_REF) {
-        return this->getTable<ModifiesSTable>();
-    }
-    if (leftType == ReferenceType::ENT_REF) {
-        return this->getTable<ModifiesPTable>();
-    }
-    return nullptr;
-};
-
-Solvable *Storage::getUsesOnType(ReferenceType leftType) {
-    if (leftType == ReferenceType::STMT_REF) {
-        return this->getTable<UsesSTable>();
-    }
-    if (leftType == ReferenceType::ENT_REF) {
-        return this->getTable<UsesPTable>();
-    }
-    return nullptr;
 };
 
 std::vector<Solvable *> Storage::getModifiesTables() {
