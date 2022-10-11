@@ -761,7 +761,7 @@ std::string ExpressionNode::toString() {
     return result;
 }
 
-void ExpressionNode::cleanup(){
+void ExpressionNode::cleanup() {
     if (left != nullptr) {
         left->cleanup();
     }
@@ -772,7 +772,7 @@ void ExpressionNode::cleanup(){
 }
 
 // Constant
-    ConstantNode ::ConstantNode(std::string s) { this->value = s; }
+ConstantNode ::ConstantNode(std::string s) { this->value = s; }
 
 // Variable
 VariableNode ::VariableNode(std::string s) { this->value = s; }

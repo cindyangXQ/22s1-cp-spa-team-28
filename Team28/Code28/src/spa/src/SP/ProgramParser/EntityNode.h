@@ -109,7 +109,7 @@ class ReadStatementNode : public StatementNode {
 
 public:
     ReadStatementNode(VariableNode *variable, int line);
-    
+
     void cleanup();
 
     bool isRead() { return true; };
@@ -299,8 +299,8 @@ public:
     void setLeft(ExpressionNode *left) { this->left = left; }
     void setRight(ExpressionNode *right) { this->right = right; }
 
-    ExpressionNode* getLeft() { return left; }
-    ExpressionNode* getRight() { return right; }
+    ExpressionNode *getLeft() { return left; }
+    ExpressionNode *getRight() { return right; }
 };
 
 class VariableNode : public Token, public EntityNode {

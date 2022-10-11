@@ -63,7 +63,7 @@ ExpressionNode *CondParser::parse() {
 
         ExpressionNode *left = cond->getLeft();
         Token *leftToken = left->getToken();
-        
+
         ExpressionNode *right = cond->getRight();
         Token *rightToken = right->getToken();
 
@@ -138,8 +138,9 @@ ExpressionNode *ExprParser::parse() {
     if (next->getValue() == ";") {
         offset++;
         return root;
-    } else if (next->getValue() == ")" || find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                                          next->getValue()) != end(REL_OP_LIST)) {
+    } else if (next->getValue() == ")" ||
+               find(begin(REL_OP_LIST), end(REL_OP_LIST), next->getValue()) !=
+                   end(REL_OP_LIST)) {
         if (!this->iscond && find(begin(REL_OP_LIST), end(REL_OP_LIST),
                                   next->getValue()) != end(REL_OP_LIST)) {
             throw "invalid expression";
@@ -159,7 +160,8 @@ ExpressionNode *TermParser::parse() {
     ExpressionNode *root = result;
 
     Token *next = tokens.at(offset);
-    while (next->getValue() == "*" || next->getValue() == "/" || next->getValue() == "%") {
+    while (next->getValue() == "*" || next->getValue() == "/" ||
+           next->getValue() == "%") {
         // continue process as term
         offset++;
 
@@ -179,8 +181,8 @@ ExpressionNode *TermParser::parse() {
         next = tokens.at(offset);
     }
 
-    if (next->getValue() == "+" || next->getValue() == "-" || next->getValue() == ";" ||
-        next->getValue() == ")" ||
+    if (next->getValue() == "+" || next->getValue() == "-" ||
+        next->getValue() == ";" || next->getValue() == ")" ||
         find(begin(REL_OP_LIST), end(REL_OP_LIST), next->getValue()) !=
             end(REL_OP_LIST)) {
         if (!iscond && find(begin(REL_OP_LIST), end(REL_OP_LIST),
