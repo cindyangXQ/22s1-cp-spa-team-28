@@ -396,7 +396,7 @@ void WhileStatementNode::getModifiesPInto(
 }
 
 void WhileStatementNode::getWhileConVar(
-    std::vector<Relationship<int, std::string>*>& result) {
+    std::vector<Relationship<int, std::string> *> &result) {
     std::vector<std::string> condVars;
     cond->getVariablesInto(condVars);
     int lineNo = this->getLineNumber();
@@ -432,10 +432,11 @@ void WhileStatementNode::getBranchOutInto(
     }
 
     for (size_t i = 0; i < stmtList.size() - 1; i++) {
-        stmtList.at(i)->getBranchOutInto(result, stmtList.at(i+1)->getLineNumber());
+        stmtList.at(i)->getBranchOutInto(result,
+                                         stmtList.at(i + 1)->getLineNumber());
     }
 
-     stmtList.back()->getBranchOutInto(result, line);
+    stmtList.back()->getBranchOutInto(result, line);
 }
 
 // If Statement
@@ -626,13 +627,14 @@ void IfStatementNode::getBranchOutInto(
     }
 
     for (size_t i = 0; i < ifBlock.size() - 1; i++) {
-        ifBlock.at(i)->getBranchOutInto(result, ifBlock.at(i+1)->getLineNumber());
+        ifBlock.at(i)->getBranchOutInto(result,
+                                        ifBlock.at(i + 1)->getLineNumber());
     }
     ifBlock.back()->getBranchOutInto(result, nextLine);
 
     for (size_t i = 0; i < elseBlock.size() - 1; i++) {
         elseBlock.at(i)->getBranchOutInto(result,
-                                        elseBlock.at(i + 1)->getLineNumber());
+                                          elseBlock.at(i + 1)->getLineNumber());
     }
     elseBlock.back()->getBranchOutInto(result, nextLine);
 }

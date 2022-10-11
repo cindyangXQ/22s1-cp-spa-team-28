@@ -100,7 +100,7 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
                 table.insert(
                     Tuple({Value(ValueType::WILDCARD, all_values[j])}));
             }
-            
+
             result = ClauseTable::joinTables(result, table);
         }
         std::vector<int> indices = result.getIndices(selectSynonyms);
@@ -110,7 +110,7 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
             for (int j = 0; j < indices.size(); j++) {
                 tuple += result.rows[i].values[indices[j]].value + " ";
             }
-            output.push_back(Utils::removeTrailingSpaces(tuple));            
+            output.push_back(Utils::removeTrailingSpaces(tuple));
         }
         return output;
     }
