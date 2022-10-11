@@ -129,3 +129,10 @@ ProcedureNode *SPUtils::findProc(std::string procName,
     }
     throw "procedure does not exist";
 }
+
+void SPUtils::cleanTokenList(std::vector<Token *> tokens) {
+    while (!tokens.empty()) {
+        delete tokens.back();
+        tokens.pop_back();
+    }
+}

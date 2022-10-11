@@ -27,6 +27,8 @@ class ProgramNode : public EntityNode {
 public:
     ProgramNode(std::vector<ProcedureNode *> procList);
     ProgramNode();
+
+    void cleanup();
     bool equals(ProgramNode *other);
     std::vector<ProcedureNode *> getProcList();
 };
@@ -38,6 +40,7 @@ class ProcedureNode : public EntityNode {
 
 public:
     ProcedureNode(std::string procName, std::vector<StatementNode *> stmtList);
+    void cleanup();
     bool equals(ProcedureNode *other);
     std::string getName();
     std::vector<StatementNode *> getStmtList();
@@ -54,6 +57,7 @@ protected:
 
 public:
     StatementNode();
+    virtual void cleanup() { delete this; }
     virtual bool isRead() { return false; }
     virtual bool isPrint() { return false; }
     virtual bool isCall() { return false; }
@@ -100,6 +104,9 @@ class ReadStatementNode : public StatementNode {
 
 public:
     ReadStatementNode(VariableNode *variable, int line);
+    
+    void cleanup();
+
     bool isRead() { return true; };
     bool equals(StatementNode *other);
     std::string getVariable();
@@ -118,6 +125,9 @@ class PrintStatementNode : public StatementNode {
 
 public:
     PrintStatementNode(VariableNode *variable, int line);
+
+    void cleanup();
+
     bool isPrint() { return true; };
     bool equals(StatementNode *other);
     std::string getVariable();
@@ -136,6 +146,9 @@ class CallStatementNode : public StatementNode {
 
 public:
     CallStatementNode(VariableNode *variable, int line);
+
+    void cleanup();
+
     bool isCall() { return true; };
     bool equals(StatementNode *other);
     std::string getVariable();
@@ -158,6 +171,8 @@ class AssignStatementNode : public StatementNode {
 public:
     AssignStatementNode(VariableNode *variable, ExpressionNode *expression,
                         int line);
+    void cleanup();
+
     bool isAssign() { return true; };
     bool equals(StatementNode *other);
     std::string getVariable();
@@ -185,6 +200,8 @@ class WhileStatementNode : public StatementNode {
 public:
     WhileStatementNode(const std::vector<StatementNode *> &stmtList,
                        ExpressionNode *cond, int line);
+
+    void cleanup();
     bool isWhile() { return true; };
     bool equals(StatementNode *other);
     int getEndLine();
@@ -223,6 +240,7 @@ public:
     IfStatementNode(std::vector<StatementNode *> &ifBlock,
                     std::vector<StatementNode *> &elseBlock,
                     ExpressionNode *cond, int line);
+    void cleanup();
     bool isIf() { return true; }
     bool equals(StatementNode *other);
     int getEndLine();
@@ -260,6 +278,8 @@ public:
     ExpressionNode *right;
     ExpressionNode(Token *token);
     ExpressionNode();
+    void cleanup();
+
     bool equals(ExpressionNode *other);
     Token *getToken() { return this->token; }
     std::string toString();
@@ -272,6 +292,7 @@ class VariableNode : public Token, public EntityNode {
 public:
     VariableNode(std::string s);
     VariableNode();
+
     bool isName() { return true; }
     bool equals(Token *other) {
         return other->isName() && other->value == this->value;
