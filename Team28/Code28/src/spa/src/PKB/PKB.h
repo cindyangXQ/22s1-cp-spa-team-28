@@ -20,7 +20,8 @@ public:
     explicit PKB();
 
     /*
-     * Populates the NextTable based on existing relationships in knowledge base.
+     * Populates the NextTable based on existing relationships in knowledge
+     * base.
      */
     void populateNext();
 

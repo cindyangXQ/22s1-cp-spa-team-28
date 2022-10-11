@@ -29,7 +29,7 @@ public:
         for (unsigned int i = 0; i < this->values.size(); i++) {
             inIndices = false;
             for (unsigned int j = 0; j < indices.size(); j++) {
-                if ((int) i == indices[j]) {
+                if ((int)i == indices[j]) {
                     inIndices = true;
                 }
             }
