@@ -86,19 +86,17 @@ ClauseTable ClauseTable::joinTables(ClauseTable table1, ClauseTable table2) {
     }
     std::vector<Synonym> common_headers =
         ClauseTable::getCommonHeaders(table1, table2);
-    /*
+
     if (common_headers.empty()) {
-            ClauseTable result = ClauseTable::ConstructTable(table1, table2);
-            for (int i = 0; i < table1.size(); i++) {
-                    for (int j = 0; j < table2.size(); j++) {
-                            result.insert(Tuple::combineSubTuples(std::vector<Tuple>{table1.rows[i],
-    table2.rows[j]}));
-                    }
+        ClauseTable result = ClauseTable::ConstructTable(table1, table2);
+        for (int i = 0; i < table1.size(); i++) {
+            for (int j = 0; j < table2.size(); j++) {
+                result.insert(Tuple::combineSubTuples(
+                    std::vector<Tuple>{table1.rows[i], table2.rows[j]}));
             }
-            return result;
-    }
-    else {
-    */
+        }
+        return result;
+    } else {
     ClauseTable result = ClauseTable::ConstructTable(table1, table2);
     std::vector<int> table1Indices = table1.getIndices(common_headers);
     std::vector<int> table2Indices = table2.getIndices(common_headers);
@@ -115,5 +113,5 @@ ClauseTable ClauseTable::joinTables(ClauseTable table1, ClauseTable table2) {
         }
     }
     return result;
-    //}
+    }
 }
