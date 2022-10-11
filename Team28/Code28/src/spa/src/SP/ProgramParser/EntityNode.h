@@ -272,10 +272,10 @@ public:
 
 class ExpressionNode : public EntityNode {
     Token *token;
-
-public:
     ExpressionNode *left;
     ExpressionNode *right;
+
+public:
     ExpressionNode(Token *token);
     ExpressionNode();
     void cleanup();
@@ -286,6 +286,12 @@ public:
 
     void getVariablesInto(std::vector<std::string> &result);
     void getConstantsInto(std::vector<std::string> &result);
+
+    void setLeft(ExpressionNode *left) { this->left = left; }
+    void setRight(ExpressionNode *right) { this->right = right; }
+
+    ExpressionNode* getLeft() { return left; }
+    ExpressionNode* getRight() { return right; }
 };
 
 class VariableNode : public Token, public EntityNode {
@@ -295,7 +301,7 @@ public:
 
     bool isName() { return true; }
     bool equals(Token *other) {
-        return other->isName() && other->value == this->value;
+        return other->isName() && other->getValue() == this->value;
     }
 };
 
@@ -304,6 +310,6 @@ public:
     ConstantNode(std::string s);
     bool isConstant() { return true; }
     bool equals(Token *other) {
-        return other->isConstant() && other->value == this->value;
+        return other->isConstant() && other->getValue() == this->value;
     }
 };
