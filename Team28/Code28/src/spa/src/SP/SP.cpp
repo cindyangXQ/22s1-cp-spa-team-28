@@ -6,7 +6,6 @@
 #include "./ProgramParser/Parser.h"
 #include "./Tokenizer/Token.h"
 #include "./Tokenizer/Tokenizer.h"
-#include "./SPUtils.h"
 
 #include <fstream>
 #include <sstream>
@@ -25,7 +24,10 @@ void SP::parse(std::string filename) {
         DesignExtractor(program, this->storage).extractAll();
 
         program->cleanup();
-        SPUtils::cleanTokenList(tokens);
+        while (!tokens.empty()) {
+            delete tokens.back();
+            tokens.pop_back();
+        }
     } catch (...) {
         std::cout << "Parsing failed. Exiting program." << std::endl;
         exit(1);

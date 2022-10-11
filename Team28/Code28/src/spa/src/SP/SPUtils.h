@@ -25,5 +25,4 @@ public:
 
     static ProcedureNode *findProc(std::string procName,
                                    std::vector<ProcedureNode *> &procList);
-    static void cleanTokenList(std::vector<Token*> tokens);
 };
