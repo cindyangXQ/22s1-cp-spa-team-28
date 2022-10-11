@@ -8,8 +8,6 @@ jobs:
       matrix:
         path:
           - 'Team28/Code28/src/spa'
-          - 'Team28/Code28/src/integration_testing'
-          - 'Team28/Code28/src/unit_testing'
     steps:
     - uses: actions/checkout@v3
     - name: Run clang-format style check for C/C++/Protobuf programs.
