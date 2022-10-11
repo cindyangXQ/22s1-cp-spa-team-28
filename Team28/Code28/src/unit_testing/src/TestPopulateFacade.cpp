@@ -13,8 +13,7 @@ TEST_CASE("storeStatement stores Statement objects correctly") {
 
     facade.storeStatements(&statements);
 
-    StatementsTable *statementsTable =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statementsTable = storage->getTable<StatementsTable>();
 
     // first statement is test1
     REQUIRE(*statementsTable->retrieve(1) == test1);
@@ -32,8 +31,7 @@ TEST_CASE("storeAssignments store Assignment objects correctly") {
 
     facade.storeAssignments(&assignments);
 
-    AssignmentsTable *assignmentsTable =
-        storage->getTable<AssignmentsTable>();
+    AssignmentsTable *assignmentsTable = storage->getTable<AssignmentsTable>();
 
     std::vector<Value> expectedResult;
     std::vector<Value> output;
@@ -61,8 +59,7 @@ TEST_CASE("storeVariable stores Variable objects correctly") {
 
     facade.storeVariables(&variables);
 
-    VariablesTable *variablesTable =
-        storage->getTable<VariablesTable>();
+    VariablesTable *variablesTable = storage->getTable<VariablesTable>();
 
     // first variable is test1
     REQUIRE(*variablesTable->retrieve("a") == test1);
@@ -82,8 +79,7 @@ TEST_CASE("storeConstant stores Constant objects correctly") {
 
     facade.storeConstants(&constants);
 
-    ConstantsTable *constantsTable =
-        storage->getTable<ConstantsTable>();
+    ConstantsTable *constantsTable = storage->getTable<ConstantsTable>();
 
     // first constant is test1
     REQUIRE(*constantsTable->retrieve("a") == test1);
@@ -103,8 +99,7 @@ TEST_CASE("storeProcedure stores Procedure objects correctly") {
 
     facade.storeProcedures(&procedures);
 
-    ProceduresTable *proceduresTable =
-        storage->getTable<ProceduresTable>();
+    ProceduresTable *proceduresTable = storage->getTable<ProceduresTable>();
 
     // first procedure is test1
     REQUIRE(*proceduresTable->retrieve("a") == test1);
@@ -127,8 +122,7 @@ TEST_CASE("storeFollows stores Relationship<int, int> objects correctly") {
 
     facade.storeFollows(&follows);
 
-    FollowsTable *followsTable =
-        storage->getTable<FollowsTable>();
+    FollowsTable *followsTable = storage->getTable<FollowsTable>();
 
     // Relationship is stored correctly
     REQUIRE(followsTable->getLeftMap().size() == 3);
@@ -148,8 +142,7 @@ TEST_CASE("storeFollowsT stores Relationship<int, int> objects correctly") {
 
     facade.storeFollowsT(&followsT);
 
-    FollowsTTable *followsTTable =
-        storage->getTable<FollowsTTable>();
+    FollowsTTable *followsTTable = storage->getTable<FollowsTTable>();
 
     // Relationship is stored correctly
     REQUIRE(followsTTable->getLeftMap().size() == 3);
@@ -169,8 +162,7 @@ TEST_CASE("storeParent stores Relationship<int, int> objects correctly") {
 
     facade.storeParent(&parents);
 
-    ParentTable *parentTable =
-        storage->getTable<ParentTable>();
+    ParentTable *parentTable = storage->getTable<ParentTable>();
 
     // Relationship is stored correctly
     REQUIRE(parentTable->getLeftMap().size() == 3);
@@ -190,8 +182,7 @@ TEST_CASE("storeParentT stores Relationship<int, int> objects correctly") {
 
     facade.storeParentT(&parentsT);
 
-    ParentTTable *parentTTable =
-        storage->getTable<ParentTTable>();
+    ParentTTable *parentTTable = storage->getTable<ParentTTable>();
 
     // Relationship is stored correctly
     REQUIRE(parentTTable->getLeftMap().size() == 3);
@@ -213,8 +204,7 @@ TEST_CASE(
 
     facade.storeModifiesS(&modifiesS);
 
-    ModifiesSTable *modifiesSTable =
-        storage->getTable<ModifiesSTable>();
+    ModifiesSTable *modifiesSTable = storage->getTable<ModifiesSTable>();
 
     // Relationship is stored correctly
     REQUIRE(modifiesSTable->getLeftMap().size() == 3);
@@ -236,8 +226,7 @@ TEST_CASE("storeModifiesP stores Relationship<std::string, std::string> "
 
     facade.storeModifiesP(&modifiesP);
 
-    ModifiesPTable *modifiesPTable =
-        storage->getTable<ModifiesPTable>();
+    ModifiesPTable *modifiesPTable = storage->getTable<ModifiesPTable>();
 
     // Relationship is stored correctly
     REQUIRE(modifiesPTable->getLeftMap().size() == 3);
@@ -325,8 +314,7 @@ TEST_CASE("storeCallsT stores Relationship<std::string, std::string> objects "
 
     facade.storeCallsT(&calls);
 
-    CallsTTable *callsTable =
-        storage->getTable<CallsTTable>();
+    CallsTTable *callsTable = storage->getTable<CallsTTable>();
 
     // Relationship is stored correctly
     REQUIRE(callsTable->getLeftMap().size() == 3);
@@ -346,8 +334,7 @@ TEST_CASE("storeBranchIn stores Relationship<int, int> objects correctly") {
 
     facade.storeBranchIn(&branchIns);
 
-    BranchInTable *branchinTable =
-        storage->getTable<BranchInTable>();
+    BranchInTable *branchinTable = storage->getTable<BranchInTable>();
 
     // Relationship is stored correctly
     REQUIRE(branchinTable->getLeftMap().size() == 3);
@@ -368,8 +355,7 @@ TEST_CASE(
 
     facade.storeBranchOut(&branchIns);
 
-    BranchOutTable *branchoutTable =
-        storage->getTable<BranchOutTable>();
+    BranchOutTable *branchoutTable = storage->getTable<BranchOutTable>();
 
     // Relationship is stored correctly
     REQUIRE(branchoutTable->getLeftMap().size() == 3);
@@ -391,8 +377,7 @@ TEST_CASE("storeIfControlVar stores Relationship<int, std::string> objects "
 
     facade.storeIfControlVar(&usesS);
 
-    IfControlVarTable *ifsTable =
-        storage->getTable<IfControlVarTable>();
+    IfControlVarTable *ifsTable = storage->getTable<IfControlVarTable>();
 
     // Relationship is stored correctly
     REQUIRE(ifsTable->getLeftMap().size() == 3);
@@ -429,8 +414,7 @@ TEST_CASE("storeWhileControlVar stores Relationship<int, std::string> objects "
     REQUIRE(whileTable->getRightMap().size() == 3);
 
     // If table is not affected
-    IfControlVarTable *ifsTable =
-        storage->getTable<IfControlVarTable>();
+    IfControlVarTable *ifsTable = storage->getTable<IfControlVarTable>();
 
     REQUIRE(ifsTable->getLeftMap().size() == 0);
     REQUIRE(ifsTable->getRightMap().size() == 0);

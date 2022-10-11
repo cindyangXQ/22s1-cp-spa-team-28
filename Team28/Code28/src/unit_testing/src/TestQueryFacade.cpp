@@ -5,8 +5,7 @@
 TEST_CASE("getAllStatements returns all statements correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -24,8 +23,7 @@ TEST_CASE("getAllStatements returns all statements correctly") {
 TEST_CASE("getAllStatementByType returns all While statements correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
     Statement test3 = Statement(3, StatementType::WHILE);
@@ -51,8 +49,7 @@ TEST_CASE("getAllStatementByType returns all While statements correctly") {
 TEST_CASE("getAllVariables returns all variables correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -66,8 +63,7 @@ TEST_CASE("getAllVariables returns all variables correctly") {
 TEST_CASE("getAllConstants returns all constants correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ConstantsTable *constants =
-        storage->getTable<ConstantsTable>();
+    ConstantsTable *constants = storage->getTable<ConstantsTable>();
     Constant test1 = Constant("test1");
     Constant test2 = Constant("test2");
 
@@ -81,8 +77,7 @@ TEST_CASE("getAllConstants returns all constants correctly") {
 TEST_CASE("getAllProcedures returns all constants correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     Procedure test1 = Procedure("test1");
     Procedure test2 = Procedure("test2");
 
@@ -96,8 +91,7 @@ TEST_CASE("getAllProcedures returns all constants correctly") {
 TEST_CASE("getStatementByLineNo retrieves statement correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     Statement test = Statement(1, StatementType::ASSIGN);
 
     statements->store(&test);
@@ -108,8 +102,7 @@ TEST_CASE("getStatementByLineNo retrieves statement correctly") {
 TEST_CASE("getProcedureByName retrieves procedure correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     Procedure test = Procedure("test");
 
     procedures->store(&test);
@@ -120,8 +113,7 @@ TEST_CASE("getProcedureByName retrieves procedure correctly") {
 TEST_CASE("getConstantByName retrieves procedure correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ConstantsTable *constants =
-        storage->getTable<ConstantsTable>();
+    ConstantsTable *constants = storage->getTable<ConstantsTable>();
     Constant test = Constant("test");
 
     constants->store(&test);
@@ -132,8 +124,7 @@ TEST_CASE("getConstantByName retrieves procedure correctly") {
 TEST_CASE("getVariableByName retrieves procedure correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     Variable test = Variable("test");
 
     variables->store(&test);
@@ -144,8 +135,7 @@ TEST_CASE("getVariableByName retrieves procedure correctly") {
 TEST_CASE("StmtToStmt: Validate returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     FollowsTable *follows = storage->getTable<FollowsTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
@@ -183,8 +173,7 @@ TEST_CASE(
     "StmtToStmt: SolveRight queries for Follows(1, 2) return correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     FollowsTable *follows = storage->getTable<FollowsTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
@@ -241,8 +230,7 @@ TEST_CASE(
     "StmtToStmt: SolveLeft queries for Follows(1, 2) return correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     FollowsTable *follows = storage->getTable<FollowsTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
@@ -299,8 +287,7 @@ TEST_CASE(
     "StmtToStmt: SolveBoth queries for Follows(1, 2) return correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     FollowsTable *follows = storage->getTable<FollowsTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
@@ -350,10 +337,8 @@ TEST_CASE(
 TEST_CASE("StmtToStmt: No duplicate results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
-    FollowsTTable *follows =
-        storage->getTable<FollowsTTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    FollowsTTable *follows = storage->getTable<FollowsTTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -399,12 +384,9 @@ TEST_CASE("StmtToStmt: No duplicate results") {
 TEST_CASE("StmtToVar: Validate returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
-    ModifiesSTable *modifiesS =
-        storage->getTable<ModifiesSTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Variable var1 = Variable("a");
@@ -443,12 +425,9 @@ TEST_CASE("StmtToVar: SolveRight queries for Modifies(1, 'a') return correct "
           "results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
-    ModifiesSTable *modifiesS =
-        storage->getTable<ModifiesSTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Variable var1 = Variable("a");
@@ -504,12 +483,9 @@ TEST_CASE("StmtToVar: SolveLeft queries for Modifies(1, 'a') return correct "
           "results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
-    ModifiesSTable *modifiesS =
-        storage->getTable<ModifiesSTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Variable var1 = Variable("a");
@@ -565,12 +541,9 @@ TEST_CASE("StmtToVar: SolveBoth queries for Modifies(1, 'a') return correct "
           "results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
-    ModifiesSTable *modifiesS =
-        storage->getTable<ModifiesSTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Variable var1 = Variable("a");
@@ -619,12 +592,9 @@ TEST_CASE("StmtToVar: SolveBoth queries for Modifies(1, 'a') return correct "
 TEST_CASE("ProcToVar: Validate returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
-    ModifiesPTable *modifiesP =
-        storage->getTable<ModifiesPTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
 
     Procedure proc1 = Procedure("Main");
     Variable var1 = Variable("a");
@@ -663,12 +633,9 @@ TEST_CASE("ProcToVar: SolveRight queries for Modifies('Main', 'a') return "
           "correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
-    ModifiesPTable *modifiesP =
-        storage->getTable<ModifiesPTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
 
     Procedure proc1 = Procedure("Main");
     Variable var1 = Variable("a");
@@ -726,12 +693,9 @@ TEST_CASE("ProcToVar: SolveLeft queries for Modifies('Main', 'a') return "
           "correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
-    ModifiesPTable *modifiesP =
-        storage->getTable<ModifiesPTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
 
     Procedure proc1 = Procedure("Main");
     Variable var1 = Variable("a");
@@ -789,12 +753,9 @@ TEST_CASE("ProcToVar: SolveBoth queries for Modifies('Main', 'a') return "
           "correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
-    ModifiesPTable *modifiesP =
-        storage->getTable<ModifiesPTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
 
     Procedure proc1 = Procedure("Main");
     Variable var1 = Variable("a");
@@ -844,8 +805,7 @@ TEST_CASE("ProcToVar: SolveBoth queries for Modifies('Main', 'a') return "
 TEST_CASE("ProcToProc: Validate returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     CallsTable *calls = storage->getTable<CallsTable>();
 
     Procedure proc1 = Procedure("proc1");
@@ -884,8 +844,7 @@ TEST_CASE("ProcToProc: SolveRight queries for Calls('proc1', 'proc2') return "
           "correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     CallsTable *calls = storage->getTable<CallsTable>();
 
     Procedure proc1 = Procedure("proc1");
@@ -934,8 +893,7 @@ TEST_CASE("ProcToProc: SolveLeft queries for Calls('proc1', 'proc2') return "
           "correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     CallsTable *calls = storage->getTable<CallsTable>();
 
     Procedure proc1 = Procedure("proc1");
@@ -985,8 +943,7 @@ TEST_CASE("ProcToVar: SolveBoth queries for Calls('proc1', 'proc2') return "
           "correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     CallsTable *calls = storage->getTable<CallsTable>();
 
     Procedure proc1 = Procedure("proc1");
@@ -1039,8 +996,7 @@ TEST_CASE("ProcToVar: SolveBoth queries for Calls('proc1', 'proc2') return "
 TEST_CASE("getAssign returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    AssignmentsTable *assignments =
-        storage->getTable<AssignmentsTable>();
+    AssignmentsTable *assignments = storage->getTable<AssignmentsTable>();
 
     Assignment test1 = Assignment(1, "x1", "(1)");
     Assignment test2 = Assignment(2, "x1", "((1)+(10))");
@@ -1096,8 +1052,7 @@ TEST_CASE("getAssign returns correct results") {
 TEST_CASE("getAssignAndVar returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    AssignmentsTable *assignments =
-        storage->getTable<AssignmentsTable>();
+    AssignmentsTable *assignments = storage->getTable<AssignmentsTable>();
 
     Assignment test1 = Assignment(1, "x1", "(1)");
     Assignment test2 = Assignment(2, "x1", "((1)+(10))");
@@ -1153,8 +1108,7 @@ TEST_CASE("getAssignAndVar returns correct results") {
 TEST_CASE("GetWhile returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    WhileControlVarTable *whiles =
-        storage->getTable<WhileControlVarTable>();
+    WhileControlVarTable *whiles = storage->getTable<WhileControlVarTable>();
 
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("x"));
@@ -1193,8 +1147,7 @@ TEST_CASE("GetWhile returns correct results") {
 TEST_CASE("GetWhileAndVar returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    WhileControlVarTable *whiles =
-        storage->getTable<WhileControlVarTable>();
+    WhileControlVarTable *whiles = storage->getTable<WhileControlVarTable>();
 
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("x"));
@@ -1227,8 +1180,7 @@ TEST_CASE("GetWhileAndVar returns correct results") {
 TEST_CASE("GetIf returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    IfControlVarTable *ifs =
-        storage->getTable<IfControlVarTable>();
+    IfControlVarTable *ifs = storage->getTable<IfControlVarTable>();
 
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("x"));
@@ -1267,8 +1219,7 @@ TEST_CASE("GetIf returns correct results") {
 TEST_CASE("GetIfAndVar returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    IfControlVarTable *ifs =
-        storage->getTable<IfControlVarTable>();
+    IfControlVarTable *ifs = storage->getTable<IfControlVarTable>();
 
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("x"));

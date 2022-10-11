@@ -38,7 +38,7 @@ public:
     bool operator==(const Entity &other) const {
         return this->name == other.name;
     };
-    
+
 private:
     std::string name;
 };
