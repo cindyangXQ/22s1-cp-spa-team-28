@@ -16,5 +16,6 @@ public:
     Expression expression;
     bool isExact;
     PatternClause();
-    PatternClause(Synonym syn, Reference entRef, Expression expression, bool isExact);
+    PatternClause(Synonym syn, Reference entRef, Expression expression,
+                  bool isExact);
 };

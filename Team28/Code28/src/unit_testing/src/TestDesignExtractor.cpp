@@ -451,7 +451,8 @@ TEST_CASE("extract whileCondVars, nested if/while") {
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
     UsesSExtractor extr(program, nullptr);
-    std::vector<Relationship<int, std::string> *> extracted = extr.whileConVar();
+    std::vector<Relationship<int, std::string> *> extracted =
+        extr.whileConVar();
 
     REQUIRE(expected.size() == extracted.size());
     for (int i = 0; i < expected.size(); i++) {

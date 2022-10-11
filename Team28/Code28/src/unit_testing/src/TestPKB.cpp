@@ -24,9 +24,9 @@ TEST_CASE("PKB::populateNext can populate NextTable") {
     pkb.populateNext();
 
     REQUIRE(pkb.queryFacade->validate(RelationshipReference::NEXT,
-        Reference("1"), Reference("2")));
+                                      Reference("1"), Reference("2")));
     REQUIRE(pkb.queryFacade->validate(RelationshipReference::NEXT,
-        Reference("2"), Reference("3")));
+                                      Reference("2"), Reference("3")));
     REQUIRE(pkb.queryFacade->validate(RelationshipReference::NEXT,
-        Reference("3"), Reference("4")));
+                                      Reference("3"), Reference("4")));
 }
