@@ -21,7 +21,7 @@ public:
      * Stores an entity into NamesTable.
      */
     void store(TableValue *entity) {
-        Entity *ent = static_cast<Entity *>(entity);
+        T *ent = static_cast<T *>(entity);
         this->names.insert(ent->getName());
         this->nameEntityMap[ent->getName()] = ent;
     };
