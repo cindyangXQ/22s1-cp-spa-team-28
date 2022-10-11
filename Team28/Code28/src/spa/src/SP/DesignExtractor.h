@@ -85,12 +85,15 @@ public:
 };
 
 class UsesSExtractor : public DesignExtractor {
+    std::vector<Relationship<int, std::string> *> ifCondVars;
+    std::vector<Relationship<int, std::string> *> whileCondVars;
+
 public:
     UsesSExtractor(ProgramNode *program, PopulateFacade *storage)
         : DesignExtractor(program, storage){};
     std::vector<Relationship<int, std::string> *> extract();
-    std::vector<Relationship<int, std::string> *> ifConVar();
-    std::vector<Relationship<int, std::string> *> whileConVar();
+    void conVar(std::vector<Relationship<int, std::string> *> &ifResult,
+                  std::vector<Relationship<int, std::string> *> &whileResult);
     void populate();
 };
 

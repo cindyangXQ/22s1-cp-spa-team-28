@@ -364,62 +364,30 @@ TEST_CASE("extract usesS, nested if/while") {
     }
 }
 
-TEST_CASE("extract ifCondVars, nested if/while") {
-    std::vector<Relationship<int, std::string> *> expected;
-    expected.push_back(new Relationship<int, std::string>(
+TEST_CASE("extract condVars, nested if/while") {
+    std::vector<Relationship<int, std::string> *> expectedIf;
+    expectedIf.push_back(new Relationship<int, std::string>(
         RelationshipReference::USES, 2, "b"));
-    expected.push_back(new Relationship<int, std::string>(
+    expectedIf.push_back(new Relationship<int, std::string>(
         RelationshipReference::USES, 4, "d"));
-    expected.push_back(new Relationship<int, std::string>(
+    expectedIf.push_back(new Relationship<int, std::string>(
         RelationshipReference::USES, 8, "h"));
+    expectedIf.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 15, "o"));
+    expectedIf.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 21, "u"));
 
-    std::string sourceProgram = "procedure Bedok {"
-                                "    x = a;"
-                                ""
-                                "    if (b != 2) then {"
-                                "        x = c;"
-                                "        if (d == 4) then {"
-                                "            x = e;"
-                                "        } else {"
-                                "            x = f;"
-                                "        }"
-                                "    }"
-                                "    else {"
-                                "        x = g;"
-                                "        if (h == 8) then {"
-                                "            x = i;"
-                                "        } else {"
-                                "            x = j;"
-                                "        }"
-                                "    }"
-                                ""
-                                "    while (k != 11) {"
-                                "        x = l;"
-                                "        while (m == 13) {"
-                                "            x = n;"
-                                "        }"
-                                "    }"
-                                "}";
-    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
-    ProgramNode *program = ProgramParser(0, tokens).parse();
-    UsesSExtractor extr(program, nullptr);
-    std::vector<Relationship<int, std::string> *> extracted = extr.ifConVar();
-
-    REQUIRE(expected.size() == extracted.size());
-    for (int i = 0; i < expected.size(); i++) {
-        REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
-        REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
-        REQUIRE(expected[i]->getRelationshipReference() ==
-                extracted[i]->getRelationshipReference());
-    }
-}
-
-TEST_CASE("extract whileCondVars, nested if/while") {
-    std::vector<Relationship<int, std::string> *> expected;
-    expected.push_back(new Relationship<int, std::string>(
+    std::vector<Relationship<int, std::string> *> expectedWhile;
+    expectedWhile.push_back(new Relationship<int, std::string>(
         RelationshipReference::USES, 11, "k"));
-    expected.push_back(new Relationship<int, std::string>(
+    expectedWhile.push_back(new Relationship<int, std::string>(
         RelationshipReference::USES, 13, "m"));
+    expectedWhile.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 16, "p"));
+    expectedWhile.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 18, "r"));
+    expectedWhile.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 20, "t"));
 
     std::string sourceProgram = "procedure Bedok {"
                                 "    x = a;"
@@ -447,18 +415,47 @@ TEST_CASE("extract whileCondVars, nested if/while") {
                                 "            x = n;"
                                 "        }"
                                 "    }"
+                                ""
+                                "    if (o == 15) then { "
+                                "       while (p == 16) {"
+                                "           x = q;"
+                                "       }"
+                                "    } else {"
+                                "        while (r == 18) {"
+                                "            x = s;"
+                                "        }"
+                                "    }"
+                                ""
+                                "    while (t == 20) {"
+                                "        if (u == 21) then {"
+                                "            x = v;"
+                                "        } else {"
+                                "            x = y;"
+                                "        }"
+                                "    }"
                                 "}";
+    
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
     UsesSExtractor extr(program, nullptr);
-    std::vector<Relationship<int, std::string> *> extracted = extr.whileConVar();
+    std::vector<Relationship<int, std::string> *> extractedIf;
+    std::vector<Relationship<int, std::string> *> extractedWhile;
+    extr.conVar(extractedIf, extractedWhile);
 
-    REQUIRE(expected.size() == extracted.size());
-    for (int i = 0; i < expected.size(); i++) {
-        REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
-        REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
-        REQUIRE(expected[i]->getRelationshipReference() ==
-                extracted[i]->getRelationshipReference());
+    REQUIRE(expectedIf.size() == extractedIf.size());
+    for (int i = 0; i < expectedIf.size(); i++) {
+        REQUIRE(expectedIf[i]->getLeft() == extractedIf[i]->getLeft());
+        REQUIRE(expectedIf[i]->getRight() == extractedIf[i]->getRight());
+        REQUIRE(expectedIf[i]->getRelationshipReference() ==
+                extractedIf[i]->getRelationshipReference());
+    }
+
+    REQUIRE(expectedWhile.size() == extractedWhile.size());
+    for (int i = 0; i < expectedWhile.size(); i++) {
+        REQUIRE(expectedWhile[i]->getLeft() == extractedWhile[i]->getLeft());
+        REQUIRE(expectedWhile[i]->getRight() == extractedWhile[i]->getRight());
+        REQUIRE(expectedWhile[i]->getRelationshipReference() ==
+                extractedWhile[i]->getRelationshipReference());
     }
 }
 

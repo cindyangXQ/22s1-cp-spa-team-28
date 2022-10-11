@@ -91,9 +91,8 @@ public:
                                   std::vector<ProcedureNode *> &procList){};
 
     virtual void
-    getIfConVar(std::vector<Relationship<int, std::string> *> &result){};
-    virtual void
-    getWhileConVar(std::vector<Relationship<int, std::string> *> &result){};
+    getConVar(std::vector<Relationship<int, std::string> *> &ifResult,
+              std::vector<Relationship<int, std::string> *> &whileResult){};
     virtual void
     getBranchInInto(std::vector<Relationship<int, int> *> &result){};
     virtual void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
@@ -214,7 +213,8 @@ public:
     void getModifiesPInto(std::vector<std::string> &result,
                           std::vector<ProcedureNode *> &procList);
 
-    void getWhileConVar(std::vector<Relationship<int, std::string> *> &result);
+    void getConVar(std::vector<Relationship<int, std::string> *> &ifResult,
+                   std::vector<Relationship<int, std::string> *> &whileResult);
     void getBranchInInto(std::vector<Relationship<int, int> *> &result);
     void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
                           int nextLine);
@@ -254,7 +254,8 @@ public:
     void getModifiesPInto(std::vector<std::string> &result,
                           std::vector<ProcedureNode *> &procList);
 
-    void getIfConVar(std::vector<Relationship<int, std::string> *> &result);
+    void getConVar(std::vector<Relationship<int, std::string> *> &ifResult,
+                   std::vector<Relationship<int, std::string> *> &whileResult);
     void getBranchInInto(std::vector<Relationship<int, int> *> &result);
     void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
                           int nextLine);
