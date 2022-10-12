@@ -21,6 +21,38 @@ FactorParser::FactorParser(int offset, std::vector<Token *> tokens, bool iscond)
     this->iscond = iscond;
 }
 
+void CondParser::checkSyntax(Token *curr, Token *next, ExpressionNode *cond) {
+    ExpressionNode *left = cond->getLeft();
+    Token *leftToken = left->getToken();
+
+    ExpressionNode *right = cond->getRight();
+    Token *rightToken = right->getToken();
+
+    if (next->getValue() == "&&" || next->getValue() == "||") {
+        if (find(begin(REL_OP_LIST), end(REL_OP_LIST), leftToken->getValue()) ==
+                end(REL_OP_LIST) ||
+            find(begin(REL_OP_LIST), end(REL_OP_LIST),
+                 rightToken->getValue()) == end(REL_OP_LIST)) {
+            throw "invalid cond expression";
+        }
+    } else {
+        if (find(begin(REL_OP_LIST), end(REL_OP_LIST), leftToken->getValue()) !=
+                end(REL_OP_LIST) ||
+            find(begin(REL_OP_LIST), end(REL_OP_LIST),
+                 rightToken->getValue()) != end(REL_OP_LIST)) {
+            throw "invalid cond expression";
+        }
+    }
+
+    Token *condToken = cond->getToken();
+    if (curr->getValue() == "!") {
+        if (find(begin(REL_OP_LIST), end(REL_OP_LIST), condToken->getValue()) ==
+            end(REL_OP_LIST)) {
+            throw "invalid conditional expression";
+        }
+    }
+}
+
 ExpressionNode *CondParser::parse() {
     Token *curr = tokens.at(offset);
     ExpressionNode *root;
@@ -46,7 +78,6 @@ ExpressionNode *CondParser::parse() {
     while (std::find(std::begin(REL_OP_LIST), std::end(REL_OP_LIST),
                      next->getValue()) != std::end(REL_OP_LIST)) {
         offset++;
-
         curr = tokens.at(offset);
         if (curr->getValue() == "!") {
             offset++;
@@ -54,41 +85,14 @@ ExpressionNode *CondParser::parse() {
         }
         ExpressionNode *cond = new ExpressionNode(next);
         cond->setLeft(result);
-
         parser = ExprParser(offset, tokens, true);
         result = parser.parse();
         offset = parser.getOffset();
-
         cond->setRight(result);
 
-        ExpressionNode *left = cond->getLeft();
-        Token *leftToken = left->getToken();
+        checkSyntax(curr, next, cond);
 
-        ExpressionNode *right = cond->getRight();
-        Token *rightToken = right->getToken();
-
-        if (next->getValue() == "&&" || next->getValue() == "||") {
-            if (find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                     leftToken->getValue()) == end(REL_OP_LIST) ||
-                find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                     rightToken->getValue()) == end(REL_OP_LIST)) {
-                throw "invalid cond expression";
-            }
-        } else {
-            if (find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                     leftToken->getValue()) != end(REL_OP_LIST) ||
-                find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                     rightToken->getValue()) != end(REL_OP_LIST)) {
-                throw "invalid cond expression";
-            }
-        }
-
-        Token *condToken = cond->getToken();
         if (curr->getValue() == "!") {
-            if (find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                     condToken->getValue()) == end(REL_OP_LIST)) {
-                throw "invalid conditional expression";
-            }
             root->setLeft(cond);
             result = root;
         } else {
