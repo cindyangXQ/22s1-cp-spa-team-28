@@ -10,7 +10,7 @@ ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
     }
 }
 
-ClauseResult PatternEvaluator::handleAssign(PatternClause* patternCl) {
+ClauseResult PatternEvaluator::handleAssign(PatternClause *patternCl) {
     if (patternCl->entRef.isSynonym) {
         ClauseResult clauseResult =
             ClauseResult(std::vector{patternCl->syn, patternCl->entRef.syn});

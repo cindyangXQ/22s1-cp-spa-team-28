@@ -41,7 +41,7 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
     if (result.size() == 0 && type == SelectType::BOOLEAN) {
         return {"FALSE"};
     } else if (result.size() == 0) {
-        return std::vector<std::string>{};        
+        return std::vector<std::string>{};
     } else if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
@@ -55,7 +55,7 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
 
 std::vector<std::string>
 QueryEvaluator::extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
-    ClauseTable result) {
+                                       ClauseTable result) {
     for (int i = 0; i < selectSynonyms.size(); i++) {
         ClauseTable table = ClauseTable({selectSynonyms[i]});
         std::vector<std::string> all_values =
@@ -79,7 +79,7 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
     }
     return output;
 }
-    
+
 std::vector<std::string>
 QueryEvaluator::extractSynonymFromTable(Synonym selectedSynonym,
                                         ClauseTable result) {
@@ -112,7 +112,7 @@ void QueryEvaluator::checkAllClauseResult(
         }
     }
 }
-    
+
 std::vector<std::string>
 QueryEvaluator::handleNoTables(QueryResult *queryResult) {
     SelectType type = queryResult->selectClause.selectType;
@@ -151,7 +151,7 @@ ClauseTable QueryEvaluator::JoinAllClauseTables(
     }
     return result;
 }
-  
+
 std::vector<std::string> QueryEvaluator::getAll(Synonym select) {
     EntityName type = select.entity;
     if (type == EntityName::STMT) {
