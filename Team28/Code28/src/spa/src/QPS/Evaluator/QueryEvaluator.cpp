@@ -70,8 +70,10 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
     std::vector<std::string> output;
     for (int i = 0; i < result.size(); i++) {
         std::string tuple = "";
+        Tuple row = result.rows[i];
         for (int j = 0; j < indices.size(); j++) {
-            tuple += result.rows[i].values[indices[j]].value + " ";
+            Value v = row.values[indices[j]];
+            tuple += v.value + " ";
         }
         output.push_back(Utils::removeTrailingSpaces(tuple));
     }
