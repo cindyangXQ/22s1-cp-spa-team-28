@@ -398,8 +398,8 @@ void WhileStatementNode::getModifiesPInto(
 }
 
 void WhileStatementNode::getConVar(
-    std::vector<Relationship<int, std::string>*>& ifResult,
-    std::vector<Relationship<int, std::string>*>& whileResult) {
+    std::vector<Relationship<int, std::string> *> &ifResult,
+    std::vector<Relationship<int, std::string> *> &whileResult) {
     std::vector<std::string> condVars;
     cond->getVariablesInto(condVars);
     int lineNo = this->getLineNumber();

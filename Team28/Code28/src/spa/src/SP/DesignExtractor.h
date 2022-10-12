@@ -93,7 +93,7 @@ public:
         : DesignExtractor(program, storage){};
     std::vector<Relationship<int, std::string> *> extract();
     void conVar(std::vector<Relationship<int, std::string> *> &ifResult,
-                  std::vector<Relationship<int, std::string> *> &whileResult);
+                std::vector<Relationship<int, std::string> *> &whileResult);
     void populate();
 };
 

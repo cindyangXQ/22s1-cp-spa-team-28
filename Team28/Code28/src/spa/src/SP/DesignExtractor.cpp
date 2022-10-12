@@ -168,7 +168,6 @@ std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
     return result;
 }
 
-
 void UsesSExtractor::conVar(
     std::vector<Relationship<int, std::string> *> &ifResult,
     std::vector<Relationship<int, std::string> *> &whileResult) {
