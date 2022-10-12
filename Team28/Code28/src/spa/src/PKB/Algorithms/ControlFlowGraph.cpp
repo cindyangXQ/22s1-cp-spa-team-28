@@ -14,7 +14,8 @@ void ControlFlowGraph::populateNext() {
     this->visited = std::map<int, bool>();
 
     for (int stmtNum : this->procedures->getAllStmtNum()) {
-        if (!(follows->isValueExist(stmtNum) || branchIn->isValueExist(stmtNum))) {
+        if (!(follows->isValueExist(stmtNum) ||
+              branchIn->isValueExist(stmtNum))) {
             continue;
         }
         DFS(stmtNum);
