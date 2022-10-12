@@ -44,7 +44,13 @@ std::vector<StatementNode *> ProcedureNode::getStmtList() {
     return this->stmtList;
 }
 
-int ProcedureNode::getEndline() { return stmtList.back()->getEndLine(); }
+int ProcedureNode::getStartLine() { 
+    return stmtList[0]->getLineNumber(); 
+}
+
+int ProcedureNode::getEndline() { 
+    return stmtList.back()->getEndLine(); 
+}
 
 // Statement
 std::vector<std::string> *StatementNode::getUsesInto(
