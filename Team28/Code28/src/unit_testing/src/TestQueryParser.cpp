@@ -505,3 +505,48 @@ TEST_CASE("Parser can parse if pattern clauses") {
     std::string non_wild_card_expression_right = "pattern ifs(v, _, \"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&non_wild_card_expression_left, syns, &clause));
 }
+
+TEST_CASE("Parser can parse with clauses") {
+    std::vector<Synonym> syns{Synonym(EntityName::CALL, "c"),
+                              Synonym(EntityName::PROCEDURE, "p"),
+                              Synonym(EntityName::READ, "r"), 
+                              Synonym(EntityName::CONSTANT, "c"),
+                              Synonym(EntityName::WHILE, "w")};
+
+    std::string correct_input = "with  c . procName = \"main\"";
+    std::vector<WithClause> clause;
+    QueryParser::parseWithClause(&correct_input, syns, &clause);
+    REQUIRE(clause[0].refLeft.type == ReferenceType::ATTR_REF);
+    REQUIRE(clause[0].refLeft.attr == EntityAttribute::PROC_NAME);
+    REQUIRE(clause[0].refRight.value.value == "main");
+
+    std::string correct_input_both_values = "with  2 = 1";
+    std::vector<WithClause> clause_both_values;
+    QueryParser::parseWithClause(&correct_input_both_values, syns, &clause_both_values);
+    REQUIRE(clause_both_values[0].refLeft.value.value == "2");
+    REQUIRE(clause_both_values[0].refRight.value.value == "1");
+
+    std::string correct_input_both_attr = "with  p.procName = r.varName";
+    std::vector<WithClause> clause_both_attr;
+    QueryParser::parseWithClause(&correct_input_both_attr, syns, &clause_both_attr);
+    REQUIRE(clause_both_attr[0].refLeft.attr == EntityAttribute::PROC_NAME);
+    REQUIRE(clause_both_attr[0].refRight.attr == EntityAttribute::VAR_NAME);
+
+    std::string missing_dot = "with  w stmt# = 2";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&missing_dot, syns, &clause));
+
+    std::string missing_equal_sign = "with  w.stmt# 2";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&missing_equal_sign, syns, &clause));
+
+    std::string extra_quotation_mark = "with c.value = \"0\"";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&extra_quotation_mark, syns, &clause));
+
+    std::string extra_equal_sign = "with c.stmt# == 2";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&extra_equal_sign, syns, &clause));
+
+    std::string invalid_attribute = "with w.value = 10";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&invalid_attribute, syns, &clause));
+
+    std::string synonym_not_found = "with while.value = 10";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&synonym_not_found, syns, &clause));
+}

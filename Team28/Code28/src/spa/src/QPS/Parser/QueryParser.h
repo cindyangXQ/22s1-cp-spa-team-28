@@ -26,8 +26,12 @@ public:
     static void parsePatternClause(std::string *clause,
                                    std::vector<Synonym> syns,
                                    std::vector<PatternClause> *patternCls);
+    static void parseWithClause(std::string *clause,
+                                   std::vector<Synonym> syns,
+                                   std::vector<WithClause> *withCls);
     static bool isSuchThatClause(std::string *clause);
     static bool isPatternClause(std::string *clause);
+    static bool isWithClause(std::string *clause);
 
 private:
 
