@@ -16,42 +16,39 @@ public:
 
     bool operator==(const Value &other) const;
     bool operator<(const Value &other) const;
-
 };
 
 namespace std {
 
-  template <>
-  struct hash<Value>
-  {
-    std::size_t operator()(const Value& k) const
-    {
-      using std::size_t;
-      using std::hash;
-      using std::string;
+template <> struct hash<Value> {
+    std::size_t operator()(const Value &k) const {
+        using std::hash;
+        using std::size_t;
+        using std::string;
 
-      // Compute individual hash values for first,
-      // second and third and combine them using XOR
-      // and bit shifting:
+        // Compute individual hash values for first,
+        // second and third and combine them using XOR
+        // and bit shifting:
 
-      return ((hash<ValueType>()(k.type)
-               ^ (hash<string>()(k.value) << 1)) >> 1);
+        return ((hash<ValueType>()(k.type) ^ (hash<string>()(k.value) << 1)) >>
+                1);
     }
-  };
+};
 
-}
+} // namespace std
 
 struct value_pair_hash {
-    inline std::size_t operator()(const std::pair<Value,Value> &v) const {
-        return ((std::hash<Value>()(v.first) 
-            ^ (std::hash<Value>()(v.second) << 1)) >> 1);
+    inline std::size_t operator()(const std::pair<Value, Value> &v) const {
+        return ((std::hash<Value>()(v.first) ^
+                 (std::hash<Value>()(v.second) << 1)) >>
+                1);
     }
 };
 
 struct value_pair_sort {
-    bool operator()(const std::pair<Value,Value> &left, const std::pair<Value,Value> &right) {
-        return left.first == right.first 
-          ? left.second < right.second
-          : left.first < right.first;
+    bool operator()(const std::pair<Value, Value> &left,
+                    const std::pair<Value, Value> &right) {
+        return left.first == right.first ? left.second < right.second
+                                         : left.first < right.first;
     }
 };

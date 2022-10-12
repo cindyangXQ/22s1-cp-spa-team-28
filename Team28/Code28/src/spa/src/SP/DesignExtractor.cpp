@@ -167,7 +167,7 @@ std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
     return result;
 }
 
-std::vector<Relationship<int, std::string>*> UsesSExtractor::ifConVar() {
+std::vector<Relationship<int, std::string> *> UsesSExtractor::ifConVar() {
     std::vector<Relationship<int, std::string> *> result;
 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
@@ -181,7 +181,7 @@ std::vector<Relationship<int, std::string>*> UsesSExtractor::ifConVar() {
     return result;
 }
 
-std::vector<Relationship<int, std::string>*> UsesSExtractor::whileConVar() {
+std::vector<Relationship<int, std::string> *> UsesSExtractor::whileConVar() {
     std::vector<Relationship<int, std::string> *> result;
 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
@@ -322,7 +322,8 @@ std::vector<Relationship<int, int> *> BranchOutExtr::extract() {
     for (size_t i = 0; i < procList.size(); i++) {
         std::vector<StatementNode *> stmtList = procList[i]->getStmtList();
         for (size_t j = 0; j < stmtList.size() - 1; j++) {
-            stmtList[j]->getBranchOutInto(result, stmtList[j+1]->getLineNumber());
+            stmtList[j]->getBranchOutInto(result,
+                                          stmtList[j + 1]->getLineNumber());
         }
         stmtList.back()->getBranchOutInto(result, -1);
     }
@@ -396,7 +397,8 @@ void UsesSExtractor::populate() {
 
     std::vector<Relationship<int, std::string> *> ifConVar = this->ifConVar();
     this->storage->storeIfControlVar(&ifConVar);
-    std::vector<Relationship<int, std::string> *> whileConVar = this->whileConVar();
+    std::vector<Relationship<int, std::string> *> whileConVar =
+        this->whileConVar();
     this->storage->storeWhileControlVar(&whileConVar);
 }
 

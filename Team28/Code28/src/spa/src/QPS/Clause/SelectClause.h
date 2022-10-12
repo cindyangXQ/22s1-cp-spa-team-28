@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include "../../commons/Synonym.h"
+#include <vector>
 
 enum class SelectType { SINGLE, TUPLE, BOOLEAN };
 /*

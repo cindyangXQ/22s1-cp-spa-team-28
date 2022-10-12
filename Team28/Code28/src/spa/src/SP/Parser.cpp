@@ -2,8 +2,8 @@
 #include "EntityNode.h"
 #include "ExprParser.h"
 #include "Token.h"
-#include <vector>
 #include <map>
+#include <vector>
 
 std::string REL_LIST[] = {"!", ">", "<", "==", "!=", ">=", "<=", "&&", "||"};
 
@@ -60,7 +60,7 @@ ProgramNode *ProgramParser::parse() {
 
     for (size_t i = 0; i < procNames.size(); i++) {
         std::vector<std::string> path;
-        
+
         // Detect cyclic/recursive call
         checkCall(procNames[i], path, procCallsMap);
 
@@ -72,20 +72,19 @@ ProgramNode *ProgramParser::parse() {
             }
         }
     }
-    
+
     return new ProgramNode(procList);
 }
 
 void ProgramParser::checkCall(
-    std::string proc,
-    std::vector<std::string> path,
+    std::string proc, std::vector<std::string> path,
     std::map<std::string, std::vector<std::string>> &callmap) {
     if (find(begin(path), end(path), proc) != end(path)) {
         throw "cyclic calling is not allowed";
     }
 
     path.push_back(proc);
-    
+
     std::vector<std::string> calls = callmap[proc];
     for (size_t i = 0; i < calls.size(); i++) {
         checkCall(calls[i], path, callmap);
@@ -132,8 +131,9 @@ ProcedureNode *ProcedureParser::parse() {
         throw "procedure wrong syntax";
     }
     offset++;
-    
-    ProcedureNode* result = new ProcedureNode(secondToken->getValue(), stmtList);
+
+    ProcedureNode *result =
+        new ProcedureNode(secondToken->getValue(), stmtList);
     result->setAllCalls(allCalls);
 
     return result;
@@ -292,7 +292,8 @@ WhileStatementNode *WhileStmParser::parse() {
             throw "while statement wrong syntax";
         }
         offset++;
-        WhileStatementNode* result = new WhileStatementNode(stmtList, cond, startline);
+        WhileStatementNode *result =
+            new WhileStatementNode(stmtList, cond, startline);
         result->setAllCalls(allCalls);
         return result;
     } else {
