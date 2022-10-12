@@ -118,6 +118,13 @@ public:
     void storeWhileControlVar(
         std::vector<Relationship<int, std::string> *> *whileControls);
 
+    /*
+     * Stores the given Stmt to ProcName relations from call statements in a
+     * CallProcTable.
+     */
+    void
+    storeCallProcName(std::vector<Relationship<int, std::string> *> *callProcs);
+
 private:
     Storage *storage;
 

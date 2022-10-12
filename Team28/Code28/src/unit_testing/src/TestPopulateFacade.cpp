@@ -419,3 +419,25 @@ TEST_CASE("storeWhileControlVar stores Relationship<int, std::string> objects "
     REQUIRE(ifsTable->getLeftMap().size() == 0);
     REQUIRE(ifsTable->getRightMap().size() == 0);
 }
+
+TEST_CASE("storeCallProcName stores Relationship<int, std::string> objects "
+          "correctly") {
+    Storage *storage = new Storage();
+    PopulateFacade facade = PopulateFacade(storage);
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::CALLS, 1, std::string("bar"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("bar"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("foo"));
+    std::vector<Relationship<int, std::string> *> callsP = {&test1, &test2,
+                                                            &test3};
+
+    facade.storeCallProcName(&callsP);
+
+    CallProcTable *callsProc = storage->getTable<CallProcTable>();
+
+    // Relationship is stored correctly
+    REQUIRE(callsProc->getLeftMap().size() == 3);
+    REQUIRE(callsProc->getRightMap().size() == 2);
+}
