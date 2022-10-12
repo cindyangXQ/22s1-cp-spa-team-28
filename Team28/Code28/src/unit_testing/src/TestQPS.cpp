@@ -4,104 +4,6 @@
 
 #include "catch.hpp"
 
-TEST_CASE("QPS can process simple queries to select statements") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements = storage->getTable<StatementsTable>();
-    Statement test1 = Statement(1, StatementType::ASSIGN);
-    Statement test2 = Statement(2, StatementType::ASSIGN);
-
-    statements->store(&test1);
-    statements->store(&test2);
-
-    QPS qps = QPS(&facade);
-
-    std::string input = "stmt s; Select s";
-    std::string output = qps.processQuery(input);
-    REQUIRE(output == "1, 2");
-}
-
-TEST_CASE("QPS can process simple queries to select variables") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    VariablesTable *variables = storage->getTable<VariablesTable>();
-    Variable test1 = Variable("test1");
-    Variable test2 = Variable("test2");
-
-    variables->store(&test1);
-    variables->store(&test2);
-
-    QPS qps = QPS(&facade);
-
-    std::string input = "variable v; Select v";
-    std::string output = qps.processQuery(input);
-    REQUIRE(output == "test1, test2");
-}
-
-TEST_CASE("QPS can process simple queries to select constants") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    ConstantsTable *constants = storage->getTable<ConstantsTable>();
-    Constant test1 = Constant("test1");
-    Constant test2 = Constant("test2");
-
-    constants->store(&test1);
-    constants->store(&test2);
-
-    QPS qps = QPS(&facade);
-
-    std::string input = "constant c; Select c";
-    std::string output = qps.processQuery(input);
-    REQUIRE(output == "test1, test2");
-}
-
-TEST_CASE("QPS can process simple queries to select procedures") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    Procedure test1 = Procedure("test1");
-    Procedure test2 = Procedure("test2");
-
-    procedures->store(&test1);
-    procedures->store(&test2);
-
-    QPS qps = QPS(&facade);
-
-    std::string input = "procedure p; Select p";
-    std::string output = qps.processQuery(input);
-    REQUIRE(output == "test1, test2");
-}
-
-TEST_CASE("QPS can process simple queries to select procedures when there are "
-          "no procedures") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-
-    QPS qps = QPS(&facade);
-
-    std::string input = "procedure p; Select p";
-    std::string output = qps.processQuery(input);
-    REQUIRE(output.size() == 0);
-}
-
-TEST_CASE("QPS can process simple queries with semantic error") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    VariablesTable *variables = storage->getTable<VariablesTable>();
-    Variable test1 = Variable("test1");
-    Variable test2 = Variable("test2");
-
-    variables->store(&test1);
-    variables->store(&test2);
-
-    QPS qps = QPS(&facade);
-
-    std::string undeclared_synonym =
-        "variable v; Select v such that Modifies(1, yey)";
-    REQUIRE_THROWS(qps.processQuery(undeclared_synonym));
-}
-
 TEST_CASE("QPS evaluate select statements") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
@@ -201,8 +103,8 @@ TEST_CASE("QPS evaluate select procedures") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    Procedure test1 = Procedure("test1");
-    Procedure test2 = Procedure("test2");
+    Procedure test1 = Procedure("test1", 1);
+    Procedure test2 = Procedure("test2", 2);
 
     procedures->store(&test1);
     procedures->store(&test2);
@@ -679,9 +581,9 @@ TEST_CASE("QPS can process queries with procedure") {
     CallsTable *call = storage->getTable<CallsTable>();
     CallsTTable *callT = storage->getTable<CallsTTable>();
 
-    Procedure proc1 = Procedure("foo");
-    Procedure proc2 = Procedure("bar");
-    Procedure proc3 = Procedure("foobar");
+    Procedure proc1 = Procedure("foo", 1);
+    Procedure proc2 = Procedure("bar", 2);
+    Procedure proc3 = Procedure("foobar", 3);
     Variable var1 = Variable("a");
     Variable var2 = Variable("b");
     Relationship<std::string, std::string> rs1 = Relationship(

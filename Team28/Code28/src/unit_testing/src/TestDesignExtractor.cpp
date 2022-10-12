@@ -9,7 +9,7 @@
 
 TEST_CASE("extract procedure small program") {
     std::vector<Procedure *> expected;
-    expected.push_back(new Procedure("Bedok"));
+    expected.push_back(new Procedure("Bedok", 1));
 
     std::string sourceProgram =
         "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + "

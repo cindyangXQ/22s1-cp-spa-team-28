@@ -31,7 +31,7 @@ TEST_CASE("VariablesTable can store and retrieve correctly") {
 
 TEST_CASE("ProceduresTable can store and retrieve correctly") {
     ProceduresTable table;
-    Procedure test = Procedure("Test");
+    Procedure test = Procedure("Test", 1);
 
     table.store(&test);
 
@@ -80,8 +80,8 @@ TEST_CASE("ConstantsTable can getAll statements correctly") {
 
 TEST_CASE("ProceduresTable can getAll statements correctly") {
     ProceduresTable table;
-    Procedure test1 = Procedure("test1");
-    Procedure test2 = Procedure("test2");
+    Procedure test1 = Procedure("test1", 1);
+    Procedure test2 = Procedure("test2", 2);
 
     table.store(&test1);
     table.store(&test2);

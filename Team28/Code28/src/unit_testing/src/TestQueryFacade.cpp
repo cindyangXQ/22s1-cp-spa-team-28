@@ -78,8 +78,8 @@ TEST_CASE("getAllProcedures returns all constants correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    Procedure test1 = Procedure("test1");
-    Procedure test2 = Procedure("test2");
+    Procedure test1 = Procedure("test1", 1);
+    Procedure test2 = Procedure("test2", 2);
 
     procedures->store(&test1);
     procedures->store(&test2);
@@ -103,7 +103,7 @@ TEST_CASE("getProcedureByName retrieves procedure correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    Procedure test = Procedure("test");
+    Procedure test = Procedure("test", 1);
 
     procedures->store(&test);
 
@@ -596,7 +596,7 @@ TEST_CASE("ProcToVar: Validate returns correct results") {
     VariablesTable *variables = storage->getTable<VariablesTable>();
     ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
 
-    Procedure proc1 = Procedure("Main");
+    Procedure proc1 = Procedure("Main", 1);
     Variable var1 = Variable("a");
     Relationship<std::string, std::string> rs = Relationship(
         RelationshipReference::MODIFIES, std::string("Main"), std::string("a"));
@@ -637,7 +637,7 @@ TEST_CASE("ProcToVar: SolveRight queries for Modifies('Main', 'a') return "
     VariablesTable *variables = storage->getTable<VariablesTable>();
     ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
 
-    Procedure proc1 = Procedure("Main");
+    Procedure proc1 = Procedure("Main", 1);
     Variable var1 = Variable("a");
     Relationship<std::string, std::string> rs = Relationship(
         RelationshipReference::MODIFIES, std::string("Main"), std::string("a"));
@@ -697,7 +697,7 @@ TEST_CASE("ProcToVar: SolveLeft queries for Modifies('Main', 'a') return "
     VariablesTable *variables = storage->getTable<VariablesTable>();
     ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
 
-    Procedure proc1 = Procedure("Main");
+    Procedure proc1 = Procedure("Main", 1);
     Variable var1 = Variable("a");
     Relationship<std::string, std::string> rs = Relationship(
         RelationshipReference::MODIFIES, std::string("Main"), std::string("a"));
@@ -757,7 +757,7 @@ TEST_CASE("ProcToVar: SolveBoth queries for Modifies('Main', 'a') return "
     VariablesTable *variables = storage->getTable<VariablesTable>();
     ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
 
-    Procedure proc1 = Procedure("Main");
+    Procedure proc1 = Procedure("Main", 1);
     Variable var1 = Variable("a");
     Relationship<std::string, std::string> rs = Relationship(
         RelationshipReference::MODIFIES, std::string("Main"), std::string("a"));
@@ -808,8 +808,8 @@ TEST_CASE("ProcToProc: Validate returns correct results") {
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     CallsTable *calls = storage->getTable<CallsTable>();
 
-    Procedure proc1 = Procedure("proc1");
-    Procedure proc2 = Procedure("proc2");
+    Procedure proc1 = Procedure("proc1", 1);
+    Procedure proc2 = Procedure("proc2", 2);
     Relationship<std::string, std::string> rs =
         Relationship(RelationshipReference::CALLS, std::string("proc1"),
                      std::string("proc2"));
@@ -847,8 +847,8 @@ TEST_CASE("ProcToProc: SolveRight queries for Calls('proc1', 'proc2') return "
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     CallsTable *calls = storage->getTable<CallsTable>();
 
-    Procedure proc1 = Procedure("proc1");
-    Procedure proc2 = Procedure("proc2");
+    Procedure proc1 = Procedure("proc1", 1);
+    Procedure proc2 = Procedure("proc2", 2);
     Relationship<std::string, std::string> rs =
         Relationship(RelationshipReference::CALLS, std::string("proc1"),
                      std::string("proc2"));
@@ -896,8 +896,8 @@ TEST_CASE("ProcToProc: SolveLeft queries for Calls('proc1', 'proc2') return "
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     CallsTable *calls = storage->getTable<CallsTable>();
 
-    Procedure proc1 = Procedure("proc1");
-    Procedure proc2 = Procedure("proc2");
+    Procedure proc1 = Procedure("proc1", 1);
+    Procedure proc2 = Procedure("proc2", 2);
     Relationship<std::string, std::string> rs =
         Relationship(RelationshipReference::CALLS, std::string("proc1"),
                      std::string("proc2"));
@@ -946,8 +946,8 @@ TEST_CASE("ProcToVar: SolveBoth queries for Calls('proc1', 'proc2') return "
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     CallsTable *calls = storage->getTable<CallsTable>();
 
-    Procedure proc1 = Procedure("proc1");
-    Procedure proc2 = Procedure("proc2");
+    Procedure proc1 = Procedure("proc1", 1);
+    Procedure proc2 = Procedure("proc2", 2);
     Relationship<std::string, std::string> rs =
         Relationship(RelationshipReference::CALLS, std::string("proc1"),
                      std::string("proc2"));

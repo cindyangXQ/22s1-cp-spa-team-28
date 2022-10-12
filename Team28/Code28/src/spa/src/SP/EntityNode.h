@@ -41,6 +41,7 @@ public:
     bool equals(ProcedureNode *other);
     std::string getName();
     std::vector<StatementNode *> getStmtList();
+    int getStartLine();
     int getEndline();
     std::vector<std::string> getAllCalls() { return allCalls; }
     void setAllCalls(std::vector<std::string> allCalls) {

@@ -54,7 +54,7 @@ TEST_CASE("Storage stores and retrieves Variables correctly") {
 TEST_CASE("Storage stores and retrieves Procedures correctly") {
     Storage *storage = new Storage();
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    Procedure test = Procedure("test");
+    Procedure test = Procedure("test", 1);
 
     procedures->store(&test);
 
