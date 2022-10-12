@@ -44,6 +44,8 @@ std::vector<StatementNode *> ProcedureNode::getStmtList() {
     return this->stmtList;
 }
 
+int ProcedureNode::getStartLine() { return stmtList[0]->getLineNumber(); }
+
 int ProcedureNode::getEndline() { return stmtList.back()->getEndLine(); }
 
 // Statement

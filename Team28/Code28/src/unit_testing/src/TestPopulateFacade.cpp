@@ -92,9 +92,9 @@ TEST_CASE("storeConstant stores Constant objects correctly") {
 TEST_CASE("storeProcedure stores Procedure objects correctly") {
     Storage *storage = new Storage();
     PopulateFacade facade = PopulateFacade(storage);
-    Procedure test1 = Procedure("a");
-    Procedure test2 = Procedure("b");
-    Procedure test3 = Procedure("");
+    Procedure test1 = Procedure("a", 1);
+    Procedure test2 = Procedure("b", 2);
+    Procedure test3 = Procedure("", 3);
     std::vector<Procedure *> procedures = {&test1, &test2, &test3};
 
     facade.storeProcedures(&procedures);
