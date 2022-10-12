@@ -103,19 +103,10 @@ TEST_CASE("Source program with keyword as variable name") {
 TEST_CASE("invalid source program") {
     // invalid operator
     std::string sourceProgram = "hello === 1";
-    try {
-        Tokenizer(sourceProgram).tokenize();
-        FAIL();
-    } catch (char *e) {
-        REQUIRE(strcmp(e, "invalid operator") == 0);
-    }
+    REQUIRE_THROWS(Tokenizer(sourceProgram).tokenize(), "invalid operator");
 
     // invalid character
     sourceProgram = "~hello;";
-    try {
-        Tokenizer(sourceProgram).tokenize();
-        FAIL();
-    } catch (char *e) {
-        REQUIRE(strcmp(e, "invalid character") == 0);
-    }
+    REQUIRE_THROWS(Tokenizer(sourceProgram).tokenize(), "invalid character");
+
 }

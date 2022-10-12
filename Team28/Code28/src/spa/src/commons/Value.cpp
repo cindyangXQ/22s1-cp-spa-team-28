@@ -7,7 +7,6 @@ bool Value::operator==(const Value &other) const {
 }
 
 bool Value::operator<(const Value &other) const {
-    return this->type == other.type
-        ? this->value < other.value
-        : this->type < other.type;
+    return this->type == other.type ? this->value < other.value
+                                    : this->type < other.type;
 }

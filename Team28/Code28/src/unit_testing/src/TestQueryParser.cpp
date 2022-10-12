@@ -87,11 +87,10 @@ TEST_CASE("QueryParser can parse boolean select clause") {
 }
 
 TEST_CASE("QueryParser can parse tuple select clause") {
-    std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
-                              Synonym(EntityName::ASSIGN, "a"), 
-                              Synonym(EntityName::ASSIGN, "a1"),
-                              Synonym(EntityName::ASSIGN, "a2"),
-                              Synonym(EntityName::PROCEDURE, "p")};
+    std::vector<Synonym> syns{
+        Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a"),
+        Synonym(EntityName::ASSIGN, "a1"), Synonym(EntityName::ASSIGN, "a2"),
+        Synonym(EntityName::PROCEDURE, "p")};
 
     std::string correct = "Select <v, a>";
     SelectClause selectClause = QueryParser::parseSelectClause(&correct, syns);
@@ -109,7 +108,8 @@ TEST_CASE("QueryParser can parse tuple select clause") {
     REQUIRE(selectClauseOne.syns.size() == 1);
 
     std::string duplicate = "Select <v, a1, a1>";
-    SelectClause selectClauseDuplicate = QueryParser::parseSelectClause(&duplicate, syns);
+    SelectClause selectClauseDuplicate =
+        QueryParser::parseSelectClause(&duplicate, syns);
     REQUIRE(selectClauseDuplicate.selectType == SelectType::TUPLE);
     REQUIRE(selectClauseDuplicate.syns.size() == 3);
 
@@ -168,7 +168,8 @@ TEST_CASE("Parser can parse such that clause") {
 
     std::string correct_input_syn_wildcard = "such that Modifies(a, _)";
     std::vector<SuchThatClause> clause5;
-    QueryParser::parseSuchThatClause(&correct_input_syn_wildcard, syns, &clause5);
+    QueryParser::parseSuchThatClause(&correct_input_syn_wildcard, syns,
+                                     &clause5);
     REQUIRE(clause5.size() == 1);
     REQUIRE(clause5[0].relationship == RelationshipReference::MODIFIES);
     REQUIRE(clause5[0].refLeft.isSynonym == true);
@@ -178,7 +179,8 @@ TEST_CASE("Parser can parse such that clause") {
 
     std::string correct_input_wildcard_syn = "such that Follows(_, a)";
     std::vector<SuchThatClause> clause6;
-    QueryParser::parseSuchThatClause(&correct_input_wildcard_syn, syns, &clause6);
+    QueryParser::parseSuchThatClause(&correct_input_wildcard_syn, syns,
+                                     &clause6);
     REQUIRE(clause6.size() == 1);
     REQUIRE(clause6[0].relationship == RelationshipReference::FOLLOWS);
     REQUIRE(clause6[0].refLeft.isSynonym == false);
@@ -188,18 +190,19 @@ TEST_CASE("Parser can parse such that clause") {
 
     std::string correct_input_wildcard_syn_star = "such that Follows*(_, a)";
     std::vector<SuchThatClause> clause7;
-    QueryParser::parseSuchThatClause(
-        &correct_input_wildcard_syn_star, syns, &clause7);
+    QueryParser::parseSuchThatClause(&correct_input_wildcard_syn_star, syns,
+                                     &clause7);
     REQUIRE(clause7.size() == 1);
     REQUIRE(clause7[0].relationship == RelationshipReference::FOLLOWS_T);
     REQUIRE(clause7[0].refLeft.isSynonym == false);
     REQUIRE(clause7[0].refLeft.value.value == "_");
     REQUIRE(clause7[0].refRight.isSynonym == true);
     REQUIRE(clause7[0].refRight.syn.name == "a");
-    
+
     std::vector<SuchThatClause> ignore;
     std::string extra_bracket = "such that Modifies((1, v)";
-    REQUIRE_THROWS(QueryParser::parseSuchThatClause(&extra_bracket, syns, &ignore));
+    REQUIRE_THROWS(
+        QueryParser::parseSuchThatClause(&extra_bracket, syns, &ignore));
 
     std::string undeclared_syn = "such that Modifies(1, p)";
     REQUIRE_THROWS(
@@ -266,11 +269,11 @@ TEST_CASE("Parser can parse such that clause with procedure") {
     REQUIRE(clause3[0].refRight.isWildcard() == true);
 }
 
-TEST_CASE("Parser can detect semantic error of using wrong type of synonym and reference type") {
-    std::vector<Synonym> syns{Synonym(EntityName::CONSTANT, "c"),
-                              Synonym(EntityName::VARIABLE, "v1"),
-                              Synonym(EntityName::VARIABLE, "v2"),
-                              Synonym(EntityName::ASSIGN, "a")};
+TEST_CASE("Parser can detect semantic error of using wrong type of synonym and "
+          "reference type") {
+    std::vector<Synonym> syns{
+        Synonym(EntityName::CONSTANT, "c"), Synonym(EntityName::VARIABLE, "v1"),
+        Synonym(EntityName::VARIABLE, "v2"), Synonym(EntityName::ASSIGN, "a")};
     std::vector<SuchThatClause> ignore_suchThat;
     std::vector<PatternClause> ignore_pattern;
     std::string constant_used_in_follow_left = "such that Follow(c, \"1\")";
@@ -320,7 +323,7 @@ TEST_CASE("Parser can parse pattern clause") {
     REQUIRE(clause_exact[0].syn.entity == EntityName::ASSIGN);
     REQUIRE(clause_exact[0].expression == "(x)");
     REQUIRE(clause_exact[0].isExact == true);
-    
+
     std::string correct_input_space = "pattern a(v, _    \"    x    \"    _)";
     std::vector<PatternClause> clause_space;
     QueryParser::parsePatternClause(&correct_input_space, syns, &clause_space);
@@ -366,7 +369,7 @@ TEST_CASE("Parser can parse pattern clause") {
     std::string missing_bracket_left2 = "pattern a(v, \"(x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_bracket_left2, syns,
                                                    &ignore_pattern));
-    
+
     std::string missing_bracket_right = "pattern a(v, _\"x)\"_)";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&missing_bracket_right, syns,
                                                    &ignore_pattern));
@@ -377,14 +380,16 @@ TEST_CASE("Parser can parse pattern clause") {
 }
 
 TEST_CASE("Parser can parse multiple such that clauses") {
-    std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
-                              Synonym(EntityName::ASSIGN, "a"),
-                              Synonym(EntityName::STMT, "s"), 
-                              Synonym(EntityName::READ, "r"),
-                              Synonym(EntityName::ASSIGN, "a1")};
-    std::string input = "such that Modifies(a, _) pattern a(_, _) such that Follows(s, r) such that Uses(s, v) pattern a1(v, _\"weew\"_)";
+    std::vector<Synonym> syns{
+        Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a"),
+        Synonym(EntityName::STMT, "s"), Synonym(EntityName::READ, "r"),
+        Synonym(EntityName::ASSIGN, "a1")};
+    std::string input =
+        "such that Modifies(a, _) pattern a(_, _) such that Follows(s, r) such "
+        "that Uses(s, v) pattern a1(v, _\"weew\"_)";
     std::string remaining_input =
-         " pattern a(_, _) such that Follows(s, r) such that Uses(s, v) pattern a1(v, _\"weew\"_)";
+        " pattern a(_, _) such that Follows(s, r) such that Uses(s, v) pattern "
+        "a1(v, _\"weew\"_)";
     std::vector<SuchThatClause> clauses;
     QueryParser::parseSuchThatClause(&input, syns, &clauses);
     REQUIRE(clauses.size() == 1);
@@ -393,22 +398,22 @@ TEST_CASE("Parser can parse multiple such that clauses") {
 }
 
 TEST_CASE("Parser can parse multiple pattern clauses") {
-    std::vector<Synonym> syns{Synonym(EntityName::ASSIGN, "a1"),
-                              Synonym(EntityName::ASSIGN, "a2"),
-                              Synonym(EntityName::VARIABLE, "v1"), 
-                              Synonym(EntityName::STMT, "s1"),
-                              Synonym(EntityName::STMT, "s2")};
+    std::vector<Synonym> syns{
+        Synonym(EntityName::ASSIGN, "a1"), Synonym(EntityName::ASSIGN, "a2"),
+        Synonym(EntityName::VARIABLE, "v1"), Synonym(EntityName::STMT, "s1"),
+        Synonym(EntityName::STMT, "s2")};
     std::string input =
         "pattern a1(v1, _\"yey\"_) such that Follows(s1, s2) such "
         "that Uses(s2, v1) pattern a2(v1, _\"weew\"_)";
-    std::string remaining_input = " such that Follows(s1, s2) such "
+    std::string remaining_input =
+        " such that Follows(s1, s2) such "
         "that Uses(s2, v1) pattern a2(v1, _\"weew\"_)";
     std::vector<PatternClause> clauses;
     QueryParser::parsePatternClause(&input, syns, &clauses);
     REQUIRE(clauses.size() == 1);
     REQUIRE(input == remaining_input);
 }
-TEST_CASE("Parser can parse multiple such that clauses with explicit and") { 
+TEST_CASE("Parser can parse multiple such that clauses with explicit and") {
     std::vector<Synonym> syns{
         Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a"),
         Synonym(EntityName::STMT, "s"), Synonym(EntityName::READ, "r"),
@@ -431,10 +436,11 @@ TEST_CASE("Parser can parse multiple pattern clauses with explicit and") {
         Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a"),
         Synonym(EntityName::STMT, "s"), Synonym(EntityName::READ, "r"),
         Synonym(EntityName::ASSIGN, "a1")};
-    std::string input =
-        "pattern a(_, _) and a1(v, _\"weew\"_) such that Modifies(a, _) and Follows(s, r) such "
-        "that Uses(s, v)";
-    std::string remaining_input = " such that Modifies(a, _) and Follows(s, r) such "
+    std::string input = "pattern a(_, _) and a1(v, _\"weew\"_) such that "
+                        "Modifies(a, _) and Follows(s, r) such "
+                        "that Uses(s, v)";
+    std::string remaining_input =
+        " such that Modifies(a, _) and Follows(s, r) such "
         "that Uses(s, v)";
     std::vector<PatternClause> clauses;
     QueryParser::parsePatternClause(&input, syns, &clauses);
@@ -447,12 +453,15 @@ TEST_CASE("Parser can catch mismatch in explicit and") {
         Synonym(EntityName::STMT, "s"), Synonym(EntityName::READ, "r"),
         Synonym(EntityName::ASSIGN, "a1")};
     std::string pattern_input = "pattern a(_, _) and Follows(s, r) such that "
-                        "Modifies(a, _) and a1(v, _\"weew\"_) such "
-                        "that Uses(s, v)";
+                                "Modifies(a, _) and a1(v, _\"weew\"_) such "
+                                "that Uses(s, v)";
 
     std::vector<PatternClause> pattern_clauses;
-    REQUIRE_THROWS(QueryParser::parsePatternClause(&pattern_input, syns, &pattern_clauses));
-    std::string such_that_input = "such that Modifies(a, _) and a1(v, _\"weew\"_) pattern a(_, _) and Follows(s, r) such that Uses(s, v)";
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&pattern_input, syns,
+                                                   &pattern_clauses));
+    std::string such_that_input =
+        "such that Modifies(a, _) and a1(v, _\"weew\"_) pattern a(_, _) and "
+        "Follows(s, r) such that Uses(s, v)";
 
     std::vector<SuchThatClause> such_that_clauses;
     REQUIRE_THROWS(QueryParser::parseSuchThatClause(&such_that_input, syns,
@@ -462,7 +471,7 @@ TEST_CASE("Parser can catch mismatch in explicit and") {
 TEST_CASE("Parser can parse while pattern clauses") {
     std::vector<Synonym> syns{Synonym(EntityName::WHILE, "w"),
                               Synonym(EntityName::WHILE, "w1"),
-                              Synonym(EntityName::VARIABLE, "v"), 
+                              Synonym(EntityName::VARIABLE, "v"),
                               Synonym(EntityName::VARIABLE, "v2")};
 
     std::string correct_input = "pattern w(v, _)";
@@ -478,13 +487,14 @@ TEST_CASE("Parser can parse while pattern clauses") {
     REQUIRE(clause_space[0].patternType == PatternType::WHILE);
 
     std::string non_wild_card_expression = "pattern w(v, \"x\")";
-    REQUIRE_THROWS(QueryParser::parsePatternClause(&non_wild_card_expression, syns, &clause));
+    REQUIRE_THROWS(QueryParser::parsePatternClause(&non_wild_card_expression,
+                                                   syns, &clause));
 }
 
 TEST_CASE("Parser can parse if pattern clauses") {
     std::vector<Synonym> syns{Synonym(EntityName::IF, "ifs"),
                               Synonym(EntityName::IF, "ifs2"),
-                              Synonym(EntityName::VARIABLE, "v"), 
+                              Synonym(EntityName::VARIABLE, "v"),
                               Synonym(EntityName::VARIABLE, "v2")};
 
     std::string correct_input = "pattern ifs(v, _, _)";
@@ -493,17 +503,20 @@ TEST_CASE("Parser can parse if pattern clauses") {
     REQUIRE(clause[0].expression == "_");
     REQUIRE(clause[0].patternType == PatternType::IF);
 
-    std::string correct_input_space = "pattern ifs(   _    ,   _   ,     _    )";
+    std::string correct_input_space =
+        "pattern ifs(   _    ,   _   ,     _    )";
     std::vector<PatternClause> clause_space;
     QueryParser::parsePatternClause(&correct_input_space, syns, &clause_space);
     REQUIRE(clause_space[0].expression == "_");
     REQUIRE(clause_space[0].patternType == PatternType::IF);
 
     std::string non_wild_card_expression_left = "pattern ifs(v, \"x\", _)";
-    REQUIRE_THROWS(QueryParser::parsePatternClause(&non_wild_card_expression_left, syns, &clause));
+    REQUIRE_THROWS(QueryParser::parsePatternClause(
+        &non_wild_card_expression_left, syns, &clause));
 
     std::string non_wild_card_expression_right = "pattern ifs(v, _, \"x\")";
-    REQUIRE_THROWS(QueryParser::parsePatternClause(&non_wild_card_expression_left, syns, &clause));
+    REQUIRE_THROWS(QueryParser::parsePatternClause(
+        &non_wild_card_expression_left, syns, &clause));
 }
 
 TEST_CASE("Parser can parse with clauses") {
