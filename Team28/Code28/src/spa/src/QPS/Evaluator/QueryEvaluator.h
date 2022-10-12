@@ -26,8 +26,9 @@ private:
                               bool *isAnyTableEmpty, bool *haveTableToJoin);
     std::vector<std::string> extractSynonymFromTable(Synonym selectedSynonym,
                                                      ClauseTable result);
-    std::vector<std::string> extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
-                                                     ClauseTable result);
+    std::vector<std::string>
+    extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
+                           ClauseTable result);
     std::vector<std::string> getAll(Synonym select);
     std::vector<std::string> handleNoTables(QueryResult *queryResult);
     ClauseTable JoinAllClauseTables(std::vector<ClauseResult> clauseResultList);
