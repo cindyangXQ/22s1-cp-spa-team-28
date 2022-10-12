@@ -118,11 +118,6 @@ variable v; assign a;
 Select v pattyeyrn a(_, _)
 SyntaxError
 5000
-25 - SPA catches semantic errors in pattern clause (use wrong synonym)
-variable v; if i;
-Select v pattern i(_, _)
-SemanticError
-5000
 26 - SPA catches syntax errors in pattern clause (invalid variable name in left)
 variable v; assign a;
 Select v pattern a("123", _)

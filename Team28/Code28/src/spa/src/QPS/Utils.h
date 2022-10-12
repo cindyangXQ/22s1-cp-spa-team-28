@@ -25,11 +25,6 @@ public:
                                              std::vector<char> special_chars);
 
     /*
-     * Checks if a string contains a term.
-     */
-    static bool in(std::vector<std::string> v, std::string item);
-
-    /*
      * Removes string from string.
      */
     static std::string removeString(std::string input, std::string remove);
