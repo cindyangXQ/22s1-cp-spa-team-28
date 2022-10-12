@@ -14,8 +14,8 @@ void ControlFlowGraph::populateNext() {
     this->visited = std::map<int, bool>();
 
     for (int stmtNum : this->procedures->getAllStmtNum()) {
-        if (!(follows->isValueExist(stmtNum) ||
-              branchIn->isValueExist(stmtNum))) {
+        if (!(follows->isLeftValueExist(stmtNum) ||
+              branchIn->isLeftValueExist(stmtNum))) {
             continue;
         }
         DFS(stmtNum);
@@ -23,8 +23,8 @@ void ControlFlowGraph::populateNext() {
 };
 
 void ControlFlowGraph::DFS(int i) {
-    if (!(follows->isValueExist(i) || branchIn->isValueExist(i) ||
-          branchOut->isValueExist(i))) {
+    if (!(follows->isLeftValueExist(i) || branchIn->isLeftValueExist(i) ||
+          branchOut->isLeftValueExist(i))) {
         return;
     }
 
