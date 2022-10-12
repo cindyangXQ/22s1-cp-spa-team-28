@@ -7,8 +7,7 @@
 TEST_CASE("QPS can process simple queries to select statements") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -25,8 +24,7 @@ TEST_CASE("QPS can process simple queries to select statements") {
 TEST_CASE("QPS can process simple queries to select variables") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -43,8 +41,7 @@ TEST_CASE("QPS can process simple queries to select variables") {
 TEST_CASE("QPS can process simple queries to select constants") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ConstantsTable *constants =
-        storage->getTable<ConstantsTable>();
+    ConstantsTable *constants = storage->getTable<ConstantsTable>();
     Constant test1 = Constant("test1");
     Constant test2 = Constant("test2");
 
@@ -61,10 +58,9 @@ TEST_CASE("QPS can process simple queries to select constants") {
 TEST_CASE("QPS can process simple queries to select procedures") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
-    Procedure test1 = Procedure("test1");
-    Procedure test2 = Procedure("test2");
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
+    Procedure test1 = Procedure("test1", 1);
+    Procedure test2 = Procedure("test2", 2);
 
     procedures->store(&test1);
     procedures->store(&test2);
@@ -80,8 +76,7 @@ TEST_CASE("QPS can process simple queries to select procedures when there are "
           "no procedures") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
 
     QPS qps = QPS(&facade);
 
@@ -93,8 +88,7 @@ TEST_CASE("QPS can process simple queries to select procedures when there are "
 TEST_CASE("QPS can process simple queries with semantic error") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -111,8 +105,7 @@ TEST_CASE("QPS can process simple queries with semantic error") {
 TEST_CASE("QPS evaluate select statements") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -131,8 +124,7 @@ TEST_CASE("QPS evaluate select statements") {
 TEST_CASE("QPS evaluate select assign statements") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     Statement test1 = Statement(1, StatementType::ASSIGN);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -151,8 +143,7 @@ TEST_CASE("QPS evaluate select assign statements") {
 TEST_CASE("QPS evaluate select if statements") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     Statement test1 = Statement(1, StatementType::IF);
     Statement test2 = Statement(2, StatementType::ASSIGN);
 
@@ -171,8 +162,7 @@ TEST_CASE("QPS evaluate select if statements") {
 TEST_CASE("QPS evaluate select variables") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -191,8 +181,7 @@ TEST_CASE("QPS evaluate select variables") {
 TEST_CASE("QPS evaluate select constants") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ConstantsTable *constants =
-        storage->getTable<ConstantsTable>();
+    ConstantsTable *constants = storage->getTable<ConstantsTable>();
     Constant test1 = Constant("test1");
     Constant test2 = Constant("test2");
 
@@ -211,10 +200,9 @@ TEST_CASE("QPS evaluate select constants") {
 TEST_CASE("QPS evaluate select procedures") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
-    Procedure test1 = Procedure("test1");
-    Procedure test2 = Procedure("test2");
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
+    Procedure test1 = Procedure("test1", 1);
+    Procedure test2 = Procedure("test2", 2);
 
     procedures->store(&test1);
     procedures->store(&test2);
@@ -231,8 +219,7 @@ TEST_CASE("QPS evaluate select procedures") {
 TEST_CASE("QPS can evaluate select procedures when there are no procedures") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
 
     QPS qps = QPS(&facade);
 
@@ -245,8 +232,7 @@ TEST_CASE("QPS can evaluate select procedures when there are no procedures") {
 TEST_CASE("QPS evaluate syntax error") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -266,8 +252,7 @@ TEST_CASE("QPS evaluate syntax error") {
 TEST_CASE("QPS evaluate semantic error") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     Variable test1 = Variable("test1");
     Variable test2 = Variable("test2");
 
@@ -394,12 +379,9 @@ TEST_CASE("QPS can process queries with follows relationship") {
 TEST_CASE("QPS can process queries with modifies relationship") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
-    ModifiesSTable *modifiesS =
-        storage->getTable<ModifiesSTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -467,10 +449,8 @@ TEST_CASE("QPS can process queries with modifies relationship") {
 TEST_CASE("QPS can process queries with pattern clause") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    AssignmentsTable *assignments =
-        storage->getTable<AssignmentsTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
+    AssignmentsTable *assignments = storage->getTable<AssignmentsTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
 
     Variable var1 = Variable("a");
     Variable var2 = Variable("b");
@@ -532,12 +512,9 @@ TEST_CASE("QPS can process queries with pattern clause") {
 TEST_CASE("QPS can process queries with such that and pattern clause") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
-    AssignmentsTable *assignments =
-        storage->getTable<AssignmentsTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    AssignmentsTable *assignments = storage->getTable<AssignmentsTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
     ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
     UsesSTable *usesS = storage->getTable<UsesSTable>();
 
@@ -621,12 +598,9 @@ TEST_CASE("QPS can process queries with such that and pattern clause") {
 TEST_CASE("QPS can process queries with advanced pattern clause") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    StatementsTable *statements =
-        storage->getTable<StatementsTable>();
-    AssignmentsTable *assignments =
-        storage->getTable<AssignmentsTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    AssignmentsTable *assignments = storage->getTable<AssignmentsTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
 
     Statement line1 = Statement(1, StatementType::ASSIGN);
     Statement line2 = Statement(2, StatementType::ASSIGN);
@@ -698,19 +672,16 @@ TEST_CASE("QPS can process queries with advanced pattern clause") {
 TEST_CASE("QPS can process queries with procedure") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures =
-        storage->getTable<ProceduresTable>();
-    VariablesTable *variables =
-        storage->getTable<VariablesTable>();
-    ModifiesPTable *modifiesP =
-        storage->getTable<ModifiesPTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
     UsesPTable *usesP = storage->getTable<UsesPTable>();
     CallsTable *call = storage->getTable<CallsTable>();
     CallsTTable *callT = storage->getTable<CallsTTable>();
 
-    Procedure proc1 = Procedure("foo");
-    Procedure proc2 = Procedure("bar");
-    Procedure proc3 = Procedure("foobar");
+    Procedure proc1 = Procedure("foo", 1);
+    Procedure proc2 = Procedure("bar", 2);
+    Procedure proc3 = Procedure("foobar", 3);
     Variable var1 = Variable("a");
     Variable var2 = Variable("b");
     Relationship<std::string, std::string> rs1 = Relationship(
@@ -788,8 +759,7 @@ TEST_CASE("QPS can process queries with procedure") {
 TEST_CASE("QPS can process queries with while pattern clause") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    WhileControlVarTable *whiles =
-        storage->getTable<WhileControlVarTable>();
+    WhileControlVarTable *whiles = storage->getTable<WhileControlVarTable>();
 
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("x"));
@@ -842,8 +812,7 @@ TEST_CASE("QPS can process queries with while pattern clause") {
 TEST_CASE("QPS can process queries with if pattern clause") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
-    IfControlVarTable *ifs =
-        storage->getTable<IfControlVarTable>();
+    IfControlVarTable *ifs = storage->getTable<IfControlVarTable>();
 
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("x"));
