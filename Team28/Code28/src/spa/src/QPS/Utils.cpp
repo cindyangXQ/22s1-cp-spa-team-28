@@ -52,10 +52,6 @@ std::vector<std::string> Utils::tokenize(std::string str,
     return result;
 }
 
-bool Utils::in(std::vector<std::string> v, std::string item) {
-    return std::find(v.begin(), v.end(), item) != v.end();
-}
-
 std::string Utils::removeString(std::string input, std::string remove) {
     auto iter = input.find(remove);
     // Delete select string after it is parsed

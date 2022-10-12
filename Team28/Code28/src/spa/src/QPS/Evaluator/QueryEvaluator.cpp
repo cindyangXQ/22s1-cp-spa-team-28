@@ -20,100 +20,136 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
     std::vector<ClauseResult> clauseResultList = queryResult->clauseResultList;
     SelectType type = queryResult->selectClause.selectType;
     bool haveTableToJoin = false;
+    bool isAnyTableEmpty = false;
 
-    for (int i = 0; i < clauseResultList.size(); i++) {
-        if (clauseResultList[i].isEmpty && type == SelectType::BOOLEAN) {
-            return std::vector<std::string>{"FALSE"};
-        } else if (clauseResultList[i].isEmpty) {
-            return std::vector<std::string>{};
-        }
-        if (clauseResultList[i].table.header.size() > 0) {
-            haveTableToJoin = true;
+    checkAllClauseResult(clauseResultList, &isAnyTableEmpty, &haveTableToJoin);
+
+    if (isAnyTableEmpty) {
+        if (type == SelectType::BOOLEAN) {
+            return {"FALSE"};
+        } else {
+            return {};
         }
     }
 
     if (!haveTableToJoin) {
-        if (type == SelectType::BOOLEAN) {
-            return std::vector<std::string>{"TRUE"};
-        } else if (type == SelectType::SINGLE) {
-            return QueryEvaluator::getAll(queryResult->selectClause.syns[0]);
-        } else {
-            std::vector<Synonym> selectedSynonyms =
-                queryResult->selectClause.syns;
-            std::vector<std::vector<std::string>> allResults;
-            for (int i = 0; i < selectedSynonyms.size(); i++) {
-                allResults.push_back(
-                    QueryEvaluator::getAll(selectedSynonyms[i]));
-                if (allResults[i].size() == 0) {
-                    return {};
-                }
-            }
-            std::vector<std::string> output = allResults[0];
-            for (int i = 1; i < allResults.size(); i++) {
-                std::vector<std::string> tmp = {};
-                for (int j = 0; j < output.size(); j++) {
-                    for (int k = 0; k < allResults[i].size(); k++) {
-                        tmp.push_back(output[j] + " " + allResults[i][k]);
-                    }
-                }
-                output = tmp;
-            }
-            return output;
-        }
+        return handleNoTables(queryResult);
     }
 
-    ClauseTable result = ClauseTable();
-    for (int i = 0; i < clauseResultList.size(); i++) {
-        result = ClauseTable::joinTables(result, clauseResultList[i].table);
-    }
+    ClauseTable result = joinAllClauseTables(clauseResultList);
 
-    if (result.size() == 0) {
-        if (type == SelectType::BOOLEAN) {
-            return {"FALSE"};
-        } else {
-            return std::vector<std::string>{};
-        }
+    if (result.size() == 0 && type == SelectType::BOOLEAN) {
+        return {"FALSE"};
+    } else if (result.size() == 0) {
+        return std::vector<std::string>{};
     } else if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
         Synonym selectedSynonym = queryResult->selectClause.syns[0];
-        std::vector<Value> selectValues = result.getValues(selectedSynonym);
-        if (selectValues.size() == 0) {
-            return QueryEvaluator::getAll(queryResult->selectClause.syns[0]);
-        } else {
-            std::unordered_set<std::string> remove_duplicates;
-            std::vector<std::string> output;
-            for (int k = 0; k < selectValues.size(); k++) {
-                remove_duplicates.insert(selectValues[k].value);
-            }
-            output.insert(output.end(), remove_duplicates.begin(),
-                          remove_duplicates.end());
-            return output;
-        }
+        return extractSynonymFromTable(selectedSynonym, result);
     } else {
         std::vector<Synonym> selectSynonyms = queryResult->selectClause.syns;
-        for (int i = 0; i < selectSynonyms.size(); i++) {
-            ClauseTable table = ClauseTable({selectSynonyms[i]});
-            std::vector<std::string> all_values =
-                QueryEvaluator::getAll(selectSynonyms[i]);
-            for (int j = 0; j < all_values.size(); j++) {
-                table.insert(
-                    Tuple({Value(ValueType::WILDCARD, all_values[j])}));
-            }
+        return extractTuplesFromTable(selectSynonyms, result);
+    }
+}
 
-            result = ClauseTable::joinTables(result, table);
+std::vector<std::string>
+QueryEvaluator::extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
+                                       ClauseTable result) {
+    for (int i = 0; i < selectSynonyms.size(); i++) {
+        ClauseTable table = ClauseTable({selectSynonyms[i]});
+        std::vector<std::string> all_values =
+            QueryEvaluator::getAll(selectSynonyms[i]);
+        for (int j = 0; j < all_values.size(); j++) {
+            table.insert(Tuple({Value(ValueType::WILDCARD, all_values[j])}));
         }
-        std::vector<int> indices = result.getIndices(selectSynonyms);
+
+        result = ClauseTable::joinTables(result, table);
+    }
+    std::vector<int> indices = result.getIndices(selectSynonyms);
+    std::vector<std::string> output;
+    for (int i = 0; i < result.size(); i++) {
+        std::string tuple = "";
+        Tuple row = result.rows[i];
+        for (int j = 0; j < indices.size(); j++) {
+            Value v = row.values[indices[j]];
+            tuple += v.value + " ";
+        }
+        output.push_back(Utils::removeTrailingSpaces(tuple));
+    }
+    return output;
+}
+
+std::vector<std::string>
+QueryEvaluator::extractSynonymFromTable(Synonym selectedSynonym,
+                                        ClauseTable result) {
+
+    std::vector<Value> selectValues = result.getValues(selectedSynonym);
+    if (selectValues.size() == 0) {
+        return QueryEvaluator::getAll(selectedSynonym);
+    } else {
+        std::unordered_set<std::string> remove_duplicates;
         std::vector<std::string> output;
-        for (int i = 0; i < result.size(); i++) {
-            std::string tuple = "";
-            for (int j = 0; j < indices.size(); j++) {
-                tuple += result.rows[i].values[indices[j]].value + " ";
+        for (int k = 0; k < selectValues.size(); k++) {
+            remove_duplicates.insert(selectValues[k].value);
+        }
+        output.insert(output.end(), remove_duplicates.begin(),
+                      remove_duplicates.end());
+        return output;
+    }
+}
+
+void QueryEvaluator::checkAllClauseResult(
+    std::vector<ClauseResult> clauseResultList, bool *isAnyTableEmpty,
+    bool *haveTableToJoin) {
+    for (int i = 0; i < clauseResultList.size(); i++) {
+        if (clauseResultList[i].isEmpty) {
+            *isAnyTableEmpty = true;
+            return;
+        }
+        if (clauseResultList[i].table.header.size() > 0) {
+            *haveTableToJoin = true;
+        }
+    }
+}
+
+std::vector<std::string>
+QueryEvaluator::handleNoTables(QueryResult *queryResult) {
+    SelectType type = queryResult->selectClause.selectType;
+    if (type == SelectType::BOOLEAN) {
+        return {"TRUE"};
+    } else if (type == SelectType::SINGLE) {
+        return QueryEvaluator::getAll(queryResult->selectClause.syns[0]);
+    } else {
+        std::vector<Synonym> selectedSynonyms = queryResult->selectClause.syns;
+        std::vector<std::vector<std::string>> allResults;
+        for (int i = 0; i < selectedSynonyms.size(); i++) {
+            allResults.push_back(QueryEvaluator::getAll(selectedSynonyms[i]));
+            if (allResults[i].size() == 0) {
+                return {};
             }
-            output.push_back(Utils::removeTrailingSpaces(tuple));
+        }
+        std::vector<std::string> output = allResults[0];
+        for (int i = 1; i < allResults.size(); i++) {
+            std::vector<std::string> tmp = {};
+            for (int j = 0; j < output.size(); j++) {
+                for (int k = 0; k < allResults[i].size(); k++) {
+                    tmp.push_back(output[j] + " " + allResults[i][k]);
+                }
+            }
+            output = tmp;
         }
         return output;
     }
+}
+
+ClauseTable QueryEvaluator::joinAllClauseTables(
+    std::vector<ClauseResult> clauseResultList) {
+    ClauseTable result = ClauseTable();
+    for (int i = 0; i < clauseResultList.size(); i++) {
+        result = ClauseTable::joinTables(result, clauseResultList[i].table);
+    }
+    return result;
 }
 
 std::vector<std::string> QueryEvaluator::getAll(Synonym select) {
