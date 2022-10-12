@@ -311,24 +311,3 @@ const std::regex withClauseRegex(
     "\\s*=\\s*"                     // '='
     "(.*?))\\s*"                     // ref
 );
-
-// with-cl : 'with' attrCond
-// attrCond : attrCompare ( 'and' attrCompare )*
-// attrCompare : ref '=' ref
-// ref : '"' IDENT '"'" | INTEGER | attrRef | synonym
-// attrRef : synonym '.' attrName
-// For arguments extraction
-const std::regex withRegex(
-    "^\\s*(with\\s+|^\\s*and\\s+)"  // with or and 
-    "(.*?)"                         // ref
-    "\\s*=\\s*"                     // '='
-    "(.*?)\\s*"                     // ref
-);
-
-// For clause extraction
-const std::regex withClauseRegex(
-    "(^\\s*(with\\s+|^\\s*and\\s+)" // with or and 
-    "(.*?)"                         // ref
-    "\\s*=\\s*"                     // '='
-    "(.*?))\\s*"                     // ref
-);
