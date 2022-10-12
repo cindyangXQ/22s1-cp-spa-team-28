@@ -16,7 +16,9 @@ std::vector<Procedure *> ProcedureExtractor::extract() {
 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
-        result.push_back(new Procedure(procList.at(i)->getName()));
+        ProcedureNode *currProc = procList.at(i);
+        result.push_back(
+            new Procedure(currProc->getName(), currProc->getStartLine()));
     }
 
     return result;
