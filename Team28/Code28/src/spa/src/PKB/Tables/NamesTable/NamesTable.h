@@ -42,7 +42,7 @@ public:
      * Gets NamedEntityMap for children.
      * TODO: Consider removing.
      */
-    std::map<std::string, T*> getNameEntityMap() {
+    std::map<std::string, T *> getNameEntityMap() {
         return this->nameEntityMap;
     };
 
@@ -53,7 +53,7 @@ public:
 
 protected:
     std::unordered_set<std::string> names;
-    std::map<std::string, T*> nameEntityMap;
+    std::map<std::string, T *> nameEntityMap;
 };
 
 class ConstantsTable : public NamesTable<Constant> {};

@@ -12,7 +12,7 @@ public:
     explicit Procedure(std::string name, int startStmt);
 
     int getStmtNum();
-    
+
 private:
     int startStmtNum;
 };
