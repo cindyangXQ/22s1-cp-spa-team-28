@@ -342,7 +342,7 @@ TEST_CASE("CallProcTable can initialise, store and retrieve correctly") {
     REQUIRE(callProcTable.retrieveRight("foo").count(3) == 1);
 }
 
-TEST_CASE("isLeftValueExists works correctly") {
+TEST_CASE("isLeftValueExist works correctly") {
     FollowsTable follows;
 
     // procedure main { calls bar; calls bar; calls foo }
