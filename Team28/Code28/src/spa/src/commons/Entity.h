@@ -31,7 +31,7 @@ const ENTITY_TYPE_SET stmtRefSet = {
     EntityName::STMT,  EntityName::READ, EntityName::PRINT, EntityName::CALL,
     EntityName::WHILE, EntityName::IF,   EntityName::ASSIGN};
 
-const ENTITY_TYPE_SET entRefSet = {EntityName::VARIABLE, EntityName::PROCEDURE};
+const ENTITY_TYPE_SET entRefSet = {EntityName::VARIABLE, EntityName::PROCEDURE, EntityName::CONSTANT};
 
 typedef std::unordered_map<EntityName, std::unordered_set<EntityAttribute>> ENTITY_ATTRIBUTE_MAP;
 const ENTITY_ATTRIBUTE_MAP entityAttributeMap = {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../commons/Synonym.h"
+#include "../../commons/Reference.h"
 #include <vector>
 
 enum class SelectType { SINGLE, TUPLE, BOOLEAN };
@@ -9,8 +9,8 @@ enum class SelectType { SINGLE, TUPLE, BOOLEAN };
  */
 class SelectClause {
 public:
-    std::vector<Synonym> syns;
+    std::vector<Reference> refs;
     SelectType selectType;
     SelectClause();
-    SelectClause(std::vector<Synonym> syns, SelectType selectType);
+    SelectClause(std::vector<Reference> refs, SelectType selectType);
 };

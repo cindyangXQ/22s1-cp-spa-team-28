@@ -66,28 +66,30 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
             throw SyntaxError("Invalid select clause syntax");
         }
         std::string selectValue = matches[1];
-        std::vector<Synonym> selectedSyns;
+        std::vector<Reference> selectedRefs;
         *clause = Utils::removeString(*clause, selectClause);
+
         if (selectValue.compare("BOOLEAN") == 0) {
-            return SelectClause(selectedSyns, SelectType::BOOLEAN);
+            return SelectClause(selectedRefs, SelectType::BOOLEAN);
         } else if (std::regex_search(selectValue, selectTupleRegex)) {
             selectValue = selectValue.substr(1, selectValue.size() - 2);
-            std::vector<std::string> synonymStrings =
+            std::vector<std::string> selectStrings =
                 Utils::splitString(selectValue, ',');
-            for (int i = 0; i < synonymStrings.size(); i++) {
-                std::string syn = synonymStrings[i];
-                if (!std::regex_search(syn, synRegex)) {
+            for (int i = 0; i < selectStrings.size(); i++) {
+                std::string value = selectStrings[i];
+                if (!std::regex_search(value, synRegex) && !std::regex_search(value, attrRefRegex)) {
                     throw SyntaxError("Invalid select value");
                 }
-                Synonym selectedSyn = QueryParser::getSynonym(
-                    Utils::removeTrailingSpaces(syn), syns);
-                selectedSyns.push_back(selectedSyn);
+                Reference selectedRef = QueryParser::getReference(
+                    Utils::removeTrailingSpaces(value), syns);
+                selectedRefs.push_back(selectedRef);
             }
-            return SelectClause(selectedSyns, SelectType::TUPLE);
-        } else if (std::regex_search(selectValue, synRegex)) {
+            return SelectClause(selectedRefs, SelectType::TUPLE);
+        } else if (std::regex_search(selectValue, attrRefRegex) || std::regex_search(selectValue, synRegex)) {
             selectValue = Utils::removeTrailingSpaces(selectValue);
-            selectedSyns.push_back(QueryParser::getSynonym(selectValue, syns));
-            return SelectClause(selectedSyns, SelectType::SINGLE);
+            Reference selectedRef = QueryParser::getReference(selectValue, syns);
+            selectedRefs.push_back(selectedRef);
+            return SelectClause(selectedRefs, SelectType::SINGLE);
         }
     }
     throw SyntaxError("Expected select clause");
@@ -202,6 +204,9 @@ void QueryParser::parseWithClause(std::string *clause,
 
         Reference left = getReference(matches[2].str(), syns);
         Reference right = getReference(matches[3].str(), syns);
+        if (left.isSynonym || right.isSynonym) {
+            throw SemanticError("Invalid with clause arguments");
+        }
         
         *clause = Utils::removeString(*clause, withClause);
         withCls->push_back(WithClause(left, right));
@@ -264,11 +269,11 @@ Reference QueryParser::getReference(std::string input,
     else if (std::regex_match(input, attrRefRegex)) {
         std::smatch matches;
         std::regex_match(input, matches, attrRefRegex);
-        Synonym synonym = getSynonym(matches[1], syns);
+        Synonym synonym = getSynonym(matches[1].str(), syns);
         if (!entityAttrMap.count(matches[2])) {
             throw SyntaxError("Invalid attribute name");
         }
-        EntityAttribute attr = entityAttrMap.find(matches[2])->second;
+        EntityAttribute attr = entityAttrMap.find(matches[2].str())->second;
         return Reference(synonym, attr);
     }
     throw SyntaxError("Invalid reference format");

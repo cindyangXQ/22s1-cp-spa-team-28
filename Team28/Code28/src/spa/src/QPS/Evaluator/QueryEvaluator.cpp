@@ -45,28 +45,28 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
     } else if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
-        Synonym selectedSynonym = queryResult->selectClause.syns[0];
-        return extractSynonymFromTable(selectedSynonym, result);
+        Reference selectedRef = queryResult->selectClause.refs[0];
+        return extractReferenceFromTable(selectedRef, result);
     } else {
-        std::vector<Synonym> selectSynonyms = queryResult->selectClause.syns;
-        return extractTuplesFromTable(selectSynonyms, result);
+        std::vector<Reference> selectRefs = queryResult->selectClause.refs;
+        return extractTuplesFromTable(selectRefs, result);
     }
 }
 
 std::vector<std::string>
-QueryEvaluator::extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
+QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
                                        ClauseTable result) {
-    for (int i = 0; i < selectSynonyms.size(); i++) {
-        ClauseTable table = ClauseTable({selectSynonyms[i]});
+    for (int i = 0; i < selectRefs.size(); i++) {
+        ClauseTable table = ClauseTable({selectRefs[i]});
         std::vector<std::string> all_values =
-            QueryEvaluator::getAll(selectSynonyms[i]);
+            QueryEvaluator::getAll(selectRefs[i]);
         for (int j = 0; j < all_values.size(); j++) {
             table.insert(Tuple({Value(ValueType::WILDCARD, all_values[j])}));
         }
 
         result = ClauseTable::joinTables(result, table);
     }
-    std::vector<int> indices = result.getIndices(selectSynonyms);
+    std::vector<int> indices = result.getIndices(selectRefs);
     std::vector<std::string> output;
     for (int i = 0; i < result.size(); i++) {
         std::string tuple = "";
@@ -81,12 +81,12 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
 }
 
 std::vector<std::string>
-QueryEvaluator::extractSynonymFromTable(Synonym selectedSynonym,
+QueryEvaluator::extractReferenceFromTable(Reference selectedRef,
                                         ClauseTable result) {
 
-    std::vector<Value> selectValues = result.getValues(selectedSynonym);
+    std::vector<Value> selectValues = result.getValues(selectedRef);
     if (selectValues.size() == 0) {
-        return QueryEvaluator::getAll(selectedSynonym);
+        return QueryEvaluator::getAll(selectedRef);
     } else {
         std::unordered_set<std::string> remove_duplicates;
         std::vector<std::string> output;
@@ -119,12 +119,12 @@ QueryEvaluator::handleNoTables(QueryResult *queryResult) {
     if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
-        return QueryEvaluator::getAll(queryResult->selectClause.syns[0]);
+        return QueryEvaluator::getAll(queryResult->selectClause.refs[0]);
     } else {
-        std::vector<Synonym> selectedSynonyms = queryResult->selectClause.syns;
+        std::vector<Reference> selectedRefs = queryResult->selectClause.refs;
         std::vector<std::vector<std::string>> allResults;
-        for (int i = 0; i < selectedSynonyms.size(); i++) {
-            allResults.push_back(QueryEvaluator::getAll(selectedSynonyms[i]));
+        for (int i = 0; i < selectedRefs.size(); i++) {
+            allResults.push_back(QueryEvaluator::getAll(selectedRefs[i]));
             if (allResults[i].size() == 0) {
                 return {};
             }
@@ -152,8 +152,8 @@ ClauseTable QueryEvaluator::JoinAllClauseTables(
     return result;
 }
 
-std::vector<std::string> QueryEvaluator::getAll(Synonym select) {
-    EntityName type = select.entity;
+std::vector<std::string> QueryEvaluator::getAll(Reference select) {
+    EntityName type = select.syn.entity;
     if (type == EntityName::STMT) {
         std::vector<Statement *> statementList =
             (std::vector<Statement *>)this->queryFacade->getAllStatements();

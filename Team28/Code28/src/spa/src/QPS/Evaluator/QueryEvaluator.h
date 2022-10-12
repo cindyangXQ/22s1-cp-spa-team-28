@@ -24,12 +24,12 @@ public:
 private:
     void checkAllClauseResult(std::vector<ClauseResult> clauseResultList,
                               bool *isAnyTableEmpty, bool *haveTableToJoin);
-    std::vector<std::string> extractSynonymFromTable(Synonym selectedSynonym,
+    std::vector<std::string> extractReferenceFromTable(Reference selectedRef,
                                                      ClauseTable result);
     std::vector<std::string>
-    extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
+    extractTuplesFromTable(std::vector<Reference> selectRefs,
                            ClauseTable result);
-    std::vector<std::string> getAll(Synonym select);
+    std::vector<std::string> getAll(Reference select);
     std::vector<std::string> handleNoTables(QueryResult *queryResult);
     ClauseTable JoinAllClauseTables(std::vector<ClauseResult> clauseResultList);
 };

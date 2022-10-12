@@ -183,7 +183,7 @@ const std::regex wildcardRegex("\\s*_\\s*"); // wildcard: _
 
 const std::regex attrRefRegex(
     "\\s*([a-zA-Z][a-zA-Z0-9]*)\\s*"            // synonym
-    "[\\.]"                                 // '.'
+    "\\."                                       // '.'
     "\\s*(procName|varName|value|stmt#)\\s*"    // attrName
 );
 
@@ -216,21 +216,25 @@ const std::regex declarationRegex(
 // For arguments extraction
 const std::regex selectRegex(
     "\\s*Select\\s+"                 // 'Select'
-    "([a-zA-Z][a-zA-Z0-9]*|BOOLEAN|" // synonym or BOOLEAN
-    "<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"  // or <synonym (, synonym)*>
-    "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*>)\\s*");
+    "([a-zA-Z][a-zA-Z0-9]*"
+    "(\\s*[\\.]\\s*(procName|varName|value|stmt#))*|"
+    "BOOLEAN|"                      // synonym or BOOLEAN or attr
+    "<.*?"                          // or <synonym or attr (, synonym or attr)*>
+    "(,.*?)*>)\\s*");
 
 // For clause extraction
 const std::regex selectClauseRegex(
     "(\\s*Select\\s+"                // 'Select'
-    "([a-zA-Z][a-zA-Z0-9]*|BOOLEAN|" // synonym or BOOLEAN
-    "<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"  // or <synonym (, synonym)*>
-    "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*>)\\s*).*?");
+    "([a-zA-Z][a-zA-Z0-9]*"
+    "(\\s*[\\.]\\s*(procName|varName|value|stmt#))*|"
+    "BOOLEAN|"                      // synonym or BOOLEAN or attr
+    "<.*?"                          // or <synonym (, synonym)*>
+    "(,.*?)*>)\\s*).*?");
 
 // For select tuple
 const std::regex selectTupleRegex(
-    "<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"
-    "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*>");
+    "<.*?"
+    "(,.*?)*>");
 
 // suchthat-cl : 'such' 'that' relRef
 // relRef : ModifiesP | ModifiesS | UsesP | UsesS
