@@ -1,5 +1,6 @@
 #include "catch.hpp"
 
+#include "PKB/Tables/RelationshipsTable/CallProcTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/RelationshipsTable.h"
@@ -309,4 +310,88 @@ TEST_CASE("NextTTable can initialise, store and retrieve correctly") {
     REQUIRE(nextTTable.retrieveLeft(1).count(2) == 1);
     REQUIRE(nextTTable.retrieveLeft(1).count(3) == 1);
     REQUIRE(nextTTable.retrieveRight(2).count(1) == 1);
+}
+
+TEST_CASE("CallProcTable can initialise, store and retrieve correctly") {
+    CallProcTable callProcTable;
+
+    // procedure main { calls bar; calls bar; calls foo }
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::CALLS, 1, std::string("bar"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::CALLS, 2, std::string("bar"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::CALLS, 3, std::string("foo"));
+    callProcTable.store(&test1);
+    callProcTable.store(&test2);
+    callProcTable.store(&test3);
+
+    // successfully stored Call-ProcName relationship
+    REQUIRE(callProcTable.retrieveLeft(1).size() == 1);
+    REQUIRE(callProcTable.retrieveLeft(2).size() == 1);
+    REQUIRE(callProcTable.retrieveLeft(3).size() == 1);
+    REQUIRE(callProcTable.retrieveRight("bar").size() == 2);
+    REQUIRE(callProcTable.retrieveRight("foo").size() == 1);
+
+    // values in maps are correct
+    REQUIRE(callProcTable.retrieveLeft(1).count("bar") == 1);
+    REQUIRE(callProcTable.retrieveLeft(2).count("bar") == 1);
+    REQUIRE(callProcTable.retrieveLeft(3).count("foo") == 1);
+    REQUIRE(callProcTable.retrieveRight("bar").count(1) == 1);
+    REQUIRE(callProcTable.retrieveRight("bar").count(2) == 1);
+    REQUIRE(callProcTable.retrieveRight("foo").count(3) == 1);
+}
+
+TEST_CASE("isLeftValueExist works correctly") {
+    FollowsTable follows;
+
+    // procedure main { calls bar; calls bar; calls foo }
+    Relationship<int, int> test1 =
+        Relationship(RelationshipReference::FOLLOWS, 1, 2);
+    Relationship<int, int> test2 =
+        Relationship(RelationshipReference::FOLLOWS, 2, 3);
+    follows.store(&test1);
+    follows.store(&test2);
+
+    // successfully stored Call-ProcName relationship
+    REQUIRE(follows.isLeftValueExist(1));
+    REQUIRE(follows.isLeftValueExist(2));
+    REQUIRE(!follows.isLeftValueExist(3));
+}
+
+TEST_CASE("retrieveSingleRight works for Left with only 1 Right") {
+    CallProcTable callProcTable;
+
+    // procedure main { calls bar; calls bar; calls foo }
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::CALLS, 1, std::string("bar"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::CALLS, 2, std::string("bar"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::CALLS, 3, std::string("foo"));
+    callProcTable.store(&test1);
+    callProcTable.store(&test2);
+    callProcTable.store(&test3);
+
+    // successfully stored Call-ProcName relationship
+    REQUIRE(callProcTable.retrieveSingleRight(1) == "bar");
+    REQUIRE(callProcTable.retrieveSingleRight(2) == "bar");
+    REQUIRE(callProcTable.retrieveSingleRight(3) == "foo");
+}
+
+TEST_CASE(
+    "retrieveSingleRight throws exception for Left with multiple rights") {
+    UsesSTable usesS;
+
+    // procedure main { calls bar; calls bar; calls foo }
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 1, std::string("y"));
+    usesS.store(&test1);
+    usesS.store(&test2);
+
+    // successfully stored Call-ProcName relationship
+    REQUIRE_THROWS(usesS.retrieveSingleRight(1),
+                   "There exists more than 1 Right value mapped to given Left");
 }

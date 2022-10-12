@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <map>
+#include <stdexcept>
 #include <string>
 #include <unordered_set>
 
@@ -75,8 +76,20 @@ public:
         return this->rightToLeftsMap;
     }
 
-    bool isValueExist(Left left) {
+    bool isLeftValueExist(Left left) {
         return this->retrieveLeft(left).size() != 0;
+    }
+
+    /*
+     * Retrieves the only Right from the given Left.
+     * Throws an exceptionn if Left is mapped to multiple Rights.
+     */
+    Right retrieveSingleRight(Left left) {
+        if (this->retrieveLeft(left).size() != 1) {
+            throw std::invalid_argument(
+                "There exists more than 1 Right value mapped to given Left");
+        }
+        return *this->retrieveLeft(left).begin();
     }
 
 protected:

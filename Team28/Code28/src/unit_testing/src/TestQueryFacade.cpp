@@ -1248,3 +1248,47 @@ TEST_CASE("GetIfAndVar returns correct results") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("getAttribute returns correct results") {
+    // procedure main {
+    //     a = b;
+    //     print a;
+    //     read x;
+    //     call bar;
+    // } ... assumes valid procedure bar exists
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
+    CallProcTable *callP = storage->getTable<CallProcTable>();
+
+    // Statements
+    Statement stmt1 = Statement(1, StatementType::ASSIGN);
+    Statement stmt2 = Statement(2, StatementType::PRINT);
+    Statement stmt3 = Statement(3, StatementType::READ);
+    Statement stmt4 = Statement(4, StatementType::CALL);
+    statements->store(&stmt1);
+    statements->store(&stmt2);
+    statements->store(&stmt3);
+    statements->store(&stmt4);
+
+    // Relationships
+    Relationship<int, std::string> rs1 =
+        Relationship(RelationshipReference::USES, 1, std::string("b"));
+    Relationship<int, std::string> rs2 =
+        Relationship(RelationshipReference::USES, 2, std::string("a"));
+    Relationship<int, std::string> rs3 =
+        Relationship(RelationshipReference::USES, 3, std::string("x"));
+    Relationship<int, std::string> rs4 =
+        Relationship(RelationshipReference::USES, 4, std::string("bar"));
+    usesS->store(&rs1);
+    usesS->store(&rs2);
+    usesS->store(&rs3);
+    callP->store(&rs4);
+
+    REQUIRE_THROWS(facade.getAttribute(1),
+                   "StmtNum does not refer to attributable statement");
+    REQUIRE(facade.getAttribute(2) == "a");
+    REQUIRE(facade.getAttribute(3) == "x");
+    REQUIRE(facade.getAttribute(4) == "bar");
+}

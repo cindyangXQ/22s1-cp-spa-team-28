@@ -43,6 +43,12 @@ public:
      */
     std::vector<int> getStatementsByType(StatementType type);
 
+    /*
+     * Returns a boolean of whether the given statement is one of Calls, Print
+     * or Read.
+     */
+    bool isAttributableStatement(const int &index);
+
 private:
     std::map<StatementType, std::vector<int>> statementTypeIndexes = {
         {StatementType::READ, {}},   {StatementType::PRINT, {}},
