@@ -74,10 +74,12 @@ public:
 
     virtual void getVariablesInto(std::vector<std::string> &result){};
     virtual void getConstantsInto(std::vector<std::string> &result){};
-    virtual void getStatementsInto(std::vector<Statement *> &result) {
+    virtual void
+    getStatementsInto(std::vector<Statement *> &result,
+                      std::vector<Assignment *> &assign,
+                      std::vector<Relationship<int, std::string> *> &call) {
         result.push_back(new Statement(line, StatementType::NONE));
     }
-    virtual void getAssignmentsInto(std::vector<Assignment *> &result){};
     virtual void
     getFollowsInto(std::vector<Relationship<int, int> *> &result){};
     virtual void
@@ -110,8 +112,9 @@ public:
     std::string getVariable();
 
     void getVariablesInto(std::vector<std::string> &result);
-    void getStatementsInto(std::vector<Statement *> &result);
-    void getAssignmentsInto(std::vector<Assignment *> &result){};
+    void getStatementsInto(std::vector<Statement *> &result,
+                           std::vector<Assignment *> &assign,
+                           std::vector<Relationship<int, std::string> *> &call);
     std::vector<std::string> *
     getModsInto(std::vector<Relationship<int, std::string> *> &result);
     void getModifiesPInto(std::vector<std::string> &result,
@@ -128,8 +131,9 @@ public:
     std::string getVariable();
 
     void getVariablesInto(std::vector<std::string> &result);
-    void getStatementsInto(std::vector<Statement *> &result);
-    void getAssignmentsInto(std::vector<Assignment *> &result){};
+    void getStatementsInto(std::vector<Statement *> &result,
+                           std::vector<Assignment *> &assign,
+                           std::vector<Relationship<int, std::string> *> &call);
     std::vector<std::string> *
     getUsesInto(std::vector<Relationship<int, std::string> *> &result);
     void getUsesPInto(std::vector<std::string> &result,
@@ -145,8 +149,9 @@ public:
     bool equals(StatementNode *other);
     std::string getVariable();
 
-    void getStatementsInto(std::vector<Statement *> &result);
-    void getAssignmentsInto(std::vector<Assignment *> &result){};
+    void getStatementsInto(std::vector<Statement *> &result,
+                           std::vector<Assignment *> &assign,
+                           std::vector<Relationship<int, std::string> *> &call);
     void getUsesPInto(std::vector<std::string> &result,
                       std::vector<ProcedureNode *> &procList);
     void getModifiesPInto(std::vector<std::string> &result,
@@ -170,8 +175,9 @@ public:
 
     void getVariablesInto(std::vector<std::string> &result);
     void getConstantsInto(std::vector<std::string> &result);
-    void getStatementsInto(std::vector<Statement *> &result);
-    void getAssignmentsInto(std::vector<Assignment *> &result);
+    void getStatementsInto(std::vector<Statement *> &result,
+                           std::vector<Assignment *> &assign,
+                           std::vector<Relationship<int, std::string> *> &call);
     std::vector<std::string> *
     getUsesInto(std::vector<Relationship<int, std::string> *> &result);
     void getUsesPInto(std::vector<std::string> &result,
@@ -201,8 +207,9 @@ public:
 
     void getVariablesInto(std::vector<std::string> &result);
     void getConstantsInto(std::vector<std::string> &result);
-    void getStatementsInto(std::vector<Statement *> &result);
-    void getAssignmentsInto(std::vector<Assignment *> &result);
+    void getStatementsInto(std::vector<Statement *> &result,
+                           std::vector<Assignment *> &assign,
+                           std::vector<Relationship<int, std::string> *> &call);
     void getFollowsInto(std::vector<Relationship<int, int> *> &result);
     void getFollowsTInto(std::vector<Relationship<int, int> *> &result);
     std::vector<std::string> *
@@ -242,8 +249,9 @@ public:
 
     void getVariablesInto(std::vector<std::string> &result);
     void getConstantsInto(std::vector<std::string> &result);
-    void getStatementsInto(std::vector<Statement *> &result);
-    void getAssignmentsInto(std::vector<Assignment *> &result);
+    void getStatementsInto(std::vector<Statement *> &result,
+                           std::vector<Assignment *> &assign,
+                           std::vector<Relationship<int, std::string> *> &call);
     void getFollowsInto(std::vector<Relationship<int, int> *> &result);
     void getFollowsTInto(std::vector<Relationship<int, int> *> &result);
     std::vector<std::string> *

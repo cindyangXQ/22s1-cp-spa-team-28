@@ -1,3 +1,6 @@
+*.xml
+Team28/Tests28/analysis.xsl
+run-autotester-win.py
 
 *.xml
 Team28/Tests28/analysis.xsl
