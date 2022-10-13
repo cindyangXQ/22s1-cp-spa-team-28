@@ -47,6 +47,27 @@ Storage::Storage() {
     this->tables[typeid(WhileControlVarTable)] = whileControl;
     this->tables[typeid(CallProcTable)] = callProcs;
 
+    this->popTables[Populate::STMT] = statements;
+    this->popTables[Populate::ASSIGN] = assignments;
+    this->popTables[Populate::PROC] = procedures;
+    this->popTables[Populate::VAR] = variables;
+    this->popTables[Populate::CONST] = constants;
+    this->popTables[Populate::PARENT] = parents;
+    this->popTables[Populate::PARENT_T] = parentsT;
+    this->popTables[Populate::FOLLOWS] = follows;
+    this->popTables[Populate::FOLLOWS_T] = followsT;
+    this->popTables[Populate::MOD_S] = modifiesS;
+    this->popTables[Populate::MOD_P] = modifiesP;
+    this->popTables[Populate::USE_S] = usesS;
+    this->popTables[Populate::USE_P] = usesP;
+    this->popTables[Populate::CALL] = calls;
+    this->popTables[Populate::CALL_T] = callsT;
+    this->popTables[Populate::B_IN] = branchIn;
+    this->popTables[Populate::B_OUT] = branchOut;
+    this->popTables[Populate::IF_C] = ifControl;
+    this->popTables[Populate::WHILE_C] = whileControl;
+    this->popTables[Populate::PROC_NAME] = callProcs;
+
     this->rsTables[RelationshipReference::FOLLOWS] = follows;
     this->rsTables[RelationshipReference::FOLLOWS_T] = followsT;
     this->rsTables[RelationshipReference::PARENT] = parents;
@@ -75,6 +96,10 @@ Solvable *Storage::getRsTable(RelationshipReference rsRef,
     }
     return this->rsTables.at(rsRef);
 };
+
+Table *Storage::getStoreTable(Populate popType) {
+    return this->popTables.at(popType);
+}
 
 std::vector<Solvable *> Storage::getModifiesTables() {
     return std::vector<Solvable *>{this->getTable<ModifiesSTable>(),
