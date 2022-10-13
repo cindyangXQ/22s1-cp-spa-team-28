@@ -32,7 +32,7 @@ private:
                            ClauseTable result);
     std::vector<std::string> getAll(Reference select);
     std::vector<std::string> handleNoTables(QueryResult *queryResult);
-    ClauseTable JoinAllClauseTables(std::vector<ClauseResult> clauseResultList);
+    ClauseTable joinAllClauseTables(std::vector<ClauseResult> clauseResultList);
     std::string getAttributeValue(Reference ref, std::string synonymValue);
     bool isAlternativeAttribute(Reference ref);
 };

@@ -55,7 +55,7 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
 
 std::vector<std::string>
 QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
-                                       ClauseTable result) {
+                                       ClauseTable result) {    
     for (int i = 0; i < selectRefs.size(); i++) {
         ClauseTable table = ClauseTable({selectRefs[i]});
         std::vector<std::string> all_values =
@@ -122,7 +122,7 @@ QueryEvaluator::handleNoTables(QueryResult *queryResult) {
         Reference selectRef = queryResult->selectClause.refs[0];
         std::vector<std::string> synonymValues =
             QueryEvaluator::getAll(selectRef);
-        
+
         std::vector<std::string> result;
         for (int i = 0; i < synonymValues.size(); i++) {
             result.push_back(getAttributeValue(selectRef, synonymValues[i]));
@@ -171,7 +171,7 @@ bool QueryEvaluator::isAlternativeAttribute(Reference ref) {
 std::string QueryEvaluator::getAttributeValue(Reference ref,
                                               std::string synonymValue) {
     if (isAlternativeAttribute(ref)) {
-        this->queryFacade->getAttribute(stoi(synonymValue));
+        return this->queryFacade->getAttribute(std::stoi(synonymValue));
     } else {
         return synonymValue;
     }

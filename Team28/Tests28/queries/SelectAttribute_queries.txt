@@ -1,0 +1,35 @@
+1 - Select r.varName no clause
+read r;
+Select r.varName
+read, a6, a26, a29
+5000
+2 - Select p.varName no clause
+print p;
+Select p.varName
+constant, a7, a17, a21, a27, a28, call
+5000
+3 - Select c.procName no clause
+call c;
+Select c.procName
+call
+5000
+4 - Select p.varName with 1 clause
+print p; assign a;
+Select p.varName such that Follows(a, p)
+constant, a21
+5000
+5 - Select tuple p and p.varName with 1 clause
+print p; assign a;
+Select <p, p.varName> such that Follows(a, p)
+4 constant, 20 a21
+5000
+6 - Select tuple p.varName and c.procName with 1 clause
+print p; assign a; call c;
+Select <p.varName, c.procName> such that Follows(a, p)
+constant call, a21 call
+5000
+6 - Select tuple p.varName and c.procName with 1 clause but not related
+print p; assign a; call c;
+Select <p.varName, c.procName> such that Follows(a, _)
+constant call, a7 call, a17 call, a21 call, a27 call, a28 call, call call
+5000
