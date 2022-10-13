@@ -570,7 +570,8 @@ TEST_CASE("Parser can parse with clauses") {
                               Synonym(EntityName::PROCEDURE, "p"),
                               Synonym(EntityName::READ, "r"), 
                               Synonym(EntityName::CONSTANT, "const"),
-                              Synonym(EntityName::WHILE, "w")};
+                              Synonym(EntityName::WHILE, "w"),
+                              Synonym(EntityName::ASSIGN, "a")};
 
     std::string correct_input = "with  c . procName = \"main\"";
     std::vector<WithClause> clause;
@@ -578,6 +579,13 @@ TEST_CASE("Parser can parse with clauses") {
     REQUIRE(clause[0].refLeft.type == ReferenceType::ATTR_REF);
     REQUIRE(clause[0].refLeft.attr == EntityAttribute::PROC_NAME);
     REQUIRE(clause[0].refRight.value.value == "main");
+
+    std::string correct_input2 = "with  const.value = 2";
+    std::vector<WithClause> clause2;
+    QueryParser::parseWithClause(&correct_input2, syns, &clause2);
+    REQUIRE(clause2[0].refLeft.type == ReferenceType::ATTR_REF);
+    REQUIRE(clause2[0].refLeft.attr == EntityAttribute::VALUE);
+    REQUIRE(clause2[0].refRight.value.value == "2");
 
     std::string correct_input_both_values = "with  2 = 1";
     std::vector<WithClause> clause_both_values;
@@ -600,6 +608,9 @@ TEST_CASE("Parser can parse with clauses") {
     std::string extra_quotation_mark = "with const.value = \"0\"";
     REQUIRE_THROWS(QueryParser::parseWithClause(&extra_quotation_mark, syns, &clause));
 
+    std::string missing_quotation_mark = "with r.varName = varName";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&missing_quotation_mark, syns, &clause));
+
     std::string extra_equal_sign = "with c.stmt# == 2";
     REQUIRE_THROWS(QueryParser::parseWithClause(&extra_equal_sign, syns, &clause));
 
@@ -620,4 +631,19 @@ TEST_CASE("Parser can parse with clauses") {
 
     std::string missing_syn2 = "with value = 10";
     REQUIRE_THROWS(QueryParser::parseWithClause(&missing_syn2, syns, &clause));
+
+    std::string wildcard = "with _ = a.stmt#";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&wildcard, syns, &clause));
+
+    std::string both_wildcard = "with _ = _";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&both_wildcard, syns, &clause));
+
+    std::string mismatch_arg_type = "with r.varName = w.stmt#";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&mismatch_arg_type, syns, &clause));
+
+    std::string mismatch_arg_type2 = "with p.procName = 1";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&mismatch_arg_type2, syns, &clause));
+
+    std::string mismatch_arg_type3 = "with \"main\" = a.stmt#";
+    REQUIRE_THROWS(QueryParser::parseWithClause(&mismatch_arg_type3, syns, &clause));
 }

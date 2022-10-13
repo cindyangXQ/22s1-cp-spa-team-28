@@ -204,7 +204,7 @@ void QueryParser::parseWithClause(std::string *clause,
 
         Reference left = getReference(matches[2].str(), syns);
         Reference right = getReference(matches[3].str(), syns);
-        if (left.isSynonym || right.isSynonym) {
+        if (!isValidWithClause(left, right)) {
             throw SemanticError("Invalid with clause arguments");
         }
         
@@ -315,6 +315,30 @@ bool QueryParser::isValidSuchThatClause(RelationshipReference relRef,
             relationshipRightRefMap.find(relRef)->second.count(right.type);
     }
     return isLeftValid && isRightValid;
+}
+
+bool QueryParser::isValidWithClause(Reference left, Reference right) {
+    if (left.isSynonym || 
+        right.isSynonym ||
+        left.type == ReferenceType::WILDCARD ||
+        right.type == ReferenceType::WILDCARD) {
+        return false;
+    }
+    if (left.attr == EntityAttribute::PROC_NAME || 
+        left.attr == EntityAttribute::VAR_NAME ||
+        left.type == ReferenceType::ENT_REF) {
+        return (right.attr == EntityAttribute::PROC_NAME || 
+                right.attr == EntityAttribute::VAR_NAME ||
+                right.type == ReferenceType::ENT_REF);
+    } else if (left.attr == EntityAttribute::STMT_NO || 
+               left.attr == EntityAttribute::VALUE ||
+               left.type == ReferenceType::STMT_REF) {
+        return (right.attr == EntityAttribute::STMT_NO ||
+                right.attr == EntityAttribute::VALUE ||
+                right.type == ReferenceType::STMT_REF);
+    } else {
+        return false;
+    }
 }
 
 bool QueryParser::isDuplicateSynonymName(std::vector<Synonym> syns) {
