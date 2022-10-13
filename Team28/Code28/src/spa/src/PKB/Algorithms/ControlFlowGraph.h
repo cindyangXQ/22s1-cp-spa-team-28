@@ -45,10 +45,8 @@ private:
             this->next->store(&rs);
             std::pair<int, int> curr = std::make_pair(i, j);
             bool isVisited = this->visited.find(curr) != this->visited.end();
-            std::string visited = isVisited ? "true" : "false";
-            std::cout << "DFSHelper j is: " << j << std::endl;
-            std::cout << "VISITED? " << visited << std::endl;
             if (!isVisited) {
+                this->visited[curr] = true;
                 DFS(j);
             }
         }
