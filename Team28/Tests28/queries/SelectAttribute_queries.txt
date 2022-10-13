@@ -13,23 +13,38 @@ call c;
 Select c.procName
 call
 5000
-4 - Select p.varName with 1 clause
+4 - Select r.varName with 1 clause
+read r; while w;
+Select r.varName such that Parent*(w, r)
+a6, a26
+5000
+5 - Select p.varName with 1 clause
 print p; assign a;
 Select p.varName such that Follows(a, p)
 constant, a21
 5000
-5 - Select tuple p and p.varName with 1 clause
+6 - Select tuple r and r.varName no clause
+read r;
+Select <r, r.varName>
+5 read, 10 a6, 23 a26, 26 a29
+5000
+7 - Select tuple p and p.varName with 1 clause
 print p; assign a;
 Select <p, p.varName> such that Follows(a, p)
 4 constant, 20 a21
 5000
-6 - Select tuple p.varName and c.procName with 1 clause
+8 - Select tuple p.varName and c.procName with 1 clause
 print p; assign a; call c;
 Select <p.varName, c.procName> such that Follows(a, p)
 constant call, a21 call
 5000
-6 - Select tuple p.varName and c.procName with 1 clause but not related
+9 - Select tuple p.varName and c.procName with 1 clause but not related
 print p; assign a; call c;
 Select <p.varName, c.procName> such that Follows(a, _)
 constant call, a7 call, a17 call, a21 call, a27 call, a28 call, call call
+5000
+10 - Select tuple p.varName and r.varName with 1 clause
+print p; read r;
+Select <p.varName, r.varName> such that Follows(r, p)
+a7 a6, a27 a26
 5000

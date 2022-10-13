@@ -55,7 +55,7 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
 
 std::vector<std::string>
 QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
-                                       ClauseTable result) {    
+                                       ClauseTable result) {
     for (int i = 0; i < selectRefs.size(); i++) {
         ClauseTable table = ClauseTable({selectRefs[i]});
         std::vector<std::string> all_values =
@@ -73,7 +73,7 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
         Tuple row = result.rows[i];
         for (int j = 0; j < indices.size(); j++) {
             Value v = row.values[indices[j]];
-            tuple += getAttributeValue(selectRefs[j] ,v.value) + " ";
+            tuple += getAttributeValue(selectRefs[j], v.value) + " ";
         }
         output.push_back(Utils::removeTrailingSpaces(tuple));
     }
@@ -82,16 +82,24 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
 
 std::vector<std::string>
 QueryEvaluator::extractReferenceFromTable(Reference selectedRef,
-                                        ClauseTable result) {
+                                          ClauseTable result) {
 
     std::vector<Value> selectValues = result.getValues(selectedRef);
     if (selectValues.size() == 0) {
-        return QueryEvaluator::getAll(selectedRef);
+        std::vector<std::string> synonymValues =
+            QueryEvaluator::getAll(selectedRef);
+
+        std::vector<std::string> result;
+        for (int i = 0; i < synonymValues.size(); i++) {
+            result.push_back(getAttributeValue(selectedRef, synonymValues[i]));
+        }
+        return result;
     } else {
         std::unordered_set<std::string> remove_duplicates;
         std::vector<std::string> output;
         for (int k = 0; k < selectValues.size(); k++) {
-            remove_duplicates.insert(getAttributeValue(selectedRef, selectValues[k].value));
+            remove_duplicates.insert(
+                getAttributeValue(selectedRef, selectValues[k].value));
         }
         output.insert(output.end(), remove_duplicates.begin(),
                       remove_duplicates.end());
@@ -128,34 +136,10 @@ QueryEvaluator::handleNoTables(QueryResult *queryResult) {
             result.push_back(getAttributeValue(selectRef, synonymValues[i]));
         }
         return result;
-
     } else {
         std::vector<Reference> selectedRefs = queryResult->selectClause.refs;
         ClauseTable result = ClauseTable();
-        for (int i = 0; i < selectedRefs.size(); i++) {
-            ClauseTable table = ClauseTable({selectedRefs[i]});
-            std::vector<std::string> all_values =
-                QueryEvaluator::getAll(selectedRefs[i]);
-            for (int j = 0; j < all_values.size(); j++) {
-                table.insert(
-                    Tuple({Value(ValueType::WILDCARD, all_values[j])}));
-            }
-
-            result = ClauseTable::joinTables(result, table);
-        }
-        std::vector<int> indices = result.getIndices(selectedRefs);
-
-        std::vector<std::string> output;
-        for (int i = 0; i < result.size(); i++) {
-            std::string tuple = "";
-            Tuple row = result.rows[i];
-            for (int j = 0; j < indices.size(); j++) {
-                Value v = row.values[indices[j]];
-                tuple += getAttributeValue(selectedRefs[j], v.value) + " ";
-            }
-            output.push_back(Utils::removeTrailingSpaces(tuple));
-        }
-        return output;
+        return extractTuplesFromTable(selectedRefs, result);
     }
 }
 
