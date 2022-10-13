@@ -6,6 +6,7 @@
 TEST_CASE("CFG Traverses Correctly - 1 procedure") {
     Storage *storage = new Storage();
     NextTable *nextTable = storage->getTable<NextTable>();
+    NextTTable *nextTTable = storage->getTable<NextTTable>();
     FollowsTable *followsTable = storage->getTable<FollowsTable>();
     BranchInTable *branchIn = storage->getTable<BranchInTable>();
     BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
@@ -49,9 +50,10 @@ TEST_CASE("CFG Traverses Correctly - 1 procedure") {
     procTable->store(&test);
 
     StorageView *storageView = storage->getStorageView();
-    ControlFlowGraph cfg = ControlFlowGraph(nextTable, storageView);
+    ControlFlowGraph cfg = ControlFlowGraph(nextTable, nextTTable, storageView);
 
     cfg.populateNext();
+    cfg.populateNextT();
 
     REQUIRE(nextTable->validate(Reference("1"), Reference("2")));
     REQUIRE(nextTable->validate(Reference("2"), Reference("3")));
@@ -68,10 +70,10 @@ TEST_CASE("CFG Traverses Correctly - 1 procedure") {
     REQUIRE(nextTable->validate(Reference("11"), Reference("12")));
 }
 
-
 TEST_CASE("CFG Traverses Correctly - multiple procedures") {
     Storage *storage = new Storage();
     NextTable *nextTable = storage->getTable<NextTable>();
+    NextTTable *nextTTable = storage->getTable<NextTTable>();
     FollowsTable *followsTable = storage->getTable<FollowsTable>();
     BranchInTable *branchIn = storage->getTable<BranchInTable>();
     BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
@@ -101,7 +103,7 @@ TEST_CASE("CFG Traverses Correctly - multiple procedures") {
     procTable->store(&bar);
 
     StorageView *storageView = storage->getStorageView();
-    ControlFlowGraph cfg = ControlFlowGraph(nextTable, storageView);
+    ControlFlowGraph cfg = ControlFlowGraph(nextTable, nextTTable, storageView);
 
     cfg.populateNext();
 

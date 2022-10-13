@@ -13,7 +13,8 @@ public:
     /*
      * Explicit constructor for Storage.
      */
-    ControlFlowGraph(NextTable *nextTable, StorageView *storage);
+    ControlFlowGraph(NextTable *nextTable, NextTTable *nextTTable,
+                     StorageView *storage);
 
     /*
      * Populates NextTable based on relationships currently found in Storage.
@@ -21,8 +22,14 @@ public:
      */
     void populateNext();
 
+    /*
+     * Populates NextTTable by iterating through current Next relationships.
+     */
+    void populateNextT();
+
 private:
     NextTable *next;
+    NextTTable *nextT;
     FollowsTable *follows;
     BranchInTable *branchIn;
     BranchOutTable *branchOut;
@@ -40,9 +47,12 @@ private:
      */
     template <typename Subclass> void DFSHelper(int i, Subclass *table) {
         for (int j : table->retrieveLeft(i)) {
-            Relationship<int, int> rs =
+            Relationship<int, int> nextRs =
                 Relationship(RelationshipReference::NEXT, i, j);
-            this->next->store(&rs);
+            Relationship<int, int> nextTRs =
+                Relationship(RelationshipReference::NEXT_T, i, j);
+            this->next->store(&nextRs);
+            this->nextT->store(&nextTRs);
             std::pair<int, int> curr = std::make_pair(i, j);
             bool isVisited = this->visited.find(curr) != this->visited.end();
             if (!isVisited) {

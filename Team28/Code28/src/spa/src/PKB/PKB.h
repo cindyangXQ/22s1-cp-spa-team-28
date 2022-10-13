@@ -25,6 +25,11 @@ public:
      */
     void populateNext();
 
+    /*
+     * Populates the NextTTable based on existing relationships.
+     */
+    void populateNextT();
+
 private:
     Storage *storage;
 };

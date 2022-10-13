@@ -2,8 +2,10 @@
 
 #include <map>
 
-ControlFlowGraph::ControlFlowGraph(NextTable *nextTable, StorageView *storage) {
+ControlFlowGraph::ControlFlowGraph(NextTable *nextTable, NextTTable *nextTTable,
+                                   StorageView *storage) {
     this->next = nextTable;
+    this->nextT = nextTTable;
     this->follows = storage->getTable<FollowsTable>();
     this->branchIn = storage->getTable<BranchInTable>();
     this->branchOut = storage->getTable<BranchOutTable>();
@@ -19,6 +21,27 @@ void ControlFlowGraph::populateNext() {
             continue;
         }
         DFS(stmtNum);
+    }
+};
+
+void ControlFlowGraph::populateNextT() {
+    std::cout << "ORIGINAL" << std::endl;
+    for (const auto &elem : this->visited) {
+        std::cout << "(" << elem.first.first << ", " << elem.first.second
+                  << ") " << elem.second << "\n";
+    }
+    for (const auto &elem1 : this->visited) {
+        std::cout << "ENTERING " << std::endl;
+        for (const auto &elem2 : this->visited) {
+            if (elem1.first.second == elem2.first.first) {
+                Relationship<int, int> nextTRs =
+                    Relationship(RelationshipReference::NEXT_T,
+                                 elem1.first.first, elem2.first.second);
+                std::cout << "(" << elem1.first.first << ", "
+                          << elem2.first.second << ") " << elem1.second << "\n";
+                this->nextT->store(&nextTRs);
+            }
+        }
     }
 };
 
