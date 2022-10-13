@@ -302,6 +302,7 @@ TEST_CASE("Select alternate attribute with no clauses") {
     QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements = storage->getTable<StatementsTable>();
     UsesSTable *usesS = storage->getTable<UsesSTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
     CallProcTable *callP = storage->getTable<CallProcTable>();
 
     // Statements
@@ -320,12 +321,12 @@ TEST_CASE("Select alternate attribute with no clauses") {
     Relationship<int, std::string> rs2 =
         Relationship(RelationshipReference::USES, 2, std::string("a"));
     Relationship<int, std::string> rs3 =
-        Relationship(RelationshipReference::USES, 3, std::string("x"));
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
     Relationship<int, std::string> rs4 =
         Relationship(RelationshipReference::USES, 4, std::string("bar"));
     usesS->store(&rs1);
     usesS->store(&rs2);
-    usesS->store(&rs3);
+    modifiesS->store(&rs3);
     callP->store(&rs4);
 
     std::vector<std::string> result;
