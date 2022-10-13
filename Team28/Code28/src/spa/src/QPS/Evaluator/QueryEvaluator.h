@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "../../PKB/Facades/QueryFacade.h"
 #include "../Parser/SolvableQuery.h"
 #include "../Utils.h"
@@ -32,4 +33,6 @@ private:
     std::vector<std::string> getAll(Reference select);
     std::vector<std::string> handleNoTables(QueryResult *queryResult);
     ClauseTable JoinAllClauseTables(std::vector<ClauseResult> clauseResultList);
+    std::string getAttributeValue(Reference ref, std::string synonymValue);
+    bool isAlternativeAttribute(Reference ref);
 };
