@@ -248,6 +248,11 @@ std::string QueryFacade::getAttribute(int stmtNum) {
         return usesS->retrieveSingleRight(stmtNum);
     }
 
+    ModifiesSTable *modifiesS = this->storage->getTable<ModifiesSTable>();
+    if (modifiesS->isLeftValueExist(stmtNum)) {
+        return modifiesS->retrieveSingleRight(stmtNum);
+    }
+
     CallProcTable *callProc = this->storage->getTable<CallProcTable>();
     return callProc->retrieveSingleRight(stmtNum);
 };
