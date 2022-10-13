@@ -22,6 +22,7 @@ Storage::Storage() {
     NextTTable *nextT = new NextTTable();
     IfControlVarTable *ifControl = new IfControlVarTable();
     WhileControlVarTable *whileControl = new WhileControlVarTable();
+    CallProcTable *callProcs = new CallProcTable();
 
     this->tables[typeid(StatementsTable)] = statements;
     this->tables[typeid(AssignmentsTable)] = assignments;
@@ -44,6 +45,7 @@ Storage::Storage() {
     this->tables[typeid(NextTTable)] = nextT;
     this->tables[typeid(IfControlVarTable)] = ifControl;
     this->tables[typeid(WhileControlVarTable)] = whileControl;
+    this->tables[typeid(CallProcTable)] = callProcs;
 
     this->rsTables[RelationshipReference::FOLLOWS] = follows;
     this->rsTables[RelationshipReference::FOLLOWS_T] = followsT;

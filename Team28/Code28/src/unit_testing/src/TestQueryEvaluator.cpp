@@ -74,8 +74,8 @@ TEST_CASE(
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    Procedure test1 = Procedure("test1");
-    Procedure test2 = Procedure("test2");
+    Procedure test1 = Procedure("test1", 1);
+    Procedure test2 = Procedure("test2", 2);
 
     procedures->store(&test1);
     procedures->store(&test2);

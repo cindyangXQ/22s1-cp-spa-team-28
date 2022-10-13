@@ -36,7 +36,7 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
         return handleNoTables(queryResult);
     }
 
-    ClauseTable result = JoinAllClauseTables(clauseResultList);
+    ClauseTable result = joinAllClauseTables(clauseResultList);
 
     if (result.size() == 0 && type == SelectType::BOOLEAN) {
         return {"FALSE"};
@@ -177,7 +177,7 @@ std::string QueryEvaluator::getAttributeValue(Reference ref,
     }
 }
 
-ClauseTable QueryEvaluator::JoinAllClauseTables(
+ClauseTable QueryEvaluator::joinAllClauseTables(
     std::vector<ClauseResult> clauseResultList) {
     ClauseTable result = ClauseTable();
     for (int i = 0; i < clauseResultList.size(); i++) {

@@ -26,6 +26,7 @@ private:
     FollowsTable *follows;
     BranchInTable *branchIn;
     BranchOutTable *branchOut;
+    ProceduresTable *procedures;
 
     std::map<int, bool> visited;
 

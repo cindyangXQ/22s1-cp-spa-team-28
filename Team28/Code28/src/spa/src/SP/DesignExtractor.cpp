@@ -16,7 +16,9 @@ std::vector<Procedure *> ProcedureExtractor::extract() {
 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
-        result.push_back(new Procedure(procList.at(i)->getName()));
+        ProcedureNode *currProc = procList.at(i);
+        result.push_back(
+            new Procedure(currProc->getName(), currProc->getStartLine()));
     }
 
     return result;
@@ -30,22 +32,7 @@ std::vector<Statement *> StatementExtractor::extract() {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
         for (size_t j = 0; j < stmtList.size(); j++) {
             StatementNode *currStmt = stmtList.at(j);
-            currStmt->getStatementsInto(result);
-        }
-    }
-
-    return result;
-}
-
-std::vector<Assignment *> StatementExtractor::extractAssignments() {
-    std::vector<Assignment *> result;
-
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (size_t j = 0; j < stmtList.size(); j++) {
-            StatementNode *currStmt = stmtList.at(j);
-            currStmt->getAssignmentsInto(result);
+            currStmt->getStatementsInto(result, assign, call);
         }
     }
 
@@ -166,32 +153,16 @@ std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
     return result;
 }
 
-std::vector<Relationship<int, std::string> *> UsesSExtractor::ifConVar() {
-    std::vector<Relationship<int, std::string> *> result;
-
+void UsesSExtractor::conVar(
+    std::vector<Relationship<int, std::string> *> &ifResult,
+    std::vector<Relationship<int, std::string> *> &whileResult) {
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
         for (size_t j = 0; j < stmtList.size(); j++) {
-            stmtList[j]->getIfConVar(result);
+            stmtList[j]->getConVar(ifResult, whileResult);
         }
     }
-
-    return result;
-}
-
-std::vector<Relationship<int, std::string> *> UsesSExtractor::whileConVar() {
-    std::vector<Relationship<int, std::string> *> result;
-
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (size_t j = 0; j < stmtList.size(); j++) {
-            stmtList[j]->getWhileConVar(result);
-        }
-    }
-
-    return result;
 }
 
 std::vector<Relationship<std::string, std::string> *>
@@ -358,6 +329,9 @@ void StatementExtractor::populate() {
 
     std::vector<Assignment *> assignments = this->extractAssignments();
     this->storage->storeAssignments(&assignments);
+
+    std::vector<Relationship<int, std::string> *> calls = this->extractCalls();
+    this->storage->storeCallProcName(&calls);
 }
 
 void VariableExtractor::populate() {
@@ -394,11 +368,9 @@ void UsesSExtractor::populate() {
     std::vector<Relationship<int, std::string> *> usesS = this->extract();
     this->storage->storeUsesS(&usesS);
 
-    std::vector<Relationship<int, std::string> *> ifConVar = this->ifConVar();
-    this->storage->storeIfControlVar(&ifConVar);
-    std::vector<Relationship<int, std::string> *> whileConVar =
-        this->whileConVar();
-    this->storage->storeWhileControlVar(&whileConVar);
+    this->conVar(ifCondVars, whileCondVars);
+    this->storage->storeIfControlVar(&ifCondVars);
+    this->storage->storeWhileControlVar(&whileCondVars);
 }
 
 void UsesPExtractor::populate() {
