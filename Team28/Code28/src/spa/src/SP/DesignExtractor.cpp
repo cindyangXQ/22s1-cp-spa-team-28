@@ -32,22 +32,7 @@ std::vector<Statement *> StatementExtractor::extract() {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
         for (size_t j = 0; j < stmtList.size(); j++) {
             StatementNode *currStmt = stmtList.at(j);
-            currStmt->getStatementsInto(result);
-        }
-    }
-
-    return result;
-}
-
-std::vector<Assignment *> StatementExtractor::extractAssignments() {
-    std::vector<Assignment *> result;
-
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (size_t j = 0; j < stmtList.size(); j++) {
-            StatementNode *currStmt = stmtList.at(j);
-            currStmt->getAssignmentsInto(result);
+            currStmt->getStatementsInto(result, assign, call);
         }
     }
 
@@ -360,6 +345,9 @@ void StatementExtractor::populate() {
 
     std::vector<Assignment *> assignments = this->extractAssignments();
     this->storage->storeAssignments(&assignments);
+
+    std::vector<Relationship<int, std::string> *> calls = this->extractCalls();
+    this->storage->storeCallProcName(&calls);
 }
 
 void VariableExtractor::populate() {

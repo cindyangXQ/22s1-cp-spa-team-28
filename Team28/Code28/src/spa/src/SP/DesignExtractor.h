@@ -19,6 +19,7 @@ public:
 
 // Extract Entities
 class ProcedureExtractor : public DesignExtractor {
+
 public:
     ProcedureExtractor(ProgramNode *program, PopulateFacade *storage)
         : DesignExtractor(program, storage){};
@@ -27,11 +28,17 @@ public:
 };
 
 class StatementExtractor : public DesignExtractor {
+    std::vector<Assignment *> assign;
+    std::vector<Relationship<int, std::string> *> call;
+
 public:
     StatementExtractor(ProgramNode *program, PopulateFacade *storage)
         : DesignExtractor(program, storage){};
     std::vector<Statement *> extract();
-    std::vector<Assignment *> extractAssignments();
+    std::vector<Assignment *> extractAssignments() { return assign; };
+    std::vector<Relationship<int, std::string> *> extractCalls() {
+        return call;
+    };
     void populate();
 };
 

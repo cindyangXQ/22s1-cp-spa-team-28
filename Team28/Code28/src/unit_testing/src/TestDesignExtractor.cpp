@@ -44,33 +44,70 @@ TEST_CASE("extract assignments small program") {
     StatementExtractor extr(program, nullptr);
     std::vector<Assignment *> extracted = extr.extractAssignments();
 
-    REQUIRE(expected.size() == extracted.size());
-    for (int i = 0; i < expected.size(); i++) {
-        REQUIRE(expected[i]->getLineNo() == extracted[i]->getLineNo());
-        REQUIRE(expected[i]->getExpression() == extracted[i]->getExpression());
-        REQUIRE(expected[i]->getVariable() == extracted[i]->getVariable());
-    }
+    
 }
 
-TEST_CASE("extract statement small program") {
+TEST_CASE("extract statement small program, extracts assignements and calls as well") {
     std::vector<Statement *> expected;
     expected.push_back(new Statement(1, StatementType::ASSIGN));
     expected.push_back(new Statement(2, StatementType::ASSIGN));
     expected.push_back(new Statement(3, StatementType::ASSIGN));
     expected.push_back(new Statement(4, StatementType::ASSIGN));
+    expected.push_back(new Statement(5, StatementType::CALL));
+    expected.push_back(new Statement(6, StatementType::READ));
+
+    std::vector<Assignment *> expectedAssigns;
+    Assignment a1 = Assignment(1, "west", "((9)+(east))");
+    Assignment a2 = Assignment(2, std::string("y"), "((east)-(4))");
+    Assignment a3 = Assignment(3, "z", "((west)+(2))");
+    Assignment a4 = Assignment(4, "west", "(((9)+(east))+(west))");
+    expectedAssigns.push_back(&a1);
+    expectedAssigns.push_back(&a2);
+    expectedAssigns.push_back(&a3);
+    expectedAssigns.push_back(&a4);
+
+    std::vector<Relationship<int, std::string> *> expectedCalls;
+    Relationship<int, std::string> r1(RelationshipReference::USES, 5, "Puggol");
+    expectedCalls.push_back(&r1);
 
     std::string sourceProgram =
-        "procedure Bedok {\nwest = 9 + east;\ny = east - 4;\nz = west + "
-        "2;\nwest = 9 + east + west;\n}";
+        "procedure Bedok {"
+        "    west = 9 + east;"
+        "    y = east - 4;"
+        "    z = west + 2;"
+        "    west = 9 + east + west;"
+        "    call Puggol;"
+        "}"
+        "procedure Puggol {"
+        "    read a;"
+        "}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
     StatementExtractor extr(program, nullptr);
     std::vector<Statement *> extracted = extr.extract();
+    std::vector<Assignment *> assigns = extr.extractAssignments();
+    std::vector<Relationship<int, std::string> *> calls = extr.extractCalls();
 
     REQUIRE(expected.size() == extracted.size());
     for (int i = 0; i < expected.size(); i++) {
         REQUIRE(expected[i]->isLineNumberEqual(extracted[i]));
         REQUIRE(expected[i]->isStatementTypeEqual(extracted[i]));
+    }
+
+    REQUIRE(expectedAssigns.size() == assigns.size());
+    for (int i = 0; i < expectedAssigns.size(); i++) {
+        REQUIRE(expectedAssigns[i]->getLineNo() == assigns[i]->getLineNo());
+        REQUIRE(expectedAssigns[i]->getExpression() ==
+                assigns[i]->getExpression());
+        REQUIRE(expectedAssigns[i]->getVariable() == assigns[i]->getVariable());
+    }
+
+    REQUIRE(expectedCalls.size() == calls.size());
+    for (int i = 0; i < expectedCalls.size(); i++) {
+        REQUIRE(expectedCalls[i]->getLeft() == calls[i]->getLeft());
+        REQUIRE(expectedCalls[i]->getRight() == calls[i]->getRight());
+        REQUIRE(expectedCalls[i]->getRelationshipReference() ==
+                calls[i]->getRelationshipReference());
     }
 }
 
