@@ -183,9 +183,7 @@ CallStatementNode::CallStatementNode(VariableNode *VariableNode, int line) {
     this->line = line;
 }
 
-std::string CallStatementNode::getVariable() { 
-    return this->var->getValue(); 
-}
+std::string CallStatementNode::getVariable() { return this->var->getValue(); }
 
 void CallStatementNode::getStatementsInto(
     std::vector<Statement *> &result, std::vector<Assignment *> &assign,
@@ -237,10 +235,11 @@ void AssignStatementNode::getConstantsInto(std::vector<std::string> &result) {
 }
 
 void AssignStatementNode::getStatementsInto(
-    std::vector<Statement *> & result, std::vector<Assignment *> &assign,
+    std::vector<Statement *> &result, std::vector<Assignment *> &assign,
     std::vector<Relationship<int, std::string> *> &call) {
     result.push_back(new Statement(line, StatementType::ASSIGN));
-    assign.push_back(new Assignment(line, getVariable(), getExpressionString()));
+    assign.push_back(
+        new Assignment(line, getVariable(), getExpressionString()));
 }
 
 std::vector<std::string> *AssignStatementNode::getUsesInto(
@@ -312,7 +311,7 @@ void WhileStatementNode::getConstantsInto(std::vector<std::string> &result) {
 }
 
 void WhileStatementNode::getStatementsInto(
-    std::vector<Statement *> & result, std::vector<Assignment *> &assign,
+    std::vector<Statement *> &result, std::vector<Assignment *> &assign,
     std::vector<Relationship<int, std::string> *> &call) {
     result.push_back(new Statement(line, StatementType::WHILE));
     for (size_t i = 0; i < stmtList.size(); i++) {
