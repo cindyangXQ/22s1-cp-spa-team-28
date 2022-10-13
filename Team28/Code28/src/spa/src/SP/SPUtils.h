@@ -1,6 +1,6 @@
-#include "EntityNode.h"
-#include "ExprParser.h"
-#include "Tokenizer.h"
+#include "ProgramParser/EntityNode.h"
+#include "ProgramParser/ExprParser.h"
+#include "Tokenizer/Tokenizer.h"
 
 class SPUtils {
 public:

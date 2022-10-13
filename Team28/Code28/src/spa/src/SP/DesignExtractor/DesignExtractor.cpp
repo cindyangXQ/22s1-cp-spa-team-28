@@ -1,6 +1,6 @@
 #include "DesignExtractor.h"
-#include "EntityNode.h"
-#include "SPUtils.h"
+#include "../ProgramParser/EntityNode.h"
+#include "../SPUtils.h"
 #include <algorithm>
 #include <map>
 #include <vector>
