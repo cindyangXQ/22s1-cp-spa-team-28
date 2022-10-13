@@ -28,7 +28,7 @@ private:
     BranchOutTable *branchOut;
     ProceduresTable *procedures;
 
-    std::map<int, bool> visited;
+    std::map<std::pair<int, int>, bool> visited;
 
     /*
      * Depth First Search of CFG based on given integer.
@@ -43,7 +43,12 @@ private:
             Relationship<int, int> rs =
                 Relationship(RelationshipReference::NEXT, i, j);
             this->next->store(&rs);
-            if (!this->visited[j]) {
+            std::pair<int, int> curr = std::make_pair(i, j);
+            bool isVisited = this->visited.find(curr) != this->visited.end();
+            std::string visited = isVisited ? "true" : "false";
+            std::cout << "DFSHelper j is: " << j << std::endl;
+            std::cout << "VISITED? " << visited << std::endl;
+            if (!isVisited) {
                 DFS(j);
             }
         }
