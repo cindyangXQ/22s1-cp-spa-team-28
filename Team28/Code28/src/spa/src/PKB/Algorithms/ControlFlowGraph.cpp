@@ -23,8 +23,6 @@ void ControlFlowGraph::populateNext() {
 };
 
 void ControlFlowGraph::DFS(int i) {
-    std::pair<int, int> curr;
-
     if (!(this->follows->isLeftValueExist(i) ||
           this->branchIn->isLeftValueExist(i) ||
           this->branchOut->isLeftValueExist(i))) {
