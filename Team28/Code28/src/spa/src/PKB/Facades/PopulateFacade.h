@@ -14,6 +14,9 @@ public:
      */
     explicit PopulateFacade(Storage *storage);
 
+    /*
+     * Generic store method for SP->PKB interactions.
+     */
     template <typename T>
     void store(std::vector<T *> *items, Populate popType) {
         Table *table = this->storage->getStoreTable(popType);
@@ -24,13 +27,4 @@ public:
 
 private:
     Storage *storage;
-
-    template <typename T, typename Subclass>
-    void storeHelper(std::vector<T *> *items) {
-        Table *table = this->storage->getTable<Subclass>();
-
-        for (T *item : *items) {
-            table->store(item);
-        }
-    }
 };
