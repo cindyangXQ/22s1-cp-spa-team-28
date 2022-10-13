@@ -7,23 +7,24 @@ ControlFlowGraph::ControlFlowGraph(NextTable *nextTable, StorageView *storage) {
     this->follows = storage->getTable<FollowsTable>();
     this->branchIn = storage->getTable<BranchInTable>();
     this->branchOut = storage->getTable<BranchOutTable>();
+    this->procedures = storage->getTable<ProceduresTable>();
 };
 
 void ControlFlowGraph::populateNext() {
-    // Assumption: Source program always has line num 1 and should always start
-    // from 1.
-    if (!(follows->isValueExist(1) || branchIn->isValueExist(1))) {
-        return;
-    }
-
     this->visited = std::map<int, bool>();
 
-    DFS(1);
+    for (int stmtNum : this->procedures->getAllStmtNum()) {
+        if (!(follows->isLeftValueExist(stmtNum) ||
+              branchIn->isLeftValueExist(stmtNum))) {
+            continue;
+        }
+        DFS(stmtNum);
+    }
 };
 
 void ControlFlowGraph::DFS(int i) {
-    if (!(follows->isValueExist(i) || branchIn->isValueExist(i) ||
-          branchOut->isValueExist(i))) {
+    if (!(follows->isLeftValueExist(i) || branchIn->isLeftValueExist(i) ||
+          branchOut->isLeftValueExist(i))) {
         return;
     }
 

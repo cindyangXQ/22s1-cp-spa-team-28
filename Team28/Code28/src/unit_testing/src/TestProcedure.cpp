@@ -4,9 +4,9 @@
 
 TEST_CASE("Procedure is initialised correctly and inherits all Entity methods "
           "correctly") {
-    Procedure test = Procedure("test");
-    Procedure testCopy = Procedure("test");
-    Procedure notTestCopy = Procedure("not test");
+    Procedure test = Procedure("test", 1);
+    Procedure testCopy = Procedure("test", 1);
+    Procedure notTestCopy = Procedure("not test", 2);
 
     // getName() gets the name correctly
     REQUIRE(test.getName() == "test");

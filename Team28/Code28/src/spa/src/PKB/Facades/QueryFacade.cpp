@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "QueryFacade.h"
 
 bool QueryFacade::validateWildcard(Reference leftRef, Reference rightRef,
@@ -233,4 +235,19 @@ std::vector<std::pair<Value, Value>> QueryFacade::getIfAndVar() {
     IfControlVarTable *ifs = this->storage->getTable<IfControlVarTable>();
 
     return ifs->getStmtAndVar();
+};
+
+std::string QueryFacade::getAttribute(int stmtNum) {
+    StatementsTable *statements = this->storage->getTable<StatementsTable>();
+    if (!statements->isAttributableStatement(stmtNum)) {
+        throw std::invalid_argument(
+            "StmtNum does not refer to attributable statement");
+    }
+    UsesSTable *usesS = this->storage->getTable<UsesSTable>();
+    if (usesS->isLeftValueExist(stmtNum)) {
+        return usesS->retrieveSingleRight(stmtNum);
+    }
+
+    CallProcTable *callProc = this->storage->getTable<CallProcTable>();
+    return callProc->retrieveSingleRight(stmtNum);
 };

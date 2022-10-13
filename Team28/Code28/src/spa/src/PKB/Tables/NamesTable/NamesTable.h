@@ -4,6 +4,7 @@
 #include <string>
 #include <type_traits>
 #include <unordered_set>
+#include <vector>
 
 #include "../../../commons/Constant.h"
 #include "../../../commons/Entity.h"
@@ -20,7 +21,7 @@ public:
      * Stores an entity into NamesTable.
      */
     void store(TableValue *entity) {
-        Entity *ent = static_cast<Entity *>(entity);
+        T *ent = static_cast<T *>(entity);
         this->names.insert(ent->getName());
         this->nameEntityMap[ent->getName()] = ent;
     };
@@ -41,7 +42,7 @@ public:
      * Gets NamedEntityMap for children.
      * TODO: Consider removing.
      */
-    std::map<std::string, Entity *> getNameEntityMap() {
+    std::map<std::string, T *> getNameEntityMap() {
         return this->nameEntityMap;
     };
 
@@ -52,9 +53,12 @@ public:
 
 protected:
     std::unordered_set<std::string> names;
-    std::map<std::string, Entity *> nameEntityMap;
+    std::map<std::string, T *> nameEntityMap;
 };
 
 class ConstantsTable : public NamesTable<Constant> {};
 class VariablesTable : public NamesTable<Variable> {};
-class ProceduresTable : public NamesTable<Procedure> {};
+class ProceduresTable : public NamesTable<Procedure> {
+public:
+    std::vector<int> getAllStmtNum();
+};

@@ -93,3 +93,8 @@ void PopulateFacade::storeWhileControlVar(
     storeHelper<Relationship<int, std::string>, WhileControlVarTable>(
         whileControls);
 }
+
+void PopulateFacade::storeCallProcName(
+    std::vector<Relationship<int, std::string> *> *callProcs) {
+    storeHelper<Relationship<int, std::string>, CallProcTable>(callProcs);
+}
