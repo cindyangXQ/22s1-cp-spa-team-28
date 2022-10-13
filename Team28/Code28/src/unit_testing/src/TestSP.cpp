@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-std::string source1 = "../../../../Tests28/NoEntities.txt";
+std::string source1 = "../../../../Tests28/NestedIfWhile_source.txt";
 std::string source2 = "../../../../Tests28/AllEntities.txt";
 
 TEST_CASE() {
