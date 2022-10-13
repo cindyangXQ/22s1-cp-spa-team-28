@@ -124,6 +124,13 @@ public:
      */
     std::vector<std::pair<Value, Value>> getIfAndVar();
 
+    /*
+     * Return attribute of the given stmtNum of a Print, Read or Call statement,
+     * where attribute refers to the varName/procName used in the corresponding
+     * statement number.
+     */
+    std::string getAttribute(int stmtNum);
+
 private:
     Storage *storage;
 

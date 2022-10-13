@@ -9,5 +9,10 @@
  */
 class Procedure : public Entity {
 public:
-    explicit Procedure(std::string name);
+    explicit Procedure(std::string name, int startStmt);
+
+    int getStmtNum();
+
+private:
+    int startStmtNum;
 };

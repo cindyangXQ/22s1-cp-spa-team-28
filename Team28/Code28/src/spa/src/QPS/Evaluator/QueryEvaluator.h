@@ -31,5 +31,5 @@ private:
                            ClauseTable result);
     std::vector<std::string> getAll(Reference select);
     std::vector<std::string> handleNoTables(QueryResult *queryResult);
-    ClauseTable JoinAllClauseTables(std::vector<ClauseResult> clauseResultList);
+    ClauseTable joinAllClauseTables(std::vector<ClauseResult> clauseResultList);
 };
