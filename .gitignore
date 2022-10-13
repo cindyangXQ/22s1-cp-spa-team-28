@@ -2,6 +2,10 @@
 Team28/Tests28/analysis.xsl
 run-autotester-win.py
 
+*.xml
+Team28/Tests28/analysis.xsl
+run-autotester-win.py
+
 # Created by https://www.toptal.com/developers/gitignore/api/qt,qtcreator,linux,windows,macos,visualstudio,visualstudiocode,clion,c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=qt,qtcreator,linux,windows,macos,visualstudio,visualstudiocode,clion,c++
 
