@@ -1,12 +1,12 @@
 #pragma once
 
-#include <string>
 #include "../../PKB/Facades/QueryFacade.h"
 #include "../Parser/SolvableQuery.h"
 #include "../Utils.h"
 #include "PatternEvaluator.h"
 #include "QueryResult.h"
 #include "SuchThatEvaluator.h"
+#include <string>
 
 class QueryEvaluator {
 private:
@@ -26,7 +26,7 @@ private:
     void checkAllClauseResult(std::vector<ClauseResult> clauseResultList,
                               bool *isAnyTableEmpty, bool *haveTableToJoin);
     std::vector<std::string> extractReferenceFromTable(Reference selectedRef,
-                                                     ClauseTable result);
+                                                       ClauseTable result);
     std::vector<std::string>
     extractTuplesFromTable(std::vector<Reference> selectRefs,
                            ClauseTable result);

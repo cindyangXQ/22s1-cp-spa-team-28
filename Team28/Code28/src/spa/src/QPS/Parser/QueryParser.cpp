@@ -26,9 +26,9 @@ SolvableQuery QueryParser::parse(std::string query) {
             QueryParser::parseSuchThatClause(&mainClause, decl.syns,
                                              &suchThatCls);
         } else if (QueryParser::isPatternClause(&mainClause)) {
-            QueryParser::parsePatternClause(&mainClause, decl.syns, &patternCls);
-        } 
-        else if (QueryParser::isWithClause(&mainClause)) {
+            QueryParser::parsePatternClause(&mainClause, decl.syns,
+                                            &patternCls);
+        } else if (QueryParser::isWithClause(&mainClause)) {
             QueryParser::parseWithClause(&mainClause, decl.syns, &withCls);
         } else {
             throw SyntaxError("Unrecognized clause syntax");
@@ -77,7 +77,8 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
                 Utils::splitString(selectValue, ',');
             for (int i = 0; i < selectStrings.size(); i++) {
                 std::string value = selectStrings[i];
-                if (!std::regex_search(value, synRegex) && !std::regex_search(value, attrRefRegex)) {
+                if (!std::regex_search(value, synRegex) &&
+                    !std::regex_search(value, attrRefRegex)) {
                     throw SyntaxError("Invalid select value");
                 }
                 Reference selectedRef = QueryParser::getReference(
@@ -85,9 +86,11 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
                 selectedRefs.push_back(selectedRef);
             }
             return SelectClause(selectedRefs, SelectType::TUPLE);
-        } else if (std::regex_search(selectValue, attrRefRegex) || std::regex_search(selectValue, synRegex)) {
+        } else if (std::regex_search(selectValue, attrRefRegex) ||
+                   std::regex_search(selectValue, synRegex)) {
             selectValue = Utils::removeTrailingSpaces(selectValue);
-            Reference selectedRef = QueryParser::getReference(selectValue, syns);
+            Reference selectedRef =
+                QueryParser::getReference(selectValue, syns);
             selectedRefs.push_back(selectedRef);
             return SelectClause(selectedRefs, SelectType::SINGLE);
         }
@@ -192,7 +195,8 @@ void QueryParser::parsePatternClause(std::string *clause,
 void QueryParser::parseWithClause(std::string *clause,
                                   std::vector<Synonym> syns,
                                   std::vector<WithClause> *withCls) {
-    while (std::regex_search(*clause, std::regex("^\\s*with\\s+|^\\s*and\\s+"))) {
+    while (
+        std::regex_search(*clause, std::regex("^\\s*with\\s+|^\\s*and\\s+"))) {
         std::smatch matches;
         std::regex_match(*clause, matches, withClauseRegex);
         std::string withClause = matches[1].str();
@@ -207,13 +211,13 @@ void QueryParser::parseWithClause(std::string *clause,
         if (left.isSynonym || right.isSynonym) {
             throw SemanticError("Invalid with clause arguments");
         }
-        
+
         *clause = Utils::removeString(*clause, withClause);
         withCls->push_back(WithClause(left, right));
     }
 }
 
-bool QueryParser::isSuchThatClause(std::string* clause) {
+bool QueryParser::isSuchThatClause(std::string *clause) {
     return std::regex_search(*clause, std::regex("^\\s*such\\s+that\\s+"));
 }
 
@@ -225,7 +229,8 @@ bool QueryParser::isWithClause(std::string *clause) {
     return std::regex_search(*clause, std::regex("^\\s*with\\s+"));
 }
 
-std::vector<Synonym> QueryParser::parseSynonyms(std::vector<std::string> tokens) {
+std::vector<Synonym>
+QueryParser::parseSynonyms(std::vector<std::string> tokens) {
     if (tokens.size() % 2 == 1) {
         throw SyntaxError("syntax error in declaration clause");
     }
@@ -255,7 +260,7 @@ Reference QueryParser::getReference(std::string input,
         return Reference(input);
     } else if (input[0] == '\"' && input.back() == '\"') {
         input.erase(std::remove(input.begin(), input.end(), '\"'), input.end());
-        input = Utils::removeTrailingSpaces(input); 
+        input = Utils::removeTrailingSpaces(input);
         if (!std::regex_match(input, nameRegex)) {
             throw SyntaxError("Invalid reference format");
         }
@@ -265,8 +270,7 @@ Reference QueryParser::getReference(std::string input,
     } else if (std::regex_match(input, synRegex)) {
         Synonym synonym = getSynonym(input, syns);
         return Reference(synonym);
-    }
-    else if (std::regex_match(input, attrRefRegex)) {
+    } else if (std::regex_match(input, attrRefRegex)) {
         std::smatch matches;
         std::regex_match(input, matches, attrRefRegex);
         Synonym synonym = getSynonym(matches[1].str(), syns);

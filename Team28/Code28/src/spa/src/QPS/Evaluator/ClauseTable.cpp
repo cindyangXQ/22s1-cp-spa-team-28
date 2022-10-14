@@ -1,8 +1,11 @@
 #include "ClauseTable.h"
 
-ClauseTable::ClauseTable(std::vector<Reference> header) { this->header = header; }
+ClauseTable::ClauseTable(std::vector<Reference> header) {
+    this->header = header;
+}
 
-std::vector<int> ClauseTable::getIndices(std::vector<Reference> common_headers) {
+std::vector<int>
+ClauseTable::getIndices(std::vector<Reference> common_headers) {
     std::vector<int> indices;
     for (int i = 0; i < common_headers.size(); i++) {
         for (int j = 0; j < header.size(); j++) {
@@ -38,7 +41,7 @@ std::vector<Value> ClauseTable::getValues(Reference select) {
 }
 
 std::vector<Reference> ClauseTable::getCommonHeaders(ClauseTable table1,
-                                                   ClauseTable table2) {
+                                                     ClauseTable table2) {
     std::vector<Reference> header1 = table1.header;
     std::vector<Reference> header2 = table2.header;
     std::vector<Reference> header_common;

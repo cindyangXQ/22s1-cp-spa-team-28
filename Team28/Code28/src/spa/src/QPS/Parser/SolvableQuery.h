@@ -1,9 +1,9 @@
 #pragma once
 
 #include "../Clause/Declaration.h"
+#include "../Clause/PatternClause.h"
 #include "../Clause/SelectClause.h"
 #include "../Clause/SuchThatClause.h"
-#include "../Clause/PatternClause.h"
 #include "../Clause/WithClause.h"
 #include <iostream>
 
@@ -21,5 +21,5 @@ public:
     SolvableQuery(Declaration decl, SelectClause selectClause,
                   std::vector<SuchThatClause> suchThatCls,
                   std::vector<PatternClause> patternCls,
-                   std::vector<WithClause> withCls);
+                  std::vector<WithClause> withCls);
 };
