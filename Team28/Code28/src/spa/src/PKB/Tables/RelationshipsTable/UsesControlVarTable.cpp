@@ -49,3 +49,16 @@ std::vector<std::pair<Value, Value>> UsesControlVarTable::getStmtAndVar() {
     std::sort(result.begin(), result.end(), value_pair_sort());
     return result;
 };
+
+std::vector<Value> UsesControlVarTable::getMatchingValue(std::string value,
+                                                         EntityName entity) {
+    UNUSED(value);
+    UNUSED(entity);
+    return std::vector<Value>{};
+};
+
+std::map<Value, std::vector<Value>>
+UsesControlVarTable::getAllValues(EntityName entity) {
+    UNUSED(entity);
+    return std::map<Value, std::vector<Value>>{};
+};

@@ -1,6 +1,5 @@
 #include "catch.hpp"
 
-#include "PKB/Tables/RelationshipsTable/CallProcTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/RelationshipsTable.h"
@@ -394,4 +393,206 @@ TEST_CASE(
     // successfully stored Call-ProcName relationship
     REQUIRE_THROWS(usesS.retrieveSingleRight(1),
                    "There exists more than 1 Right value mapped to given Left");
+}
+
+TEST_CASE("usesS getMatchingValue works correctly") {
+    UsesSTable usesS;
+
+    // procedure main { x = x + 1; y = y + 1; }
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    usesS.store(&test1);
+    usesS.store(&test2);
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // "x" retrieves {1}
+    expectedResult = {Value(ValueType::STMT_NUM, "1")};
+    output = usesS.getMatchingValue("x", EntityName::STMT);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // "y" retrieves {2}
+    expectedResult = {Value(ValueType::STMT_NUM, "2")};
+    output = usesS.getMatchingValue("y", EntityName::STMT);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // "z" retrieves {}
+    expectedResult = {};
+    output = usesS.getMatchingValue("z", EntityName::STMT);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("usesS getAllValues works correctly") {
+    UsesSTable usesS;
+
+    // procedure main { x = x + 1; y = y + 1; print y;}
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("y"));
+    usesS.store(&test1);
+    usesS.store(&test2);
+    usesS.store(&test3);
+    std::map<Value, std::vector<Value>> expectedResult;
+    std::map<Value, std::vector<Value>> output;
+
+    // Correctly retrieved
+    expectedResult = {
+        {Value(ValueType::VAR_NAME, "x"), {Value(ValueType::STMT_NUM, "1")}},
+        {Value(ValueType::VAR_NAME, "y"),
+         {Value(ValueType::STMT_NUM, "2"), Value(ValueType::STMT_NUM, "3")}}};
+    output = usesS.getAllValues(EntityName::STMT);
+    for (auto const &[key, value] : expectedResult) {
+        REQUIRE(output.count(key) > 0);
+        std::vector<Value> outputVector = output[key];
+
+        for (Value v : value) {
+            REQUIRE(std::find(outputVector.begin(), outputVector.end(), v) !=
+                    outputVector.end());
+        }
+    }
+}
+
+TEST_CASE("modifiesS getMatchingValue works correctly") {
+    ModifiesSTable modifiesS;
+
+    // procedure main { x = x + 1; y = y + 1; }
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    modifiesS.store(&test1);
+    modifiesS.store(&test2);
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // "x" retrieves {1}
+    expectedResult = {Value(ValueType::STMT_NUM, "1")};
+    output = modifiesS.getMatchingValue("x", EntityName::STMT);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // "y" retrieves {2}
+    expectedResult = {Value(ValueType::STMT_NUM, "2")};
+    output = modifiesS.getMatchingValue("y", EntityName::STMT);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // "z" retrieves {}
+    expectedResult = {};
+    output = modifiesS.getMatchingValue("z", EntityName::STMT);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("callProc getMatchingValue works correctly") {
+    CallProcTable callProcs;
+
+    // procedure main { call foo; call bar; }
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::CALLS, 1, std::string("foo"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::CALLS, 2, std::string("bar"));
+    callProcs.store(&test1);
+    callProcs.store(&test2);
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // "foo" retrieves {1}
+    expectedResult = {Value(ValueType::STMT_NUM, "1")};
+    output = callProcs.getMatchingValue("foo", EntityName::STMT);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // "bar" retrieves {2}
+    expectedResult = {Value(ValueType::STMT_NUM, "2")};
+    output = callProcs.getMatchingValue("bar", EntityName::STMT);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // "z" retrieves {}
+    expectedResult = {};
+    output = callProcs.getMatchingValue("z", EntityName::STMT);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("callProc getAllValues works correctly") {
+    CallProcTable callProcs;
+
+    // procedure main { call foo; call bar; call bar; }
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::CALLS, 1, std::string("foo"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::CALLS, 2, std::string("bar"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::CALLS, 3, std::string("bar"));
+    callProcs.store(&test1);
+    callProcs.store(&test2);
+    callProcs.store(&test3);
+
+    std::map<Value, std::vector<Value>> expectedResult;
+    std::map<Value, std::vector<Value>> output;
+
+    // Correctly retrieved
+    expectedResult = {
+        {Value(ValueType::VAR_NAME, "foo"), {Value(ValueType::STMT_NUM, "1")}},
+        {Value(ValueType::VAR_NAME, "bar"),
+         {Value(ValueType::STMT_NUM, "2"), Value(ValueType::STMT_NUM, "3")}}};
+    output = callProcs.getAllValues(EntityName::STMT);
+    for (auto const &[key, value] : expectedResult) {
+        REQUIRE(output.count(key) > 0);
+        std::vector<Value> outputVector = output[key];
+
+        for (Value v : value) {
+            REQUIRE(std::find(outputVector.begin(), outputVector.end(), v) !=
+                    outputVector.end());
+        }
+    }
+}
+
+TEST_CASE("StmtToStmtRsTables getMatchingValue and getAllValues returns empty "
+          "vector") {
+    FollowsTable follows;
+    Relationship<int, int> test1 =
+        Relationship(RelationshipReference::FOLLOWS, 1, 2);
+    follows.store(&test1);
+
+    // Return empty
+    REQUIRE(follows.getMatchingValue("1", EntityName::STMT).size() == 0);
+    REQUIRE(follows.getMatchingValue("2", EntityName::STMT).size() == 0);
+    REQUIRE(follows.getAllValues(EntityName::STMT).size() == 0);
+}
+
+TEST_CASE("ProcToProcRsTables getMatchingValue and getAllValues returns empty "
+          "vector") {
+    CallsTable calls;
+    Relationship<std::string, std::string> test = Relationship(
+        RelationshipReference::CALLS, std::string("foo"), std::string("bar"));
+    calls.store(&test);
+
+    // Return empty
+    REQUIRE(calls.getMatchingValue("foo", EntityName::STMT).size() == 0);
+    REQUIRE(calls.getMatchingValue("bar", EntityName::STMT).size() == 0);
+    REQUIRE(calls.getAllValues(EntityName::STMT).size() == 0);
+}
+
+TEST_CASE("ProcToVarRsTables getMatchingValue and getAllValues returns empty "
+          "vector") {
+    UsesPTable usesP;
+    Relationship<std::string, std::string> test = Relationship(
+        RelationshipReference::CALLS, std::string("foo"), std::string("x"));
+    usesP.store(&test);
+
+    // Return empty
+    REQUIRE(usesP.getMatchingValue("foo", EntityName::STMT).size() == 0);
+    REQUIRE(usesP.getMatchingValue("x", EntityName::STMT).size() == 0);
+    REQUIRE(usesP.getAllValues(EntityName::STMT).size() == 0);
 }
