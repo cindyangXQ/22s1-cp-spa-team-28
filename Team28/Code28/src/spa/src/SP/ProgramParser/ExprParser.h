@@ -28,6 +28,8 @@ public:
 };
 
 class CondParser : public Parser {
+    void checkSyntax(Token *curr, Token *next, ExpressionNode *cond);
+
 public:
     CondParser(int offset, std::vector<Token *> tokens)
         : Parser(offset, tokens){};

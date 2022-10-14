@@ -1,5 +1,5 @@
 #include "EntityNode.h"
-#include "SPUtils.h"
+#include "../SPUtils.h"
 #include <vector>
 
 EntityNode::EntityNode() {}
@@ -20,6 +20,14 @@ bool ProgramNode::equals(ProgramNode *other) {
     std::vector<ProcedureNode *> procedures = this->getProcList();
     std::vector<ProcedureNode *> others = other->getProcList();
     return SPUtils::compareProcList(procedures, others);
+}
+
+void ProgramNode::cleanup() {
+    while (!procList.empty()) {
+        procList.back()->cleanup();
+        procList.pop_back();
+    }
+    delete this;
 }
 
 // Procedure
@@ -47,6 +55,14 @@ std::vector<StatementNode *> ProcedureNode::getStmtList() {
 int ProcedureNode::getStartLine() { return stmtList[0]->getLineNumber(); }
 
 int ProcedureNode::getEndline() { return stmtList.back()->getEndLine(); }
+
+void ProcedureNode::cleanup() {
+    while (!stmtList.empty()) {
+        stmtList.back()->cleanup();
+        stmtList.pop_back();
+    }
+    delete this;
+}
 
 // Statement
 std::vector<std::string> *StatementNode::getUsesInto(
@@ -142,6 +158,11 @@ void ReadStatementNode::getModifiesPInto(
     result.push_back(this->getVariable());
 }
 
+void ReadStatementNode::cleanup() {
+    delete var;
+    delete this;
+}
+
 // Print Statement
 PrintStatementNode::PrintStatementNode(VariableNode *VariableNode, int line) {
     this->var = VariableNode;
@@ -177,6 +198,11 @@ void PrintStatementNode::getUsesPInto(std::vector<std::string> &result,
     result.push_back(this->getVariable());
 }
 
+void PrintStatementNode::cleanup() {
+    delete var;
+    delete this;
+}
+
 // Call Statement
 CallStatementNode::CallStatementNode(VariableNode *VariableNode, int line) {
     this->var = VariableNode;
@@ -209,6 +235,11 @@ void CallStatementNode::getModifiesPInto(
     for (size_t i = 0; i < temp.size(); i++) {
         result.push_back(temp.at(i));
     }
+}
+
+void CallStatementNode::cleanup() {
+    delete var;
+    delete this;
 }
 
 // Assignment Statement
@@ -281,6 +312,12 @@ std::vector<std::string> *AssignStatementNode::getModsInto(
 void AssignStatementNode::getModifiesPInto(
     std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
     result.push_back(this->getVariable());
+}
+
+void AssignStatementNode::cleanup() {
+    expr->cleanup();
+    delete var;
+    delete this;
 }
 
 // While Statement
@@ -440,6 +477,14 @@ void WhileStatementNode::getBranchOutInto(
     }
 
     stmtList.back()->getBranchOutInto(result, line);
+}
+
+void WhileStatementNode::cleanup() {
+    while (!stmtList.empty()) {
+        stmtList.back()->cleanup();
+        stmtList.pop_back();
+    }
+    delete this;
 }
 
 // If Statement
@@ -638,6 +683,18 @@ void IfStatementNode::getBranchOutInto(
     elseBlock.back()->getBranchOutInto(result, nextLine);
 }
 
+void IfStatementNode::cleanup() {
+    while (!ifBlock.empty()) {
+        ifBlock.back()->cleanup();
+        ifBlock.pop_back();
+    }
+    while (!elseBlock.empty()) {
+        elseBlock.back()->cleanup();
+        elseBlock.pop_back();
+    }
+    delete this;
+}
+
 // Expression
 ExpressionNode::ExpressionNode(Token *token) {
     this->token = token;
@@ -701,6 +758,16 @@ std::string ExpressionNode::toString() {
     result += ")";
 
     return result;
+}
+
+void ExpressionNode::cleanup() {
+    if (left != nullptr) {
+        left->cleanup();
+    }
+    if (right != nullptr) {
+        right->cleanup();
+    }
+    delete this;
 }
 
 // Constant

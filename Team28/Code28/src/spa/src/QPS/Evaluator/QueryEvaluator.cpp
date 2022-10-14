@@ -73,7 +73,7 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
         Tuple row = result.rows[i];
         for (int j = 0; j < indices.size(); j++) {
             Value v = row.values[indices[j]];
-            tuple += v.value + " ";
+            tuple += getAttributeValue(selectRefs[j], v.value) + " ";
         }
         output.push_back(Utils::removeTrailingSpaces(tuple));
     }
@@ -82,16 +82,24 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
 
 std::vector<std::string>
 QueryEvaluator::extractReferenceFromTable(Reference selectedRef,
-                                        ClauseTable result) {
+                                          ClauseTable result) {
 
     std::vector<Value> selectValues = result.getValues(selectedRef);
     if (selectValues.size() == 0) {
-        return QueryEvaluator::getAll(selectedRef);
+        std::vector<std::string> synonymValues =
+            QueryEvaluator::getAll(selectedRef);
+
+        std::vector<std::string> result;
+        for (int i = 0; i < synonymValues.size(); i++) {
+            result.push_back(getAttributeValue(selectedRef, synonymValues[i]));
+        }
+        return result;
     } else {
         std::unordered_set<std::string> remove_duplicates;
         std::vector<std::string> output;
         for (int k = 0; k < selectValues.size(); k++) {
-            remove_duplicates.insert(selectValues[k].value);
+            remove_duplicates.insert(
+                getAttributeValue(selectedRef, selectValues[k].value));
         }
         output.insert(output.end(), remove_duplicates.begin(),
                       remove_duplicates.end());
@@ -119,27 +127,37 @@ QueryEvaluator::handleNoTables(QueryResult *queryResult) {
     if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
-        return QueryEvaluator::getAll(queryResult->selectClause.refs[0]);
+        Reference selectRef = queryResult->selectClause.refs[0];
+        std::vector<std::string> synonymValues =
+            QueryEvaluator::getAll(selectRef);
+
+        std::vector<std::string> result;
+        for (int i = 0; i < synonymValues.size(); i++) {
+            result.push_back(getAttributeValue(selectRef, synonymValues[i]));
+        }
+        return result;
     } else {
         std::vector<Reference> selectedRefs = queryResult->selectClause.refs;
-        std::vector<std::vector<std::string>> allResults;
-        for (int i = 0; i < selectedRefs.size(); i++) {
-            allResults.push_back(QueryEvaluator::getAll(selectedRefs[i]));
-            if (allResults[i].size() == 0) {
-                return {};
-            }
-        }
-        std::vector<std::string> output = allResults[0];
-        for (int i = 1; i < allResults.size(); i++) {
-            std::vector<std::string> tmp = {};
-            for (int j = 0; j < output.size(); j++) {
-                for (int k = 0; k < allResults[i].size(); k++) {
-                    tmp.push_back(output[j] + " " + allResults[i][k]);
-                }
-            }
-            output = tmp;
-        }
-        return output;
+        ClauseTable result = ClauseTable();
+        return extractTuplesFromTable(selectedRefs, result);
+    }
+}
+
+bool QueryEvaluator::isAlternativeAttribute(Reference ref) {
+    return (ref.syn.entity == EntityName::PRINT &&
+                ref.attr == EntityAttribute::VAR_NAME ||
+            ref.syn.entity == EntityName::READ &&
+                ref.attr == EntityAttribute::VAR_NAME ||
+            ref.syn.entity == EntityName::CALL &&
+                ref.attr == EntityAttribute::PROC_NAME);
+}
+
+std::string QueryEvaluator::getAttributeValue(Reference ref,
+                                              std::string synonymValue) {
+    if (isAlternativeAttribute(ref)) {
+        return this->queryFacade->getAttribute(std::stoi(synonymValue));
+    } else {
+        return synonymValue;
     }
 }
 

@@ -45,8 +45,7 @@ ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
             }
             return clauseResult;
         } else if (left.isSynonym && right.isSynonym) {
-            ClauseResult clauseResult =
-                ClauseResult(std::vector{left, right});
+            ClauseResult clauseResult = ClauseResult(std::vector{left, right});
             EntityName leftName = left.syn.entity;
             EntityName rightName = right.syn.entity;
             std::vector<std::pair<Value, Value>> result =

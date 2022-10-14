@@ -19,11 +19,12 @@ TEST_CASE("PKB::populateNext can populate NextTable") {
     Relationship<int, int> test3 =
         Relationship(RelationshipReference::FOLLOWS, 3, 4);
     std::vector<Relationship<int, int> *> follows = {&test1, &test2, &test3};
-    pkb.populateFacade->storeFollows(&follows);
+    pkb.populateFacade->store<Relationship<int, int>>(&follows,
+                                                      Populate::FOLLOWS);
 
     Procedure proc = Procedure("main", 1);
-    std::vector<Procedure*> procedures = {&proc};
-    pkb.populateFacade->storeProcedures(&procedures);
+    std::vector<Procedure *> procedures = {&proc};
+    pkb.populateFacade->store<Procedure>(&procedures, Populate::PROC);
 
     pkb.populateNext();
 

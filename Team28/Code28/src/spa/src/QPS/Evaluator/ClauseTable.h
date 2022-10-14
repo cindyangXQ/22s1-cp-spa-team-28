@@ -1,6 +1,6 @@
 #pragma once
-#include "../../commons/Synonym.h"
 #include "../../commons/Reference.h"
+#include "../../commons/Synonym.h"
 #include "Tuple.h"
 #include <vector>
 
@@ -39,7 +39,7 @@ public:
      * Given two tables, find the common headers
      */
     static std::vector<Reference> getCommonHeaders(ClauseTable table1,
-                                                 ClauseTable table2);
+                                                   ClauseTable table2);
 
     /*
      * Given two tables, construct a new table with all the unique headers from

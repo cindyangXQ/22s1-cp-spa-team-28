@@ -91,9 +91,9 @@ public:
      * Returns list of possible values that the synonym can be based on the
      * given value and it's attribute.
      */
-    template <typename ValueType>
+    template <typename V>
     std::vector<Value> solveOneAttribute(Reference ref, Value value) {
-        ValueType v = convertToType<ValueType>(value.value);
+        V v = convertToType<ValueType>(value.value);
         if (!ref.isInferredAttribute()) {
         }
     }

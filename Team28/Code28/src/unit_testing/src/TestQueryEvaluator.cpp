@@ -295,3 +295,65 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     REQUIRE(result_parentT.size() == 0);
 }
+
+TEST_CASE("Select alternate attribute with no clauses") { 
+
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
+    CallProcTable *callP = storage->getTable<CallProcTable>();
+
+    // Statements
+    Statement stmt1 = Statement(1, StatementType::ASSIGN);
+    Statement stmt2 = Statement(2, StatementType::PRINT);
+    Statement stmt3 = Statement(3, StatementType::READ);
+    Statement stmt4 = Statement(4, StatementType::CALL);
+    statements->store(&stmt1);
+    statements->store(&stmt2);
+    statements->store(&stmt3);
+    statements->store(&stmt4);
+
+    // Relationships
+    Relationship<int, std::string> rs1 =
+        Relationship(RelationshipReference::USES, 1, std::string("b"));
+    Relationship<int, std::string> rs2 =
+        Relationship(RelationshipReference::USES, 2, std::string("a"));
+    Relationship<int, std::string> rs3 =
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
+    Relationship<int, std::string> rs4 =
+        Relationship(RelationshipReference::USES, 4, std::string("bar"));
+    usesS->store(&rs1);
+    usesS->store(&rs2);
+    modifiesS->store(&rs3);
+    callP->store(&rs4);
+
+    std::vector<std::string> result;
+
+    QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
+    Synonym r = Synonym(EntityName::READ, "r");
+    Reference r_varName = Reference(r, EntityAttribute::VAR_NAME);
+    SelectClause selectCl_r = SelectClause({r_varName}, SelectType::SINGLE);
+    QueryResult queryResult_r = QueryResult(selectCl_r, {});
+    result = queryEvaluator.interpretQueryResult(&queryResult_r);
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0] == "x");
+
+
+    Synonym p = Synonym(EntityName::PRINT, "p");
+    Reference p_varName = Reference(p, EntityAttribute::VAR_NAME);
+    SelectClause selectCl_p = SelectClause({p_varName}, SelectType::SINGLE);
+    QueryResult queryResult_p = QueryResult(selectCl_p, {});
+    result = queryEvaluator.interpretQueryResult(&queryResult_p);
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0] == "a");
+
+    Synonym c = Synonym(EntityName::CALL, "c");
+    Reference c_procName = Reference(c, EntityAttribute::PROC_NAME);
+    SelectClause selectCl_c = SelectClause({c_procName}, SelectType::SINGLE);
+    QueryResult queryResult_c = QueryResult(selectCl_c, {});
+    result = queryEvaluator.interpretQueryResult(&queryResult_c);
+    REQUIRE(result.size() == 1);
+    REQUIRE(result[0] == "bar");
+}

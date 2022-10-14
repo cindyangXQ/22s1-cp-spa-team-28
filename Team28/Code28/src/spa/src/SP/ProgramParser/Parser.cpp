@@ -1,7 +1,7 @@
 #include "Parser.h"
+#include "../Tokenizer/Token.h"
 #include "EntityNode.h"
 #include "ExprParser.h"
-#include "Token.h"
 #include <map>
 #include <vector>
 
@@ -187,7 +187,7 @@ ReadStatementNode *ReadStmParser::parse() {
 
     if (firstToken->isKeyword() && firstToken->equals("read") &&
         secondToken->isName() && thirdToken->equals(";")) {
-        return new ReadStatementNode(new VariableNode(secondToken->value),
+        return new ReadStatementNode(new VariableNode(secondToken->getValue()),
                                      line);
     } else {
         throw "read statement wrong syntax";
@@ -203,7 +203,7 @@ PrintStatementNode *PrintStmParser::parse() {
 
     if (firstToken->isKeyword() && firstToken->equals("print") &&
         secondToken->isName() && thirdToken->equals(";")) {
-        return new PrintStatementNode(new VariableNode(secondToken->value),
+        return new PrintStatementNode(new VariableNode(secondToken->getValue()),
                                       line);
     } else {
         throw "print statement wrong syntax";
@@ -219,7 +219,7 @@ CallStatementNode *CallStmParser::parse() {
 
     if (firstToken->isKeyword() && firstToken->equals("call") &&
         secondToken->isName() && thirdToken->equals(";")) {
-        return new CallStatementNode(new VariableNode(secondToken->value),
+        return new CallStatementNode(new VariableNode(secondToken->getValue()),
                                      line);
     } else {
         throw "call statement wrong syntax";
@@ -237,7 +237,7 @@ AssignStatementNode *AssignStmParser::parse() {
         ExpressionNode *expr = parser.parse();
         offset = parser.getOffset();
 
-        return new AssignStatementNode(new VariableNode(firstToken->value),
+        return new AssignStatementNode(new VariableNode(firstToken->getValue()),
                                        expr, line);
     } else {
         throw "assignment statement wrong syntax";
@@ -255,7 +255,7 @@ WhileStatementNode *WhileStmParser::parse() {
         CondParser parser = CondParser(offset, tokens);
         cond = parser.parse();
         if (std::find(std::begin(REL_LIST), std::end(REL_LIST),
-                      cond->getToken()->value) == std::end(REL_LIST)) {
+                      cond->getToken()->getValue()) == std::end(REL_LIST)) {
             throw "invalid cond expression";
         }
         offset = parser.getOffset();
@@ -313,7 +313,7 @@ IfStatementNode *IfStmParser::parse() {
         CondParser parser = CondParser(offset, tokens);
         cond = parser.parse();
         if (std::find(std::begin(REL_LIST), std::end(REL_LIST),
-                      cond->getToken()->value) == std::end(REL_LIST)) {
+                      cond->getToken()->getValue()) == std::end(REL_LIST)) {
             throw "invalid cond expression";
         }
         offset = parser.getOffset();
