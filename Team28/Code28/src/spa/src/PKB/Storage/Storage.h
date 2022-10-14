@@ -27,6 +27,29 @@
 
 #include "StorageView.h"
 
+enum class Populate {
+    STMT,
+    ASSIGN,
+    VAR,
+    CONST,
+    PROC,
+    FOLLOWS,
+    FOLLOWS_T,
+    PARENT,
+    PARENT_T,
+    MOD_S,
+    MOD_P,
+    USE_S,
+    USE_P,
+    CALL,
+    CALL_T,
+    B_IN,
+    B_OUT,
+    IF_C,
+    WHILE_C,
+    PROC_NAME
+};
+
 /*
  * Encapsulates a Storage class which is responsible for storing information to
  * tables in PKB.
@@ -52,6 +75,11 @@ public:
     Solvable *getRsTable(RelationshipReference rsRef, ReferenceType leftType);
 
     /*
+     * Retrieve a table by Populate.
+     */
+    Table *getStoreTable(Populate popType);
+
+    /*
      * Retrieves Modifies Tables
      */
     std::vector<Solvable *> getModifiesTables();
@@ -73,6 +101,10 @@ private:
      * Note: Modifies and Uses are complex and won't be mapped here.
      */
     std::map<RelationshipReference, Solvable *> rsTables;
+    /*
+     * Mapping of Populate to Table for PopulateFacade use.
+     */
+    std::map<Populate, Table *> popTables;
     StorageView *storageView;
 
     /*
