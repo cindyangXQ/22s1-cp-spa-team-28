@@ -38,3 +38,4 @@ public:
 
 class ModifiesSTable : public StmtToVarRelationshipsTable {};
 class UsesSTable : public StmtToVarRelationshipsTable {};
+class CallProcTable : public StmtToVarRelationshipsTable {};
