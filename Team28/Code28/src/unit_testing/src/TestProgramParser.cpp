@@ -1,6 +1,6 @@
-#include "SP/ExprParser.h"
-#include "SP/Parser.h"
-#include "SP/Tokenizer.h"
+#include "SP/ProgramParser/ExprParser.h"
+#include "SP/ProgramParser/Parser.h"
+#include "SP/Tokenizer/Tokenizer.h"
 #include "catch.hpp"
 
 #include <vector>
@@ -77,32 +77,32 @@ TEST_CASE("Test Expression Parser") {
     Operator op1("+"), op2("*"), op3("/");
 
     ExpressionNode plus1(&op1);
-    plus1.left = new ExpressionNode(&var1);
-    plus1.right = new ExpressionNode(&c1);
+    plus1.setLeft(new ExpressionNode(&var1));
+    plus1.setRight(new ExpressionNode(&c1));
 
     ExpressionNode mul(&op2);
-    mul.left = &plus1;
-    mul.right = new ExpressionNode(&c2);
+    mul.setLeft(&plus1);
+    mul.setRight(new ExpressionNode(&c2));
 
     ExpressionNode plus2(&op1);
-    plus2.left = &mul;
-    plus2.right = new ExpressionNode(&c3);
+    plus2.setLeft(&mul);
+    plus2.setRight(new ExpressionNode(&c3));
 
     ExpressionNode plus3(&op1);
-    plus3.left = new ExpressionNode(&var3);
-    plus3.right = new ExpressionNode(&var2);
+    plus3.setLeft(new ExpressionNode(&var3));
+    plus3.setRight(new ExpressionNode(&var2));
 
     ExpressionNode div(&op3);
-    div.left = new ExpressionNode(&c4);
-    div.right = &plus3;
+    div.setLeft(new ExpressionNode(&c4));
+    div.setRight(&plus3);
 
     ExpressionNode plus4(&op1);
-    plus4.left = &div;
-    plus4.right = new ExpressionNode(&c3);
+    plus4.setLeft(&div);
+    plus4.setRight(new ExpressionNode(&c3));
 
     ExpressionNode expected(&op2);
-    expected.left = &plus2;
-    expected.right = &plus4;
+    expected.setLeft(&plus2);
+    expected.setRight(&plus4);
 
     std::vector<Token *> tokens = Tokenizer(statement).tokenize();
     ExprParser parser(0, tokens, false);
@@ -117,31 +117,31 @@ TEST_CASE("Test Conditional Parser") {
     Operator op1("!"), op2("+"), op3("*"), op4(">="), op5("&&"), op6("!=");
 
     ExpressionNode plus(&op2);
-    plus.left = new ExpressionNode(&c1);
-    plus.right = new ExpressionNode(&c2);
+    plus.setLeft(new ExpressionNode(&c1));
+    plus.setRight(new ExpressionNode(&c2));
 
     ExpressionNode mul(&op3);
-    mul.left = &plus;
-    mul.right = new ExpressionNode(&c1);
+    mul.setLeft(&plus);
+    mul.setRight(new ExpressionNode(&c1));
 
     ExpressionNode gte(&op4);
-    gte.left = &mul;
-    gte.right = new ExpressionNode(&c3);
+    gte.setLeft(&mul);
+    gte.setRight(new ExpressionNode(&c3));
 
     ExpressionNode inverse(&op1);
-    inverse.left = &gte;
+    inverse.setLeft(&gte);
 
     ExpressionNode mul2(&op3);
-    mul2.left = new ExpressionNode(&var1);
-    mul2.right = new ExpressionNode(&var2);
+    mul2.setLeft(new ExpressionNode(&var1));
+    mul2.setRight(new ExpressionNode(&var2));
 
     ExpressionNode nte(&op6);
-    nte.left = &mul2;
-    nte.right = new ExpressionNode(&c2);
+    nte.setLeft(&mul2);
+    nte.setRight(new ExpressionNode(&c2));
 
     ExpressionNode andNode(&op5);
-    andNode.left = &inverse;
-    andNode.right = &nte;
+    andNode.setLeft(&inverse);
+    andNode.setRight(&nte);
 
     ExpressionNode *expected = &andNode;
 
@@ -179,12 +179,12 @@ TEST_CASE("While Statement Parser") {
     std::vector<StatementNode *> stmtList = {};
 
     ExpressionNode mul2(&op3);
-    mul2.left = new ExpressionNode(&var1);
-    mul2.right = new ExpressionNode(&var2);
+    mul2.setLeft(new ExpressionNode(&var1));
+    mul2.setRight(new ExpressionNode(&var2));
 
     ExpressionNode nte(&op6);
-    nte.left = &mul2;
-    nte.right = new ExpressionNode(&c2);
+    nte.setLeft(&mul2);
+    nte.setRight(new ExpressionNode(&c2));
 
     AssignStatementNode a(&var1, new ExpressionNode(&c2), 2);
     ReadStatementNode r(&var2, 3);
@@ -205,12 +205,12 @@ TEST_CASE("If Statement Parser") {
     Operator op1("!"), op2("+"), op3("*"), op4(">="), op5("&&"), op6("!=");
 
     ExpressionNode mul2(&op3);
-    mul2.left = new ExpressionNode(&var1);
-    mul2.right = new ExpressionNode(&var2);
+    mul2.setLeft(new ExpressionNode(&var1));
+    mul2.setRight(new ExpressionNode(&var2));
 
     ExpressionNode nte(&op6);
-    nte.left = &mul2;
-    nte.right = new ExpressionNode(&c2);
+    nte.setLeft(&mul2);
+    nte.setRight(new ExpressionNode(&c2));
 
     AssignStatementNode a1(&var1, new ExpressionNode(&c2), 2);
     AssignStatementNode a2(&var1, new ExpressionNode(&c1), 4);
