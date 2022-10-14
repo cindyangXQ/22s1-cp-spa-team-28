@@ -30,6 +30,8 @@ public:
     std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym,
                                                    EntityName rightSynonym,
                                                    StorageView *storage);
+
+    std::vector<Value> getValue(std::string value, EntityName entity);
 };
 
 class ModifiesSTable : public StmtToVarRelationshipsTable {};

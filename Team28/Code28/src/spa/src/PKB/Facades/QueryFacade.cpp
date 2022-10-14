@@ -256,3 +256,11 @@ std::string QueryFacade::getAttribute(int stmtNum) {
     CallProcTable *callProc = this->storage->getTable<CallProcTable>();
     return callProc->retrieveSingleRight(stmtNum);
 };
+
+std::vector<Value> QueryFacade::solveOneAttribute(Reference ref, Value value) {
+    std::string v = value.value;
+    EntityName entity = ref.getEntityName();
+    Table *table = this->storage->getAttributesTable(entity, ref.attr);
+
+    return table->getValue(v, entity);
+}

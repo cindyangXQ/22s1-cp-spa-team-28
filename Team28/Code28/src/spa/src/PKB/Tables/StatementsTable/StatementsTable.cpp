@@ -64,7 +64,9 @@ bool StatementsTable::isAttributableStatement(const int &lineNum) {
     return false;
 }
 
-std::vector<Value> StatementsTable::getValue(int value, EntityName entity) {
+std::vector<Value> StatementsTable::getValue(std::string value,
+                                             EntityName entity) {
+    int v = std::stoi(value);
     std::vector<int> values;
     std::vector<Value> result = {};
     if (entity == EntityName::STMT) {
@@ -74,14 +76,9 @@ std::vector<Value> StatementsTable::getValue(int value, EntityName entity) {
         values = this->getStatementsByType(stmtType);
     }
     for (int i : values) {
-        if (i == value) {
+        if (i == v) {
             result.push_back(Value(ValueType::STMT_NUM, toString(i)));
         }
     }
     return result;
-}
-
-std::vector<Value> StatementsTable::getValue(std::string value,
-                                             EntityName entity) {
-    return std::vector<Value>{};
 }

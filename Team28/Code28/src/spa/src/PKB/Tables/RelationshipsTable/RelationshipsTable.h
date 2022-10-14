@@ -92,12 +92,6 @@ public:
         return *this->retrieveLeft(left).begin();
     }
 
-    virtual std::vector<Value> getValue(int value, EntityName entity) {
-        UNUSED(value);
-        UNUSED(entity);
-        return std::vector<Value>{};
-    };
-
     virtual std::vector<Value> getValue(std::string value, EntityName entity) {
         UNUSED(value);
         UNUSED(entity);

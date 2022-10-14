@@ -49,8 +49,6 @@ public:
      */
     bool isAttributableStatement(const int &index);
 
-    std::vector<Value> getValue(int value, EntityName entity);
-
     std::vector<Value> getValue(std::string value, EntityName entity);
 
 private:

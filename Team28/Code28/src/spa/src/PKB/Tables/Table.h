@@ -13,8 +13,6 @@ class Table {
 public:
     virtual void store(TableValue *item) = 0;
 
-    virtual std::vector<Value> getValue(int value, EntityName entity) = 0;
-
     virtual std::vector<Value> getValue(std::string value,
                                         EntityName entity) = 0;
 };
