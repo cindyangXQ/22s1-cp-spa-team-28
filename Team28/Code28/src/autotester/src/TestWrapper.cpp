@@ -21,6 +21,7 @@ void TestWrapper::parse(std::string filename) {
     // call your parser to do the parsing
     // ...rest of your code...
     this->spa.parse(filename);
+    this->spa.preprocessPkb();
 }
 
 // method to evaluating a query
