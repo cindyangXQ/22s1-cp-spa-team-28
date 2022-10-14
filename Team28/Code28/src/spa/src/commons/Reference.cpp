@@ -20,7 +20,8 @@ Reference::Reference(Synonym syn, EntityAttribute attr) {
     this->isSynonym = false;
     this->type = ReferenceType::ATTR_REF;
     this->syn = syn;
-    std::unordered_set<EntityAttribute> validAttr = entityAttributeMap.find(syn.entity)->second;
+    std::unordered_set<EntityAttribute> validAttr =
+        entityAttributeMap.find(syn.entity)->second;
     if (validAttr.count(attr)) {
         this->attr = attr;
     } else {
