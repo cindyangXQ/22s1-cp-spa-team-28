@@ -322,8 +322,7 @@ bool QueryParser::isValidSuchThatClause(RelationshipReference relRef,
 }
 
 bool QueryParser::isValidWithClause(Reference left, Reference right) {
-    if (left.isSynonym ||
-        right.isSynonym ||
+    if (left.isSynonym || right.isSynonym ||
         left.type == ReferenceType::WILDCARD ||
         right.type == ReferenceType::WILDCARD) {
         return false;
