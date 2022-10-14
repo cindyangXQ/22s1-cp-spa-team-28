@@ -6,17 +6,17 @@ Select w pattern w(v, _)
 2 - 1 if pattern
 while w; if ifs; variable v;
 Select ifs pattern ifs(_, _, _)
-4, 9, 14, 15, 16, 23 
+4, 9, 14, 15, 16 
 5000
 3 - 2 while pattern
 while w1, w2; if ifs; variable v;
 Select v pattern w1(v, _) pattern w2(v, _)
-a3, a17, a24
+a2, a3, a17, a18, a21, a22, a24, a28
 5000
 4 - 2 if pattern
 while w; if ifs1, ifs2; variable v;
 Select v pattern ifs1(v, _, _) pattern ifs2(v, _, _)
-a2, a17
+a2, a11, a12, a13, a15, a17, a21, a23
 5000
 5 - 1 overlapping synonym
 while w; if ifs; variable v;
