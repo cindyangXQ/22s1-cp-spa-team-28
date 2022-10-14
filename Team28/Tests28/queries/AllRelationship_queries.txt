@@ -183,3 +183,28 @@ assign a; variable v; procedure proc;
 Select proc such that Parent(_, _) pattern a(_, _"variable"_)
 main
 5000
+38 - Next (no sysnonym)
+read r;
+Select r such that Next(6, 7)
+5, 10, 23, 26
+5000
+39 - Next (one synonym)
+stmt s;
+Select s such that Next(6, s)
+7, 8
+5000
+40 - Next (two synonyms)
+assign a; stmt s;
+Select s such that Next(s, a)
+1, 2, 6, 8, 12, 13, 18
+5000
+41 - Next (one wildcard)
+procedure proc;
+Select proc such that Next(2, _)
+main
+5000
+42 - Next (return tuple)
+stmt s1, s2;
+Select <s1, s2> such that Next(s1, s2)
+1 2, 2 3, 3 4, 4 5, 5 6, 6 7, 6 8, 8 9, 9 10, 10 11, 7 12, 8 12, 11 12, 12 13, 13 14, 12 15, 14 15, 15 16, 15 26, 16 17, 16 25, 17 18, 18 19, 19 20, 17 21, 21 22, 22 23, 23 24
+5000
