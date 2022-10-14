@@ -12,19 +12,6 @@ template <typename T> std::string toString(const T &t) {
 }
 
 /*
- * Returns the converted Type of a given string.
- * Supports string and int only.
- */
-template <typename T> T convertToType(const std::string &str) {
-    if constexpr (std::is_same_v<T, std::string>) {
-        return str;
-    }
-    if constexpr (std::is_same_v<T, int>) {
-        return std::stoi(str);
-    }
-}
-
-/*
  * Returns the same string from a given string.
  */
 inline std::string toString(const std::string &value) { return value; }
