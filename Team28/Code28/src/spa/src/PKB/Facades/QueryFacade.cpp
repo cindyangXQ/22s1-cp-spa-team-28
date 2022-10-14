@@ -276,16 +276,17 @@ QueryFacade::solveBothAttribute(Reference left, Reference right) {
     EntityName rightEnt = right.getEntityName();
     Table *rightTable = this->storage->getAttributesTable(rightEnt, right.attr);
     std::map<Value, std::vector<Value>> rightValuesMap =
-        leftTable->getAllValues(rightEnt);
+        rightTable->getAllValues(rightEnt);
 
-    std::vector<std::pair<Value, Value>> *result;
+    std::vector<std::pair<Value, Value>> result;
     for (auto const &[key, value] : leftValuesMap) {
         if (rightValuesMap.count(key) > 0) {
-            this->addAllPairsInto(result, &leftValuesMap[key],
+            this->addAllPairsInto(&result, &leftValuesMap[key],
                                   &rightValuesMap[key]);
         }
     }
-    return *result;
+
+    return result;
 }
 
 void QueryFacade::addAllPairsInto(std::vector<std::pair<Value, Value>> *result,
