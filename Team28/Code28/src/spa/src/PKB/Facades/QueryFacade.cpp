@@ -267,6 +267,7 @@ std::vector<Value> QueryFacade::solveOneAttribute(Reference ref, Value value) {
 
 std::vector<std::pair<Value, Value>>
 QueryFacade::solveBothAttribute(Reference left, Reference right) {
+    // TODO: find a method to inner join instead of cross product
     EntityName leftEnt = left.getEntityName();
     Table *leftTable = this->storage->getAttributesTable(leftEnt, left.attr);
     std::map<Value, std::vector<Value>> leftValuesMap =

@@ -31,8 +31,9 @@ public:
                                                    EntityName rightSynonym,
                                                    StorageView *storage);
 
-    std::vector<Value> getMatchingValue(std::string value, EntityName entity);
-    std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
+    virtual std::vector<Value> getMatchingValue(std::string value,
+                                                EntityName entity);
+    virtual std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
 };
 
 class ModifiesSTable : public StmtToVarRelationshipsTable {};

@@ -24,6 +24,9 @@ public:
      */
     std::vector<std::pair<Value, Value>> getStmtAndVar();
 
+    std::vector<Value> getMatchingValue(std::string value, EntityName entity);
+    std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
+
 private:
     std::vector<Value> allStmts;
 
