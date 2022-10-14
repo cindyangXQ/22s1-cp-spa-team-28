@@ -94,7 +94,11 @@ public:
     template <typename V>
     std::vector<Value> solveOneAttribute(Reference ref, Value value) {
         V v = convertToType<ValueType>(value.value);
+        EntityName entity = ref.getEntityName();
+        Table *table = this->storage->getAttributesTable(entity, ref.attr);
+
         if (!ref.isInferredAttribute()) {
+            return table->getValue(v, entity);
         }
     }
 

@@ -60,6 +60,18 @@ public:
     std::vector<std::pair<Value, Value>>
     getAssignAndVarExact(std::string expression);
 
+    std::vector<Value> getValue(int value, EntityName entity) {
+        UNUSED(value);
+        UNUSED(entity);
+        return std::vector<Value>{};
+    };
+
+    std::vector<Value> getValue(std::string value, EntityName entity) {
+        UNUSED(value);
+        UNUSED(entity);
+        return std::vector<Value>{};
+    };
+
 private:
     std::vector<Value> allLineNumbers;
     std::vector<Assignment> allAssignments;

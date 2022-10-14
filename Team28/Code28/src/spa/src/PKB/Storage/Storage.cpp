@@ -115,6 +115,11 @@ std::vector<Solvable *> Storage::getUsesTables() {
 
 StorageView *Storage::getStorageView() { return this->storageView; };
 
+Table *Storage::getAttributesTable(EntityName entity,
+                                   EntityAttribute attribute) {
+    return this->attributesTables[{entity, attribute}];
+};
+
 void Storage::initAttributesTableMap() {
     this->attributesTables = {
         {std::make_pair(EntityName::STMT, EntityAttribute::STMT_NO),

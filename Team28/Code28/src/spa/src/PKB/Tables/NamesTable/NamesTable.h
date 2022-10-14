@@ -51,14 +51,33 @@ public:
      */
     std::unordered_set<std::string> getAll() { return this->names; }
 
+    virtual std::vector<Value> getValue(int value, EntityName entity) {
+        UNUSED(value);
+        UNUSED(entity);
+        return std::vector<Value>{};
+    };
+
+    virtual std::vector<Value> getValue(std::string value, EntityName entity) {
+        UNUSED(value);
+        UNUSED(entity);
+        return std::vector<Value>{};
+    };
+
 protected:
     std::unordered_set<std::string> names;
     std::map<std::string, T *> nameEntityMap;
 };
 
-class ConstantsTable : public NamesTable<Constant> {};
-class VariablesTable : public NamesTable<Variable> {};
+class ConstantsTable : public NamesTable<Constant> {
+public:
+    std::vector<Value> getValue(int value, EntityName entity);
+};
+class VariablesTable : public NamesTable<Variable> {
+public:
+    std::vector<Value> getValue(std::string value, EntityName entity);
+};
 class ProceduresTable : public NamesTable<Procedure> {
 public:
+    std::vector<Value> getValue(std::string value, EntityName entity);
     std::vector<int> getAllStmtNum();
 };

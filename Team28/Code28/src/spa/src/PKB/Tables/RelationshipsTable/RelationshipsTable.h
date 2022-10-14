@@ -92,6 +92,18 @@ public:
         return *this->retrieveLeft(left).begin();
     }
 
+    virtual std::vector<Value> getValue(int value, EntityName entity) {
+        UNUSED(value);
+        UNUSED(entity);
+        return std::vector<Value>{};
+    };
+
+    virtual std::vector<Value> getValue(std::string value, EntityName entity) {
+        UNUSED(value);
+        UNUSED(entity);
+        return std::vector<Value>{};
+    };
+
 protected:
     std::map<Left, std::unordered_set<Right>> leftToRightsMap;
     std::map<Right, std::unordered_set<Left>> rightToLeftsMap;

@@ -1,5 +1,6 @@
 #include "StatementsTable.h"
 
+#include "../../../commons/StringUtil.h"
 #include <algorithm>
 
 StatementsTable::StatementsTable() = default;
@@ -61,4 +62,26 @@ bool StatementsTable::isAttributableStatement(const int &lineNum) {
         return true;
     }
     return false;
+}
+
+std::vector<Value> StatementsTable::getValue(int value, EntityName entity) {
+    std::vector<int> values;
+    std::vector<Value> result = {};
+    if (entity == EntityName::STMT) {
+        values = this->getAllLineNumbers();
+    } else {
+        StatementType stmtType = Statement::entityToStatementMap[entity];
+        values = this->getStatementsByType(stmtType);
+    }
+    for (int i : values) {
+        if (i == value) {
+            result.push_back(Value(ValueType::STMT_NUM, toString(i)));
+        }
+    }
+    return result;
+}
+
+std::vector<Value> StatementsTable::getValue(std::string value,
+                                             EntityName entity) {
+    return std::vector<Value>{};
 }

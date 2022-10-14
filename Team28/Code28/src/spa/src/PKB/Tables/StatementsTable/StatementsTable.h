@@ -49,7 +49,9 @@ public:
      */
     bool isAttributableStatement(const int &index);
 
-    bool isValueExist(TableValue item, EntityName entity);
+    std::vector<Value> getValue(int value, EntityName entity);
+
+    std::vector<Value> getValue(std::string value, EntityName entity);
 
 private:
     std::map<StatementType, std::vector<int>> statementTypeIndexes = {

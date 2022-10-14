@@ -2,4 +2,6 @@
 
 #include "RelationshipsTable.h"
 
-class CallProcTable : public RelationshipsTable<int, std::string> {};
+class CallProcTable : public RelationshipsTable<int, std::string> {
+public:
+};

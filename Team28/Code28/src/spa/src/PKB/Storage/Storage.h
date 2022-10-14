@@ -94,6 +94,8 @@ public:
      */
     StorageView *getStorageView();
 
+    Table *getAttributesTable(EntityName entity, EntityAttribute attribute);
+
 private:
     std::map<std::type_index, Table *> tables;
     /*
