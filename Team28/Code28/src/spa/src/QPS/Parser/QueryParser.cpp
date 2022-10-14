@@ -322,19 +322,19 @@ bool QueryParser::isValidSuchThatClause(RelationshipReference relRef,
 }
 
 bool QueryParser::isValidWithClause(Reference left, Reference right) {
-    if (left.isSynonym || 
+    if (left.isSynonym ||
         right.isSynonym ||
         left.type == ReferenceType::WILDCARD ||
         right.type == ReferenceType::WILDCARD) {
         return false;
     }
-    if (left.attr == EntityAttribute::PROC_NAME || 
+    if (left.attr == EntityAttribute::PROC_NAME ||
         left.attr == EntityAttribute::VAR_NAME ||
         left.type == ReferenceType::ENT_REF) {
-        return (right.attr == EntityAttribute::PROC_NAME || 
+        return (right.attr == EntityAttribute::PROC_NAME ||
                 right.attr == EntityAttribute::VAR_NAME ||
                 right.type == ReferenceType::ENT_REF);
-    } else if (left.attr == EntityAttribute::STMT_NO || 
+    } else if (left.attr == EntityAttribute::STMT_NO ||
                left.attr == EntityAttribute::VALUE ||
                left.type == ReferenceType::STMT_REF) {
         return (right.attr == EntityAttribute::STMT_NO ||
