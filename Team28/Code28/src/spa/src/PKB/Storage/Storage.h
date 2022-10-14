@@ -108,6 +108,23 @@ private:
     StorageView *storageView;
 
     /*
+     * Template method init and store Table that can be populated externally.
+     */
+    template <typename TableClass> void initTable(Populate popType) {
+        TableClass *table = new TableClass();
+        this->tables[typeid(TableClass)] = table;
+        this->popTables[popType] = table;
+    }
+
+    /*
+     * Template method init and store Tables that are populated internally.
+     */
+    template <typename TableClass> void initTable() {
+        TableClass *table = new TableClass();
+        this->tables[typeid(TableClass)] = table;
+    }
+
+    /*
      * Template method for getting tables used for Uses and Modifies.
      */
     template <typename STable, typename PTable>
@@ -120,4 +137,12 @@ private:
         }
         return nullptr;
     }
+
+    /*
+     * Helper functions to initialise tables and maps in storage
+     */
+    void initDesignEntitiesTable();
+    void initRelationshipsTable();
+    void initRsTablesMap();
+    void initStorageView();
 };
