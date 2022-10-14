@@ -92,10 +92,17 @@ public:
         return *this->retrieveLeft(left).begin();
     }
 
-    virtual std::vector<Value> getValue(std::string value, EntityName entity) {
+    virtual std::vector<Value> getMatchingValue(std::string value,
+                                                EntityName entity) {
         UNUSED(value);
         UNUSED(entity);
         return std::vector<Value>{};
+    };
+
+    virtual std::map<Value, std::vector<Value>>
+    getAllValues(EntityName entity) {
+        UNUSED(entity);
+        return std::map<Value, std::vector<Value>>{};
     };
 
 protected:

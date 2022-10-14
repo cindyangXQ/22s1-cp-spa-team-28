@@ -94,7 +94,7 @@ public:
     std::vector<Value> solveOneAttribute(Reference ref, Value value);
 
     /*
-     * Returns list of possible (Value, Value)s that the pair of synonyms can be
+     * Returns list of possible (Value, Value) that the pair of synonyms can be
      * based on their attributes.
      */
     std::vector<std::pair<Value, Value>> solveBothAttribute(Reference left,
@@ -166,4 +166,11 @@ private:
      * Helper method to check RefType of given leftSynonym.
      */
     ReferenceType getRefType(EntityName leftSynonym);
+
+    /*
+     * Helper method to add all pairs of Values from cross intersection of left
+     * and right.
+     */
+    void addAllPairsInto(std::vector<std::pair<Value, Value>> *result,
+                         std::vector<Value> *left, std::vector<Value> *right);
 };

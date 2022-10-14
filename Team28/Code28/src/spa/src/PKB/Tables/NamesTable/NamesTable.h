@@ -51,7 +51,8 @@ public:
      */
     std::unordered_set<std::string> getAll() { return this->names; }
 
-    std::vector<Value> getValue(std::string value, EntityName entity) {
+    virtual std::vector<Value> getMatchingValue(std::string value,
+                                                EntityName entity) {
         UNUSED(entity);
         std::vector<Value> result = {};
         if (this->names.count(value) == 1) {
@@ -60,12 +61,27 @@ public:
         return result;
     }
 
+    virtual std::map<Value, std::vector<Value>>
+    getAllValues(EntityName entity) {
+        UNUSED(entity);
+        std::map<Value, std::vector<Value>> result = {};
+        for (std::string name : this->names) {
+            Value v = Value(ValueType::VAR_NAME, name);
+            result[v] = {v};
+        }
+        return result;
+    };
+
 protected:
     std::unordered_set<std::string> names;
     std::map<std::string, T *> nameEntityMap;
 };
 
-class ConstantsTable : public NamesTable<Constant> {};
+class ConstantsTable : public NamesTable<Constant> {
+public:
+    std::vector<Value> getMatchingValue(std::string value, EntityName entity);
+    std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
+};
 class VariablesTable : public NamesTable<Variable> {};
 class ProceduresTable : public NamesTable<Procedure> {
 public:

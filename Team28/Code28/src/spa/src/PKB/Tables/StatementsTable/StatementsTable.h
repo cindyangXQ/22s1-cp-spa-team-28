@@ -49,7 +49,9 @@ public:
      */
     bool isAttributableStatement(const int &index);
 
-    std::vector<Value> getValue(std::string value, EntityName entity);
+    std::vector<Value> getMatchingValue(std::string value, EntityName entity);
+
+    std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
 
 private:
     std::map<StatementType, std::vector<int>> statementTypeIndexes = {

@@ -262,5 +262,37 @@ std::vector<Value> QueryFacade::solveOneAttribute(Reference ref, Value value) {
     EntityName entity = ref.getEntityName();
     Table *table = this->storage->getAttributesTable(entity, ref.attr);
 
-    return table->getValue(v, entity);
+    return table->getMatchingValue(v, entity);
 }
+
+std::vector<std::pair<Value, Value>>
+QueryFacade::solveBothAttribute(Reference left, Reference right) {
+    EntityName leftEnt = left.getEntityName();
+    Table *leftTable = this->storage->getAttributesTable(leftEnt, left.attr);
+    std::map<Value, std::vector<Value>> leftValuesMap =
+        leftTable->getAllValues(leftEnt);
+
+    EntityName rightEnt = right.getEntityName();
+    Table *rightTable = this->storage->getAttributesTable(rightEnt, right.attr);
+    std::map<Value, std::vector<Value>> rightValuesMap =
+        leftTable->getAllValues(rightEnt);
+
+    std::vector<std::pair<Value, Value>> *result;
+    for (auto const &[key, value] : leftValuesMap) {
+        if (rightValuesMap.count(key) > 0) {
+            this->addAllPairsInto(result, &leftValuesMap[key],
+                                  &rightValuesMap[key]);
+        }
+    }
+    return *result;
+}
+
+void QueryFacade::addAllPairsInto(std::vector<std::pair<Value, Value>> *result,
+                                  std::vector<Value> *left,
+                                  std::vector<Value> *right) {
+    for (Value lValue : *left) {
+        for (Value rValue : *right) {
+            result->push_back(std::make_pair(lValue, rValue));
+        }
+    }
+};
