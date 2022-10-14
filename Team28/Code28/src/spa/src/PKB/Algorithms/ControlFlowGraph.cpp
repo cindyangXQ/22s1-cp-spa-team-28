@@ -10,6 +10,7 @@ ControlFlowGraph::ControlFlowGraph(NextTable *nextTable, NextTTable *nextTTable,
     this->branchIn = storage->getTable<BranchInTable>();
     this->branchOut = storage->getTable<BranchOutTable>();
     this->procedures = storage->getTable<ProceduresTable>();
+    this->totalLines = storage->getTable<StatementsTable>()->getTableSize();
 };
 
 void ControlFlowGraph::populateNext() {
@@ -25,23 +26,27 @@ void ControlFlowGraph::populateNext() {
 };
 
 void ControlFlowGraph::populateNextT() {
-    std::cout << "ORIGINAL" << std::endl;
+    std::map<std::pair<int, int>, bool> matrix;
+
     for (const auto &elem : this->visited) {
-        std::cout << "(" << elem.first.first << ", " << elem.first.second
-                  << ") " << elem.second << "\n";
+        matrix[elem.first] = elem.second;
     }
-    for (const auto &elem1 : this->visited) {
-        std::cout << "ENTERING " << std::endl;
-        for (const auto &elem2 : this->visited) {
-            if (elem1.first.second == elem2.first.first) {
-                Relationship<int, int> nextTRs =
-                    Relationship(RelationshipReference::NEXT_T,
-                                 elem1.first.first, elem2.first.second);
-                std::cout << "(" << elem1.first.first << ", "
-                          << elem2.first.second << ") " << elem1.second << "\n";
-                this->nextT->store(&nextTRs);
+
+    for (int k = 1; k <= this->totalLines; k++) {
+        for (int i = 1; i <= this->totalLines; k++) {
+            for (int j = 1; j <= this->totalLines; k++) {
+                std::pair<int, int> curr = std::make_pair(i, j);
+                std::pair<int, int> left = std::make_pair(i, k);
+                std::pair<int, int> right = std::make_pair(k, j);
+                matrix[curr] = matrix[curr] || (matrix[left] && matrix[right]);
+                std::cout << matrix[curr] << std::endl;
             }
         }
+    }
+
+    for (const auto &elem : matrix) {
+        std::cout << "(" << elem.first.first << ", " << elem.first.second
+                  << "): " << elem.second << std::endl;
     }
 };
 

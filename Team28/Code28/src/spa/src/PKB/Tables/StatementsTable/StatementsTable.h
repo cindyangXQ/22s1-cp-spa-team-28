@@ -49,7 +49,15 @@ public:
      */
     bool isAttributableStatement(const int &index);
 
+    /*
+     * Get table size.
+     * TODO check if this can be removed. Only used for Next* currently.
+     */
+    int getTableSize();
+
 private:
+    int tableSize = 0;
+
     std::map<StatementType, std::vector<int>> statementTypeIndexes = {
         {StatementType::READ, {}},   {StatementType::PRINT, {}},
         {StatementType::ASSIGN, {}}, {StatementType::CALL, {}},

@@ -15,6 +15,7 @@ void StatementsTable::store(TableValue *statement) {
 
     this->statements.push_back(stmt);
     this->statementTypeIndexes[type].push_back(index);
+    this->tableSize++;
 }
 
 Statement *StatementsTable::retrieve(const int &lineNum) {
@@ -62,3 +63,5 @@ bool StatementsTable::isAttributableStatement(const int &lineNum) {
     }
     return false;
 }
+
+int StatementsTable::getTableSize() { return this->tableSize; }

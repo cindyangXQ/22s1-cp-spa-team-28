@@ -120,6 +120,33 @@ TEST_CASE("CFG Traverses Correctly (NextT) - 1 procedure") {
     BranchInTable *branchIn = storage->getTable<BranchInTable>();
     BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
     ProceduresTable *procTable = storage->getTable<ProceduresTable>();
+    StatementsTable *statementsTable = storage->getTable<StatementsTable>();
+
+    // Statements
+    Statement s1 = Statement(1, StatementType::ASSIGN);
+    Statement s2 = Statement(2, StatementType::ASSIGN);
+    Statement s3 = Statement(3, StatementType::ASSIGN);
+    Statement s4 = Statement(4, StatementType::ASSIGN);
+    Statement s5 = Statement(5, StatementType::ASSIGN);
+    Statement s6 = Statement(6, StatementType::ASSIGN);
+    Statement s7 = Statement(7, StatementType::ASSIGN);
+    Statement s8 = Statement(8, StatementType::ASSIGN);
+    Statement s9 = Statement(9, StatementType::ASSIGN);
+    Statement s10 = Statement(10, StatementType::ASSIGN);
+    Statement s11 = Statement(11, StatementType::ASSIGN);
+    Statement s12 = Statement(12, StatementType::ASSIGN);
+    statementsTable->store(&s1);
+    statementsTable->store(&s2);
+    statementsTable->store(&s3);
+    statementsTable->store(&s4);
+    statementsTable->store(&s5);
+    statementsTable->store(&s6);
+    statementsTable->store(&s7);
+    statementsTable->store(&s8);
+    statementsTable->store(&s9);
+    statementsTable->store(&s10);
+    statementsTable->store(&s11);
+    statementsTable->store(&s12);
 
     // Follows
     Relationship<int, int> relation =

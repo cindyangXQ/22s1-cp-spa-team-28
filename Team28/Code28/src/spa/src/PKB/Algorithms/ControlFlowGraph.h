@@ -37,6 +37,8 @@ private:
 
     std::map<std::pair<int, int>, bool> visited;
 
+    int totalLines;
+
     /*
      * Depth First Search of CFG based on given integer.
      */
