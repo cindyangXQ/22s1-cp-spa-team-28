@@ -1293,3 +1293,285 @@ TEST_CASE("getAttribute returns correct results") {
     REQUIRE(facade.getAttribute(3) == "x");
     REQUIRE(facade.getAttribute(4) == "bar");
 }
+
+TEST_CASE("solveOneAttribute returns correct results -- Relationships") {
+    // procedure main {
+    //     a = b + 1;
+    //     print a;
+    //     read x;
+    //     call bar;
+    //     if (a) ...
+    //     while (a) ...
+    // } ... assumes valid procedure bar exists
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
+    CallProcTable *callP = storage->getTable<CallProcTable>();
+
+    // Relationships
+    Relationship<int, std::string> rs1 =
+        Relationship(RelationshipReference::USES, 1, std::string("b"));
+    Relationship<int, std::string> rs2 =
+        Relationship(RelationshipReference::USES, 2, std::string("a"));
+    Relationship<int, std::string> rs3 =
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
+    Relationship<int, std::string> rs4 =
+        Relationship(RelationshipReference::USES, 4, std::string("bar"));
+    Relationship<int, std::string> rs5 =
+        Relationship(RelationshipReference::USES, 5, std::string("a"));
+    Relationship<int, std::string> rs6 =
+        Relationship(RelationshipReference::USES, 6, std::string("a"));
+    usesS->store(&rs1);
+    usesS->store(&rs2);
+    modifiesS->store(&rs3);
+    callP->store(&rs4);
+    usesS->store(&rs5);
+    usesS->store(&rs6);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // Call.procName
+    expectedResult = {Value(ValueType::STMT_NUM, "4")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CALL, ""), EntityAttribute::PROC_NAME),
+        Value(ValueType::VAR_NAME, "bar"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CALL, ""), EntityAttribute::PROC_NAME),
+        Value(ValueType::VAR_NAME, "init"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Read.varName
+    expectedResult = {Value(ValueType::STMT_NUM, "3")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::READ, ""), EntityAttribute::VAR_NAME),
+        Value(ValueType::VAR_NAME, "x"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::READ, ""), EntityAttribute::VAR_NAME),
+        Value(ValueType::VAR_NAME, "a"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Print.varName
+    expectedResult = {Value(ValueType::STMT_NUM, "2")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PRINT, ""), EntityAttribute::VAR_NAME),
+        Value(ValueType::VAR_NAME, "a"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PRINT, ""), EntityAttribute::VAR_NAME),
+        Value(ValueType::VAR_NAME, "A"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("solveOneAttribute returns correct results -- Entities") {
+    // procedure main {
+    //     a = b + 1;
+    //     print a;
+    //     read x;
+    //     call bar;
+    //     if (a) ...
+    //     while (a) ...
+    // } ... assumes valid procedure bar exists
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    ConstantsTable *constants = storage->getTable<ConstantsTable>();
+    VariablesTable *variables = storage->getTable<VariablesTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
+
+    // Constants, Variables and Procedures
+    constants->store(new Constant("1"));
+    variables->store(new Variable("a"));
+    variables->store(new Variable("b"));
+    variables->store(new Variable("x"));
+    procedures->store(new Procedure("main", 1));
+    procedures->store(new Procedure("bar", 7));
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // Constants
+    expectedResult = {Value(ValueType::STMT_NUM, "1")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CONSTANT, "1"), EntityAttribute::VALUE),
+        Value(ValueType::STMT_NUM, "1"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CONSTANT, "2"), EntityAttribute::VALUE),
+        Value(ValueType::STMT_NUM, "2"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Variables
+    expectedResult = {Value(ValueType::VAR_NAME, "a")};
+    output =
+        facade.solveOneAttribute(Reference(Synonym(EntityName::VARIABLE, "a"),
+                                           EntityAttribute::VAR_NAME),
+                                 Value(ValueType::VAR_NAME, "a"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::VARIABLE, "main"),
+                  EntityAttribute::VAR_NAME),
+        Value(ValueType::VAR_NAME, "main"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Procedures
+    expectedResult = {Value(ValueType::VAR_NAME, "main")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PROCEDURE, "main"),
+                  EntityAttribute::PROC_NAME),
+        Value(ValueType::VAR_NAME, "main"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PROCEDURE, "init"),
+                  EntityAttribute::PROC_NAME),
+        Value(ValueType::VAR_NAME, "init"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("solveOneAttribute returns correct results -- Statements") {
+    // procedure main {
+    //     a = b + 1;
+    //     print a;
+    //     read x;
+    //     call bar;
+    //     if (a) ...
+    //     while (a) ...
+    // } ... assumes valid procedure bar exists
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+
+    // Statements
+    Statement stmt1 = Statement(1, StatementType::ASSIGN);
+    Statement stmt2 = Statement(2, StatementType::PRINT);
+    Statement stmt3 = Statement(3, StatementType::READ);
+    Statement stmt4 = Statement(4, StatementType::CALL);
+    Statement stmt5 = Statement(5, StatementType::IF);
+    Statement stmt6 = Statement(6, StatementType::WHILE);
+    statements->store(&stmt1);
+    statements->store(&stmt2);
+    statements->store(&stmt3);
+    statements->store(&stmt4);
+    statements->store(&stmt5);
+    statements->store(&stmt6);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // STATEMENT
+    expectedResult = {Value(ValueType::STMT_NUM, "1")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::STMT, "1"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "1"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::STMT, "7"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "7"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    // ASSIGN
+    expectedResult = {Value(ValueType::STMT_NUM, "1")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::ASSIGN, "1"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "1"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::ASSIGN, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // PRINT
+    expectedResult = {Value(ValueType::STMT_NUM, "2")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PRINT, "2"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "2"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PRINT, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // READ
+    expectedResult = {Value(ValueType::STMT_NUM, "3")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::READ, "3"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "3"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::READ, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // CALL
+    expectedResult = {Value(ValueType::STMT_NUM, "4")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CALL, "4"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "4"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CALL, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // IF
+    expectedResult = {Value(ValueType::STMT_NUM, "5")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::IF, "5"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "5"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::IF, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // WHILE
+    expectedResult = {Value(ValueType::STMT_NUM, "6")};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::WHILE, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::WHILE, "1"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "1"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
