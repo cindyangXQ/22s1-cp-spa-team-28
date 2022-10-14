@@ -20,4 +20,6 @@ public:
     Reference(Synonym syn, EntityAttribute attr);
     Reference(std::string value);
     bool isWildcard();
+    EntityName getEntityName();
+    bool isInferredAttribute();
 };

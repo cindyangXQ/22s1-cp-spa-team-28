@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <type_traits>
 
 /*
  * Returns the string form of a given number.
@@ -8,6 +9,19 @@
  */
 template <typename T> std::string toString(const T &t) {
     return std::to_string(t);
+}
+
+/*
+ * Returns the converted Type of a given string.
+ * Supports string and int only.
+ */
+template <typename T> T convertToType(const std::string &str) {
+    if constexpr (std::is_same_v<T, std::string>) {
+        return str;
+    }
+    if constexpr (std::is_same_v<T, int>) {
+        return std::stoi(str);
+    }
 }
 
 /*

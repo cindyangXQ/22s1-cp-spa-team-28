@@ -73,6 +73,8 @@ private:
      * Note: Modifies and Uses are complex and won't be mapped here.
      */
     std::map<RelationshipReference, Solvable *> rsTables;
+    std::map<std::pair<EntityName, EntityAttribute>, Table *> attributesTables;
+
     StorageView *storageView;
 
     /*
@@ -88,4 +90,6 @@ private:
         }
         return nullptr;
     }
+
+    void initAttributesTableMap();
 };

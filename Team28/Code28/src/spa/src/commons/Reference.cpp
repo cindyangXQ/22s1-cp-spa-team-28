@@ -20,7 +20,8 @@ Reference::Reference(Synonym syn, EntityAttribute attr) {
     this->isSynonym = false;
     this->type = ReferenceType::ATTR_REF;
     this->syn = syn;
-    std::unordered_set<EntityAttribute> validAttr = entityAttributeMap.find(syn.entity)->second;
+    std::unordered_set<EntityAttribute> validAttr =
+        entityAttributeMap.find(syn.entity)->second;
     if (validAttr.count(attr)) {
         this->attr = attr;
     } else {
@@ -49,4 +50,13 @@ bool Reference::isWildcard() {
         return false;
     }
     return this->value.type == ValueType::WILDCARD;
+}
+
+EntityName Reference::getEntityName() { return this->syn.entity; }
+
+bool Reference::isInferredAttribute() {
+    if (inferredAttributeMap.count(getEntityName())) {
+        return inferredAttributeMap.find(getEntityName())->second == attr;
+    }
+    return false;
 }

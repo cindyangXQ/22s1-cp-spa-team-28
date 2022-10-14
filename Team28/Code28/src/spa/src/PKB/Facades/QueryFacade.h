@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../commons/StringUtil.h"
 #include "../Storage/Storage.h"
 
 /*
@@ -85,6 +86,24 @@ public:
     std::vector<std::pair<Value, Value>>
     solveBoth(RelationshipReference relType, EntityName leftSynonym,
               EntityName rightSynonym);
+
+    /*
+     * Returns list of possible values that the synonym can be based on the
+     * given value and it's attribute.
+     */
+    template <typename ValueType>
+    std::vector<Value> solveOneAttribute(Reference ref, Value value) {
+        ValueType v = convertToType<ValueType>(value.value);
+        if (!ref.isInferredAttribute()) {
+        }
+    }
+
+    /*
+     * Returns list of possible (Value, Value)s that the pair of synonyms can be
+     * based on their attributes.
+     */
+    std::vector<std::pair<Value, Value>> solveBothAttribute(Reference left,
+                                                            Reference right);
 
     /*
      * Return list of possible values of assignments that satisfy the given
