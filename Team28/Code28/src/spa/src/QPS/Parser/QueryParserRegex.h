@@ -5,8 +5,10 @@
 #include <regex>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 typedef std::unordered_map<std::string, EntityName> ENTITY_MAP;
+typedef std::unordered_map<std::string, EntityAttribute> ENTITY_ATTR_MAP;
 typedef std::unordered_map<std::string, RelationshipReference> RELATIONSHIP_MAP;
 typedef std::unordered_map<RelationshipReference,
                            std::unordered_set<EntityName>>
@@ -25,6 +27,12 @@ const ENTITY_MAP entityMap = {
     {"while", EntityName::WHILE},       {"if", EntityName::IF},
     {"assign", EntityName::ASSIGN},     {"variable", EntityName::VARIABLE},
     {"constant", EntityName::CONSTANT}, {"procedure", EntityName::PROCEDURE}};
+
+// map string to entity attribute enum
+const ENTITY_ATTR_MAP entityAttrMap = {{"procName", EntityAttribute::PROC_NAME},
+                                       {"varName", EntityAttribute::VAR_NAME},
+                                       {"value", EntityAttribute::VALUE},
+                                       {"stmt#", EntityAttribute::STMT_NO}};
 
 // map string to relationship enum
 const RELATIONSHIP_MAP relationshipMap = {
@@ -159,11 +167,20 @@ const RELATIONSHIP_REF_MAP relationshipRightRefMap = {
  * Regex expressions for primitive types
  */
 const std::regex intRegex("\\s*0|[1-9]\\d*\\s*"); // integer: DIGIT+
+
 const std::regex
     synRegex("\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"); // synonym: LETTER(LETTER|DIGIT)*
+
 const std::regex nameRegex(
-    "\\s*[a-zA-Z][a-zA-Z0-9]*\\s*");         // name: LETTER ( LETTER | DIGIT )*
+    "\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"); // name: LETTER ( LETTER | DIGIT )*
+
 const std::regex wildcardRegex("\\s*_\\s*"); // wildcard: _
+
+const std::regex
+    attrRefRegex("\\s*([a-zA-Z][a-zA-Z0-9]*)\\s*"         // synonym
+                 "\\."                                    // '.'
+                 "\\s*(procName|varName|value|stmt#)\\s*" // attrName
+    );
 
 /*
  * Regex expressions for arguments
@@ -191,21 +208,25 @@ const std::regex
 
 // select-cl : declaration* 'Select' synonym [ suchthat-cl ]   [ pattern-cl ]
 // For arguments extraction
-const std::regex
-    selectRegex("\\s*Select\\s+"                 // 'Select'
-                "([a-zA-Z][a-zA-Z0-9]*|BOOLEAN|" // synonym or BOOLEAN
-                "<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"  // or <synonym (, synonym)*>
-                "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*>)\\s*");
+const std::regex selectRegex("\\s*Select\\s+" // 'Select'
+                             "([a-zA-Z][a-zA-Z0-9]*"
+                             "(\\s*[\\.]\\s*(procName|varName|value|stmt#))*|"
+                             "BOOLEAN|" // synonym or BOOLEAN or attr
+                             "<.*?" // or <synonym or attr (, synonym or attr)*>
+                             "(,.*?)*>)\\s*");
+
 // For clause extraction
-const std::regex selectClauseRegex(
-    "(\\s*Select\\s+"                // 'Select'
-    "([a-zA-Z][a-zA-Z0-9]*|BOOLEAN|" // synonym or BOOLEAN
-    "<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"  // or <synonym (, synonym)*>
-    "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*>)\\s*).*?");
+const std::regex
+    selectClauseRegex("(\\s*Select\\s+" // 'Select'
+                      "([a-zA-Z][a-zA-Z0-9]*"
+                      "(\\s*[\\.]\\s*(procName|varName|value|stmt#))*|"
+                      "BOOLEAN|" // synonym or BOOLEAN or attr
+                      "<.*?"     // or <synonym (, synonym)*>
+                      "(,.*?)*>)\\s*).*?");
 
 // For select tuple
-const std::regex selectTupleRegex("<\\s*[a-zA-Z][a-zA-Z0-9]*\\s*"
-                                  "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*>");
+const std::regex selectTupleRegex("<.*?"
+                                  "(,.*?)*>");
 
 // suchthat-cl : 'such' 'that' relRef
 // relRef : ModifiesP | ModifiesS | UsesP | UsesS
@@ -222,6 +243,7 @@ const std::regex suchThatRegex(
     "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef |
                                                                     // stmtRef
     "\\s*\\)\\s*");
+
 // For clause extraction
 const std::regex suchThatClauseRegex(
     "(^\\s*(such\\s+that\\s+|^\\s*and\\s+)"
@@ -264,3 +286,22 @@ const std::regex patternClauseRegex(
 
 const std::unordered_set<EntityName> patternEntityMap = {
     EntityName::ASSIGN, EntityName::IF, EntityName::WHILE};
+
+// with-cl : 'with' attrCond
+// attrCond : attrCompare ( 'and' attrCompare )*
+// attrCompare : ref '=' ref
+// ref : '"' IDENT '"'" | INTEGER | attrRef | synonym
+// attrRef : synonym '.' attrName
+// For arguments extraction
+const std::regex withRegex("^\\s*(with\\s+|^\\s*and\\s+)" // with or and
+                           "(.*?)"                        // ref
+                           "\\s*=\\s*"                    // '='
+                           "(.*?)\\s*"                    // ref
+);
+
+// For clause extraction
+const std::regex withClauseRegex("(^\\s*(with\\s+|^\\s*and\\s+)" // with or and
+                                 "(.*?)"                         // ref
+                                 "\\s*=\\s*"                     // '='
+                                 "(.*?))\\s*"                    // ref
+);

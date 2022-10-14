@@ -45,35 +45,35 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
     } else if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
-        Synonym selectedSynonym = queryResult->selectClause.syns[0];
-        return extractSynonymFromTable(selectedSynonym, result);
+        Reference selectedRef = queryResult->selectClause.refs[0];
+        return extractReferenceFromTable(selectedRef, result);
     } else {
-        std::vector<Synonym> selectSynonyms = queryResult->selectClause.syns;
-        return extractTuplesFromTable(selectSynonyms, result);
+        std::vector<Reference> selectRefs = queryResult->selectClause.refs;
+        return extractTuplesFromTable(selectRefs, result);
     }
 }
 
 std::vector<std::string>
-QueryEvaluator::extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
+QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
                                        ClauseTable result) {
-    for (int i = 0; i < selectSynonyms.size(); i++) {
-        ClauseTable table = ClauseTable({selectSynonyms[i]});
+    for (int i = 0; i < selectRefs.size(); i++) {
+        ClauseTable table = ClauseTable({selectRefs[i]});
         std::vector<std::string> all_values =
-            QueryEvaluator::getAll(selectSynonyms[i]);
+            QueryEvaluator::getAll(selectRefs[i]);
         for (int j = 0; j < all_values.size(); j++) {
             table.insert(Tuple({Value(ValueType::WILDCARD, all_values[j])}));
         }
 
         result = ClauseTable::joinTables(result, table);
     }
-    std::vector<int> indices = result.getIndices(selectSynonyms);
+    std::vector<int> indices = result.getIndices(selectRefs);
     std::vector<std::string> output;
     for (int i = 0; i < result.size(); i++) {
         std::string tuple = "";
         Tuple row = result.rows[i];
         for (int j = 0; j < indices.size(); j++) {
             Value v = row.values[indices[j]];
-            tuple += v.value + " ";
+            tuple += getAttributeValue(selectRefs[j], v.value) + " ";
         }
         output.push_back(Utils::removeTrailingSpaces(tuple));
     }
@@ -81,17 +81,25 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
 }
 
 std::vector<std::string>
-QueryEvaluator::extractSynonymFromTable(Synonym selectedSynonym,
-                                        ClauseTable result) {
+QueryEvaluator::extractReferenceFromTable(Reference selectedRef,
+                                          ClauseTable result) {
 
-    std::vector<Value> selectValues = result.getValues(selectedSynonym);
+    std::vector<Value> selectValues = result.getValues(selectedRef);
     if (selectValues.size() == 0) {
-        return QueryEvaluator::getAll(selectedSynonym);
+        std::vector<std::string> synonymValues =
+            QueryEvaluator::getAll(selectedRef);
+
+        std::vector<std::string> result;
+        for (int i = 0; i < synonymValues.size(); i++) {
+            result.push_back(getAttributeValue(selectedRef, synonymValues[i]));
+        }
+        return result;
     } else {
         std::unordered_set<std::string> remove_duplicates;
         std::vector<std::string> output;
         for (int k = 0; k < selectValues.size(); k++) {
-            remove_duplicates.insert(selectValues[k].value);
+            remove_duplicates.insert(
+                getAttributeValue(selectedRef, selectValues[k].value));
         }
         output.insert(output.end(), remove_duplicates.begin(),
                       remove_duplicates.end());
@@ -119,27 +127,37 @@ QueryEvaluator::handleNoTables(QueryResult *queryResult) {
     if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
-        return QueryEvaluator::getAll(queryResult->selectClause.syns[0]);
+        Reference selectRef = queryResult->selectClause.refs[0];
+        std::vector<std::string> synonymValues =
+            QueryEvaluator::getAll(selectRef);
+
+        std::vector<std::string> result;
+        for (int i = 0; i < synonymValues.size(); i++) {
+            result.push_back(getAttributeValue(selectRef, synonymValues[i]));
+        }
+        return result;
     } else {
-        std::vector<Synonym> selectedSynonyms = queryResult->selectClause.syns;
-        std::vector<std::vector<std::string>> allResults;
-        for (int i = 0; i < selectedSynonyms.size(); i++) {
-            allResults.push_back(QueryEvaluator::getAll(selectedSynonyms[i]));
-            if (allResults[i].size() == 0) {
-                return {};
-            }
-        }
-        std::vector<std::string> output = allResults[0];
-        for (int i = 1; i < allResults.size(); i++) {
-            std::vector<std::string> tmp = {};
-            for (int j = 0; j < output.size(); j++) {
-                for (int k = 0; k < allResults[i].size(); k++) {
-                    tmp.push_back(output[j] + " " + allResults[i][k]);
-                }
-            }
-            output = tmp;
-        }
-        return output;
+        std::vector<Reference> selectedRefs = queryResult->selectClause.refs;
+        ClauseTable result = ClauseTable();
+        return extractTuplesFromTable(selectedRefs, result);
+    }
+}
+
+bool QueryEvaluator::isAlternativeAttribute(Reference ref) {
+    return (ref.syn.entity == EntityName::PRINT &&
+                ref.attr == EntityAttribute::VAR_NAME ||
+            ref.syn.entity == EntityName::READ &&
+                ref.attr == EntityAttribute::VAR_NAME ||
+            ref.syn.entity == EntityName::CALL &&
+                ref.attr == EntityAttribute::PROC_NAME);
+}
+
+std::string QueryEvaluator::getAttributeValue(Reference ref,
+                                              std::string synonymValue) {
+    if (isAlternativeAttribute(ref)) {
+        return this->queryFacade->getAttribute(std::stoi(synonymValue));
+    } else {
+        return synonymValue;
     }
 }
 
@@ -152,8 +170,8 @@ ClauseTable QueryEvaluator::joinAllClauseTables(
     return result;
 }
 
-std::vector<std::string> QueryEvaluator::getAll(Synonym select) {
-    EntityName type = select.entity;
+std::vector<std::string> QueryEvaluator::getAll(Reference select) {
+    EntityName type = select.syn.entity;
     if (type == EntityName::STMT) {
         std::vector<Statement *> statementList =
             (std::vector<Statement *>)this->queryFacade->getAllStatements();

@@ -27,7 +27,7 @@ ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
             // isEmpty should be false.
             return ClauseResult(!queryFacade->validate(relRef, left, right));
         } else if (left.isSynonym && !right.isSynonym) {
-            ClauseResult clauseResult = ClauseResult(std::vector{left.syn});
+            ClauseResult clauseResult = ClauseResult(std::vector{left});
             EntityName leftName = left.syn.entity;
             std::vector<Value> result =
                 queryFacade->solveLeft(relRef, right, leftName);
@@ -36,7 +36,7 @@ ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
             }
             return clauseResult;
         } else if (!left.isSynonym && right.isSynonym) {
-            ClauseResult clauseResult = ClauseResult(std::vector{right.syn});
+            ClauseResult clauseResult = ClauseResult(std::vector{right});
             EntityName rightName = right.syn.entity;
             std::vector<Value> result =
                 queryFacade->solveRight(relRef, left, rightName);
@@ -45,8 +45,7 @@ ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
             }
             return clauseResult;
         } else if (left.isSynonym && right.isSynonym) {
-            ClauseResult clauseResult =
-                ClauseResult(std::vector{left.syn, right.syn});
+            ClauseResult clauseResult = ClauseResult(std::vector{left, right});
             EntityName leftName = left.syn.entity;
             EntityName rightName = right.syn.entity;
             std::vector<std::pair<Value, Value>> result =

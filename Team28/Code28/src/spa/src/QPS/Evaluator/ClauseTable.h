@@ -1,4 +1,5 @@
 #pragma once
+#include "../../commons/Reference.h"
 #include "../../commons/Synonym.h"
 #include "Tuple.h"
 #include <vector>
@@ -9,15 +10,15 @@
  */
 class ClauseTable {
 public:
-    std::vector<Synonym> header;
+    std::vector<Reference> header;
     std::vector<Tuple> rows;
     ClauseTable(){};
-    ClauseTable(std::vector<Synonym> header);
+    ClauseTable(std::vector<Reference> header);
 
     /*
      * Given a list of synonyms, get the indices they correspond to
      */
-    std::vector<int> getIndices(std::vector<Synonym> common_headers);
+    std::vector<int> getIndices(std::vector<Reference> common_headers);
 
     /*
      * Inserts a tuple into this table
@@ -30,15 +31,15 @@ public:
     size_t size();
 
     /*
-     * Get list of values of synonym header
+     * Get list of values of reference header
      */
-    std::vector<Value> getValues(Synonym select);
+    std::vector<Value> getValues(Reference select);
 
     /*
      * Given two tables, find the common headers
      */
-    static std::vector<Synonym> getCommonHeaders(ClauseTable table1,
-                                                 ClauseTable table2);
+    static std::vector<Reference> getCommonHeaders(ClauseTable table1,
+                                                   ClauseTable table2);
 
     /*
      * Given two tables, construct a new table with all the unique headers from

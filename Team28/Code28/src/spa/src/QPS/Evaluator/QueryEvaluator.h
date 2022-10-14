@@ -6,6 +6,7 @@
 #include "PatternEvaluator.h"
 #include "QueryResult.h"
 #include "SuchThatEvaluator.h"
+#include <string>
 
 class QueryEvaluator {
 private:
@@ -24,12 +25,14 @@ public:
 private:
     void checkAllClauseResult(std::vector<ClauseResult> clauseResultList,
                               bool *isAnyTableEmpty, bool *haveTableToJoin);
-    std::vector<std::string> extractSynonymFromTable(Synonym selectedSynonym,
-                                                     ClauseTable result);
+    std::vector<std::string> extractReferenceFromTable(Reference selectedRef,
+                                                       ClauseTable result);
     std::vector<std::string>
-    extractTuplesFromTable(std::vector<Synonym> selectSynonyms,
+    extractTuplesFromTable(std::vector<Reference> selectRefs,
                            ClauseTable result);
-    std::vector<std::string> getAll(Synonym select);
+    std::vector<std::string> getAll(Reference select);
     std::vector<std::string> handleNoTables(QueryResult *queryResult);
     ClauseTable joinAllClauseTables(std::vector<ClauseResult> clauseResultList);
+    std::string getAttributeValue(Reference ref, std::string synonymValue);
+    bool isAlternativeAttribute(Reference ref);
 };
