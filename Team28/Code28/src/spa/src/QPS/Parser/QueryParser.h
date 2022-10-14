@@ -36,6 +36,7 @@ private:
     static bool isValidName(std::string name);
     static bool isValidSuchThatClause(RelationshipReference relRef,
                                       Reference left, Reference right);
+    static bool isValidWithClause(Reference left, Reference right);
     static std::vector<Synonym> parseSynonyms(std::vector<std::string> tokens);
     static bool isDuplicateSynonymName(std::vector<Synonym> syns);
     static RelationshipReference getRelationshipReference(std::string input);
