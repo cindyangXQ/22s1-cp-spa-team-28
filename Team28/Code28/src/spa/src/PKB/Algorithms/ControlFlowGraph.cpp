@@ -28,13 +28,10 @@ void ControlFlowGraph::populateNext() {
 void ControlFlowGraph::populateNextT() {
     std::map<std::pair<int, int>, bool> matrix;
 
-    std::cout << "MATRIX INIT" << std::endl;
     for (int i = 1; i <= this->totalLines; i++) {
         for (int j = 1; j <= this->totalLines; j++) {
             std::pair<int, int> curr = std::make_pair(i, j);
             matrix[curr] = false;
-            std::cout << "(" << i << ", " << j << "): " << matrix[curr]
-                      << std::endl;
         }
     }
 
@@ -42,25 +39,25 @@ void ControlFlowGraph::populateNextT() {
         matrix[elem.first] = elem.second;
     }
 
-    // for (int k = 1; k <= this->totalLines; k++) {
-    //     std::cout << "MIDDLE" << std::endl;
-    //     for (int i = 1; i <= this->totalLines; k++) {
-    //         for (int j = 1; j <= this->totalLines; k++) {
-    //             std::pair<int, int> curr = std::make_pair(i, j);
-    //             std::pair<int, int> left = std::make_pair(i, k);
-    //             std::pair<int, int> right = std::make_pair(k, j);
-    //             matrix[curr] = matrix[curr] || (matrix[left] &&
-    //             matrix[right]); std::cout << "(" << i << ", " << j << "): "
-    //             << matrix[curr]
-    //                       << std::endl;
-    //         }
-    //     }
-    // }
+    for (int k = 1; k <= this->totalLines; k++) {
+        for (int i = 1; i <= this->totalLines; i++) {
+            for (int j = 1; j <= this->totalLines; j++) {
+                std::pair<int, int> curr = std::make_pair(i, j);
+                std::pair<int, int> left = std::make_pair(i, k);
+                std::pair<int, int> right = std::make_pair(k, j);
+                matrix[curr] = matrix[curr] || (matrix[left] && matrix[right]);
+            }
+        }
+    }
 
-    // for (const auto &elem : matrix) {
-    //     std::cout << "(" << elem.first.first << ", " << elem.first.second
-    //               << "): " << elem.second << std::endl;
-    // }
+    for (const auto &elem : matrix) {
+        if (elem.second) {
+            Relationship<int, int> nextTRs =
+                Relationship(RelationshipReference::NEXT_T, elem.first.first,
+                             elem.first.second);
+            this->nextT->store(&nextTRs);
+        }
+    }
 };
 
 void ControlFlowGraph::DFS(int i) {

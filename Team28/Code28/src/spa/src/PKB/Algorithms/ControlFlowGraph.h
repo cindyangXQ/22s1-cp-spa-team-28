@@ -51,10 +51,7 @@ private:
         for (int j : table->retrieveLeft(i)) {
             Relationship<int, int> nextRs =
                 Relationship(RelationshipReference::NEXT, i, j);
-            Relationship<int, int> nextTRs =
-                Relationship(RelationshipReference::NEXT_T, i, j);
             this->next->store(&nextRs);
-            this->nextT->store(&nextTRs);
             std::pair<int, int> curr = std::make_pair(i, j);
             bool isVisited = this->visited.find(curr) != this->visited.end();
             if (!isVisited) {
