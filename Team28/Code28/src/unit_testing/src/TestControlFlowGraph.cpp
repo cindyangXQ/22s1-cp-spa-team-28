@@ -121,7 +121,10 @@ TEST_CASE("CFG Traverses Correctly - 1 procedure, infinite loop") {
     ProceduresTable *procTable = storage->getTable<ProceduresTable>();
     StatementsTable *statementsTable = storage->getTable<StatementsTable>();
 
-    statementsTable->store(&Statement(1, StatementType::WHILE));
+    Statement s1 = Statement(1, StatementType::WHILE);
+    Statement s2 = Statement(2, StatementType::ASSIGN);
+    statementsTable->store(&s1);
+    statementsTable->store(&s2);
 
     // BranchIn
     Relationship<int, int> relation =
