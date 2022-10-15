@@ -316,6 +316,8 @@ void DesignExtractor::extractAll() {
     ModPExtractor(this->program, this->storage).populate();
     CallsExtractor(this->program, this->storage).populate();
     CallsExtrT(this->program, this->storage).populate();
+    BranchInExtr(this->program, this->storage).populate();
+    BranchOutExtr(this->program, this->storage).populate();
 }
 
 void ProcedureExtractor::populate() {
