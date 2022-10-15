@@ -13,7 +13,10 @@ ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
             relRef == RelationshipReference::PARENT ||
             relRef == RelationshipReference::PARENT_T ||
             relRef == RelationshipReference::USES ||
-            relRef == RelationshipReference::MODIFIES) {
+            relRef == RelationshipReference::MODIFIES ||
+            relRef == RelationshipReference::CALLS ||
+            relRef == RelationshipReference::CALLS_T ||
+            relRef == RelationshipReference::NEXT) {
             if (left.isSynonym && right.isSynonym) {
                 if (left.syn.entity == right.syn.entity &&
                     left.syn.name == right.syn.name) {
