@@ -1,9 +1,5 @@
 #include "ClauseTable.h"
 
-ClauseTable::ClauseTable(std::vector<Reference> header) {
-    this->header = header;
-}
-
 std::vector<int>
 ClauseTable::getIndices(std::vector<Reference> common_headers) {
     std::vector<int> indices;

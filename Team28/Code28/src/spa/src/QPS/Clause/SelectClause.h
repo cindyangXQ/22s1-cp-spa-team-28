@@ -11,6 +11,8 @@ class SelectClause {
 public:
     std::vector<Reference> refs;
     SelectType selectType;
-    SelectClause();
-    SelectClause(std::vector<Reference> refs, SelectType selectType);
+    SelectClause() {};
+    SelectClause(std::vector<Reference> refs, SelectType selectType)
+        : refs(refs),
+          selectType(selectType){};
 };
