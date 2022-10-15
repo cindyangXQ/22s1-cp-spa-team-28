@@ -13,8 +13,7 @@ public:
     std::vector<Reference> header;
     std::vector<Tuple> rows;
     ClauseTable(){};
-    ClauseTable(std::vector<Reference> header)
-        : header(header){};
+    ClauseTable(std::vector<Reference> header) : header(header){};
 
     /*
      * Given a list of synonyms, get the indices they correspond to

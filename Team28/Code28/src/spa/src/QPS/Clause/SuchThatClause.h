@@ -13,10 +13,8 @@ public:
     Reference refLeft;
     Reference refRight;
 
-    SuchThatClause() : relationship(RelationshipReference::EMPTY) {}; 
+    SuchThatClause() : relationship(RelationshipReference::EMPTY){};
     SuchThatClause(RelationshipReference relationship, Reference refLeft,
                    Reference refRight)
-                   : relationship(relationship),
-                    refLeft(refLeft),
-                    refRight(refRight){};
+        : relationship(relationship), refLeft(refLeft), refRight(refRight){};
 };

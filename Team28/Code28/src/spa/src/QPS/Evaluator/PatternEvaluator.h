@@ -12,8 +12,7 @@ private:
     QueryFacade *queryFacade;
 
 public:
-    PatternEvaluator(QueryFacade *queryFacade)
-        : queryFacade(queryFacade){};
+    PatternEvaluator(QueryFacade *queryFacade) : queryFacade(queryFacade){};
     ClauseResult evaluate(PatternClause *patternCl);
 
 private:

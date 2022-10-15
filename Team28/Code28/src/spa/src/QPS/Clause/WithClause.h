@@ -10,8 +10,7 @@ public:
     Reference refLeft;
     Reference refRight;
 
-    WithClause() {};
+    WithClause(){};
     WithClause(Reference refLeft, Reference refRight)
-        : refLeft(refLeft),
-          refRight(refRight){};
+        : refLeft(refLeft), refRight(refRight){};
 };
