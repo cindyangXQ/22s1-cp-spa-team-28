@@ -1,68 +1,69 @@
 #include "Storage.h"
 
 Storage::Storage() {
-    StatementsTable *statements = new StatementsTable();
-    AssignmentsTable *assignments = new AssignmentsTable();
-    ProceduresTable *procedures = new ProceduresTable();
-    VariablesTable *variables = new VariablesTable();
-    ConstantsTable *constants = new ConstantsTable();
-    ParentTable *parents = new ParentTable();
-    ParentTTable *parentsT = new ParentTTable();
-    FollowsTable *follows = new FollowsTable();
-    FollowsTTable *followsT = new FollowsTTable();
-    ModifiesSTable *modifiesS = new ModifiesSTable();
-    ModifiesPTable *modifiesP = new ModifiesPTable();
-    UsesSTable *usesS = new UsesSTable();
-    UsesPTable *usesP = new UsesPTable();
-    CallsTable *calls = new CallsTable();
-    CallsTTable *callsT = new CallsTTable();
-    BranchInTable *branchIn = new BranchInTable();
-    BranchOutTable *branchOut = new BranchOutTable();
-    NextTable *next = new NextTable();
-    NextTTable *nextT = new NextTTable();
-    IfControlVarTable *ifControl = new IfControlVarTable();
-    WhileControlVarTable *whileControl = new WhileControlVarTable();
-    CallProcTable *callProcs = new CallProcTable();
+    initDesignEntitiesTable();
+    initRelationshipsTable();
+    initRsTablesMap();
+    initStorageView();
+};
 
-    this->tables[typeid(StatementsTable)] = statements;
-    this->tables[typeid(AssignmentsTable)] = assignments;
-    this->tables[typeid(ProceduresTable)] = procedures;
-    this->tables[typeid(VariablesTable)] = variables;
-    this->tables[typeid(ConstantsTable)] = constants;
-    this->tables[typeid(ParentTable)] = parents;
-    this->tables[typeid(ParentTTable)] = parentsT;
-    this->tables[typeid(FollowsTable)] = follows;
-    this->tables[typeid(FollowsTTable)] = followsT;
-    this->tables[typeid(ModifiesSTable)] = modifiesS;
-    this->tables[typeid(ModifiesPTable)] = modifiesP;
-    this->tables[typeid(UsesSTable)] = usesS;
-    this->tables[typeid(UsesPTable)] = usesP;
-    this->tables[typeid(CallsTable)] = calls;
-    this->tables[typeid(CallsTTable)] = callsT;
-    this->tables[typeid(BranchInTable)] = branchIn;
-    this->tables[typeid(BranchOutTable)] = branchOut;
-    this->tables[typeid(NextTable)] = next;
-    this->tables[typeid(NextTTable)] = nextT;
-    this->tables[typeid(IfControlVarTable)] = ifControl;
-    this->tables[typeid(WhileControlVarTable)] = whileControl;
-    this->tables[typeid(CallProcTable)] = callProcs;
+void Storage::initDesignEntitiesTable() {
+    initTable<StatementsTable>(Populate::STMT);
+    initTable<AssignmentsTable>(Populate::ASSIGN);
+    initTable<ProceduresTable>(Populate::PROC);
+    initTable<VariablesTable>(Populate::VAR);
+    initTable<ConstantsTable>(Populate::CONST);
+};
 
-    this->rsTables[RelationshipReference::FOLLOWS] = follows;
-    this->rsTables[RelationshipReference::FOLLOWS_T] = followsT;
-    this->rsTables[RelationshipReference::PARENT] = parents;
-    this->rsTables[RelationshipReference::PARENT_T] = parentsT;
-    this->rsTables[RelationshipReference::CALLS] = calls;
-    this->rsTables[RelationshipReference::CALLS_T] = callsT;
-    this->rsTables[RelationshipReference::NEXT] = next;
-    this->rsTables[RelationshipReference::NEXT_T] = nextT;
+void Storage::initRelationshipsTable() {
+    initTable<ParentTable>(Populate::PARENT);
+    initTable<ParentTTable>(Populate::PARENT_T);
+    initTable<FollowsTable>(Populate::FOLLOWS);
+    initTable<FollowsTTable>(Populate::FOLLOWS_T);
+    initTable<ModifiesSTable>(Populate::MOD_S);
+    initTable<ModifiesPTable>(Populate::MOD_P);
+    initTable<UsesSTable>(Populate::USE_S);
+    initTable<UsesPTable>(Populate::USE_P);
+    initTable<CallsTable>(Populate::CALL);
+    initTable<CallsTTable>(Populate::CALL_T);
+    initTable<BranchInTable>(Populate::B_IN);
+    initTable<BranchOutTable>(Populate::B_OUT);
+    initTable<IfControlVarTable>(Populate::IF_C);
+    initTable<WhileControlVarTable>(Populate::WHILE_C);
+    initTable<CallProcTable>(Populate::PROC_NAME);
+    initTable<NextTable>();
+    initTable<NextTTable>();
+};
 
+void Storage::initRsTablesMap() {
+    this->rsTables[RelationshipReference::FOLLOWS] =
+        this->getTable<FollowsTable>();
+    this->rsTables[RelationshipReference::FOLLOWS_T] =
+        this->getTable<FollowsTTable>();
+    this->rsTables[RelationshipReference::PARENT] =
+        this->getTable<ParentTable>();
+    this->rsTables[RelationshipReference::PARENT_T] =
+        this->getTable<ParentTTable>();
+    this->rsTables[RelationshipReference::CALLS] = this->getTable<CallsTable>();
+    this->rsTables[RelationshipReference::CALLS_T] =
+        this->getTable<CallsTTable>();
+    this->rsTables[RelationshipReference::NEXT] = this->getTable<NextTable>();
+    this->rsTables[RelationshipReference::NEXT_T] =
+        this->getTable<NextTTable>();
+};
+
+void Storage::initStorageView() {
     this->storageView = new StorageView();
-    this->storageView->setTable<StatementsTable>(statements);
-    this->storageView->setTable<ProceduresTable>(procedures);
-    this->storageView->setTable<VariablesTable>(variables);
-    this->storageView->setTable<FollowsTable>(follows);
-    this->storageView->setTable<BranchInTable>(branchIn);
-    this->storageView->setTable<BranchOutTable>(branchOut);
+    this->storageView->setTable<StatementsTable>(
+        this->getTable<StatementsTable>());
+    this->storageView->setTable<ProceduresTable>(
+        this->getTable<ProceduresTable>());
+    this->storageView->setTable<VariablesTable>(
+        this->getTable<VariablesTable>());
+    this->storageView->setTable<FollowsTable>(this->getTable<FollowsTable>());
+    this->storageView->setTable<BranchInTable>(this->getTable<BranchInTable>());
+    this->storageView->setTable<BranchOutTable>(
+        this->getTable<BranchOutTable>());
 };
 
 Solvable *Storage::getRsTable(RelationshipReference rsRef,
@@ -74,6 +75,10 @@ Solvable *Storage::getRsTable(RelationshipReference rsRef,
         return this->getOnType<UsesSTable, UsesPTable>(leftType);
     }
     return this->rsTables.at(rsRef);
+};
+
+Table *Storage::getStoreTable(Populate popType) {
+    return this->popTables.at(popType);
 };
 
 std::vector<Solvable *> Storage::getModifiesTables() {

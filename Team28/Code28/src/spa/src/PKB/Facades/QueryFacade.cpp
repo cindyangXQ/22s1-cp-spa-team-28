@@ -191,24 +191,27 @@ QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
 }
 
 std::vector<Value> QueryFacade::getAssign(std::string varName,
-                                          std::string expression,
-                                          bool isExactExpr) {
+                                          std::string expression) {
     AssignmentsTable *assignments = this->storage->getTable<AssignmentsTable>();
-
-    if (isExactExpr) {
-        return assignments->getAssignExact(varName, expression);
-    }
     return assignments->getAssign(varName, expression);
 };
 
-std::vector<std::pair<Value, Value>>
-QueryFacade::getAssignAndVar(std::string expression, bool isExactExpr) {
+std::vector<Value> QueryFacade::getAssignExact(std::string varName,
+                                               std::string expression) {
     AssignmentsTable *assignments = this->storage->getTable<AssignmentsTable>();
+    return assignments->getAssignExact(varName, expression);
+};
 
-    if (isExactExpr) {
-        return assignments->getAssignAndVarExact(expression);
-    }
+std::vector<std::pair<Value, Value>>
+QueryFacade::getAssignAndVar(std::string expression) {
+    AssignmentsTable *assignments = this->storage->getTable<AssignmentsTable>();
     return assignments->getAssignAndVar(expression);
+};
+
+std::vector<std::pair<Value, Value>>
+QueryFacade::getAssignAndVarExact(std::string expression) {
+    AssignmentsTable *assignments = this->storage->getTable<AssignmentsTable>();
+    return assignments->getAssignAndVarExact(expression);
 };
 
 std::vector<Value> QueryFacade::getWhile(std::string varName) {
@@ -246,6 +249,11 @@ std::string QueryFacade::getAttribute(int stmtNum) {
     UsesSTable *usesS = this->storage->getTable<UsesSTable>();
     if (usesS->isLeftValueExist(stmtNum)) {
         return usesS->retrieveSingleRight(stmtNum);
+    }
+
+    ModifiesSTable *modifiesS = this->storage->getTable<ModifiesSTable>();
+    if (modifiesS->isLeftValueExist(stmtNum)) {
+        return modifiesS->retrieveSingleRight(stmtNum);
     }
 
     CallProcTable *callProc = this->storage->getTable<CallProcTable>();

@@ -1,7 +1,7 @@
 #pragma once
 
+#include "../Tokenizer/Token.h"
 #include "EntityNode.h"
-#include "Token.h"
 
 #include <map>
 #include <vector>

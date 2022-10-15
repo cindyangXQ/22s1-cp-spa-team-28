@@ -11,7 +11,7 @@ TEST_CASE("storeStatement stores Statement objects correctly") {
     Statement test2 = Statement(2, StatementType::ASSIGN);
     std::vector<Statement *> statements = {&test1, &test2};
 
-    facade.storeStatements(&statements);
+    facade.store<Statement>(&statements, Populate::STMT);
 
     StatementsTable *statementsTable = storage->getTable<StatementsTable>();
 
@@ -29,7 +29,7 @@ TEST_CASE("storeAssignments store Assignment objects correctly") {
     Assignment test3 = Assignment(3, "x2", "((x1)*(x1))");
     std::vector<Assignment *> assignments = {&test1, &test2, &test3};
 
-    facade.storeAssignments(&assignments);
+    facade.store<Assignment>(&assignments, Populate::ASSIGN);
 
     AssignmentsTable *assignmentsTable = storage->getTable<AssignmentsTable>();
 
@@ -57,7 +57,7 @@ TEST_CASE("storeVariable stores Variable objects correctly") {
     Variable test3 = Variable("");
     std::vector<Variable *> variables = {&test1, &test2, &test3};
 
-    facade.storeVariables(&variables);
+    facade.store<Variable>(&variables, Populate::VAR);
 
     VariablesTable *variablesTable = storage->getTable<VariablesTable>();
 
@@ -77,7 +77,7 @@ TEST_CASE("storeConstant stores Constant objects correctly") {
     Constant test3 = Constant("");
     std::vector<Constant *> constants = {&test1, &test2, &test3};
 
-    facade.storeConstants(&constants);
+    facade.store<Constant>(&constants, Populate::CONST);
 
     ConstantsTable *constantsTable = storage->getTable<ConstantsTable>();
 
@@ -97,7 +97,7 @@ TEST_CASE("storeProcedure stores Procedure objects correctly") {
     Procedure test3 = Procedure("", 3);
     std::vector<Procedure *> procedures = {&test1, &test2, &test3};
 
-    facade.storeProcedures(&procedures);
+    facade.store<Procedure>(&procedures, Populate::PROC);
 
     ProceduresTable *proceduresTable = storage->getTable<ProceduresTable>();
 
@@ -120,7 +120,7 @@ TEST_CASE("storeFollows stores Relationship<int, int> objects correctly") {
         Relationship(RelationshipReference::FOLLOWS, 3, 4);
     std::vector<Relationship<int, int> *> follows = {&test1, &test2, &test3};
 
-    facade.storeFollows(&follows);
+    facade.store<Relationship<int, int>>(&follows, Populate::FOLLOWS);
 
     FollowsTable *followsTable = storage->getTable<FollowsTable>();
 
@@ -140,7 +140,7 @@ TEST_CASE("storeFollowsT stores Relationship<int, int> objects correctly") {
         Relationship(RelationshipReference::FOLLOWS_T, 5, 23);
     std::vector<Relationship<int, int> *> followsT = {&test1, &test2, &test3};
 
-    facade.storeFollowsT(&followsT);
+    facade.store<Relationship<int, int>>(&followsT, Populate::FOLLOWS_T);
 
     FollowsTTable *followsTTable = storage->getTable<FollowsTTable>();
 
@@ -160,7 +160,7 @@ TEST_CASE("storeParent stores Relationship<int, int> objects correctly") {
         Relationship(RelationshipReference::PARENT, 3, 4);
     std::vector<Relationship<int, int> *> parents = {&test1, &test2, &test3};
 
-    facade.storeParent(&parents);
+    facade.store<Relationship<int, int>>(&parents, Populate::PARENT);
 
     ParentTable *parentTable = storage->getTable<ParentTable>();
 
@@ -180,7 +180,7 @@ TEST_CASE("storeParentT stores Relationship<int, int> objects correctly") {
         Relationship(RelationshipReference::PARENT_T, 5, 23);
     std::vector<Relationship<int, int> *> parentsT = {&test1, &test2, &test3};
 
-    facade.storeParentT(&parentsT);
+    facade.store<Relationship<int, int>>(&parentsT, Populate::PARENT_T);
 
     ParentTTable *parentTTable = storage->getTable<ParentTTable>();
 
@@ -202,7 +202,7 @@ TEST_CASE(
     std::vector<Relationship<int, std::string> *> modifiesS = {&test1, &test2,
                                                                &test3};
 
-    facade.storeModifiesS(&modifiesS);
+    facade.store<Relationship<int, std::string>>(&modifiesS, Populate::MOD_S);
 
     ModifiesSTable *modifiesSTable = storage->getTable<ModifiesSTable>();
 
@@ -224,7 +224,8 @@ TEST_CASE("storeModifiesP stores Relationship<std::string, std::string> "
     std::vector<Relationship<std::string, std::string> *> modifiesP = {
         &test1, &test2, &test3};
 
-    facade.storeModifiesP(&modifiesP);
+    facade.store<Relationship<std::string, std::string>>(&modifiesP,
+                                                         Populate::MOD_P);
 
     ModifiesPTable *modifiesPTable = storage->getTable<ModifiesPTable>();
 
@@ -246,7 +247,7 @@ TEST_CASE(
     std::vector<Relationship<int, std::string> *> usesS = {&test1, &test2,
                                                            &test3};
 
-    facade.storeUsesS(&usesS);
+    facade.store<Relationship<int, std::string>>(&usesS, Populate::USE_S);
 
     UsesSTable *usesSTable = storage->getTable<UsesSTable>();
 
@@ -268,7 +269,8 @@ TEST_CASE("storeUsesP stores Relationship<std::string, std::string> objects "
     std::vector<Relationship<std::string, std::string> *> usesP = {
         &test1, &test2, &test3};
 
-    facade.storeUsesP(&usesP);
+    facade.store<Relationship<std::string, std::string>>(&usesP,
+                                                         Populate::USE_P);
 
     UsesPTable *usesPTable = storage->getTable<UsesPTable>();
 
@@ -290,7 +292,8 @@ TEST_CASE("storeCalls stores Relationship<std::string, std::string> objects "
     std::vector<Relationship<std::string, std::string> *> calls = {
         &test1, &test2, &test3};
 
-    facade.storeCalls(&calls);
+    facade.store<Relationship<std::string, std::string>>(&calls,
+                                                         Populate::CALL);
 
     CallsTable *callsTable = storage->getTable<CallsTable>();
 
@@ -312,7 +315,8 @@ TEST_CASE("storeCallsT stores Relationship<std::string, std::string> objects "
     std::vector<Relationship<std::string, std::string> *> calls = {
         &test1, &test2, &test3};
 
-    facade.storeCallsT(&calls);
+    facade.store<Relationship<std::string, std::string>>(&calls,
+                                                         Populate::CALL_T);
 
     CallsTTable *callsTable = storage->getTable<CallsTTable>();
 
@@ -332,7 +336,7 @@ TEST_CASE("storeBranchIn stores Relationship<int, int> objects correctly") {
         Relationship(RelationshipReference::EMPTY, 3, 4);
     std::vector<Relationship<int, int> *> branchIns = {&test1, &test2, &test3};
 
-    facade.storeBranchIn(&branchIns);
+    facade.store<Relationship<int, int>>(&branchIns, Populate::B_IN);
 
     BranchInTable *branchinTable = storage->getTable<BranchInTable>();
 
@@ -353,7 +357,7 @@ TEST_CASE(
         Relationship(RelationshipReference::EMPTY, 3, 4);
     std::vector<Relationship<int, int> *> branchIns = {&test1, &test2, &test3};
 
-    facade.storeBranchOut(&branchIns);
+    facade.store<Relationship<int, int>>(&branchIns, Populate::B_OUT);
 
     BranchOutTable *branchoutTable = storage->getTable<BranchOutTable>();
 
@@ -375,7 +379,7 @@ TEST_CASE("storeIfControlVar stores Relationship<int, std::string> objects "
     std::vector<Relationship<int, std::string> *> usesS = {&test1, &test2,
                                                            &test3};
 
-    facade.storeIfControlVar(&usesS);
+    facade.store<Relationship<int, std::string>>(&usesS, Populate::IF_C);
 
     IfControlVarTable *ifsTable = storage->getTable<IfControlVarTable>();
 
@@ -404,7 +408,7 @@ TEST_CASE("storeWhileControlVar stores Relationship<int, std::string> objects "
     std::vector<Relationship<int, std::string> *> usesS = {&test1, &test2,
                                                            &test3};
 
-    facade.storeWhileControlVar(&usesS);
+    facade.store<Relationship<int, std::string>>(&usesS, Populate::WHILE_C);
 
     WhileControlVarTable *whileTable =
         storage->getTable<WhileControlVarTable>();
@@ -433,7 +437,7 @@ TEST_CASE("storeCallProcName stores Relationship<int, std::string> objects "
     std::vector<Relationship<int, std::string> *> callsP = {&test1, &test2,
                                                             &test3};
 
-    facade.storeCallProcName(&callsP);
+    facade.store<Relationship<int, std::string>>(&callsP, Populate::PROC_NAME);
 
     CallProcTable *callsProc = storage->getTable<CallProcTable>();
 

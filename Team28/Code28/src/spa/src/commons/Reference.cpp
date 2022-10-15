@@ -16,6 +16,19 @@ Reference::Reference(Synonym syn) {
     }
 }
 
+Reference::Reference(Synonym syn, EntityAttribute attr) {
+    this->isSynonym = false;
+    this->type = ReferenceType::ATTR_REF;
+    this->syn = syn;
+    std::unordered_set<EntityAttribute> validAttr =
+        entityAttributeMap.find(syn.entity)->second;
+    if (validAttr.count(attr)) {
+        this->attr = attr;
+    } else {
+        throw SemanticError("Invalid entity attribute");
+    }
+}
+
 Reference::Reference(std::string value) {
     this->isSynonym = false;
     if (std::regex_match(value, wildcardRegex)) {

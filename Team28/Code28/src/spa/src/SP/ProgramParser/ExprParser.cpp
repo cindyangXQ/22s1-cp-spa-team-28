@@ -21,67 +21,79 @@ FactorParser::FactorParser(int offset, std::vector<Token *> tokens, bool iscond)
     this->iscond = iscond;
 }
 
+void CondParser::checkSyntax(Token *curr, Token *next, ExpressionNode *cond) {
+    ExpressionNode *left = cond->getLeft();
+    Token *leftToken = left->getToken();
+
+    ExpressionNode *right = cond->getRight();
+    Token *rightToken = right->getToken();
+
+    if (next->getValue() == "&&" || next->getValue() == "||") {
+        if (find(begin(REL_OP_LIST), end(REL_OP_LIST), leftToken->getValue()) ==
+                end(REL_OP_LIST) ||
+            find(begin(REL_OP_LIST), end(REL_OP_LIST),
+                 rightToken->getValue()) == end(REL_OP_LIST)) {
+            throw "invalid cond expression";
+        }
+    } else {
+        if (find(begin(REL_OP_LIST), end(REL_OP_LIST), leftToken->getValue()) !=
+                end(REL_OP_LIST) ||
+            find(begin(REL_OP_LIST), end(REL_OP_LIST),
+                 rightToken->getValue()) != end(REL_OP_LIST)) {
+            throw "invalid cond expression";
+        }
+    }
+
+    Token *condToken = cond->getToken();
+    if (curr->getValue() == "!") {
+        if (find(begin(REL_OP_LIST), end(REL_OP_LIST), condToken->getValue()) ==
+            end(REL_OP_LIST)) {
+            throw "invalid conditional expression";
+        }
+    }
+}
+
 ExpressionNode *CondParser::parse() {
     Token *curr = tokens.at(offset);
     ExpressionNode *root;
-    if (curr->value == "!") {
+    if (curr->getValue() == "!") {
         offset++;
         root = new ExpressionNode(curr);
     }
     ExprParser parser = ExprParser(offset, tokens, true);
     ExpressionNode *result = parser.parse();
     offset = parser.getOffset();
-    if (curr->value == "!") {
+    Token *tempToken = result->getToken();
+    if (curr->getValue() == "!") {
         if (std::find(std::begin(REL_OP_LIST), std::end(REL_OP_LIST),
-                      result->getToken()->value) == std::end(REL_OP_LIST)) {
+                      tempToken->getValue()) == std::end(REL_OP_LIST)) {
             throw "invalid conditional expression";
         }
-        root->left = result;
+        root->setLeft(result);
     } else {
         root = result;
     }
 
     Token *next = tokens.at(offset);
     while (std::find(std::begin(REL_OP_LIST), std::end(REL_OP_LIST),
-                     next->value) != std::end(REL_OP_LIST)) {
+                     next->getValue()) != std::end(REL_OP_LIST)) {
         offset++;
-
         curr = tokens.at(offset);
-        if (curr->value == "!") {
+        if (curr->getValue() == "!") {
             offset++;
             root = new ExpressionNode(curr);
         }
         ExpressionNode *cond = new ExpressionNode(next);
-        cond->left = result;
-
+        cond->setLeft(result);
         parser = ExprParser(offset, tokens, true);
         result = parser.parse();
         offset = parser.getOffset();
+        cond->setRight(result);
 
-        cond->right = result;
+        checkSyntax(curr, next, cond);
 
-        if (next->value == "&&" || next->value == "||") {
-            if (find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                     cond->left->getToken()->value) == end(REL_OP_LIST) ||
-                find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                     cond->right->getToken()->value) == end(REL_OP_LIST)) {
-                throw "invalid cond expression";
-            }
-        } else {
-            if (find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                     cond->left->getToken()->value) != end(REL_OP_LIST) ||
-                find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                     cond->right->getToken()->value) != end(REL_OP_LIST)) {
-                throw "invalid cond expression";
-            }
-        }
-
-        if (curr->value == "!") {
-            if (find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                     cond->getToken()->value) == end(REL_OP_LIST)) {
-                throw "invalid conditional expression";
-            }
-            root->left = cond;
+        if (curr->getValue() == "!") {
+            root->setLeft(cond);
             result = root;
         } else {
             result = cond;
@@ -91,11 +103,11 @@ ExpressionNode *CondParser::parse() {
         next = tokens.at(offset);
     }
 
-    if (next->value == ";") {
+    if (next->getValue() == ";") {
         offset++;
         return root;
     }
-    if (next->value == ")") {
+    if (next->getValue() == ")") {
         return root;
     }
 }
@@ -109,11 +121,11 @@ ExpressionNode *ExprParser::parse() {
     ExpressionNode *root = result;
 
     Token *next = tokens.at(offset);
-    while (next->value == "+" || next->value == "-") {
+    while (next->getValue() == "+" || next->getValue() == "-") {
         offset++;
 
         ExpressionNode *expr = new ExpressionNode(next);
-        expr->left = terms.back();
+        expr->setLeft(terms.back());
         root = expr;
 
         parser = TermParser(offset, tokens, this->iscond);
@@ -121,19 +133,20 @@ ExpressionNode *ExprParser::parse() {
         terms.push_back(result);
         offset = parser.getOffset();
 
-        expr->right = terms.back();
+        expr->setRight(terms.back());
         terms.push_back(expr);
 
         next = tokens.at(offset);
     }
 
-    if (next->value == ";") {
+    if (next->getValue() == ";") {
         offset++;
         return root;
-    } else if (next->value == ")" || find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                                          next->value) != end(REL_OP_LIST)) {
+    } else if (next->getValue() == ")" ||
+               find(begin(REL_OP_LIST), end(REL_OP_LIST), next->getValue()) !=
+                   end(REL_OP_LIST)) {
         if (!this->iscond && find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                                  next->value) != end(REL_OP_LIST)) {
+                                  next->getValue()) != end(REL_OP_LIST)) {
             throw "invalid expression";
         }
         return root;
@@ -151,31 +164,33 @@ ExpressionNode *TermParser::parse() {
     ExpressionNode *root = result;
 
     Token *next = tokens.at(offset);
-    while (next->value == "*" || next->value == "/" || next->value == "%") {
+    while (next->getValue() == "*" || next->getValue() == "/" ||
+           next->getValue() == "%") {
         // continue process as term
         offset++;
 
         ExpressionNode *term = new ExpressionNode(next);
-        term->left = factors.back();
+        term->setLeft(factors.back());
+
         root = term;
 
         parser = FactorParser(offset, tokens, this->iscond);
         result = parser.parse();
         factors.push_back(result);
         offset = parser.getOffset();
-        term->right = factors.back();
+        term->setRight(factors.back());
 
         factors.push_back(term);
 
         next = tokens.at(offset);
     }
 
-    if (next->value == "+" || next->value == "-" || next->value == ";" ||
-        next->value == ")" ||
-        find(begin(REL_OP_LIST), end(REL_OP_LIST), next->value) !=
+    if (next->getValue() == "+" || next->getValue() == "-" ||
+        next->getValue() == ";" || next->getValue() == ")" ||
+        find(begin(REL_OP_LIST), end(REL_OP_LIST), next->getValue()) !=
             end(REL_OP_LIST)) {
         if (!iscond && find(begin(REL_OP_LIST), end(REL_OP_LIST),
-                            next->value) != end(REL_OP_LIST)) {
+                            next->getValue()) != end(REL_OP_LIST)) {
             throw "invalid expression";
         }
         return root;
@@ -190,7 +205,7 @@ ExpressionNode *FactorParser::parse() {
         offset++;
         ExpressionNode *result = new ExpressionNode(curr);
         return result;
-    } else if (curr->value == "(") {
+    } else if (curr->getValue() == "(") {
         offset++;
         ExpressionNode *factor;
         if (iscond) {
@@ -203,7 +218,7 @@ ExpressionNode *FactorParser::parse() {
             offset = parser.getOffset();
         }
         // if next token is not ")" throw error
-        if (tokens.at(offset)->value != ")") {
+        if (tokens.at(offset)->getValue() != ")") {
             throw "invalid expression";
         }
         offset++;

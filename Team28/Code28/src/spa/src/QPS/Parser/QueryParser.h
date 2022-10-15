@@ -26,13 +26,17 @@ public:
     static void parsePatternClause(std::string *clause,
                                    std::vector<Synonym> syns,
                                    std::vector<PatternClause> *patternCls);
+    static void parseWithClause(std::string *clause, std::vector<Synonym> syns,
+                                std::vector<WithClause> *withCls);
     static bool isSuchThatClause(std::string *clause);
     static bool isPatternClause(std::string *clause);
+    static bool isWithClause(std::string *clause);
 
 private:
     static bool isValidName(std::string name);
     static bool isValidSuchThatClause(RelationshipReference relRef,
                                       Reference left, Reference right);
+    static bool isValidWithClause(Reference left, Reference right);
     static std::vector<Synonym> parseSynonyms(std::vector<std::string> tokens);
     static bool isDuplicateSynonymName(std::vector<Synonym> syns);
     static RelationshipReference getRelationshipReference(std::string input);

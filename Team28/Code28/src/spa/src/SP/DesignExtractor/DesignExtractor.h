@@ -1,9 +1,9 @@
-#include "../PKB/Facades/PopulateFacade.h"
-#include "../commons/Constant.h"
-#include "../commons/Procedure.h"
-#include "../commons/Statement.h"
-#include "../commons/Variable.h"
-#include "EntityNode.h"
+#include "../../PKB/Facades/PopulateFacade.h"
+#include "../../commons/Constant.h"
+#include "../../commons/Procedure.h"
+#include "../../commons/Statement.h"
+#include "../../commons/Variable.h"
+#include "../ProgramParser/EntityNode.h"
 
 #include <vector>
 

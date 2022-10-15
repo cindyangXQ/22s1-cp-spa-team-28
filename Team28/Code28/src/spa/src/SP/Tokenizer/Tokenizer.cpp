@@ -1,5 +1,5 @@
 #include "Tokenizer.h"
-#include "EntityNode.h"
+#include "../ProgramParser/EntityNode.h"
 #include "Token.h"
 #include <algorithm>
 #include <ctype.h>

@@ -12,6 +12,7 @@ void SPA::preprocess() {
     this->pkb.populateNext();
     this->pkb.populateNextT();
 }
+
 void SPA::evaluateQuery(std::string query, std::list<std::string> &results) {
     this->qps.evaluate(query, results);
 }

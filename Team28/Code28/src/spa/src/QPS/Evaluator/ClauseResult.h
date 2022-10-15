@@ -6,7 +6,7 @@ public:
     bool isEmpty = true;
     ClauseResult();
     ClauseResult(bool empty) { this->isEmpty = empty; }
-    explicit ClauseResult(std::vector<Synonym> headers)
+    explicit ClauseResult(std::vector<Reference> headers)
         : table(ClauseTable(headers)){};
 
     void insert(Tuple t) {
