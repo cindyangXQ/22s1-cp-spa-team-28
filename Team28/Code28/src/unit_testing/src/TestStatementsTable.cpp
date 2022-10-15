@@ -69,6 +69,31 @@ TEST_CASE("StatementsTable can getStatementByType correctly") {
     REQUIRE(table.getStatementsByType(StatementType::WHILE).size() == 1);
 }
 
+TEST_CASE("isIfStatement works correctly") {
+    StatementsTable table;
+    Statement assignStmt = Statement(1, StatementType::ASSIGN);
+    Statement callStmt = Statement(2, StatementType::CALL);
+    Statement ifStmt = Statement(3, StatementType::IF);
+    Statement printStmt = Statement(4, StatementType::PRINT);
+    Statement readStmt = Statement(5, StatementType::READ);
+    Statement whileStmt = Statement(6, StatementType::WHILE);
+
+    table.store(&assignStmt);
+    table.store(&callStmt);
+    table.store(&ifStmt);
+    table.store(&printStmt);
+    table.store(&readStmt);
+    table.store(&whileStmt);
+
+    // Only Call, Print and Read statements return true
+    REQUIRE(!table.isIfStatement(1));
+    REQUIRE(!table.isIfStatement(2));
+    REQUIRE(table.isIfStatement(3));
+    REQUIRE(!table.isIfStatement(4));
+    REQUIRE(!table.isIfStatement(5));
+    REQUIRE(!table.isIfStatement(6));
+}
+
 TEST_CASE("isAttributableStatement works correctly") {
     StatementsTable table;
     Statement assignStmt = Statement(1, StatementType::ASSIGN);
