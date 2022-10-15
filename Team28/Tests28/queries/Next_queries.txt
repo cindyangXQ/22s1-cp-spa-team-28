@@ -34,7 +34,7 @@ Select s such that Next(16, s)
 17
 5000
 8 - boolean 2 wildcards
-none
+stmt s;
 Select BOOLEAN such that Next(_, _)
 TRUE
 5000
@@ -94,12 +94,12 @@ Select s such that Next(c, s)
 6
 5000
 20 - boolean with true
-none
+stmt s;
 Select BOOLEAN such that Next(13, 18)
 TRUE
 5000
 21 - boolean with false
-none
+stmt s;
 Select BOOLEAN such that Next(5, 19)
 FALSE
 5000
