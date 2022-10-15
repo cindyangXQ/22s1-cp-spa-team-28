@@ -43,6 +43,8 @@ public:
      */
     std::vector<int> getStatementsByType(StatementType type);
 
+    bool isIfStatement(const int &index);
+
     /*
      * Returns a boolean of whether the given statement is one of Calls, Print
      * or Read.

@@ -23,6 +23,7 @@ public:
 
 private:
     NextTable *next;
+    StatementsTable *statements;
     FollowsTable *follows;
     BranchInTable *branchIn;
     BranchOutTable *branchOut;
