@@ -993,7 +993,7 @@ TEST_CASE("ProcToVar: SolveBoth queries for Calls('proc1', 'proc2') return "
                        output.begin()));
 }
 
-TEST_CASE("getAssign returns correct results") {
+TEST_CASE("getAssign/getAssignExact returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     AssignmentsTable *assignments = storage->getTable<AssignmentsTable>();
@@ -1012,44 +1012,44 @@ TEST_CASE("getAssign returns correct results") {
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2"),
                       Value(ValueType::STMT_NUM, "3")};
-    output = facade.getAssign("_", "_", false);
+    output = facade.getAssign("_", "_");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // getAssign('_', '1', false) returns {'1', '2'}
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2")};
-    output = facade.getAssign("_", "1", false);
+    output = facade.getAssign("_", "1");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getAssign('_', '(1)', true) returns {'1'}
+    // getAssignExact('_', '(1)', true) returns {'1'}
     expectedResult = {Value(ValueType::STMT_NUM, "1")};
-    output = facade.getAssign("_", "(1)", true);
+    output = facade.getAssignExact("_", "(1)");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // getAssign('x1', '_', false) returns {'1', '2'}
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2")};
-    output = facade.getAssign("x1", "_", false);
+    output = facade.getAssign("x1", "_");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // getAssign('x1', '10', false) returns {'1', '2', '3'}
     expectedResult = {Value(ValueType::STMT_NUM, "2")};
-    output = facade.getAssign("x1", "10", false);
+    output = facade.getAssign("x1", "10");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getAssign('x1', '(10)', true) returns {}
+    // getAssignExact('x1', '(10)', true) returns {}
     expectedResult = {};
-    output = facade.getAssign("x1", "(10)", true);
+    output = facade.getAssignExact("x1", "(10)");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
 
-TEST_CASE("getAssignAndVar returns correct results") {
+TEST_CASE("getAssignAndVar/getAssignAndVarExact returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     AssignmentsTable *assignments = storage->getTable<AssignmentsTable>();
@@ -1075,32 +1075,32 @@ TEST_CASE("getAssignAndVar returns correct results") {
     expectedResult = {std::make_pair(stmt1, varX1),
                       std::make_pair(stmt2, varX1),
                       std::make_pair(stmt3, varX2)};
-    output = facade.getAssignAndVar("_", false);
+    output = facade.getAssignAndVar("_");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // getAssignAndVar('(1)', false) returns {('1', 'x1'), ('2', 'x1')}
     expectedResult = {std::make_pair(stmt1, varX1),
                       std::make_pair(stmt2, varX1)};
-    output = facade.getAssignAndVar("(1)", false);
+    output = facade.getAssignAndVar("(1)");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getAssignAndVar('(1)', true) returns {('1', 'x1')}
+    // getAssignAndVarExact('(1)', true) returns {('1', 'x1')}
     expectedResult = {std::make_pair(stmt1, varX1)};
-    output = facade.getAssignAndVar("(1)", true);
+    output = facade.getAssignAndVarExact("(1)");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // getAssignAndVar('(x1)', false) returns {('3', 'x2')}
     expectedResult = {std::make_pair(stmt3, varX2)};
-    output = facade.getAssignAndVar("(x1)", false);
+    output = facade.getAssignAndVar("(x1)");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getAssignAndVar('(x1)', true) returns {}
+    // getAssignAndVarExact('(x1)', true) returns {}
     expectedResult = {};
-    output = facade.getAssignAndVar("(x1)", true);
+    output = facade.getAssignAndVar("(x1)");
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }

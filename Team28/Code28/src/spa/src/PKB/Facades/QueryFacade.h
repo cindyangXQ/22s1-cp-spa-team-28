@@ -88,17 +88,30 @@ public:
 
     /*
      * Return list of possible values of assignments that satisfy the given
-     * varName and expression.
+     * varName and partial/wildcard expression.
      */
-    std::vector<Value> getAssign(std::string varName, std::string expression,
-                                 bool isExactExpr);
+    std::vector<Value> getAssign(std::string varName, std::string expression);
+
+    /*
+     * Return list of possible values of assignments that satisfy the given
+     * varName and exact expression.
+     */
+    std::vector<Value> getAssignExact(std::string varName,
+                                      std::string expression);
 
     /*
      * Return list of possible (Assignment, Variable) pairs which satisfy the
-     * given expression.
+     * given partial/wildcard expression.
      */
-    std::vector<std::pair<Value, Value>> getAssignAndVar(std::string expression,
-                                                         bool isExactExpr);
+    std::vector<std::pair<Value, Value>>
+    getAssignAndVar(std::string expression);
+
+    /*
+     * Return list of possible (Assignment, Variable) pairs which satisfy the
+     * given exact expression.
+     */
+    std::vector<std::pair<Value, Value>>
+    getAssignAndVarExact(std::string expression);
 
     /*
      * Return list of possible values of Whiles that satisfy the given
