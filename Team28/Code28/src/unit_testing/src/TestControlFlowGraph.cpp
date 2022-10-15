@@ -3,13 +3,18 @@
 #include "PKB/Algorithms/ControlFlowGraph.h"
 #include "PKB/Storage/Storage.h"
 
-TEST_CASE("CFG Traverses Correctly - 1 procedure") {
+TEST_CASE("CFG Traverses Correctly - 1 procedure (Lecture example)") {
     Storage *storage = new Storage();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     NextTable *nextTable = storage->getTable<NextTable>();
     FollowsTable *followsTable = storage->getTable<FollowsTable>();
     BranchInTable *branchIn = storage->getTable<BranchInTable>();
     BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
     ProceduresTable *procTable = storage->getTable<ProceduresTable>();
+
+    // Store ifs
+    Statement ifStmt = Statement(7, StatementType::IF);
+    statements->store(&ifStmt);
 
     // Follows
     Relationship<int, int> relation =
@@ -22,6 +27,8 @@ TEST_CASE("CFG Traverses Correctly - 1 procedure") {
     relation = Relationship(RelationshipReference::FOLLOWS, 5, 6);
     followsTable->store(&relation);
     relation = Relationship(RelationshipReference::FOLLOWS, 3, 7);
+    followsTable->store(&relation);
+    relation = Relationship(RelationshipReference::FOLLOWS, 7, 10);
     followsTable->store(&relation);
     relation = Relationship(RelationshipReference::FOLLOWS, 10, 11);
     followsTable->store(&relation);

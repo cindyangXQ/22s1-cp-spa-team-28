@@ -4,6 +4,7 @@
 
 ControlFlowGraph::ControlFlowGraph(NextTable *nextTable, StorageView *storage) {
     this->next = nextTable;
+    this->statements = storage->getTable<StatementsTable>();
     this->follows = storage->getTable<FollowsTable>();
     this->branchIn = storage->getTable<BranchInTable>();
     this->branchOut = storage->getTable<BranchOutTable>();
@@ -32,5 +33,7 @@ void ControlFlowGraph::DFS(int i) {
 
     DFSHelper(i, this->branchIn);
     DFSHelper(i, this->branchOut);
-    DFSHelper(i, this->follows);
+    if (!this->statements->isIfStatement(i)) {
+        DFSHelper(i, this->follows);
+    }
 };

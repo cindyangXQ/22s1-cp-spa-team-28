@@ -54,6 +54,11 @@ std::vector<int> StatementsTable::getStatementsByType(StatementType type) {
     return this->statementTypeIndexes[type];
 }
 
+bool StatementsTable::isIfStatement(const int &lineNum) {
+    std::vector<int> ifs = this->getStatementsByType(StatementType::IF);
+    return std::find(ifs.begin(), ifs.end(), lineNum) != ifs.end();
+}
+
 bool StatementsTable::isAttributableStatement(const int &lineNum) {
     StatementType stmtType = this->getStatementType(lineNum);
     if (stmtType == StatementType::CALL || stmtType == StatementType::READ ||
