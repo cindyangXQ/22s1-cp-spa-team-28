@@ -66,8 +66,10 @@ TEST_CASE("CFG Traverses Correctly - 1 procedure") {
     REQUIRE(nextTable->validate(Reference("9"), Reference("10")));
     REQUIRE(nextTable->validate(Reference("10"), Reference("11")));
     REQUIRE(nextTable->validate(Reference("11"), Reference("12")));
-}
 
+    // Should not be in nextTable
+    REQUIRE(!nextTable->validate(Reference("7"), Reference("10")));
+}
 
 TEST_CASE("CFG Traverses Correctly - multiple procedures") {
     Storage *storage = new Storage();
