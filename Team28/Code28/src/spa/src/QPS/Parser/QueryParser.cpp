@@ -137,7 +137,7 @@ void QueryParser::parsePatternClause(std::string *clause,
         }
         Synonym syn = getSynonym(matches[2], syns);
         Reference entRef = getReference(matches[3], syns);
-        Expression expr = matches[5];
+        Expression expr = Utils::removeTrailingSpaces(matches[5]);
         bool isExact = expr.find('_') == std::string::npos;
         if (!isValidPatternClause(syn, entRef, expr)) {
             throw SemanticError("Invalid pattern clause arguments");
@@ -313,6 +313,7 @@ bool QueryParser::isValidPatternClause(Synonym syn, Reference entRef,
                entRef.type == ReferenceType::ATTR_REF) {
         return false;
     }
+    return true;
 }
 
 bool QueryParser::isValidWithClause(Reference left, Reference right) {
