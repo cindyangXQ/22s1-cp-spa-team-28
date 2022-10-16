@@ -27,8 +27,8 @@ public:
     void store(TableValue *assignment);
 
     /*
-     * Return boolean of whether the given varName and expression exists in an
-     * assignment.
+     * Return list of values of assignments of the given varName and expression
+     * if they exists in an assignment.
      */
     std::vector<Value> containsVarAndExpr(std::string varName,
                                           std::string expression);

@@ -39,14 +39,6 @@ public:
     };
 
     /*
-     * Gets NamedEntityMap for children.
-     * TODO: Consider removing.
-     */
-    std::map<std::string, T *> getNameEntityMap() {
-        return this->nameEntityMap;
-    };
-
-    /*
      * Gets all names from NamesTable.
      */
     std::unordered_set<std::string> getAll() { return this->names; }

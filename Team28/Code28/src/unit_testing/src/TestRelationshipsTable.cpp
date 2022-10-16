@@ -1,6 +1,5 @@
 #include "catch.hpp"
 
-#include "PKB/Tables/RelationshipsTable/CallProcTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/RelationshipsTable.h"
