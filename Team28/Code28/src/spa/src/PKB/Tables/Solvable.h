@@ -5,7 +5,7 @@
 #include "Table.h"
 
 /*
- * Interface encapsulating methods used for resolving queries.
+ * Abstract class encapsulating methods used for resolving queries.
  */
 class Solvable {
 public:

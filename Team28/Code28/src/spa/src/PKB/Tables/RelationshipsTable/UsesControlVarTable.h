@@ -5,6 +5,9 @@
 
 class UsesControlVarTable : public StmtToVarRelationshipsTable {
 public:
+    /*
+     * Constructor for UsesControlVarTable.
+     */
     UsesControlVarTable();
 
     /*
