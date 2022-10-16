@@ -79,28 +79,16 @@ public:
     getAssignAndVarExact(std::string expression);
 
     /*
-     * Return list of possible values of Whiles that satisfy the given
-     * varName and expression.
+     * Return list of possible values of conditional statements that satisfy the
+     * given varName based on the conditional stated in designation.
      */
-    std::vector<Value> getWhile(std::string varName);
+    std::vector<Value> getCond(Designation desType, std::string varName);
 
     /*
-     * Return list of possible (While, Variable) pairs which satisfy the
-     * given expression.
+     * Return list of possible (Cond, Variable) pairs based on the conditional
+     * stated in designation.
      */
-    std::vector<std::pair<Value, Value>> getWhileAndVar();
-
-    /*
-     * Return list of possible values of Ifs that satisfy the given
-     * varName and expression.
-     */
-    std::vector<Value> getIf(std::string varName);
-
-    /*
-     * Return list of possible (If, Variable) pairs which satisfy the
-     * given expression.
-     */
-    std::vector<std::pair<Value, Value>> getIfAndVar();
+    std::vector<std::pair<Value, Value>> getCondAndVar(Designation desType);
 
     /*
      * Return attribute of the given stmtNum of a Print, Read or Call statement,

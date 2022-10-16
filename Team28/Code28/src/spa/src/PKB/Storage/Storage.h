@@ -56,6 +56,11 @@ public:
     Table *getDesignationTable(Designation designType);
 
     /*
+     * Retrieve a UsesControlVarTable by Designation.
+     */
+    UsesControlVarTable *getControlVarTable(Designation designType);
+
+    /*
      * Retrieves Modifies Tables
      */
     std::vector<Solvable *> getModifiesTables();

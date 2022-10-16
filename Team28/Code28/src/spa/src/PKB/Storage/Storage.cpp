@@ -77,6 +77,16 @@ Solvable *Storage::getRsTable(RelationshipReference rsRef,
     return this->rsTables.at(rsRef);
 };
 
+UsesControlVarTable *Storage::getControlVarTable(Designation designType) {
+    if (designType == Designation::IF_C) {
+        return this->getTable<IfControlVarTable>();
+    }
+    if (designType == Designation::WHILE_C) {
+        return this->getTable<WhileControlVarTable>();
+    }
+    return nullptr;
+};
+
 Table *Storage::getDesignationTable(Designation designType) {
     return this->designTables.at(designType);
 };

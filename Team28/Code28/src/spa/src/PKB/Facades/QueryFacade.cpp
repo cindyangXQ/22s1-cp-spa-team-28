@@ -171,30 +171,22 @@ QueryFacade::getAssignAndVarExact(std::string expression) {
     return assignments->getAssignAndVarExact(expression);
 };
 
-std::vector<Value> QueryFacade::getWhile(std::string varName) {
-    WhileControlVarTable *whiles =
-        this->storage->getTable<WhileControlVarTable>();
-
-    return whiles->getStmt(varName);
-}
-
-std::vector<std::pair<Value, Value>> QueryFacade::getWhileAndVar() {
-    WhileControlVarTable *whiles =
-        this->storage->getTable<WhileControlVarTable>();
-
-    return whiles->getStmtAndVar();
+std::vector<Value> QueryFacade::getCond(Designation condType,
+                                        std::string varName) {
+    if (condPatternSet.count(condType) == 0) {
+        return std::vector<Value>();
+    }
+    UsesControlVarTable *conds = this->storage->getControlVarTable(condType);
+    return conds->getStmt(varName);
 };
 
-std::vector<Value> QueryFacade::getIf(std::string varName) {
-    IfControlVarTable *ifs = this->storage->getTable<IfControlVarTable>();
-
-    return ifs->getStmt(varName);
-}
-
-std::vector<std::pair<Value, Value>> QueryFacade::getIfAndVar() {
-    IfControlVarTable *ifs = this->storage->getTable<IfControlVarTable>();
-
-    return ifs->getStmtAndVar();
+std::vector<std::pair<Value, Value>>
+QueryFacade::getCondAndVar(Designation condType) {
+    if (condPatternSet.count(condType) == 0) {
+        return std::vector<std::pair<Value, Value>>();
+    }
+    UsesControlVarTable *conds = this->storage->getControlVarTable(condType);
+    return conds->getStmtAndVar();
 };
 
 std::string QueryFacade::getAttribute(int stmtNum) {

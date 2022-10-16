@@ -34,3 +34,6 @@ typedef std::unordered_set<Designation> DESIGNATION_TYPE_SET;
 
 const DESIGNATION_TYPE_SET namedEntitiesSet = {
     Designation::VAR, Designation::CONST, Designation::PROC};
+
+const DESIGNATION_TYPE_SET condPatternSet = {Designation::IF_C,
+                                             Designation::WHILE_C};
