@@ -5,8 +5,8 @@
 #include "../../commons/Variable.h"
 #include "../ProgramParser/EntityNode.h"
 
-#include <vector>
 #include <functional>
+#include <vector>
 
 class DesignExtractor {
 protected:

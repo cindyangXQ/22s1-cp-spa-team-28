@@ -2,9 +2,9 @@
 #include "../ProgramParser/EntityNode.h"
 #include "../SPUtils.h"
 #include <algorithm>
+#include <functional>
 #include <map>
 #include <vector>
-#include <functional>
 
 DesignExtractor::DesignExtractor(ProgramNode *program,
                                  PopulateFacade *storage) {
@@ -14,12 +14,12 @@ DesignExtractor::DesignExtractor(ProgramNode *program,
 
 template <class T>
 static void DesignExtractor::extractUtil(
-    std::vector<T>& result, ProgramNode* program,
-    std::function<void(StatementNode* stmt, std::vector<T>& result)> func) {
+    std::vector<T> &result, ProgramNode *program,
+    std::function<void(StatementNode *stmt, std::vector<T> &result)> func) {
     std::vector<ProcedureNode *> procList = program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (StatementNode* stmt : stmtList) {
+        for (StatementNode *stmt : stmtList) {
             func(stmt, result);
         }
     }
@@ -80,8 +80,9 @@ std::vector<Constant *> ConstantExtractor::extract() {
 
     DesignExtractor::extractUtil<std::string>(
         preresult, program,
-        [](StatementNode *stmt, std::vector<std::string> &res)
-            -> void { stmt->getConstantsInto(res); });
+        [](StatementNode *stmt, std::vector<std::string> &res) -> void {
+            stmt->getConstantsInto(res);
+        });
 
     sort(preresult.begin(), preresult.end());
     preresult.erase(unique(preresult.begin(), preresult.end()),
@@ -135,8 +136,7 @@ std::vector<Relationship<int, int> *> ParentExtrT::extract() {
     DesignExtractor::extractUtil<Relationship<int, int> *>(
         result, program,
         [](StatementNode *stmt, std::vector<Relationship<int, int> *> &res)
-            -> void { SPUtils::parentT(stmt, res);
-        });
+            -> void { SPUtils::parentT(stmt, res); });
 
     return result;
 }
@@ -144,10 +144,12 @@ std::vector<Relationship<int, int> *> ParentExtrT::extract() {
 std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
     std::vector<Relationship<int, std::string> *> result;
 
-     DesignExtractor::extractUtil<Relationship<int, std::string> *>(
+    DesignExtractor::extractUtil<Relationship<int, std::string> *>(
         result, program,
-        [](StatementNode *stmt, std::vector<Relationship<int, std::string> *> &res)
-            -> void { stmt->getUsesInto(res); });
+        [](StatementNode *stmt,
+           std::vector<Relationship<int, std::string> *> &res) -> void {
+            stmt->getUsesInto(res);
+        });
 
     return result;
 }
@@ -184,10 +186,12 @@ UsesPExtractor::extract() {
 std::vector<Relationship<int, std::string> *> ModSExtractor::extract() {
     std::vector<Relationship<int, std::string> *> result;
 
-     DesignExtractor::extractUtil<Relationship<int, std::string> *>(
+    DesignExtractor::extractUtil<Relationship<int, std::string> *>(
         result, program,
-        [](StatementNode *stmt, std::vector<Relationship<int, std::string> *> &res)
-            -> void { stmt->getModsInto(res); });
+        [](StatementNode *stmt,
+           std::vector<Relationship<int, std::string> *> &res) -> void {
+            stmt->getModsInto(res);
+        });
 
     return result;
 }
@@ -269,8 +273,9 @@ std::vector<Relationship<int, int> *> BranchInExtr::extract() {
     std::vector<Relationship<int, int> *> result;
 
     DesignExtractor::extractUtil<Relationship<int, int> *>(
-        result, program,[](StatementNode* stmt, std::vector<Relationship<int, int> *>& res)->void{
-        stmt->getBranchInInto(res);});
+        result, program,
+        [](StatementNode *stmt, std::vector<Relationship<int, int> *> &res)
+            -> void { stmt->getBranchInInto(res); });
 
     return result;
 }
