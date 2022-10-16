@@ -5,17 +5,18 @@
 #include "../Storage/Storage.h"
 
 /*
- * A Facade class for SP->PKB interactions.
+ * Encapsulates a Facade class for SP->PKB interactions.
  */
 class PopulateFacade {
 public:
     /*
-     * Explicit constructor for a PopulateFacade.
+     * Explicit constructor for PopulateFacade.
      */
     explicit PopulateFacade(Storage *storage);
 
     /*
-     * Generic store method for SP->PKB interactions.
+     * Stores all items of a given type T into the corresponding table specified
+     * by popType.
      */
     template <typename T>
     void store(std::vector<T *> *items, Designation popType) {
