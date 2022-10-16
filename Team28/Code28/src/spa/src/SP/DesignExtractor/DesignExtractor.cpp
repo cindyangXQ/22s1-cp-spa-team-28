@@ -11,10 +11,25 @@ DesignExtractor::DesignExtractor(ProgramNode *program,
     this->storage = storage;
 }
 
+template <typename T>
+EntityExtractor<T>::EntityExtractor(ProgramNode *program,
+                                    PopulateFacade *storage, Designation type)
+    : DesignExtractor(program, storage) {
+    this->type = type;
+}
+
+template <typename U, typename V>
+RelationExtractor<U, V>::RelationExtractor(ProgramNode *program,
+                                           PopulateFacade *storage,
+                                           Designation type)
+    : DesignExtractor(program, storage) {
+    this->type = type;
+}
+
 std::vector<Procedure *> ProcedureExtractor::extract() {
     std::vector<Procedure *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
+    std::vector<ProcedureNode *> procList = program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         ProcedureNode *currProc = procList.at(i);
         result.push_back(
@@ -320,9 +335,14 @@ void DesignExtractor::extractAll() {
     BranchOutExtr(this->program, this->storage).populate();
 }
 
-void ProcedureExtractor::populate() {
-    std::vector<Procedure *> procedures = this->extract();
-    this->storage->store<Procedure>(&procedures, Designation::PROC);
+template <typename T> void EntityExtractor<T>::populate() {
+    std::vector<T *> entites = this->extract();
+    this->storage->store<T>(&entites, this->type);
+}
+
+template <typename U, typename V> void RelationExtractor<U, V>::populate() {
+    std::vector<Relationship<U, V> *> relationships = this->extract();
+    this->storage->store<Relationship<U, V>>(&relationships, this->type);
 }
 
 void StatementExtractor::populate() {
@@ -337,39 +357,6 @@ void StatementExtractor::populate() {
         &calls, Designation::PROC_NAME);
 }
 
-void VariableExtractor::populate() {
-    std::vector<Variable *> variables = this->extract();
-    this->storage->store<Variable>(&variables, Designation::VAR);
-}
-
-void ConstantExtractor::populate() {
-    std::vector<Constant *> constants = this->extract();
-    this->storage->store<Constant>(&constants, Designation::CONST);
-}
-
-void FollowsExtractor::populate() {
-    std::vector<Relationship<int, int> *> follows = this->extract();
-    this->storage->store<Relationship<int, int>>(&follows,
-                                                 Designation::FOLLOWS);
-}
-
-void FollowsExtrT::populate() {
-    std::vector<Relationship<int, int> *> followsT = this->extract();
-    this->storage->store<Relationship<int, int>>(&followsT,
-                                                 Designation::FOLLOWS_T);
-}
-
-void ParentExtractor::populate() {
-    std::vector<Relationship<int, int> *> parent = this->extract();
-    this->storage->store<Relationship<int, int>>(&parent, Designation::PARENT);
-}
-
-void ParentExtrT::populate() {
-    std::vector<Relationship<int, int> *> parentT = this->extract();
-    this->storage->store<Relationship<int, int>>(&parentT,
-                                                 Designation::PARENT_T);
-}
-
 void UsesSExtractor::populate() {
     std::vector<Relationship<int, std::string> *> usesS = this->extract();
     this->storage->store<Relationship<int, std::string>>(&usesS,
@@ -380,49 +367,4 @@ void UsesSExtractor::populate() {
                                                          Designation::IF_C);
     this->storage->store<Relationship<int, std::string>>(&whileCondVars,
                                                          Designation::WHILE_C);
-}
-
-void UsesPExtractor::populate() {
-    std::vector<Relationship<std::string, std::string> *> usesP =
-        this->extract();
-    this->storage->store<Relationship<std::string, std::string>>(
-        &usesP, Designation::USE_P);
-}
-
-void ModSExtractor::populate() {
-    std::vector<Relationship<int, std::string> *> ModifiesS = this->extract();
-    this->storage->store<Relationship<int, std::string>>(&ModifiesS,
-                                                         Designation::MOD_S);
-}
-
-void ModPExtractor::populate() {
-    std::vector<Relationship<std::string, std::string> *> ModifiesP =
-        this->extract();
-    this->storage->store<Relationship<std::string, std::string>>(
-        &ModifiesP, Designation::MOD_P);
-}
-
-void CallsExtractor::populate() {
-    std::vector<Relationship<std::string, std::string> *> Calls =
-        this->extract();
-    this->storage->store<Relationship<std::string, std::string>>(
-        &Calls, Designation::CALL);
-}
-
-void CallsExtrT::populate() {
-    std::vector<Relationship<std::string, std::string> *> CallsT =
-        this->extract();
-    this->storage->store<Relationship<std::string, std::string>>(
-        &CallsT, Designation::CALL_T);
-}
-
-void BranchInExtr::populate() {
-    std::vector<Relationship<int, int> *> branchIn = this->extract();
-    this->storage->store<Relationship<int, int>>(&branchIn, Designation::B_IN);
-}
-
-void BranchOutExtr::populate() {
-    std::vector<Relationship<int, int> *> branchOut = this->extract();
-    this->storage->store<Relationship<int, int>>(&branchOut,
-                                                 Designation::B_OUT);
 }
