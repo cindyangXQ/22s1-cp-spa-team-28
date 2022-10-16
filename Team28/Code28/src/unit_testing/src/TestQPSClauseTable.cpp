@@ -65,10 +65,11 @@ TEST_CASE("ClauseTable can create new table from two input table") {
     ClauseTable table1 = ClauseTable(header1);
     ClauseTable table2 = ClauseTable(header2);
     ClauseTable tableJoin = ClauseTable::ConstructTable(table1, table2);
-    REQUIRE(tableJoin.getHeader().size() == 3);
-    REQUIRE(tableJoin.getHeader()[0].getSynonymName() == syn2.getName());
-    REQUIRE(tableJoin.getHeader()[1].getSynonymName() == syn1.getName());
-    REQUIRE(tableJoin.getHeader()[2].getSynonymName() == syn3.getName());
+    std::vector<Reference> header = tableJoin.getHeader();
+    REQUIRE(header.size() == 3);
+    REQUIRE(header[0].getSynonymName() == syn2.getName());
+    REQUIRE(header[1].getSynonymName() == syn1.getName());
+    REQUIRE(header[2].getSynonymName() == syn3.getName());
 }
 
 TEST_CASE("ClauseTable can join two tables with common headers") {
@@ -92,11 +93,12 @@ TEST_CASE("ClauseTable can join two tables with common headers") {
     table2.insert(Tuple(std::vector{Value(ValueType::VAR_NAME, "wtf"),
                                     Value(ValueType::STMT_NUM, "5")}));
     ClauseTable result = ClauseTable::joinTables(table1, table2);
+    std::vector<Reference> header = result.getHeader();
     REQUIRE(result.size() == 2);
-    REQUIRE(result.getHeader().size() == 3);
-    REQUIRE(result.getHeader()[0].getSynonymName() == syn2.getName());
-    REQUIRE(result.getHeader()[1].getSynonymName() == syn1.getName());
-    REQUIRE(result.getHeader()[2].getSynonymName() == syn3.getName());
+    REQUIRE(header.size() == 3);
+    REQUIRE(header[0].getSynonymName() == syn2.getName());
+    REQUIRE(header[1].getSynonymName() == syn1.getName());
+    REQUIRE(header[2].getSynonymName() == syn3.getName());
 }
 
 TEST_CASE("ClauseTable can join two tables with no common headers") {
@@ -121,10 +123,11 @@ TEST_CASE("ClauseTable can join two tables with no common headers") {
     table2.insert(Tuple(std::vector{Value(ValueType::VAR_NAME, "wtf"),
                                     Value(ValueType::STMT_NUM, "5")}));
     ClauseTable result = ClauseTable::joinTables(table1, table2);
+    std::vector<Reference> header = result.getHeader();
     REQUIRE(result.size() == 9);
-    REQUIRE(result.getHeader().size() == 4);
-    REQUIRE(result.getHeader()[0].getSynonymName() == syn1.getName());
-    REQUIRE(result.getHeader()[1].getSynonymName() == syn2.getName());
-    REQUIRE(result.getHeader()[2].getSynonymName() == syn3.getName());
-    REQUIRE(result.getHeader()[3].getSynonymName() == syn4.getName());
+    REQUIRE(header.size() == 4);
+    REQUIRE(header[0].getSynonymName() == syn1.getName());
+    REQUIRE(header[1].getSynonymName() == syn2.getName());
+    REQUIRE(header[2].getSynonymName() == syn3.getName());
+    REQUIRE(header[3].getSynonymName() == syn4.getName());
 }

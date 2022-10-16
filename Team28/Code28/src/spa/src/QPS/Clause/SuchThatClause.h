@@ -17,6 +17,7 @@ public:
     RelationshipReference getRelationship();
     Reference getRefLeft();
     Reference getRefRight();
+
 private:
     RelationshipReference relationship;
     Reference refLeft;
