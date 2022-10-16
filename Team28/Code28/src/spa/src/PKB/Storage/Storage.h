@@ -18,6 +18,7 @@
 #include "../Tables/NamesTable/NamesTable.h"
 #include "../Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
+#include "../Tables/RelationshipsTable/StmtToProcRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/UsesControlVarTable.h"

@@ -3,6 +3,7 @@
 #include "PKB/Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/RelationshipsTable.h"
+#include "PKB/Tables/RelationshipsTable/StmtToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
 
