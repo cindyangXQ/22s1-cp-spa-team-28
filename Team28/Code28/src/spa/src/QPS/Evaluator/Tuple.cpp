@@ -11,7 +11,7 @@ std::vector<Tuple> Tuple::splitTuple(std::vector<int> indices) {
         first.push_back(v);
     }
     bool inIndices;
-    // TOFIX: unsigned int can be int instead?
+
     for (unsigned int i = 0; i < this->values.size(); i++) {
         inIndices = false;
         for (unsigned int j = 0; j < indices.size(); j++) {

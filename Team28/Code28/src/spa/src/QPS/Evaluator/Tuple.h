@@ -2,8 +2,6 @@
 #include "../../commons/Value.h"
 #include <vector>
 
-// TOFIX: separate methods into .cpp file
-
 /*
  * Encapsulates a single row in a table.
  */

@@ -7,8 +7,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-// TOFIX: typedef names should be camelCase since it's similar to class names
-// TOFIX: const ENTITY_MAP entityMap => const EntityMap ENTITY_MAP
 typedef std::unordered_map<std::string, EntityName> EntityMap;
 typedef std::unordered_map<std::string, EntityAttribute> EntityAttrMap;
 typedef std::unordered_map<std::string, RelationshipReference> RelationshipMap;

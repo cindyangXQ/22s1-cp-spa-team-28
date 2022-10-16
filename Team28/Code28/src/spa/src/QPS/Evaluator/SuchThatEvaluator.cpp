@@ -1,6 +1,5 @@
 #include "SuchThatEvaluator.h"
 
-// TOFIX: inherit suchthatClause to polymorph handle
 ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
     if (suchThatCl->getRelationship() == RelationshipReference::EMPTY) {
         return ClauseResult(false);

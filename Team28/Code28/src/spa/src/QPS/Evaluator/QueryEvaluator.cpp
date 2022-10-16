@@ -19,8 +19,6 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
     return QueryResult(selectClause, clauseResultList);
 }
 
-// TOFIX: checks can be abstracted out so logical flow is easier to follow
-// TOFIX: perhaps polymorphism can replace switching on types
 std::vector<std::string>
 QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
     std::vector<ClauseResult> clauseResultList = queryResult->getClauseResultList();
@@ -180,7 +178,6 @@ ClauseTable QueryEvaluator::joinAllClauseTables(
     return result;
 }
 
-// TOFIX: polymorphism
 std::vector<std::string> QueryEvaluator::getAll(Reference select) {
     EntityName type = select.getEntityName();
     if (type == EntityName::STMT) {
