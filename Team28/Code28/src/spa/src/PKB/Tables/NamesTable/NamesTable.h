@@ -27,7 +27,7 @@ public:
     };
 
     /*
-     * Returns all names.
+     * Returns all names as a string.
      */
     std::vector<std::string> getAllAsString() {
         std::vector<std::string> result(this->names.begin(), this->names.end());
