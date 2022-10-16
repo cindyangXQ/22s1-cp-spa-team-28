@@ -19,8 +19,8 @@ Select v such that Modifies(s, v) pattern a(_, _"12312321321"_) such that Follow
 none
 5000
 4 - Such that false 
-assign a; variable v; stmt s; read r1, r2;
-Select v such that Follows(r1, r2) pattern a(_, _"a3"_) such that Follows(a, s)
+assign a; variable v; stmt s; read r1, r2; call c;
+Select v such that Follows(r1, c) pattern a(_, _"a3"_) such that Follows(a, c)
 none
 5000
 5 - 2 pattern clause
@@ -71,10 +71,30 @@ a10
 13 - multiple such that clauses
 assign a; variable v1, v2; stmt s, s1, s2; procedure p; while w1, w2;
 Select v1 such that Modifies(s, v1) and Follows(a, s1) and Uses(p, v2) such that Follows*(6, s2) and Parent*(w1, w2) such that Calls*("main", _)
-a3, a6, a9, a10, a18, a26, a29, constant, procedure, read
+a3, a6, a9, a10, a18, a26, a29, constant, procedure, read, x, y, z
 5000
 14 - multiple pattern clauses
 assign a1, a2, a3, a4; variable v1, v2, v3, v4;
 Select a1 pattern a1(_, "a19 + a20") and a2("a10", "5+10+   11") pattern a1("a18", _"a19"_) pattern a3 (_, _) and a4(v1, "0") and a3(v3, _"a6 * a7"_)
 19
+5000
+15 - multiple mixed clauses
+assign a, a1; procedure p; while w; if ifs; variable v;
+Select BOOLEAN such that Calls*("main",_) and Calls*(p,"call") and Calls*(p,"call") pattern a("a18",_"a19+a20"_) pattern a("a18", _)  and w("constant",_) and a1(_,_"a4/a5"_) pattern ifs(v,_,_) such that Calls(_,_)
+TRUE
+5000
+16 - pattern 'and' such that
+assign a, a1; procedure p; call c; while w; if ifs; variable v;
+Select BOOLEAN such that Calls*("main",_) and Calls*(p,"call") and Calls*(p,"call") pattern a("a18",_"a19+a20"_) pattern a("a18", _)  and w("constant",_) and a1(_,_"a4/a5"_) pattern ifs(v,_,_) and Calls(_,_)
+SemanticError
+5000
+17 - multiple such that clauses, equivalent to Follows(r1,s1)and Follows(_,s1) and Follows(n1,s1)
+stmt s1,s2,n1,n2; read r1, r2; print p1, p2;
+Select s1 such that Follows(r1,s1) and Follows*(_,s1) and Follows*(r1,s1) and Follows(_,s1) and Follows(n1,s1) and Follows*(_,s1) and Follows*(n1,s1)
+6, 11, 24, 30, 31, 32
+5000
+18 - multiple such that clauses, many synonyms (sometimes cause exception, sometimes return none)
+stmt s1,s2,n1,n2; read r1, r2; print p1, p2; call c1, c2; while w1, w2, w3, w4, w5;
+Select s1 such that Follows(r1,s1) and Follows*(_,s1) and Follows*(r1,s1) and Follows(_,s1) and Follows(n1,s1) and Follows*(_,s1) and Follows*(n1,s1)
+6, 11, 24, 30, 31, 32
 5000

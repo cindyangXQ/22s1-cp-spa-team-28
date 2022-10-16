@@ -46,4 +46,14 @@ procedure main {
 
 procedure call {
     print call;
+
+    read x;
+	read y;
+	read z;
+
+	call hi;
+}
+
+procedure hi {
+    x = y;
 }
