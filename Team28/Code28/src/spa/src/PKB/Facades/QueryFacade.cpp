@@ -53,24 +53,12 @@ QueryFacade::getAllStatementsByType(StatementType type) {
     return results;
 }
 
-Statement *QueryFacade::getStatementByLineNo(const int &lineNo) {
-    StatementsTable *statements = this->storage->getTable<StatementsTable>();
-
-    return statements->retrieve(lineNo);
-}
-
 std::vector<std::string> QueryFacade::getAllVariables() {
     VariablesTable *variables = this->storage->getTable<VariablesTable>();
     std::unordered_set names = variables->getAll();
     std::vector<std::string> result(names.begin(), names.end());
 
     return result;
-}
-
-Variable *QueryFacade::getVariableByName(const std::string &name) {
-    VariablesTable *variables = this->storage->getTable<VariablesTable>();
-
-    return variables->retrieve(name);
 }
 
 std::vector<std::string> QueryFacade::getAllConstants() {
@@ -81,24 +69,12 @@ std::vector<std::string> QueryFacade::getAllConstants() {
     return result;
 }
 
-Constant *QueryFacade::getConstantByName(const std::string &name) {
-    ConstantsTable *constants = this->storage->getTable<ConstantsTable>();
-
-    return constants->retrieve(name);
-}
-
 std::vector<std::string> QueryFacade::getAllProcedures() {
     ProceduresTable *procedures = this->storage->getTable<ProceduresTable>();
     std::unordered_set names = procedures->getAll();
     std::vector<std::string> result(names.begin(), names.end());
 
     return result;
-}
-
-Procedure *QueryFacade::getProcedureByName(const std::string &name) {
-    ProceduresTable *procedures = this->storage->getTable<ProceduresTable>();
-
-    return procedures->retrieve(name);
 }
 
 bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
