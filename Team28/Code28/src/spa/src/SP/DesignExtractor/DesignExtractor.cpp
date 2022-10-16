@@ -36,7 +36,7 @@ static void DesignExtractor::extractUtilStmtList(
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
         func(stmtList, result);
     }
-        }
+}
 
 template <typename T>
 EntityExtractor<T>::EntityExtractor(ProgramNode *program,
