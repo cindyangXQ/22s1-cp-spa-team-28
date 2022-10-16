@@ -45,7 +45,7 @@ ClauseResult PatternEvaluator::handleWhile(PatternClause *patternCl) {
         ClauseResult clauseResult = ClauseResult(
             std::vector{Reference(patternCl->syn), patternCl->entRef});
         std::vector<std::pair<Value, Value>> result =
-            queryFacade->getWhileAndVar();
+            queryFacade->getCondAndVar(Designation::WHILE_C);
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(
                 Tuple(std::vector{result[i].first, result[i].second}));
@@ -55,8 +55,8 @@ ClauseResult PatternEvaluator::handleWhile(PatternClause *patternCl) {
         std::string expr = patternCl->expression;
         ClauseResult clauseResult =
             ClauseResult(std::vector{Reference(patternCl->syn)});
-        std::vector<Value> result =
-            queryFacade->getWhile(patternCl->entRef.value.value);
+        std::vector<Value> result = queryFacade->getCond(
+            Designation::WHILE_C, patternCl->entRef.value.value);
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(Tuple(std::vector{result[i]}));
         }
@@ -69,7 +69,7 @@ ClauseResult PatternEvaluator::handleIf(PatternClause *patternCl) {
         ClauseResult clauseResult = ClauseResult(
             std::vector{Reference(patternCl->syn), patternCl->entRef});
         std::vector<std::pair<Value, Value>> result =
-            queryFacade->getIfAndVar();
+            queryFacade->getCondAndVar(Designation::IF_C);
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(
                 Tuple(std::vector{result[i].first, result[i].second}));
@@ -79,8 +79,8 @@ ClauseResult PatternEvaluator::handleIf(PatternClause *patternCl) {
         std::string expr = patternCl->expression;
         ClauseResult clauseResult =
             ClauseResult(std::vector{Reference(patternCl->syn)});
-        std::vector<Value> result =
-            queryFacade->getIf(patternCl->entRef.value.value);
+        std::vector<Value> result = queryFacade->getCond(
+            Designation::IF_C, patternCl->entRef.value.value);
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(Tuple(std::vector{result[i]}));
         }

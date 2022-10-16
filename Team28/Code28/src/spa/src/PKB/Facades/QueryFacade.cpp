@@ -35,15 +35,12 @@ ReferenceType QueryFacade::getRefType(EntityName leftSynonym) {
 
 QueryFacade::QueryFacade(Storage *storage) { this->storage = storage; }
 
-std::vector<Statement *> QueryFacade::getAllStatements() {
-    StatementsTable *statements = this->storage->getTable<StatementsTable>();
-
-    return statements->getAll();
-}
-
 std::vector<Statement *>
 QueryFacade::getAllStatementsByType(StatementType type) {
     StatementsTable *statements = this->storage->getTable<StatementsTable>();
+    if (type == StatementType::STMT) {
+        return statements->getAll();
+    }
     std::vector<int> statementTypeIndices =
         statements->getStatementsByType(type);
     std::vector<Statement *> results;
@@ -53,28 +50,12 @@ QueryFacade::getAllStatementsByType(StatementType type) {
     return results;
 }
 
-std::vector<std::string> QueryFacade::getAllVariables() {
-    VariablesTable *variables = this->storage->getTable<VariablesTable>();
-    std::unordered_set names = variables->getAll();
-    std::vector<std::string> result(names.begin(), names.end());
-
-    return result;
-}
-
-std::vector<std::string> QueryFacade::getAllConstants() {
-    ConstantsTable *constants = this->storage->getTable<ConstantsTable>();
-    std::unordered_set names = constants->getAll();
-    std::vector<std::string> result(names.begin(), names.end());
-
-    return result;
-}
-
-std::vector<std::string> QueryFacade::getAllProcedures() {
-    ProceduresTable *procedures = this->storage->getTable<ProceduresTable>();
-    std::unordered_set names = procedures->getAll();
-    std::vector<std::string> result(names.begin(), names.end());
-
-    return result;
+std::vector<std::string> QueryFacade::getAllEntities(Designation entityType) {
+    if (namedEntitiesSet.count(entityType) == 0) {
+        return std::vector<std::string>();
+    }
+    Table *entityTable = this->storage->getDesignationTable(entityType);
+    return entityTable->getAllAsString();
 }
 
 bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
@@ -190,30 +171,22 @@ QueryFacade::getAssignAndVarExact(std::string expression) {
     return assignments->getAssignAndVarExact(expression);
 };
 
-std::vector<Value> QueryFacade::getWhile(std::string varName) {
-    WhileControlVarTable *whiles =
-        this->storage->getTable<WhileControlVarTable>();
-
-    return whiles->getStmt(varName);
-}
-
-std::vector<std::pair<Value, Value>> QueryFacade::getWhileAndVar() {
-    WhileControlVarTable *whiles =
-        this->storage->getTable<WhileControlVarTable>();
-
-    return whiles->getStmtAndVar();
+std::vector<Value> QueryFacade::getCond(Designation condType,
+                                        std::string varName) {
+    if (condPatternSet.count(condType) == 0) {
+        return std::vector<Value>();
+    }
+    UsesControlVarTable *conds = this->storage->getControlVarTable(condType);
+    return conds->getStmt(varName);
 };
 
-std::vector<Value> QueryFacade::getIf(std::string varName) {
-    IfControlVarTable *ifs = this->storage->getTable<IfControlVarTable>();
-
-    return ifs->getStmt(varName);
-}
-
-std::vector<std::pair<Value, Value>> QueryFacade::getIfAndVar() {
-    IfControlVarTable *ifs = this->storage->getTable<IfControlVarTable>();
-
-    return ifs->getStmtAndVar();
+std::vector<std::pair<Value, Value>>
+QueryFacade::getCondAndVar(Designation condType) {
+    if (condPatternSet.count(condType) == 0) {
+        return std::vector<std::pair<Value, Value>>();
+    }
+    UsesControlVarTable *conds = this->storage->getControlVarTable(condType);
+    return conds->getStmtAndVar();
 };
 
 std::string QueryFacade::getAttribute(int stmtNum) {

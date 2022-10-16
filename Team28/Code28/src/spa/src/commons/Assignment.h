@@ -15,6 +15,7 @@ public:
     explicit Assignment(int lineNo, std::string variable,
                         std::string expression);
 
+    std::string toString();
     int getLineNo();
     std::string getVariable();
     std::string getExpression();

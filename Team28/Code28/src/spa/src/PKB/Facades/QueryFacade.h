@@ -13,29 +13,14 @@ public:
     explicit QueryFacade(Storage *storage);
 
     /*
-     * Returns all statements inside the StatementsTable.
-     */
-    std::vector<Statement *> getAllStatements();
-
-    /*
-     * Returns all statements inside the StatementsTable.
+     * Returns all statements inside the StatementsTable based on StatementType.
      */
     std::vector<Statement *> getAllStatementsByType(StatementType type);
 
     /*
-     * Returns all variable names inside the VariablesTable.
+     * Returns all entity names from the given Entity.
      */
-    std::vector<std::string> getAllVariables();
-
-    /*
-     * Returns all constant names inside the ConstantsTable.
-     */
-    std::vector<std::string> getAllConstants();
-
-    /*
-     * Returns all procedure names inside the ProceduresTable.
-     */
-    std::vector<std::string> getAllProcedures();
+    std::vector<std::string> getAllEntities(Designation entity);
 
     /*
      * Returns true if relationship holds between leftReference and
@@ -94,28 +79,16 @@ public:
     getAssignAndVarExact(std::string expression);
 
     /*
-     * Return list of possible values of Whiles that satisfy the given
-     * varName and expression.
+     * Return list of possible values of conditional statements that satisfy the
+     * given varName based on the conditional stated in designation.
      */
-    std::vector<Value> getWhile(std::string varName);
+    std::vector<Value> getCond(Designation desType, std::string varName);
 
     /*
-     * Return list of possible (While, Variable) pairs which satisfy the
-     * given expression.
+     * Return list of possible (Cond, Variable) pairs based on the conditional
+     * stated in designation.
      */
-    std::vector<std::pair<Value, Value>> getWhileAndVar();
-
-    /*
-     * Return list of possible values of Ifs that satisfy the given
-     * varName and expression.
-     */
-    std::vector<Value> getIf(std::string varName);
-
-    /*
-     * Return list of possible (If, Variable) pairs which satisfy the
-     * given expression.
-     */
-    std::vector<std::pair<Value, Value>> getIfAndVar();
+    std::vector<std::pair<Value, Value>> getCondAndVar(Designation desType);
 
     /*
      * Return attribute of the given stmtNum of a Print, Read or Call statement,
