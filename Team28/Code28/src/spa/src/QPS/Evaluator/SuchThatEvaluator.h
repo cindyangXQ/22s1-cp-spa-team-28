@@ -11,7 +11,7 @@ const std::unordered_set<RelationshipReference> noSameSynonym = {
     RelationshipReference::FOLLOWS, RelationshipReference::FOLLOWS_T,
     RelationshipReference::PARENT,  RelationshipReference::PARENT_T,
     RelationshipReference::USES,    RelationshipReference::MODIFIES,
-    RelationshipReference::CALLS,   RelationshipReference::CALLS,
+    RelationshipReference::CALLS,   RelationshipReference::CALLS_T,
     RelationshipReference::NEXT};
 
 /*
