@@ -2,20 +2,20 @@
 
 // TOFIX: inherit suchthatClause to polymorph handle
 ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
-    if (suchThatCl->relationship == RelationshipReference::EMPTY) {
+    if (suchThatCl->getRelationship() == RelationshipReference::EMPTY) {
         return ClauseResult(false);
     } else {
-        Reference left = suchThatCl->refLeft;
-        Reference right = suchThatCl->refRight;
-        RelationshipReference relRef = suchThatCl->relationship;
+        Reference left = suchThatCl->getRefLeft();
+        Reference right = suchThatCl->getRefRight();
+        RelationshipReference relRef = suchThatCl->getRelationship();
 
-        if (!left.isSynonym && !right.isSynonym) {
+        if (!left.isASynonym() && !right.isASynonym()) {
             return handleNoSynonym(relRef, left, right);
-        } else if (left.isSynonym && !right.isSynonym) {
+        } else if (left.isASynonym() && !right.isASynonym()) {
             return handleLeftSynonym(relRef, left, right);
-        } else if (!left.isSynonym && right.isSynonym) {
+        } else if (!left.isASynonym() && right.isASynonym()) {
             return handleRightSynonym(relRef, left, right);
-        } else if (left.isSynonym && right.isSynonym) {
+        } else if (left.isASynonym() && right.isASynonym()) {
             return handleBothSynonym(relRef, left, right);
         } else {
             return ClauseResult(true);
@@ -37,7 +37,7 @@ ClauseResult SuchThatEvaluator::handleLeftSynonym(RelationshipReference relRef,
                                                   Reference left,
                                                   Reference right) {
     ClauseResult clauseResult = ClauseResult({left});
-    EntityName leftName = left.syn.entity;
+    EntityName leftName = left.getEntityName();
     std::vector<Value> result = queryFacade->solveLeft(relRef, right, leftName);
     for (int i = 0; i < result.size(); i++) {
         clauseResult.insert(Tuple({result[i]}));
@@ -49,7 +49,7 @@ ClauseResult SuchThatEvaluator::handleRightSynonym(RelationshipReference relRef,
                                                    Reference left,
                                                    Reference right) {
     ClauseResult clauseResult = ClauseResult({right});
-    EntityName rightName = right.syn.entity;
+    EntityName rightName = right.getEntityName();
     std::vector<Value> result =
         queryFacade->solveRight(relRef, left, rightName);
     for (int i = 0; i < result.size(); i++) {
@@ -61,13 +61,13 @@ ClauseResult SuchThatEvaluator::handleRightSynonym(RelationshipReference relRef,
 ClauseResult SuchThatEvaluator::handleBothSynonym(RelationshipReference relRef,
                                                   Reference left,
                                                   Reference right) {
-    if (left.syn.entity == right.syn.entity &&
-        left.syn.name == right.syn.name) {
+    if (left.getEntityName() == right.getEntityName() &&
+        left.getSynonymName() == right.getSynonymName()) {
         return ClauseResult(noSameSynonym.count(relRef));
     }
     ClauseResult clauseResult = ClauseResult({left, right});
-    EntityName leftName = left.syn.entity;
-    EntityName rightName = right.syn.entity;
+    EntityName leftName = left.getEntityName();
+    EntityName rightName = right.getEntityName();
     std::vector<std::pair<Value, Value>> result =
         queryFacade->solveBoth(relRef, leftName, rightName);
     for (int i = 0; i < result.size(); i++) {

@@ -10,8 +10,12 @@
  */
 class Synonym {
 public:
-    EntityName entity;
-    std::string name;
     Synonym();
     Synonym(EntityName entity, std::string name);
+    std::string getName();
+    EntityName getEntityName();
+
+private:
+    EntityName entity;
+    std::string name;
 };

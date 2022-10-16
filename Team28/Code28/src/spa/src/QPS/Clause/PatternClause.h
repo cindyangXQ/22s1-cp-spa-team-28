@@ -16,13 +16,20 @@ const std::unordered_map<EntityName, PatternType> entityToPatternTypeMap = {
  */
 class PatternClause {
 public:
+    PatternClause(){};
+    PatternClause(Synonym syn, Reference entRef, Expression expression,
+                  bool isExact);
+
+    Synonym getSyn();
+    PatternType getPatternType();
+    Reference getEntRef();
+    Expression getExpression();
+    bool getIsExact();
+
+private:
     Synonym syn;
     PatternType patternType;
     Reference entRef;
     Expression expression;
     bool isExact;
-
-    PatternClause(){};
-    PatternClause(Synonym syn, Reference entRef, Expression expression,
-                  bool isExact);
 };

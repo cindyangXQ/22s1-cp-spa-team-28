@@ -5,19 +5,19 @@
 #include "../Tables/Table.h"
 
 /*
- * Encapsulates a CFG class which is responsible for extracting the
- * Next relationship from the given source program.
+ * Encapsulates a CFG class responsible for extracting the
+ * Next/Affects relationship from the given source program.
  */
 class ControlFlowGraph {
 public:
     /*
-     * Explicit constructor for Storage.
+     * Explicit constructor for ControlFlowGraph.
      */
     ControlFlowGraph(NextTable *nextTable, StorageView *storage);
 
     /*
      * Populates NextTable based on relationships currently found in Storage.
-     * Traversal of CFG is done through DFS.
+     * NOTE: Traversal of CFG is done through DFS.
      */
     void populateNext();
 
@@ -32,7 +32,7 @@ private:
     std::map<int, bool> visited;
 
     /*
-     * Depth First Search of CFG based on given integer.
+     * Depth First Search of CFG based on given lineNo.
      */
     void DFS(int i);
 

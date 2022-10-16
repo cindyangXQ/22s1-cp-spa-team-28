@@ -9,7 +9,6 @@
  */
 class Tuple {
 public:
-    std::vector<Value> values;
     Tuple(std::vector<Value> values) { this->values = values; }
 
     size_t size();
@@ -25,4 +24,9 @@ public:
     bool equal(Tuple rhs);
 
     Value getValue(int index);
+
+    std::vector<Value> getValues();
+
+private:
+    std::vector<Value> values;
 };

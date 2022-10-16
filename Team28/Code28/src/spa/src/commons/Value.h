@@ -3,21 +3,23 @@
 
 enum class ValueType { STMT_NUM, VAR_NAME, WILDCARD };
 
-// private all fields
-
 /*
  * Class encapsulating returned value in query.
  */
 class Value {
 public:
-    ValueType type;
-    std::string value;
     explicit Value();
     explicit Value(ValueType type, std::string value)
         : type(type), value(value){};
 
     bool operator==(const Value &other) const;
     bool operator<(const Value &other) const;
+    ValueType getValueType() const;
+    std::string getValue() const;
+
+private:
+    ValueType type;
+    std::string value;
 };
 
 namespace std {
@@ -31,13 +33,13 @@ template <> struct hash<Value> {
         // Compute individual hash values for first,
         // second and third and combine them using XOR
         // and bit shifting:
-
-        return ((hash<ValueType>()(k.type) ^ (hash<string>()(k.value) << 1)) >>
+        return ((hash<ValueType>()(k.getValueType()) ^
+                 (hash<string>()(k.getValue()) << 1)) >>
                 1);
     }
 };
 
-} // namespace std
+}
 
 struct value_pair_hash {
     inline std::size_t operator()(const std::pair<Value, Value> &v) const {

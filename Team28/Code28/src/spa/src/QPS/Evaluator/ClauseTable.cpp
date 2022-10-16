@@ -1,13 +1,11 @@
 #include "ClauseTable.h"
 
-// TOFIX: all loops that are commonly used can be abstracted
-// TOFIX: joinTables() can be abstracted further, might be good to use more
-// helper funcs
 std::vector<int> ClauseTable::getIndices(std::vector<Reference> commonHeaders) {
     std::vector<int> indices;
     for (int i = 0; i < commonHeaders.size(); i++) {
         for (int j = 0; j < header.size(); j++) {
-            if (header[j].syn.name == commonHeaders[i].syn.name) {
+            if (header[j].getSynonymName() ==
+                commonHeaders[i].getSynonymName()) {
                 indices.push_back(j);
             }
         }
@@ -22,7 +20,7 @@ size_t ClauseTable::size() { return this->rows.size(); }
 std::vector<Value> ClauseTable::getValues(Reference select) {
     int column = UNINTIALIZED;
     for (int i = 0; i < this->header.size(); i++) {
-        if (this->header[i].syn.name == select.syn.name) {
+        if (this->header[i].getSynonymName() == select.getSynonymName()) {
             column = i;
             break;
         }
@@ -44,7 +42,7 @@ std::vector<Reference> ClauseTable::getCommonHeaders(ClauseTable table1,
     std::vector<Reference> headerCommon;
     for (int i = 0; i < header1.size(); i++) {
         for (int j = 0; j < header2.size(); j++) {
-            if (header1[i].syn.name == header2[j].syn.name) {
+            if (header1[i].getSynonymName() == header2[j].getSynonymName()) {
                 headerCommon.push_back(header1[i]);
             }
         }

@@ -7,10 +7,13 @@
  */
 class WithClause {
 public:
-    Reference refLeft;
-    Reference refRight;
-
     WithClause(){};
     WithClause(Reference refLeft, Reference refRight)
         : refLeft(refLeft), refRight(refRight){};
+    Reference getRefLeft();
+    Reference getRefRight();
+
+private:
+    Reference refLeft;
+    Reference refRight;
 };

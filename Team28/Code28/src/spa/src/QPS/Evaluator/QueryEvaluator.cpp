@@ -23,8 +23,9 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
 // TOFIX: perhaps polymorphism can replace switching on types
 std::vector<std::string>
 QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
-    std::vector<ClauseResult> clauseResultList = queryResult->clauseResultList;
-    SelectType type = queryResult->selectClause.getSelectType();
+    std::vector<ClauseResult> clauseResultList = queryResult->getClauseResultList();
+    SelectClause selectClause = queryResult->getSelectClause();
+    SelectType type = selectClause.getSelectType();
     bool haveTableToJoin = false;
     bool isAnyTableEmpty = false;
 
@@ -51,10 +52,10 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
     } else if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
-        Reference selectedRef = queryResult->selectClause.getRefs()[0];
+        Reference selectedRef = selectClause.getRefs()[0];
         return extractReferenceFromTable(selectedRef, result);
     } else {
-        std::vector<Reference> selectRefs = queryResult->selectClause.getRefs();
+        std::vector<Reference> selectRefs = selectClause.getRefs();
         return extractTuplesFromTable(selectRefs, result);
     }
 }
@@ -78,8 +79,8 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
         std::string tuple = "";
         Tuple row = result.getRows()[i];
         for (int j = 0; j < indices.size(); j++) {
-            Value v = row.values[indices[j]];
-            tuple += getAttributeValue(selectRefs[j], v.value) + " ";
+            Value v = row.getValues()[indices[j]];
+            tuple += getAttributeValue(selectRefs[j], v.getValue()) + " ";
         }
         output.push_back(Utils::trimSpaces(tuple));
     }
@@ -105,7 +106,7 @@ QueryEvaluator::extractReferenceFromTable(Reference selectedRef,
         std::vector<std::string> output;
         for (int k = 0; k < selectValues.size(); k++) {
             removeDuplicates.insert(
-                getAttributeValue(selectedRef, selectValues[k].value));
+                getAttributeValue(selectedRef, selectValues[k].getValue()));
         }
         output.insert(output.end(), removeDuplicates.begin(),
                       removeDuplicates.end());
@@ -117,11 +118,12 @@ void QueryEvaluator::checkAllClauseResult(
     std::vector<ClauseResult> clauseResultList, bool *isAnyTableEmpty,
     bool *haveTableToJoin) {
     for (int i = 0; i < clauseResultList.size(); i++) {
-        if (clauseResultList[i].isEmpty) {
+        if (clauseResultList[i].getIsEmpty()) {
             *isAnyTableEmpty = true;
             return;
         }
-        if (clauseResultList[i].table.getHeader().size() > 0) {
+        ClauseTable table = clauseResultList[i].getTable();
+        if (table.getHeader().size() > 0) {
             *haveTableToJoin = true;
         }
     }
@@ -129,11 +131,12 @@ void QueryEvaluator::checkAllClauseResult(
 
 std::vector<std::string>
 QueryEvaluator::handleNoTables(QueryResult *queryResult) {
-    SelectType type = queryResult->selectClause.getSelectType();
+    SelectClause selectClause = queryResult->getSelectClause();
+    SelectType type = selectClause.getSelectType();
     if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
-        Reference selectRef = queryResult->selectClause.getRefs()[0];
+        Reference selectRef = selectClause.getRefs()[0];
         std::vector<std::string> synonymValues =
             QueryEvaluator::getAll(selectRef);
 
@@ -143,25 +146,26 @@ QueryEvaluator::handleNoTables(QueryResult *queryResult) {
         }
         return result;
     } else {
-        std::vector<Reference> selectedRefs = queryResult->selectClause.getRefs();
+        std::vector<Reference> selectedRefs = selectClause.getRefs();
         ClauseTable result = ClauseTable();
         return extractTuplesFromTable(selectedRefs, result);
     }
 }
 
 bool QueryEvaluator::isAlternativeAttribute(Reference ref) {
-    return (ref.syn.entity == EntityName::PRINT &&
-                ref.attr == EntityAttribute::VAR_NAME ||
-            ref.syn.entity == EntityName::READ &&
-                ref.attr == EntityAttribute::VAR_NAME ||
-            ref.syn.entity == EntityName::CALL &&
-                ref.attr == EntityAttribute::PROC_NAME);
+    return (ref.getEntityName() == EntityName::PRINT &&
+                ref.getAttr() == EntityAttribute::VAR_NAME ||
+            ref.getEntityName() == EntityName::READ &&
+                ref.getAttr() == EntityAttribute::VAR_NAME ||
+            ref.getEntityName() == EntityName::CALL &&
+                ref.getAttr() == EntityAttribute::PROC_NAME);
 }
 
 std::string QueryEvaluator::getAttributeValue(Reference ref,
                                               std::string synonymValue) {
     if (isAlternativeAttribute(ref)) {
-        return this->queryFacade->getAttribute(std::stoi(synonymValue));
+        return this->queryFacade->getSecondaryAttribute(
+            std::stoi(synonymValue));
     } else {
         return synonymValue;
     }
@@ -171,14 +175,14 @@ ClauseTable QueryEvaluator::joinAllClauseTables(
     std::vector<ClauseResult> clauseResultList) {
     ClauseTable result = ClauseTable();
     for (int i = 0; i < clauseResultList.size(); i++) {
-        result = ClauseTable::joinTables(result, clauseResultList[i].table);
+        result = ClauseTable::joinTables(result, clauseResultList[i].getTable());
     }
     return result;
 }
 
 // TOFIX: polymorphism
 std::vector<std::string> QueryEvaluator::getAll(Reference select) {
-    EntityName type = select.syn.entity;
+    EntityName type = select.getEntityName();
     if (type == EntityName::STMT) {
         std::vector<Statement *> statementList =
             (std::vector<Statement *>)this->queryFacade->getAllStatementsByType(

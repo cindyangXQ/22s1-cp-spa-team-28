@@ -28,18 +28,18 @@
 #include "StorageView.h"
 
 /*
- * Encapsulates a Storage class which is responsible for storing information to
+ * Encapsulates a Storage class responsible for storing information to
  * tables in PKB.
  */
 class Storage {
 public:
     /*
-     * Explicit constructor for Storage.
+     * Constructor for Storage.
      */
     Storage();
 
     /*
-     * Retrieve a table by the templated class given
+     * Retrieves a table by the templated class given.
      */
     template <typename Subclass> Subclass *getTable() {
         Table *table = this->tables.at(typeid(Subclass));
@@ -47,32 +47,32 @@ public:
     };
 
     /*
-     * Retrieve a table by the RelationshipReference
+     * Retrieves a table by the provided RelationshipReference.
      */
     Solvable *getRsTable(RelationshipReference rsRef, ReferenceType leftType);
 
     /*
-     * Retrieve a table by Designation.
+     * Retrieves a table by the provided Designation.
      */
     Table *getDesignationTable(Designation designType);
 
     /*
-     * Retrieve a UsesControlVarTable by Designation.
+     * Retrieves a UsesControlVarTable by the provided Designation.
      */
     UsesControlVarTable *getControlVarTable(Designation designType);
 
     /*
-     * Retrieves Modifies Tables
+     * Retrieves Modifies Tables.
      */
     std::vector<Solvable *> getModifiesTables();
 
     /*
-     * Retrieves Uses Tables
+     * Retrieves Uses Tables.
      */
     std::vector<Solvable *> getUsesTables();
 
     /*
-     * Returns the StorageView
+     * Returns the StorageView.
      */
     StorageView *getStorageView();
 
@@ -80,7 +80,7 @@ private:
     std::map<std::type_index, Table *> tables;
     /*
      * Mapping of RelationshipReference to Solvable tables.
-     * Note: Modifies and Uses are complex and won't be mapped here.
+     * NOTE: Modifies and Uses are complex and won't be mapped here.
      */
     std::map<RelationshipReference, Solvable *> rsTables;
     /*

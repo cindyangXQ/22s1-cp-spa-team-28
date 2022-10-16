@@ -16,19 +16,18 @@
 #include "../Tables/Table.h"
 
 /*
- * Encapsulates a StorageView class which is a read-only Storage that allows
- * other tables in PKB to retrieve values from entities, statements and proc
- * tables.
+ * Encapsulates a read-only Storage that allows other tables in PKB to retrieve
+ * values from Entities, Statements and Procedure tables.
  */
 class StorageView {
 public:
     /*
-     * Explicit constructor for Storage.
+     * Constructor for Storage.
      */
     StorageView(){};
 
     /*
-     * Retrieve a table by the templated class given
+     * Retrieves a table by the templated class given.
      */
     template <typename Subclass> Subclass *getTable() {
         Table *table = this->tables.at(typeid(Subclass));
@@ -36,7 +35,7 @@ public:
     };
 
     /*
-     * Sets a pointer to a table by the templated class given
+     * Sets a pointer to a table by the templated class given.
      */
     template <typename Subclass> void setTable(Table *table) {
         this->tables[typeid(Subclass)] = table;

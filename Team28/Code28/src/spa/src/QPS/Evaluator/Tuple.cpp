@@ -41,7 +41,7 @@ bool Tuple::equal(Tuple rhs) {
         return false;
     }
     for (unsigned int i = 0; i < this->size(); i++) {
-        if (this->values[i].value != rhs.values[i].value) {
+        if (this->values[i].getValue() != rhs.values[i].getValue()) {
             return false;
         }
     }
@@ -49,3 +49,5 @@ bool Tuple::equal(Tuple rhs) {
 }
 
 Value Tuple::getValue(int index) { return this->values[(size_t)index]; }
+
+std::vector<Value> Tuple::getValues() { return this->values; }

@@ -8,7 +8,7 @@
 TEST_CASE("ClauseTable is initialised correctly") {
     std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
                               Synonym(EntityName::ASSIGN, "a")};
-    std::vector<Reference> refs{Reference(syns[0]), Reference(syns[1])};                    
+    std::vector<Reference> refs{Reference(syns[0]), Reference(syns[1])};
     ClauseTable table = ClauseTable(refs);
     REQUIRE(table.size() == 0);
 }
@@ -16,7 +16,7 @@ TEST_CASE("ClauseTable is initialised correctly") {
 TEST_CASE("ClauseTable can insert tuple") {
     std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
                               Synonym(EntityName::ASSIGN, "a")};
-    std::vector<Reference> refs{Reference(syns[0]), Reference(syns[1])};                    
+    std::vector<Reference> refs{Reference(syns[0]), Reference(syns[1])};
     ClauseTable table = ClauseTable(refs);
     REQUIRE(table.size() == 0);
     table.insert(Tuple(std::vector{Value(ValueType::VAR_NAME, "foo"),
@@ -45,7 +45,8 @@ TEST_CASE("ClauseTable can get indices of common headers from a tables") {
     Synonym syn2 = Synonym(EntityName::ASSIGN, "a");
     Synonym syn3 = Synonym(EntityName::STMT, "s");
 
-    std::vector<Reference> header1{Reference(syn1), Reference(syn2), Reference(syn3)};
+    std::vector<Reference> header1{Reference(syn1), Reference(syn2),
+                                   Reference(syn3)};
     std::vector<Reference> commonHeader{Reference(syn3), Reference(syn1)};
 
     ClauseTable table1 = ClauseTable(header1);
@@ -65,9 +66,9 @@ TEST_CASE("ClauseTable can create new table from two input table") {
     ClauseTable table2 = ClauseTable(header2);
     ClauseTable tableJoin = ClauseTable::ConstructTable(table1, table2);
     REQUIRE(tableJoin.getHeader().size() == 3);
-    REQUIRE(tableJoin.getHeader()[0].syn.name == syn2.name);
-    REQUIRE(tableJoin.getHeader()[1].syn.name == syn1.name);
-    REQUIRE(tableJoin.getHeader()[2].syn.name == syn3.name);
+    REQUIRE(tableJoin.getHeader()[0].getSynonymName() == syn2.getName());
+    REQUIRE(tableJoin.getHeader()[1].getSynonymName() == syn1.getName());
+    REQUIRE(tableJoin.getHeader()[2].getSynonymName() == syn3.getName());
 }
 
 TEST_CASE("ClauseTable can join two tables with common headers") {
@@ -93,9 +94,9 @@ TEST_CASE("ClauseTable can join two tables with common headers") {
     ClauseTable result = ClauseTable::joinTables(table1, table2);
     REQUIRE(result.size() == 2);
     REQUIRE(result.getHeader().size() == 3);
-    REQUIRE(result.getHeader()[0].syn.name == syn2.name);
-    REQUIRE(result.getHeader()[1].syn.name == syn1.name);
-    REQUIRE(result.getHeader()[2].syn.name == syn3.name);
+    REQUIRE(result.getHeader()[0].getSynonymName() == syn2.getName());
+    REQUIRE(result.getHeader()[1].getSynonymName() == syn1.getName());
+    REQUIRE(result.getHeader()[2].getSynonymName() == syn3.getName());
 }
 
 TEST_CASE("ClauseTable can join two tables with no common headers") {
@@ -122,8 +123,8 @@ TEST_CASE("ClauseTable can join two tables with no common headers") {
     ClauseTable result = ClauseTable::joinTables(table1, table2);
     REQUIRE(result.size() == 9);
     REQUIRE(result.getHeader().size() == 4);
-    REQUIRE(result.getHeader()[0].syn.name == syn1.name);
-    REQUIRE(result.getHeader()[1].syn.name == syn2.name);
-    REQUIRE(result.getHeader()[2].syn.name == syn3.name);
-    REQUIRE(result.getHeader()[3].syn.name == syn4.name);
+    REQUIRE(result.getHeader()[0].getSynonymName() == syn1.getName());
+    REQUIRE(result.getHeader()[1].getSynonymName() == syn2.getName());
+    REQUIRE(result.getHeader()[2].getSynonymName() == syn3.getName());
+    REQUIRE(result.getHeader()[3].getSynonymName() == syn4.getName());
 }

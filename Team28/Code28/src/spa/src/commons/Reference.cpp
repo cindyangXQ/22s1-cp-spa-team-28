@@ -7,9 +7,9 @@ Reference::Reference() {}
 Reference::Reference(Synonym syn) {
     this->isSynonym = true;
     this->syn = syn;
-    if (entRefSet.count(syn.entity)) {
+    if (entRefSet.count(syn.getEntityName())) {
         this->type = ReferenceType::ENT_REF;
-    } else if (stmtRefSet.count(syn.entity)) {
+    } else if (stmtRefSet.count(syn.getEntityName())) {
         this->type = ReferenceType::STMT_REF;
     } else {
         throw SemanticError("Invalid reference type");
@@ -21,7 +21,7 @@ Reference::Reference(Synonym syn, EntityAttribute attr) {
     this->type = ReferenceType::ATTR_REF;
     this->syn = syn;
     std::unordered_set<EntityAttribute> validAttr =
-        entityAttributeMap.find(syn.entity)->second;
+        entityAttributeMap.find(syn.getEntityName())->second;
     if (validAttr.count(attr)) {
         this->attr = attr;
     } else {
@@ -49,5 +49,23 @@ bool Reference::isWildcard() {
     if (this->isSynonym) {
         return false;
     }
-    return this->value.type == ValueType::WILDCARD;
+    return this->value.getValueType() == ValueType::WILDCARD;
 }
+
+bool Reference::isASynonym() { return this->isSynonym; }
+
+ReferenceType Reference::getRefType() { return this->type; }
+
+Synonym Reference::getSynonym() { return this->syn; }
+
+EntityName Reference::getEntityName() { return this->syn.getEntityName(); }
+
+std::string Reference::getSynonymName() { return this->syn.getName(); }
+
+EntityAttribute Reference::getAttr() { return this->attr; }
+
+Value Reference::getValue() { return this->value; }
+
+ValueType Reference::getValueType() { return this->value.getValueType(); }
+
+std::string Reference::getValueString() { return this->value.getValue(); }

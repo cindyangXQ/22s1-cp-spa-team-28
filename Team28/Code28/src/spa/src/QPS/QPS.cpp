@@ -10,7 +10,11 @@ void QPS::evaluate(std::string query, std::list<std::string> &results) {
         for (int i = 0; i < result.size(); i++) {
             results.push_back(result[i]);
         }
-    } catch (std::runtime_error e) {
-        results.push_back(e.what());
+    } catch (SyntaxError e) {
+        results.push_back("SyntaxError");
+    } catch (SemanticError e) {
+        results.push_back("SemanticError");
     }
 }
+
+QueryEvaluator QPS::getEvaluator() { return this->evaluator; }

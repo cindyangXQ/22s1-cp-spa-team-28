@@ -8,7 +8,4 @@
 class SyntaxError : public std::runtime_error {
 public:
     SyntaxError(const std::string &message) : runtime_error(message) {}
-    const char * what() const noexcept {
-        return "SyntaxError";
-    }
 };

@@ -19,8 +19,8 @@ TEST_CASE("Tuple can be split into sub-tuples correctly") {
     Tuple first = subTuples[0];
     Tuple second = subTuples[1];
     REQUIRE(first.size() == 2);
-    REQUIRE(first.values[0].value == "bar");
-    REQUIRE(first.values[1].value == "2");
+    REQUIRE(first.getValues()[0].getValue() == "bar");
+    REQUIRE(first.getValues()[1].getValue() == "2");
     REQUIRE(second.size() == 2);
 }
 

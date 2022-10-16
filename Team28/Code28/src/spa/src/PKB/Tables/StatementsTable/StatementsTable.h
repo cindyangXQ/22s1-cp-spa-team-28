@@ -53,9 +53,9 @@ public:
 
     /*
      * Returns a boolean of whether the given statement is one of Calls, Print
-     * or Read.
+     * or Read, which have a secondary attribute (varName/procName).
      */
-    bool isAttributableStatement(const int &index);
+    bool hasSecondaryAttribute(const int &index);
 
 private:
     std::map<StatementType, std::vector<int>> statementTypeIndexes = {

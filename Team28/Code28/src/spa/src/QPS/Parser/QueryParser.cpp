@@ -152,8 +152,8 @@ void QueryParser::parsePatternClause(std::string *clause,
             expr = Utils::trimSpaces(expr);
         }
         if (expr != "_") {
-            if (syn.entity == EntityName::WHILE ||
-                syn.entity == EntityName::IF) {
+            if (syn.getEntityName() == EntityName::WHILE ||
+                syn.getEntityName() == EntityName::IF) {
                 throw SyntaxError("Invalid pattern second argument");
             }
             try {
@@ -186,8 +186,8 @@ void QueryParser::parseWithClause(std::string *clause,
 
         Reference left = getReference(matches[2], syns);
         Reference right = getReference(matches[3], syns);
-        if (left.type == ReferenceType::WILDCARD ||
-            right.type == ReferenceType::WILDCARD) {
+        if (left.getRefType() == ReferenceType::WILDCARD ||
+            right.getRefType() == ReferenceType::WILDCARD) {
             throw SyntaxError("With clause arguments cannot be wildcards");
         }
         if (!isValidWithClause(left, right)) {
@@ -274,7 +274,7 @@ Reference QueryParser::getReference(std::string input,
 Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
     for (int i = 0; i < syns.size(); i++) {
         Synonym synonym = syns[i];
-        if (input.compare(synonym.name) == 0) {
+        if (input.compare(synonym.getName()) == 0) {
             return synonym;
         }
     }
@@ -297,48 +297,48 @@ bool QueryParser::isValidSuchThatClause(RelationshipReference relRef,
     std::unordered_set<ReferenceType> validRightRef =
         RELATIONSHIP_RIGHT_REF_MAP.find(relRef)->second;
 
-    if (left.isSynonym) {
-        isLeftValid = validLeftArg.count(left.syn.entity);
+    if (left.isASynonym()) {
+        isLeftValid = validLeftArg.count(left.getEntityName());
     } else {
-        isLeftValid = validLeftRef.count(left.type);
+        isLeftValid = validLeftRef.count(left.getRefType());
     }
-    if (right.isSynonym) {
-        isRightValid = validRightArg.count(right.syn.entity);
+    if (right.isASynonym()) {
+        isRightValid = validRightArg.count(right.getEntityName());
     } else {
-        isRightValid = validRightRef.count(right.type);
+        isRightValid = validRightRef.count(right.getRefType());
     }
     return isLeftValid && isRightValid;
 }
 
 bool QueryParser::isValidPatternClause(Synonym syn, Reference entRef,
                                        Expression expr) {
-    if (!PATTERN_ENTITY_MAP.count(syn.entity)) {
+    if (!PATTERN_ENTITY_MAP.count(syn.getEntityName())) {
         return false;
-    } else if ((entRef.isSynonym &&
-                entRef.syn.entity != EntityName::VARIABLE) ||
-               entRef.type == ReferenceType::STMT_REF ||
-               entRef.type == ReferenceType::ATTR_REF) {
+    } else if ((entRef.isASynonym() &&
+                entRef.getEntityName() != EntityName::VARIABLE) ||
+               entRef.getRefType() == ReferenceType::STMT_REF ||
+               entRef.getRefType() == ReferenceType::ATTR_REF) {
         return false;
     }
     return true;
 }
 
 bool QueryParser::isValidWithClause(Reference left, Reference right) {
-    if (left.isSynonym || right.isSynonym) {
+    if (left.isASynonym() || right.isASynonym()) {
         return false;
     }
-    if (left.attr == EntityAttribute::PROC_NAME ||
-        left.attr == EntityAttribute::VAR_NAME ||
-        left.type == ReferenceType::ENT_REF) {
-        return (right.attr == EntityAttribute::PROC_NAME ||
-                right.attr == EntityAttribute::VAR_NAME ||
-                right.type == ReferenceType::ENT_REF);
-    } else if (left.attr == EntityAttribute::STMT_NO ||
-               left.attr == EntityAttribute::VALUE ||
-               left.type == ReferenceType::STMT_REF) {
-        return (right.attr == EntityAttribute::STMT_NO ||
-                right.attr == EntityAttribute::VALUE ||
-                right.type == ReferenceType::STMT_REF);
+    if (left.getAttr() == EntityAttribute::PROC_NAME ||
+        left.getAttr() == EntityAttribute::VAR_NAME ||
+        left.getRefType() == ReferenceType::ENT_REF) {
+        return (right.getAttr() == EntityAttribute::PROC_NAME ||
+                right.getAttr() == EntityAttribute::VAR_NAME ||
+                right.getRefType() == ReferenceType::ENT_REF);
+    } else if (left.getAttr() == EntityAttribute::STMT_NO ||
+               left.getAttr() == EntityAttribute::VALUE ||
+               left.getRefType() == ReferenceType::STMT_REF) {
+        return (right.getAttr() == EntityAttribute::STMT_NO ||
+                right.getAttr() == EntityAttribute::VALUE ||
+                right.getRefType() == ReferenceType::STMT_REF);
     } else {
         return false;
     }
@@ -348,13 +348,13 @@ bool QueryParser::isDuplicateSynonymName(std::vector<Synonym> syns) {
     std::vector<std::string> names;
     int i, j;
     for (i = 0; i < syns.size(); i++) {
-        names.push_back(syns[i].name);
+        names.push_back(syns[i].getName());
     }
     for (i = 0; i < syns.size(); i++) {
         for (j = 0; j < syns.size(); j++) {
             if (i == j) {
                 continue;
-            } else if (syns[i].name == names[j]) {
+            } else if (syns[i].getName() == names[j]) {
                 return true;
             }
         }

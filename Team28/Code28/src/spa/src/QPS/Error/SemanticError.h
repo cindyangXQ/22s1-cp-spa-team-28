@@ -8,7 +8,4 @@
 class SemanticError : public std::runtime_error {
 public:
     SemanticError(const std::string &message) : runtime_error(message) {}
-    const char * what() const noexcept {
-        return "SemanticError";
-    }
 };

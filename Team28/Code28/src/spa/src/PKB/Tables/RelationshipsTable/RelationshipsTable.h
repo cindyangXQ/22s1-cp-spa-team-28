@@ -182,4 +182,98 @@ protected:
             }
         }
     }
+
+    /*
+     * Helper function to validate that both left and right exists in table for
+     * Solvable RelationshipsTable.
+     */
+    bool validateHelper(Reference leftRef, Reference rightRef) {
+        if (leftRef.isWildcard() && rightRef.isWildcard()) {
+            return !leftToRightsMap.empty();
+        }
+
+        if (leftRef.isWildcard()) {
+            Right right = convertToType<Right>(rightRef.getValueString());
+            return !rightToLeftsMap[right].empty();
+        }
+        if (rightRef.isWildcard()) {
+            Left left = convertToType<Left>(leftRef.getValueString());
+            return !leftToRightsMap[left].empty();
+        }
+        Left left = convertToType<Left>(leftRef.getValueString());
+        Right right = convertToType<Right>(rightRef.getValueString());
+        return leftToRightsMap[left].count(right) == 1;
+    }
+
+    /*
+     * Helper function to solveRight for Solvable RelationshipsTable.
+     */
+    std::vector<Value> solveRightHelper(std::vector<Right> *possibleRights,
+                                        Reference leftRef,
+                                        ValueType valueType) {
+        std::unordered_set<Value> intermediateResult;
+        if (leftRef.isWildcard()) {
+            addNonemptyPossibleRights(possibleRights, &intermediateResult,
+                                      valueType);
+        } else {
+            Left left = convertToType<Left>(leftRef.getValueString());
+            addPossibleRights(possibleRights, left, &intermediateResult,
+                              valueType);
+        }
+        std::vector<Value> result = std::vector<Value>(
+            intermediateResult.begin(), intermediateResult.end());
+        return result;
+    }
+
+    /*
+     * Helper function to solveLeft for Solvable RelationshipsTable.
+     */
+    std::vector<Value> solveLeftHelper(std::vector<Left> *possibleLefts,
+                                       Reference rightRef,
+                                       ValueType valueType) {
+        std::unordered_set<Value> intermediateResult;
+        if (rightRef.isWildcard()) {
+            addNonemptyPossibleLefts(possibleLefts, &intermediateResult,
+                                     valueType);
+        } else {
+            Right right = convertToType<Right>(rightRef.getValueString());
+            addPossibleLefts(possibleLefts, right, &intermediateResult,
+                             valueType);
+        }
+        std::vector<Value> result = std::vector<Value>(
+            intermediateResult.begin(), intermediateResult.end());
+        return result;
+    }
+
+    /*
+     * Helper function to solveBoth for Solvable RelationshipsTable.
+     */
+    std::vector<std::pair<Value, Value>>
+    solveBothHelper(std::vector<Left> *possibleLefts,
+                    std::vector<Right> *possibleRights, ValueType leftValueType,
+                    ValueType rightValueType) {
+        std::unordered_set<std::pair<Value, Value>, value_pair_hash>
+            intermediateResult;
+        addMatchingLeftRights(possibleLefts, possibleRights,
+                              &intermediateResult, leftValueType,
+                              rightValueType);
+        std::vector<std::pair<Value, Value>> result =
+            std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
+                                                 intermediateResult.end());
+        // std::sort(result.begin(), result.end(), value_pair_sort());
+        return result;
+    }
+
+    /*
+     * Helper function to get StmtNum based on EntityName.
+     */
+    std::vector<int> getStatementsHelper(StatementsTable *statements,
+                                         EntityName synName) {
+        if (synName == EntityName::STMT) {
+            return statements->getAllLineNumbers();
+        }
+        StatementType statementType =
+            Statement::getStmtTypeFromEntityName(synName);
+        return statements->getStatementsByType(statementType);
+    }
 };
