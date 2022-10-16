@@ -67,6 +67,7 @@ public:
 
 private:
     const std::string WILDCARD_SYMBOL = "_";
+    const std::string EMPTY_STRING = "";
     std::vector<Value> allLineNumbers;
     std::vector<Assignment> allAssignments;
 

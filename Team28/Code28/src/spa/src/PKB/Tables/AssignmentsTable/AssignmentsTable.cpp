@@ -40,7 +40,7 @@ std::vector<Value>
 AssignmentsTable::getAssignFromVarAndExpr(std::string varName,
                                           std::string expression) {
     if (expression == WILDCARD_SYMBOL) {
-        expression = "";
+        expression = EMPTY_STRING;
     }
 
     std::unordered_set<Value> intermediateResult;
@@ -133,7 +133,7 @@ std::vector<Value> AssignmentsTable::getAssignExact(std::string varName,
 std::vector<std::pair<Value, Value>>
 AssignmentsTable::getAssignAndVar(std::string expression) {
     if (expression == WILDCARD_SYMBOL) {
-        expression = "";
+        expression = EMPTY_STRING;
     }
 
     std::unordered_set<std::pair<Value, Value>, value_pair_hash>
