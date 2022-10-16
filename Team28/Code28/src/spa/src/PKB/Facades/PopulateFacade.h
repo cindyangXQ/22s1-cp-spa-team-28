@@ -18,7 +18,7 @@ public:
      * Generic store method for SP->PKB interactions.
      */
     template <typename T>
-    void store(std::vector<T *> *items, Populate popType) {
+    void store(std::vector<T *> *items, Designation popType) {
         Table *table = this->storage->getStoreTable(popType);
         for (T *item : *items) {
             table->store(item);

@@ -26,7 +26,7 @@
 
 #include "StorageView.h"
 
-enum class Populate {
+enum class Designation {
     STMT,
     ASSIGN,
     VAR,
@@ -74,9 +74,9 @@ public:
     Solvable *getRsTable(RelationshipReference rsRef, ReferenceType leftType);
 
     /*
-     * Retrieve a table by Populate.
+     * Retrieve a table by Designation.
      */
-    Table *getStoreTable(Populate popType);
+    Table *getStoreTable(Designation designType);
 
     /*
      * Retrieves Modifies Tables
@@ -101,18 +101,19 @@ private:
      */
     std::map<RelationshipReference, Solvable *> rsTables;
     /*
-     * Mapping of Populate to Table for PopulateFacade use.
+     * Mapping of Designation to Table for external facing APIs in
+     * PopulateFacade/QueryFacade to use.
      */
-    std::map<Populate, Table *> popTables;
+    std::map<Designation, Table *> designTables;
     StorageView *storageView;
 
     /*
      * Template method init and store Table that can be populated externally.
      */
-    template <typename TableClass> void initTable(Populate popType) {
+    template <typename TableClass> void initTable(Designation designType) {
         TableClass *table = new TableClass();
         this->tables[typeid(TableClass)] = table;
-        this->popTables[popType] = table;
+        this->designTables[designType] = table;
     }
 
     /*

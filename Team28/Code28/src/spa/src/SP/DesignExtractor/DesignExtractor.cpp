@@ -322,104 +322,107 @@ void DesignExtractor::extractAll() {
 
 void ProcedureExtractor::populate() {
     std::vector<Procedure *> procedures = this->extract();
-    this->storage->store<Procedure>(&procedures, Populate::PROC);
+    this->storage->store<Procedure>(&procedures, Designation::PROC);
 }
 
 void StatementExtractor::populate() {
     std::vector<Statement *> statements = this->extract();
-    this->storage->store<Statement>(&statements, Populate::STMT);
+    this->storage->store<Statement>(&statements, Designation::STMT);
 
     std::vector<Assignment *> assignments = this->extractAssignments();
-    this->storage->store<Assignment>(&assignments, Populate::ASSIGN);
+    this->storage->store<Assignment>(&assignments, Designation::ASSIGN);
 
     std::vector<Relationship<int, std::string> *> calls = this->extractCalls();
-    this->storage->store<Relationship<int, std::string>>(&calls,
-                                                         Populate::PROC_NAME);
+    this->storage->store<Relationship<int, std::string>>(
+        &calls, Designation::PROC_NAME);
 }
 
 void VariableExtractor::populate() {
     std::vector<Variable *> variables = this->extract();
-    this->storage->store<Variable>(&variables, Populate::VAR);
+    this->storage->store<Variable>(&variables, Designation::VAR);
 }
 
 void ConstantExtractor::populate() {
     std::vector<Constant *> constants = this->extract();
-    this->storage->store<Constant>(&constants, Populate::CONST);
+    this->storage->store<Constant>(&constants, Designation::CONST);
 }
 
 void FollowsExtractor::populate() {
     std::vector<Relationship<int, int> *> follows = this->extract();
-    this->storage->store<Relationship<int, int>>(&follows, Populate::FOLLOWS);
+    this->storage->store<Relationship<int, int>>(&follows,
+                                                 Designation::FOLLOWS);
 }
 
 void FollowsExtrT::populate() {
     std::vector<Relationship<int, int> *> followsT = this->extract();
     this->storage->store<Relationship<int, int>>(&followsT,
-                                                 Populate::FOLLOWS_T);
+                                                 Designation::FOLLOWS_T);
 }
 
 void ParentExtractor::populate() {
     std::vector<Relationship<int, int> *> parent = this->extract();
-    this->storage->store<Relationship<int, int>>(&parent, Populate::PARENT);
+    this->storage->store<Relationship<int, int>>(&parent, Designation::PARENT);
 }
 
 void ParentExtrT::populate() {
     std::vector<Relationship<int, int> *> parentT = this->extract();
-    this->storage->store<Relationship<int, int>>(&parentT, Populate::PARENT_T);
+    this->storage->store<Relationship<int, int>>(&parentT,
+                                                 Designation::PARENT_T);
 }
 
 void UsesSExtractor::populate() {
     std::vector<Relationship<int, std::string> *> usesS = this->extract();
     this->storage->store<Relationship<int, std::string>>(&usesS,
-                                                         Populate::USE_S);
+                                                         Designation::USE_S);
 
     this->conVar(ifCondVars, whileCondVars);
     this->storage->store<Relationship<int, std::string>>(&ifCondVars,
-                                                         Populate::IF_C);
+                                                         Designation::IF_C);
     this->storage->store<Relationship<int, std::string>>(&whileCondVars,
-                                                         Populate::WHILE_C);
+                                                         Designation::WHILE_C);
 }
 
 void UsesPExtractor::populate() {
     std::vector<Relationship<std::string, std::string> *> usesP =
         this->extract();
     this->storage->store<Relationship<std::string, std::string>>(
-        &usesP, Populate::USE_P);
+        &usesP, Designation::USE_P);
 }
 
 void ModSExtractor::populate() {
     std::vector<Relationship<int, std::string> *> ModifiesS = this->extract();
     this->storage->store<Relationship<int, std::string>>(&ModifiesS,
-                                                         Populate::MOD_S);
+                                                         Designation::MOD_S);
 }
 
 void ModPExtractor::populate() {
     std::vector<Relationship<std::string, std::string> *> ModifiesP =
         this->extract();
     this->storage->store<Relationship<std::string, std::string>>(
-        &ModifiesP, Populate::MOD_P);
+        &ModifiesP, Designation::MOD_P);
 }
 
 void CallsExtractor::populate() {
     std::vector<Relationship<std::string, std::string> *> Calls =
         this->extract();
     this->storage->store<Relationship<std::string, std::string>>(
-        &Calls, Populate::CALL);
+        &Calls, Designation::CALL);
 }
 
 void CallsExtrT::populate() {
     std::vector<Relationship<std::string, std::string> *> CallsT =
         this->extract();
     this->storage->store<Relationship<std::string, std::string>>(
-        &CallsT, Populate::CALL_T);
+        &CallsT, Designation::CALL_T);
 }
 
 void BranchInExtr::populate() {
     std::vector<Relationship<int, int> *> branchIn = this->extract();
-    this->storage->store<Relationship<int, int>>(&branchIn, Populate::B_IN);
+    this->storage->store<Relationship<int, int>>(&branchIn, Designation::B_IN);
 }
 
 void BranchOutExtr::populate() {
     std::vector<Relationship<int, int> *> branchOut = this->extract();
-    this->storage->store<Relationship<int, int>>(&branchOut, Populate::B_OUT);
+    this->storage->store<Relationship<int, int>>(&branchOut,
+                                                 Designation::B_OUT);
 }
