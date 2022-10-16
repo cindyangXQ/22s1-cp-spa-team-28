@@ -5,6 +5,7 @@
 #include "../../commons/Variable.h"
 #include "../ProgramParser/EntityNode.h"
 
+#include <functional>
 #include <vector>
 
 class DesignExtractor {
@@ -15,6 +16,16 @@ protected:
 public:
     DesignExtractor(ProgramNode *program, PopulateFacade *storage);
     void extractAll();
+    template <class T>
+    static void extractUtil(
+        std::vector<T> &result, ProgramNode *program,
+        std::function<void(StatementNode *stmt, std::vector<T> &result)> func);
+    template <class T>
+    static void extractUtilStmtList(
+        std::vector<T> &result, ProgramNode *program,
+        std::function<void(std::vector<StatementNode *> stmtList,
+                           std::vector<T> &result)>
+            func);
 };
 
 // Extract Entities
