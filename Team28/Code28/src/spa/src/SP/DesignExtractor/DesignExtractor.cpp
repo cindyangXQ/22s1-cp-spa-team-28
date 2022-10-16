@@ -337,12 +337,12 @@ void DesignExtractor::extractAll() {
 
 template <typename T> void EntityExtractor<T>::populate() {
     std::vector<T *> entites = this->extract();
-    this->storage->store<T>(&entites, this->type);
+    this->storage->template store<T>(&entites, this->type);
 }
 
 template <typename U, typename V> void RelationExtractor<U, V>::populate() {
     std::vector<Relationship<U, V> *> relationships = this->extract();
-    this->storage->store<Relationship<U, V>>(&relationships, this->type);
+    this->storage->template store<Relationship<U, V>>(&relationships, this->type);
 }
 
 void StatementExtractor::populate() {

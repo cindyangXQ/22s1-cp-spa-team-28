@@ -18,9 +18,9 @@ SolvableQuery QueryParser::parse(std::string query) {
 
     // Extract main clause
     std::string mainClause =
-        Utils::removeTrailingSpaces(clauses[clauses.size() - 1]);
+        Utils::trimSpaces(clauses[clauses.size() - 1]);
     selectClause = QueryParser::parseSelectClause(&mainClause, decl.syns);
-    while (!Utils::removeTrailingSpaces(mainClause).empty()) {
+    while (!Utils::trimSpaces(mainClause).empty()) {
         if (QueryParser::isSuchThatClause(&mainClause)) {
             QueryParser::parseSuchThatClause(&mainClause, decl.syns,
                                              &suchThatCls);
@@ -67,7 +67,7 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
         throw SyntaxError("Invalid select clause syntax");
     }
 
-    std::string selectValue = Utils::removeTrailingSpaces(matches[1]);
+    std::string selectValue = Utils::trimSpaces(matches[1]);
     std::vector<Reference> selectedRefs;
     if (selectValue.compare("BOOLEAN") == 0) {
         return SelectClause(selectedRefs, SelectType::BOOLEAN);
@@ -76,7 +76,7 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
         std::vector<std::string> selectStrings =
             Utils::splitString(selectValue, ',');
         for (int i = 0; i < selectStrings.size(); i++) {
-            std::string value = Utils::removeTrailingSpaces(selectStrings[i]);
+            std::string value = Utils::trimSpaces(selectStrings[i]);
             if (!std::regex_search(value, attrRefRegex) &&
                 !std::regex_search(value, synRegex)) {
                 throw SyntaxError("Invalid select value");
@@ -137,7 +137,7 @@ void QueryParser::parsePatternClause(std::string *clause,
         }
         Synonym syn = getSynonym(matches[2], syns);
         Reference entRef = getReference(matches[3], syns);
-        Expression expr = Utils::removeTrailingSpaces(matches[5]);
+        Expression expr = Utils::trimSpaces(matches[5]);
         bool isExact = expr.find('_') == std::string::npos;
         if (!isValidPatternClause(syn, entRef, expr)) {
             throw SemanticError("Invalid pattern clause arguments");
@@ -145,7 +145,7 @@ void QueryParser::parsePatternClause(std::string *clause,
         if (expr.find('_') != std::string::npos && expr != "_") {
             // Remove _ at the start and end
             expr = expr.substr(1, expr.size() - 2);
-            expr = Utils::removeTrailingSpaces(expr);
+            expr = Utils::trimSpaces(expr);
         }
         if (expr != "_") {
             if (syn.entity == EntityName::WHILE ||
@@ -155,7 +155,7 @@ void QueryParser::parsePatternClause(std::string *clause,
             try {
                 // Remove " at the start and end
                 expr = expr.substr(1, expr.size() - 2);
-                expr = Utils::removeTrailingSpaces(expr);
+                expr = Utils::trimSpaces(expr);
                 expr = SP::convertExpression(expr);
             } catch (...) {
                 throw SyntaxError("Invalid expression syntax");
@@ -239,7 +239,7 @@ Reference QueryParser::getReference(std::string input,
     if (input[0] == '\"' && input.back() == '\"') {
         // Remove " at the start and end
         input = input.substr(1, input.size() - 2);
-        input = Utils::removeTrailingSpaces(input);
+        input = Utils::trimSpaces(input);
         if (!std::regex_match(input, nameRegex)) {
             throw SyntaxError("Invalid reference format");
         }
