@@ -2,6 +2,7 @@
 #include "../ProgramParser/EntityNode.h"
 #include "../SPUtils.h"
 #include <algorithm>
+#include <functional>
 #include <map>
 #include <vector>
 
@@ -11,10 +12,51 @@ DesignExtractor::DesignExtractor(ProgramNode *program,
     this->storage = storage;
 }
 
+template <class T>
+static void DesignExtractor::extractUtil(
+    std::vector<T> &result, ProgramNode *program,
+    std::function<void(StatementNode *stmt, std::vector<T> &result)> func) {
+    std::vector<ProcedureNode *> procList = program->getProcList();
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
+        for (StatementNode *stmt : stmtList) {
+            func(stmt, result);
+        }
+    }
+}
+
+template <class T>
+static void DesignExtractor::extractUtilStmtList(
+    std::vector<T> &result, ProgramNode *program,
+    std::function<void(std::vector<StatementNode *> stmtList,
+                       std::vector<T> &result)>
+        func) {
+    std::vector<ProcedureNode *> procList = program->getProcList();
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
+        func(stmtList, result);
+    }
+}
+
+template <typename T>
+EntityExtractor<T>::EntityExtractor(ProgramNode *program,
+                                    PopulateFacade *storage, Designation type)
+    : DesignExtractor(program, storage) {
+    this->type = type;
+}
+
+template <typename U, typename V>
+RelationExtractor<U, V>::RelationExtractor(ProgramNode *program,
+                                           PopulateFacade *storage,
+                                           Designation type)
+    : DesignExtractor(program, storage) {
+    this->type = type;
+}
+
 std::vector<Procedure *> ProcedureExtractor::extract() {
     std::vector<Procedure *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
+    std::vector<ProcedureNode *> procList = program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         ProcedureNode *currProc = procList.at(i);
         result.push_back(
@@ -43,14 +85,11 @@ std::vector<Variable *> VariableExtractor::extract() {
     std::vector<std::string> preresult;
     std::vector<Variable *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (size_t j = 0; j < stmtList.size(); j++) {
-            StatementNode *currStmt = stmtList.at(j);
-            currStmt->getVariablesInto(preresult);
-        }
-    }
+    DesignExtractor::extractUtil<std::string>(
+        preresult, program,
+        [](StatementNode *stmt, std::vector<std::string> &res) -> void {
+            stmt->getVariablesInto(res);
+        });
 
     sort(preresult.begin(), preresult.end());
     preresult.erase(unique(preresult.begin(), preresult.end()),
@@ -67,14 +106,11 @@ std::vector<Constant *> ConstantExtractor::extract() {
     std::vector<std::string> preresult;
     std::vector<Constant *> result;
 
-    std::vector<ProcedureNode *> procList = program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (size_t j = 0; j < stmtList.size(); j++) {
-            StatementNode *currStmt = stmtList.at(j);
-            currStmt->getConstantsInto(preresult);
-        }
-    }
+    DesignExtractor::extractUtil<std::string>(
+        preresult, program,
+        [](StatementNode *stmt, std::vector<std::string> &res) -> void {
+            stmt->getConstantsInto(res);
+        });
 
     sort(preresult.begin(), preresult.end());
     preresult.erase(unique(preresult.begin(), preresult.end()),
@@ -90,11 +126,12 @@ std::vector<Constant *> ConstantExtractor::extract() {
 std::vector<Relationship<int, int> *> FollowsExtractor::extract() {
     std::vector<Relationship<int, int> *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        SPUtils::follows(stmtList, result);
-    }
+    DesignExtractor::extractUtilStmtList<Relationship<int, int> *>(
+        result, program,
+        [](std::vector<StatementNode *> stmtList,
+           std::vector<Relationship<int, int> *> &res) -> void {
+            SPUtils::follows(stmtList, res);
+        });
 
     return result;
 }
@@ -102,11 +139,12 @@ std::vector<Relationship<int, int> *> FollowsExtractor::extract() {
 std::vector<Relationship<int, int> *> FollowsExtrT::extract() {
     std::vector<Relationship<int, int> *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        SPUtils::followsT(stmtList, result);
-    }
+    DesignExtractor::extractUtilStmtList<Relationship<int, int> *>(
+        result, program,
+        [](std::vector<StatementNode *> stmtList,
+           std::vector<Relationship<int, int> *> &res) -> void {
+            SPUtils::followsT(stmtList, res);
+        });
 
     return result;
 }
@@ -114,13 +152,10 @@ std::vector<Relationship<int, int> *> FollowsExtrT::extract() {
 std::vector<Relationship<int, int> *> ParentExtractor::extract() {
     std::vector<Relationship<int, int> *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (size_t j = 0; j < stmtList.size(); j++) {
-            SPUtils::parent(stmtList[j], result);
-        }
-    }
+    DesignExtractor::extractUtil<Relationship<int, int> *>(
+        result, program,
+        [](StatementNode *stmt, std::vector<Relationship<int, int> *> &res)
+            -> void { SPUtils::parent(stmt, res); });
 
     return result;
 }
@@ -128,13 +163,10 @@ std::vector<Relationship<int, int> *> ParentExtractor::extract() {
 std::vector<Relationship<int, int> *> ParentExtrT::extract() {
     std::vector<Relationship<int, int> *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (size_t j = 0; j < stmtList.size(); j++) {
-            SPUtils::parentT(stmtList[j], result);
-        }
-    }
+    DesignExtractor::extractUtil<Relationship<int, int> *>(
+        result, program,
+        [](StatementNode *stmt, std::vector<Relationship<int, int> *> &res)
+            -> void { SPUtils::parentT(stmt, res); });
 
     return result;
 }
@@ -142,13 +174,12 @@ std::vector<Relationship<int, int> *> ParentExtrT::extract() {
 std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
     std::vector<Relationship<int, std::string> *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (size_t j = 0; j < stmtList.size(); j++) {
-            stmtList[j]->getUsesInto(result);
-        }
-    }
+    DesignExtractor::extractUtil<Relationship<int, std::string> *>(
+        result, program,
+        [](StatementNode *stmt,
+           std::vector<Relationship<int, std::string> *> &res) -> void {
+            stmt->getUsesInto(res);
+        });
 
     return result;
 }
@@ -185,13 +216,12 @@ UsesPExtractor::extract() {
 std::vector<Relationship<int, std::string> *> ModSExtractor::extract() {
     std::vector<Relationship<int, std::string> *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (size_t j = 0; j < stmtList.size(); j++) {
-            stmtList[j]->getModsInto(result);
-        }
-    }
+    DesignExtractor::extractUtil<Relationship<int, std::string> *>(
+        result, program,
+        [](StatementNode *stmt,
+           std::vector<Relationship<int, std::string> *> &res) -> void {
+            stmt->getModsInto(res);
+        });
 
     return result;
 }
@@ -272,14 +302,10 @@ std::vector<Relationship<std::string, std::string> *> CallsExtrT::extract() {
 std::vector<Relationship<int, int> *> BranchInExtr::extract() {
     std::vector<Relationship<int, int> *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList[i]->getStmtList();
-        for (size_t j = 0; j < stmtList.size(); j++) {
-            stmtList[j]->getBranchInInto(result);
-        }
-    }
+    DesignExtractor::extractUtil<Relationship<int, int> *>(
+        result, program,
+        [](StatementNode *stmt, std::vector<Relationship<int, int> *> &res)
+            -> void { stmt->getBranchInInto(res); });
 
     return result;
 }
@@ -320,9 +346,14 @@ void DesignExtractor::extractAll() {
     BranchOutExtr(this->program, this->storage).populate();
 }
 
-void ProcedureExtractor::populate() {
-    std::vector<Procedure *> procedures = this->extract();
-    this->storage->store<Procedure>(&procedures, Designation::PROC);
+template <typename T> void EntityExtractor<T>::populate() {
+    std::vector<T *> entites = this->extract();
+    this->storage->store<T>(&entites, this->type);
+}
+
+template <typename U, typename V> void RelationExtractor<U, V>::populate() {
+    std::vector<Relationship<U, V> *> relationships = this->extract();
+    this->storage->store<Relationship<U, V>>(&relationships, this->type);
 }
 
 void StatementExtractor::populate() {
@@ -337,39 +368,6 @@ void StatementExtractor::populate() {
         &calls, Designation::PROC_NAME);
 }
 
-void VariableExtractor::populate() {
-    std::vector<Variable *> variables = this->extract();
-    this->storage->store<Variable>(&variables, Designation::VAR);
-}
-
-void ConstantExtractor::populate() {
-    std::vector<Constant *> constants = this->extract();
-    this->storage->store<Constant>(&constants, Designation::CONST);
-}
-
-void FollowsExtractor::populate() {
-    std::vector<Relationship<int, int> *> follows = this->extract();
-    this->storage->store<Relationship<int, int>>(&follows,
-                                                 Designation::FOLLOWS);
-}
-
-void FollowsExtrT::populate() {
-    std::vector<Relationship<int, int> *> followsT = this->extract();
-    this->storage->store<Relationship<int, int>>(&followsT,
-                                                 Designation::FOLLOWS_T);
-}
-
-void ParentExtractor::populate() {
-    std::vector<Relationship<int, int> *> parent = this->extract();
-    this->storage->store<Relationship<int, int>>(&parent, Designation::PARENT);
-}
-
-void ParentExtrT::populate() {
-    std::vector<Relationship<int, int> *> parentT = this->extract();
-    this->storage->store<Relationship<int, int>>(&parentT,
-                                                 Designation::PARENT_T);
-}
-
 void UsesSExtractor::populate() {
     std::vector<Relationship<int, std::string> *> usesS = this->extract();
     this->storage->store<Relationship<int, std::string>>(&usesS,
@@ -380,49 +378,4 @@ void UsesSExtractor::populate() {
                                                          Designation::IF_C);
     this->storage->store<Relationship<int, std::string>>(&whileCondVars,
                                                          Designation::WHILE_C);
-}
-
-void UsesPExtractor::populate() {
-    std::vector<Relationship<std::string, std::string> *> usesP =
-        this->extract();
-    this->storage->store<Relationship<std::string, std::string>>(
-        &usesP, Designation::USE_P);
-}
-
-void ModSExtractor::populate() {
-    std::vector<Relationship<int, std::string> *> ModifiesS = this->extract();
-    this->storage->store<Relationship<int, std::string>>(&ModifiesS,
-                                                         Designation::MOD_S);
-}
-
-void ModPExtractor::populate() {
-    std::vector<Relationship<std::string, std::string> *> ModifiesP =
-        this->extract();
-    this->storage->store<Relationship<std::string, std::string>>(
-        &ModifiesP, Designation::MOD_P);
-}
-
-void CallsExtractor::populate() {
-    std::vector<Relationship<std::string, std::string> *> Calls =
-        this->extract();
-    this->storage->store<Relationship<std::string, std::string>>(
-        &Calls, Designation::CALL);
-}
-
-void CallsExtrT::populate() {
-    std::vector<Relationship<std::string, std::string> *> CallsT =
-        this->extract();
-    this->storage->store<Relationship<std::string, std::string>>(
-        &CallsT, Designation::CALL_T);
-}
-
-void BranchInExtr::populate() {
-    std::vector<Relationship<int, int> *> branchIn = this->extract();
-    this->storage->store<Relationship<int, int>>(&branchIn, Designation::B_IN);
-}
-
-void BranchOutExtr::populate() {
-    std::vector<Relationship<int, int> *> branchOut = this->extract();
-    this->storage->store<Relationship<int, int>>(&branchOut,
-                                                 Designation::B_OUT);
 }
