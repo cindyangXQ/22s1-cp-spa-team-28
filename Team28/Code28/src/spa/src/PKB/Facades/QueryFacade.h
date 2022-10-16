@@ -21,20 +21,6 @@ public:
      * Returns all entity names from the given Entity.
      */
     std::vector<std::string> getAllEntities(Designation entity);
-    /*
-     * Returns all variable names inside the VariablesTable.
-     */
-    std::vector<std::string> getAllVariables();
-
-    /*
-     * Returns all constant names inside the ConstantsTable.
-     */
-    std::vector<std::string> getAllConstants();
-
-    /*
-     * Returns all procedure names inside the ProceduresTable.
-     */
-    std::vector<std::string> getAllProcedures();
 
     /*
      * Returns true if relationship holds between leftReference and
