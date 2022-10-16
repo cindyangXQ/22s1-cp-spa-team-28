@@ -259,7 +259,6 @@ protected:
         std::vector<std::pair<Value, Value>> result =
             std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
                                                  intermediateResult.end());
-        // std::sort(result.begin(), result.end(), value_pair_sort());
         return result;
     }
 
