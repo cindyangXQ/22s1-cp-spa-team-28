@@ -66,6 +66,7 @@ public:
     getAssignAndVarExact(std::string expression);
 
 private:
+    const std::string WILDCARD_SYMBOL = "_";
     std::vector<Value> allLineNumbers;
     std::vector<Assignment> allAssignments;
 

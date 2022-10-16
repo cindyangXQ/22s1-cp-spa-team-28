@@ -39,7 +39,7 @@ AssignmentsTable::containsVarAndExpr(std::string varName,
 std::vector<Value>
 AssignmentsTable::getAssignFromVarAndExpr(std::string varName,
                                           std::string expression) {
-    if (expression == "_") {
+    if (expression == WILDCARD_SYMBOL) {
         expression = "";
     }
 
@@ -113,10 +113,10 @@ AssignmentsTable::getAssignFromExprExact(std::string expression) {
 
 std::vector<Value> AssignmentsTable::getAssign(std::string varName,
                                                std::string expression) {
-    if (varName == "_" && expression == "_") {
+    if (varName == WILDCARD_SYMBOL && expression == WILDCARD_SYMBOL) {
         return this->allLineNumbers;
     }
-    if (varName == "_") {
+    if (varName == WILDCARD_SYMBOL) {
         return this->getAssignFromExpr(expression);
     }
     return this->getAssignFromVarAndExpr(varName, expression);
@@ -124,7 +124,7 @@ std::vector<Value> AssignmentsTable::getAssign(std::string varName,
 
 std::vector<Value> AssignmentsTable::getAssignExact(std::string varName,
                                                     std::string expression) {
-    if (varName == "_") {
+    if (varName == WILDCARD_SYMBOL) {
         return this->getAssignFromExprExact(expression);
     }
     return this->getAssignFromVarAndExprExact(varName, expression);
@@ -132,7 +132,7 @@ std::vector<Value> AssignmentsTable::getAssignExact(std::string varName,
 
 std::vector<std::pair<Value, Value>>
 AssignmentsTable::getAssignAndVar(std::string expression) {
-    if (expression == "_") {
+    if (expression == WILDCARD_SYMBOL) {
         expression = "";
     }
 
