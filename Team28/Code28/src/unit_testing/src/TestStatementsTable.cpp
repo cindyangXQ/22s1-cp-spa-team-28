@@ -133,10 +133,10 @@ TEST_CASE("isAttributableStatement works correctly") {
     table.store(&whileStmt);
 
     // Only Call, Print and Read statements return true
-    REQUIRE(!table.isAttributableStatement(1));
-    REQUIRE(table.isAttributableStatement(2));
-    REQUIRE(!table.isAttributableStatement(3));
-    REQUIRE(table.isAttributableStatement(4));
-    REQUIRE(table.isAttributableStatement(5));
-    REQUIRE(!table.isAttributableStatement(6));
+    REQUIRE(!table.hasSecondaryAttribute(1));
+    REQUIRE(table.hasSecondaryAttribute(2));
+    REQUIRE(!table.hasSecondaryAttribute(3));
+    REQUIRE(table.hasSecondaryAttribute(4));
+    REQUIRE(table.hasSecondaryAttribute(5));
+    REQUIRE(!table.hasSecondaryAttribute(6));
 }

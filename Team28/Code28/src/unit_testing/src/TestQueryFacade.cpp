@@ -1304,9 +1304,9 @@ TEST_CASE("getAttribute returns correct results") {
     modifiesS->store(&rs3);
     callP->store(&rs4);
 
-    REQUIRE_THROWS(facade.getAttribute(1),
+    REQUIRE_THROWS(facade.getSecondaryAttribute(1),
                    "StmtNum does not refer to attributable statement");
-    REQUIRE(facade.getAttribute(2) == "a");
-    REQUIRE(facade.getAttribute(3) == "x");
-    REQUIRE(facade.getAttribute(4) == "bar");
+    REQUIRE(facade.getSecondaryAttribute(2) == "a");
+    REQUIRE(facade.getSecondaryAttribute(3) == "x");
+    REQUIRE(facade.getSecondaryAttribute(4) == "bar");
 }

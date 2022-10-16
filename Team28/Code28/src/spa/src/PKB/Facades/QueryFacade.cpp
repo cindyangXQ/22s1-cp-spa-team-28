@@ -189,9 +189,9 @@ QueryFacade::getCondAndVar(Designation condType) {
     return conds->getStmtAndVar();
 };
 
-std::string QueryFacade::getAttribute(int stmtNum) {
+std::string QueryFacade::getSecondaryAttribute(int stmtNum) {
     StatementsTable *statements = this->storage->getTable<StatementsTable>();
-    if (!statements->isAttributableStatement(stmtNum)) {
+    if (!statements->hasSecondaryAttribute(stmtNum)) {
         throw std::invalid_argument(
             "StmtNum does not refer to attributable statement");
     }

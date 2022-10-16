@@ -155,7 +155,8 @@ bool QueryEvaluator::isAlternativeAttribute(Reference ref) {
 std::string QueryEvaluator::getAttributeValue(Reference ref,
                                               std::string synonymValue) {
     if (isAlternativeAttribute(ref)) {
-        return this->queryFacade->getAttribute(std::stoi(synonymValue));
+        return this->queryFacade->getSecondaryAttribute(
+            std::stoi(synonymValue));
     } else {
         return synonymValue;
     }

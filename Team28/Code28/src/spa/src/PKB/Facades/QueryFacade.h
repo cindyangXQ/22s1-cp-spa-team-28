@@ -91,11 +91,10 @@ public:
     std::vector<std::pair<Value, Value>> getCondAndVar(Designation desType);
 
     /*
-     * Return attribute of the given stmtNum of a Print, Read or Call statement,
-     * where attribute refers to the varName/procName used in the corresponding
-     * statement number.
+     * Return secondary attribute of the given stmtNum of a Print, Read or Call
+     * statement.
      */
-    std::string getAttribute(int stmtNum);
+    std::string getSecondaryAttribute(int stmtNum);
 
 private:
     Storage *storage;
