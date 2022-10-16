@@ -30,7 +30,8 @@ void SP::parse(std::string filename) {
             tokens.pop_back();
         }
     } catch (ParseError e) {
-        std::cout << e.what() << ". Parsing failed. Exiting program." << std::endl;
+        std::cout << e.what() << ". Parsing failed. Exiting program."
+                  << std::endl;
         exit(1);
     }
 }

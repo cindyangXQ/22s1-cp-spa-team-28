@@ -18,7 +18,7 @@ public:
 };
 
 // Extract Entities
-template<typename T> class EntityExtractor : public DesignExtractor {
+template <typename T> class EntityExtractor : public DesignExtractor {
 protected:
     Designation type;
 
@@ -67,7 +67,7 @@ public:
 };
 
 // Extract Abstractions
-template <typename U, typename V> 
+template <typename U, typename V>
 class RelationExtractor : public DesignExtractor {
 protected:
     Designation type;

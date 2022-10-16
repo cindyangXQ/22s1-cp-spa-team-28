@@ -11,7 +11,7 @@ DesignExtractor::DesignExtractor(ProgramNode *program,
     this->storage = storage;
 }
 
-template<typename T>
+template <typename T>
 EntityExtractor<T>::EntityExtractor(ProgramNode *program,
                                     PopulateFacade *storage, Designation type)
     : DesignExtractor(program, storage) {
@@ -335,8 +335,7 @@ void DesignExtractor::extractAll() {
     BranchOutExtr(this->program, this->storage).populate();
 }
 
-template <typename T>
-void EntityExtractor<T>::populate() {
+template <typename T> void EntityExtractor<T>::populate() {
     std::vector<T *> entites = this->extract();
     this->storage->store<T>(&entites, this->type);
 }
