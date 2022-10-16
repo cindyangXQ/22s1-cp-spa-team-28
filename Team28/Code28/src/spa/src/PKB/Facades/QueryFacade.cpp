@@ -35,15 +35,12 @@ ReferenceType QueryFacade::getRefType(EntityName leftSynonym) {
 
 QueryFacade::QueryFacade(Storage *storage) { this->storage = storage; }
 
-std::vector<Statement *> QueryFacade::getAllStatements() {
-    StatementsTable *statements = this->storage->getTable<StatementsTable>();
-
-    return statements->getAll();
-}
-
 std::vector<Statement *>
 QueryFacade::getAllStatementsByType(StatementType type) {
     StatementsTable *statements = this->storage->getTable<StatementsTable>();
+    if (type == StatementType::STMT) {
+        return statements->getAll();
+    }
     std::vector<int> statementTypeIndices =
         statements->getStatementsByType(type);
     std::vector<Statement *> results;

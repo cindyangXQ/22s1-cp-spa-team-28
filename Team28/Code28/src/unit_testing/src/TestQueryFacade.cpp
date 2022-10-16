@@ -13,11 +13,11 @@ TEST_CASE("getAllStatements returns all statements correctly") {
     statements->store(&test2);
 
     // returned number of statements is equal to number stored
-    REQUIRE(facade.getAllStatements().size() == 2);
+    REQUIRE(facade.getAllStatementsByType(StatementType::STMT).size() == 2);
     // first statement is test1
-    REQUIRE(*facade.getAllStatements().at(0) == test1);
+    REQUIRE(*facade.getAllStatementsByType(StatementType::STMT).at(0) == test1);
     // second statement is test2
-    REQUIRE(*facade.getAllStatements().at(1) == test2);
+    REQUIRE(*facade.getAllStatementsByType(StatementType::STMT).at(1) == test2);
 }
 
 TEST_CASE("getAllStatementByType returns all While statements correctly") {

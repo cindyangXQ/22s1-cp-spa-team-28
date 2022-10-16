@@ -13,12 +13,7 @@ public:
     explicit QueryFacade(Storage *storage);
 
     /*
-     * Returns all statements inside the StatementsTable.
-     */
-    std::vector<Statement *> getAllStatements();
-
-    /*
-     * Returns all statements inside the StatementsTable.
+     * Returns all statements inside the StatementsTable based on StatementType.
      */
     std::vector<Statement *> getAllStatementsByType(StatementType type);
 

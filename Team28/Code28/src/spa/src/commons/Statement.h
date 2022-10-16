@@ -8,7 +8,7 @@
 /*
  * Enumerates the different kinds of SIMPLE statements.
  */
-enum class StatementType { READ, PRINT, ASSIGN, CALL, WHILE, IF, NONE };
+enum class StatementType { STMT, READ, PRINT, ASSIGN, CALL, WHILE, IF, NONE };
 
 /*
  * Class encapsulating a SIMPLE Statement.
