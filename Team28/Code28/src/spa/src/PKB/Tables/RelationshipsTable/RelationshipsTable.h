@@ -99,8 +99,7 @@ public:
      */
     Right retrieveSingleRight(Left left) {
         if (this->retrieveLeft(left).size() != 1) {
-            throw std::invalid_argument(
-                "There exists more than 1 Right value mapped to given Left");
+            throw std::invalid_argument(MORE_THAN_ONE_RIGHT);
         }
         return *this->retrieveLeft(left).begin();
     }
@@ -260,7 +259,6 @@ protected:
         std::vector<std::pair<Value, Value>> result =
             std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
                                                  intermediateResult.end());
-        // std::sort(result.begin(), result.end(), value_pair_sort());
         return result;
     }
 
@@ -276,4 +274,8 @@ protected:
             Statement::getStmtTypeFromEntityName(synName);
         return statements->getStatementsByType(statementType);
     }
+
+private:
+    const std::string MORE_THAN_ONE_RIGHT =
+        "There exists more than 1 Right value mapped to given Left";
 };
