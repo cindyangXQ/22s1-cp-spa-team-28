@@ -53,11 +53,14 @@ public:
 
     /*
      * Returns a boolean of whether the given statement is one of Calls, Print
-     * or Read.
+     * or Read, which have a secondary attribute (varName/procName).
      */
-    bool isAttributableStatement(const int &index);
+    bool hasSecondaryAttribute(const int &index);
 
 private:
+    const std::string STMT_TYPE_NONE_INVALID_USE =
+        "StatementType cannot be NONE";
+
     std::map<StatementType, std::vector<int>> statementTypeIndexes = {
         {StatementType::READ, {}},   {StatementType::PRINT, {}},
         {StatementType::ASSIGN, {}}, {StatementType::CALL, {}},

@@ -10,7 +10,7 @@ void StatementsTable::store(TableValue *statement) {
     int index = stmt->getLineNumber();
 
     if (type == StatementType::NONE) {
-        // TODO error handling
+        throw std::invalid_argument(STMT_TYPE_NONE_INVALID_USE);
     }
 
     this->statements.push_back(stmt);
@@ -67,7 +67,7 @@ bool StatementsTable::isIfStatement(const int &lineNum) {
     return std::find(ifs.begin(), ifs.end(), lineNum) != ifs.end();
 }
 
-bool StatementsTable::isAttributableStatement(const int &lineNum) {
+bool StatementsTable::hasSecondaryAttribute(const int &lineNum) {
     StatementType stmtType = this->getStatementType(lineNum);
     if (stmtType == StatementType::CALL || stmtType == StatementType::READ ||
         stmtType == StatementType::PRINT) {

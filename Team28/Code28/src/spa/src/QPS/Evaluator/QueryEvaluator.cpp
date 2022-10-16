@@ -73,7 +73,7 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
         Tuple row = result.rows[i];
         for (int j = 0; j < indices.size(); j++) {
             Value v = row.values[indices[j]];
-            tuple += getAttributeValue(selectRefs[j], v.value) + " ";
+            tuple += getAttributeValue(selectRefs[j], v.getValue()) + " ";
         }
         output.push_back(Utils::trimSpaces(tuple));
     }
@@ -99,7 +99,7 @@ QueryEvaluator::extractReferenceFromTable(Reference selectedRef,
         std::vector<std::string> output;
         for (int k = 0; k < selectValues.size(); k++) {
             remove_duplicates.insert(
-                getAttributeValue(selectedRef, selectValues[k].value));
+                getAttributeValue(selectedRef, selectValues[k].getValue()));
         }
         output.insert(output.end(), remove_duplicates.begin(),
                       remove_duplicates.end());
@@ -144,18 +144,19 @@ QueryEvaluator::handleNoTables(QueryResult *queryResult) {
 }
 
 bool QueryEvaluator::isAlternativeAttribute(Reference ref) {
-    return (ref.syn.entity == EntityName::PRINT &&
-                ref.attr == EntityAttribute::VAR_NAME ||
-            ref.syn.entity == EntityName::READ &&
-                ref.attr == EntityAttribute::VAR_NAME ||
-            ref.syn.entity == EntityName::CALL &&
-                ref.attr == EntityAttribute::PROC_NAME);
+    return (ref.getEntityName() == EntityName::PRINT &&
+                ref.getAttr() == EntityAttribute::VAR_NAME ||
+            ref.getEntityName() == EntityName::READ &&
+                ref.getAttr() == EntityAttribute::VAR_NAME ||
+            ref.getEntityName() == EntityName::CALL &&
+                ref.getAttr() == EntityAttribute::PROC_NAME);
 }
 
 std::string QueryEvaluator::getAttributeValue(Reference ref,
                                               std::string synonymValue) {
     if (isAlternativeAttribute(ref)) {
-        return this->queryFacade->getAttribute(std::stoi(synonymValue));
+        return this->queryFacade->getSecondaryAttribute(
+            std::stoi(synonymValue));
     } else {
         return synonymValue;
     }
@@ -171,7 +172,7 @@ ClauseTable QueryEvaluator::joinAllClauseTables(
 }
 
 std::vector<std::string> QueryEvaluator::getAll(Reference select) {
-    EntityName type = select.syn.entity;
+    EntityName type = select.getEntityName();
     if (type == EntityName::STMT) {
         std::vector<Statement *> statementList =
             (std::vector<Statement *>)this->queryFacade->getAllStatementsByType(

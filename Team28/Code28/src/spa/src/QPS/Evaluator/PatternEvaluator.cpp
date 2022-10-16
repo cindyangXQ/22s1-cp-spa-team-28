@@ -11,13 +11,13 @@ ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
 }
 
 ClauseResult PatternEvaluator::handleAssign(PatternClause *patternCl) {
-    if (patternCl->entRef.isSynonym) {
+    if (patternCl->entRef.isASynonym()) {
         ClauseResult clauseResult = ClauseResult(
             std::vector{Reference(patternCl->syn), patternCl->entRef});
+        AssignExpression expression =
+            AssignExpression(patternCl->expression, patternCl->isExact);
         std::vector<std::pair<Value, Value>> result =
-            patternCl->isExact
-                ? queryFacade->getAssignAndVarExact(patternCl->expression)
-                : queryFacade->getAssignAndVar(patternCl->expression);
+            queryFacade->getAssignAndVar(expression);
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(
                 Tuple(std::vector{result[i].first, result[i].second}));
@@ -27,12 +27,10 @@ ClauseResult PatternEvaluator::handleAssign(PatternClause *patternCl) {
         std::string expr = patternCl->expression;
         ClauseResult clauseResult =
             ClauseResult(std::vector{Reference(patternCl->syn)});
-        std::vector<Value> result =
-            patternCl->isExact
-                ? queryFacade->getAssignExact(patternCl->entRef.value.value,
-                                              patternCl->expression)
-                : queryFacade->getAssign(patternCl->entRef.value.value,
-                                         patternCl->expression);
+        AssignExpression expression =
+            AssignExpression(patternCl->expression, patternCl->isExact);
+        std::vector<Value> result = queryFacade->getAssign(
+            patternCl->entRef.getValueString(), expression);
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(Tuple(std::vector{result[i]}));
         }
@@ -41,7 +39,7 @@ ClauseResult PatternEvaluator::handleAssign(PatternClause *patternCl) {
 }
 
 ClauseResult PatternEvaluator::handleWhile(PatternClause *patternCl) {
-    if (patternCl->entRef.isSynonym) {
+    if (patternCl->entRef.isASynonym()) {
         ClauseResult clauseResult = ClauseResult(
             std::vector{Reference(patternCl->syn), patternCl->entRef});
         std::vector<std::pair<Value, Value>> result =
@@ -56,7 +54,7 @@ ClauseResult PatternEvaluator::handleWhile(PatternClause *patternCl) {
         ClauseResult clauseResult =
             ClauseResult(std::vector{Reference(patternCl->syn)});
         std::vector<Value> result = queryFacade->getCond(
-            Designation::WHILE_C, patternCl->entRef.value.value);
+            Designation::WHILE_C, patternCl->entRef.getValueString());
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(Tuple(std::vector{result[i]}));
         }
@@ -65,7 +63,7 @@ ClauseResult PatternEvaluator::handleWhile(PatternClause *patternCl) {
 }
 
 ClauseResult PatternEvaluator::handleIf(PatternClause *patternCl) {
-    if (patternCl->entRef.isSynonym) {
+    if (patternCl->entRef.isASynonym()) {
         ClauseResult clauseResult = ClauseResult(
             std::vector{Reference(patternCl->syn), patternCl->entRef});
         std::vector<std::pair<Value, Value>> result =
@@ -80,7 +78,7 @@ ClauseResult PatternEvaluator::handleIf(PatternClause *patternCl) {
         ClauseResult clauseResult =
             ClauseResult(std::vector{Reference(patternCl->syn)});
         std::vector<Value> result = queryFacade->getCond(
-            Designation::IF_C, patternCl->entRef.value.value);
+            Designation::IF_C, patternCl->entRef.getValueString());
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(Tuple(std::vector{result[i]}));
         }

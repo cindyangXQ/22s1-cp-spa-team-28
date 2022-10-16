@@ -55,7 +55,7 @@ public:
             return false;
         } else {
             for (unsigned int i = 0; i < this->size(); i++) {
-                if (this->values[i].value != rhs.values[i].value) {
+                if (this->values[i].getValue() != rhs.values[i].getValue()) {
                     return false;
                 }
             }

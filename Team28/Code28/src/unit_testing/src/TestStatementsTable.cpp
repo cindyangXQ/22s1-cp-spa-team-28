@@ -32,6 +32,14 @@ TEST_CASE(
             StatementType::ASSIGN);
 }
 
+TEST_CASE("StatementsTable throws exception for NONE") {
+    StatementsTable table;
+    Statement test = Statement(1, StatementType::NONE);
+
+    // test is stored and retrieved correctly
+    REQUIRE_THROWS(table.store(&test), "StatementType cannot be NONE");
+}
+
 TEST_CASE("StatementsTable can getAll statements correctly") {
     StatementsTable table;
     Statement test1 = Statement(1, StatementType::ASSIGN);
@@ -133,10 +141,10 @@ TEST_CASE("isAttributableStatement works correctly") {
     table.store(&whileStmt);
 
     // Only Call, Print and Read statements return true
-    REQUIRE(!table.isAttributableStatement(1));
-    REQUIRE(table.isAttributableStatement(2));
-    REQUIRE(!table.isAttributableStatement(3));
-    REQUIRE(table.isAttributableStatement(4));
-    REQUIRE(table.isAttributableStatement(5));
-    REQUIRE(!table.isAttributableStatement(6));
+    REQUIRE(!table.hasSecondaryAttribute(1));
+    REQUIRE(table.hasSecondaryAttribute(2));
+    REQUIRE(!table.hasSecondaryAttribute(3));
+    REQUIRE(table.hasSecondaryAttribute(4));
+    REQUIRE(table.hasSecondaryAttribute(5));
+    REQUIRE(!table.hasSecondaryAttribute(6));
 }
