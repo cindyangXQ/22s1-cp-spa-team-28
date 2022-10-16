@@ -136,27 +136,21 @@ QueryFacade::solveBoth(RelationshipReference relType, EntityName leftSynonym,
 }
 
 std::vector<Value> QueryFacade::getAssign(std::string varName,
-                                          std::string expression) {
+                                          AssignExpression expression) {
     AssignmentsTable *assignments = this->storage->getTable<AssignmentsTable>();
-    return assignments->getAssign(varName, expression);
-};
-
-std::vector<Value> QueryFacade::getAssignExact(std::string varName,
-                                               std::string expression) {
-    AssignmentsTable *assignments = this->storage->getTable<AssignmentsTable>();
-    return assignments->getAssignExact(varName, expression);
+    if (expression.isExactExpression()) {
+        return assignments->getAssignExact(varName, expression.getExpression());
+    }
+    return assignments->getAssign(varName, expression.getExpression());
 };
 
 std::vector<std::pair<Value, Value>>
-QueryFacade::getAssignAndVar(std::string expression) {
+QueryFacade::getAssignAndVar(AssignExpression expression) {
     AssignmentsTable *assignments = this->storage->getTable<AssignmentsTable>();
-    return assignments->getAssignAndVar(expression);
-};
-
-std::vector<std::pair<Value, Value>>
-QueryFacade::getAssignAndVarExact(std::string expression) {
-    AssignmentsTable *assignments = this->storage->getTable<AssignmentsTable>();
-    return assignments->getAssignAndVarExact(expression);
+    if (expression.isExactExpression()) {
+        return assignments->getAssignAndVarExact(expression.getExpression());
+    }
+    return assignments->getAssignAndVar(expression.getExpression());
 };
 
 std::vector<Value> QueryFacade::getCond(Designation condType,
