@@ -25,7 +25,9 @@ ClauseResult SuchThatEvaluator::handleNoSynonym(RelationshipReference relRef,
                                                 Reference right) {
     // the boolean argument is isEmpty, if validate returns true,
     // isEmpty should be false.
-    return ClauseResult(!queryFacade->validate(relRef, left, right));
+    bool isTrue = queryFacade->validate(relRef, left, right);
+    bool isEmpty = !isTrue;
+    return ClauseResult(isEmpty);
 }
 
 ClauseResult SuchThatEvaluator::handleLeftSynonym(RelationshipReference relRef,

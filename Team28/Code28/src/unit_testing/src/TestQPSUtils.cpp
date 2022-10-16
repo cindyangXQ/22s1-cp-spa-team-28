@@ -8,13 +8,13 @@ TEST_CASE("Tokenizer can convert a query string into a vector of tokens") {
     // expression.
     std::string query = "assign a; variable v; Select a such that Uses(a, v) "
                         "pattern a(_, _\"1\"_)";
-    std::vector<char> special_char{';', '(', ',', ')', '_'};
+    std::vector<char> specialChar{';', '(', ',', ')', '_'};
     std::vector<std::string> expected{
         "assign", "a",     ";",       "variable", "v", ";", "Select",
         "a",      "such",  "that",    "Uses",     "(", "a", ",",
         "v",      ")",     "pattern", "a",        "(", "_", ",",
         "_",      "\"1\"", "_",       ")"};
 
-    std::vector<std::string> result = Utils::tokenize(query, special_char);
+    std::vector<std::string> result = Utils::tokenize(query, specialChar);
     REQUIRE(result == expected);
 }
