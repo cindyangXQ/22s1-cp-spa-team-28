@@ -189,14 +189,14 @@ const std::regex
  */
 // stmtRef : synonym | _ | INTEGER
 const std::regex STMT_REF_REGEX("^\\s*([a-zA-Z][a-zA-Z0-9]*" // synonym
-                              "|_|"                        // | _ |
-                              "0|[1-9]\\d*?)\\s*$");       // INTEGER
+                                "|_|"                        // | _ |
+                                "0|[1-9]\\d*?)\\s*$");       // INTEGER
 
 // entRef : synonym | _ | '"' IDENT '"'
 const std::regex
     ENT_REF_REGEX("^\\s*([a-zA-Z][a-zA-Z0-9]*"                // synonym
-                "|_|"                                       // | _ |
-                "\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"?)\\s*$"); // '"' IDENT '"'
+                  "|_|"                                       // | _ |
+                  "\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"?)\\s*$"); // '"' IDENT '"'
 
 const std::regex IS_SELECT("\\b(Select)\\b");
 const std::regex IS_SUCH_THAT("^\\s*such\\s+that\\s+");
@@ -212,31 +212,35 @@ const std::regex IS_WITH_AND("^\\s*with\\s+|^\\s*and\\s+");
 // declaration: design-entity synonym (',' synonym)*
 const std::regex
     DECL_REGEX("^\\s*(stmt|read|print|call|while|if|assign|"
-                     "variable|constant|procedure)\\s+"    // design-entity
-                     "([a-zA-Z][a-zA-Z0-9]*)\\s*"          // synonym
-                     "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*$"); // (',' synonym)*
+               "variable|constant|procedure)\\s+"    // design-entity
+               "([a-zA-Z][a-zA-Z0-9]*)\\s*"          // synonym
+               "(,\\s*[a-zA-Z][a-zA-Z0-9]*\\s*)*$"); // (',' synonym)*
 
 // select-cl : declaration* 'Select' synonym [ suchthat-cl ]   [ pattern-cl ]
 // For arguments extraction
-const std::regex SELECT_REGEX("\\s*Select\\s+" // 'Select'
-                             "([a-zA-Z][a-zA-Z0-9]*"
-                             "(\\s*[\\.]\\s*(procName|varName|value|stmt#))*|"
-                             "BOOLEAN|" // synonym or BOOLEAN or attr
-                             "<.*?" // or <synonym or attr (, synonym or attr)*>
-                             "(,.*?)*>)\\s*");
+const std::regex
+    SELECT_REGEX("\\s*Select\\s+" // 'Select'
+                 "([a-zA-Z][a-zA-Z0-9]*"
+                 "(\\s*[\\.]\\s*(procName|varName|value|stmt#))*|"
+                 "BOOLEAN|" // synonym or BOOLEAN or attr
+                 "<.*?"     // or <synonym or attr (, synonym or attr)*>
+                 "(,.*?)*>)\\s*");
 
 // For clause extraction
 const std::regex
     SELECT_CL_REGEX("(\\s*Select\\s+" // 'Select'
-                      "([a-zA-Z][a-zA-Z0-9]*"
-                      "(\\s*[\\.]\\s*(procName|varName|value|stmt#))*|"
-                      "BOOLEAN|" // synonym or BOOLEAN or attr
-                      "<.*?"     // or <synonym (, synonym)*>
-                      "(,.*?)*>)\\s*).*?");
+                    "([a-zA-Z][a-zA-Z0-9]*"
+                    "(\\s*[\\.]\\s*(procName|varName|value|stmt#))*|"
+                    "BOOLEAN|" // synonym or BOOLEAN or attr
+                    "<.*?"     // or <synonym (, synonym)*>
+                    "(,.*?)*>)\\s*).*?");
 
 // For select tuple
 const std::regex SELECT_TUP_REGEX("<.*?"
                                   "(,.*?)*>");
+
+// For select bool
+const std::regex SELECT_BOOL_REGEX("\\s*BOOLEAN\\s*");
 
 // suchthat-cl : 'such' 'that' relRef
 // relRef : ModifiesP | ModifiesS | UsesP | UsesS
@@ -304,14 +308,14 @@ const std::unordered_set<EntityName> PATTERN_ENTITY_MAP = {
 // attrRef : synonym '.' attrName
 // For arguments extraction
 const std::regex WITH_REGEX("^\\s*(with\\s+|^\\s*and\\s+)" // with or and
-                           "(.*?)"                        // ref
-                           "\\s*=\\s*"                    // '='
-                           "(.*?)\\s*"                    // ref
+                            "(.*?)"                        // ref
+                            "\\s*=\\s*"                    // '='
+                            "(.*?)\\s*"                    // ref
 );
 
 // For clause extraction
 const std::regex WITH_CL_REGEX("(^\\s*(with\\s+|^\\s*and\\s+)" // with or and
-                                 "(.*?)"                         // ref
-                                 "\\s*=\\s*"                     // '='
-                                 "(.*?))\\s*"                    // ref
+                               "(.*?)"                         // ref
+                               "\\s*=\\s*"                     // '='
+                               "(.*?))\\s*"                    // ref
 );

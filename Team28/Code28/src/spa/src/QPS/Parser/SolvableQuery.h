@@ -14,14 +14,21 @@
  */
 class SolvableQuery {
 public:
+    SolvableQuery(Declaration decl, SelectClause selectClause,
+                  std::vector<SuchThatClause> suchThatCls,
+                  std::vector<PatternClause> patternCls,
+                  std::vector<WithClause> withCls);
+
+    Declaration getDecl();
+    SelectClause getSelectClause();
+    std::vector<SuchThatClause> getSuchThatCls();
+    std::vector<PatternClause> getPatternCls();
+    std::vector<WithClause> getWithCls();
+
+private:
     Declaration decl;
     SelectClause selectClause;
     std::vector<SuchThatClause> suchThatCls;
     std::vector<PatternClause> patternCls;
     std::vector<WithClause> withCls;
-
-    SolvableQuery(Declaration decl, SelectClause selectClause,
-                  std::vector<SuchThatClause> suchThatCls,
-                  std::vector<PatternClause> patternCls,
-                  std::vector<WithClause> withCls);
 };

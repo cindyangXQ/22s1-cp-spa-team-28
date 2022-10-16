@@ -6,7 +6,7 @@
 
 /*
  * Default value of uninitialized ClauseTable value.
-*/
+ */
 const int UNINTIALIZED = -1;
 
 /*
@@ -15,8 +15,6 @@ const int UNINTIALIZED = -1;
  */
 class ClauseTable {
 public:
-    std::vector<Reference> header;
-    std::vector<Tuple> rows;
     ClauseTable(){};
     ClauseTable(std::vector<Reference> header) : header(header){};
 
@@ -57,14 +55,22 @@ public:
      */
     static ClauseTable joinTables(ClauseTable table1, ClauseTable table2);
 
+    std::vector<Reference> getHeader();
+    std::vector<Tuple> getRows();
+
 private:
+    std::vector<Reference> header;
+    std::vector<Tuple> rows;
     /*
      * Joins two tables without any common headers.
-    */
-    //static ClauseTable handleEmptyCommonHeadersJoin(ClauseTable table1, ClauseTable table2);
+     */
+    static ClauseTable handleEmptyCommonHeadersJoin(ClauseTable table1,
+                                                    ClauseTable table2);
 
     /*
      * Joins two tables some common headers.
-    */
-    //static ClauseTable handleEmptyCommonHeadersJoin(ClauseTable table1, ClauseTable table2);
+     */
+    static ClauseTable
+    handleCommonHeadersJoin(ClauseTable table1, ClauseTable table2,
+                            std::vector<Reference> commonHeaders);
 };

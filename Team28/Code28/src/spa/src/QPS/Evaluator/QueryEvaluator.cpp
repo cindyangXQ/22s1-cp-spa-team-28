@@ -2,17 +2,21 @@
 
 QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
     std::vector<ClauseResult> clauseResultList;
-    for (size_t i = 0; i < solvableQ->suchThatCls.size(); i++) {
+    std::vector<SuchThatClause> suchThatCls = solvableQ->getSuchThatCls();
+    std::vector<PatternClause> patternCls = solvableQ->getPatternCls();
+    SelectClause selectClause = solvableQ->getSelectClause();
+
+    for (size_t i = 0; i < suchThatCls.size(); i++) {
         ClauseResult suchThatResult =
-            suchThatEvaluator.evaluate(&solvableQ->suchThatCls[i]);
+            suchThatEvaluator.evaluate(&suchThatCls[i]);
         clauseResultList.push_back(suchThatResult);
     }
-    for (size_t i = 0; i < solvableQ->patternCls.size(); i++) {
+    for (size_t i = 0; i < patternCls.size(); i++) {
         ClauseResult patternResult =
-            patternEvaluator.evaluate(&solvableQ->patternCls[i]);
+            patternEvaluator.evaluate(&patternCls[i]);
         clauseResultList.push_back(patternResult);
     }
-    return QueryResult(solvableQ->selectClause, clauseResultList);
+    return QueryResult(selectClause, clauseResultList);
 }
 
 // TOFIX: checks can be abstracted out so logical flow is easier to follow
@@ -20,7 +24,7 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
 std::vector<std::string>
 QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
     std::vector<ClauseResult> clauseResultList = queryResult->clauseResultList;
-    SelectType type = queryResult->selectClause.selectType;
+    SelectType type = queryResult->selectClause.getSelectType();
     bool haveTableToJoin = false;
     bool isAnyTableEmpty = false;
 
@@ -47,10 +51,10 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
     } else if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
-        Reference selectedRef = queryResult->selectClause.refs[0];
+        Reference selectedRef = queryResult->selectClause.getRefs()[0];
         return extractReferenceFromTable(selectedRef, result);
     } else {
-        std::vector<Reference> selectRefs = queryResult->selectClause.refs;
+        std::vector<Reference> selectRefs = queryResult->selectClause.getRefs();
         return extractTuplesFromTable(selectRefs, result);
     }
 }
@@ -72,7 +76,7 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
     std::vector<std::string> output;
     for (int i = 0; i < result.size(); i++) {
         std::string tuple = "";
-        Tuple row = result.rows[i];
+        Tuple row = result.getRows()[i];
         for (int j = 0; j < indices.size(); j++) {
             Value v = row.values[indices[j]];
             tuple += getAttributeValue(selectRefs[j], v.value) + " ";
@@ -117,7 +121,7 @@ void QueryEvaluator::checkAllClauseResult(
             *isAnyTableEmpty = true;
             return;
         }
-        if (clauseResultList[i].table.header.size() > 0) {
+        if (clauseResultList[i].table.getHeader().size() > 0) {
             *haveTableToJoin = true;
         }
     }
@@ -125,11 +129,11 @@ void QueryEvaluator::checkAllClauseResult(
 
 std::vector<std::string>
 QueryEvaluator::handleNoTables(QueryResult *queryResult) {
-    SelectType type = queryResult->selectClause.selectType;
+    SelectType type = queryResult->selectClause.getSelectType();
     if (type == SelectType::BOOLEAN) {
         return {"TRUE"};
     } else if (type == SelectType::SINGLE) {
-        Reference selectRef = queryResult->selectClause.refs[0];
+        Reference selectRef = queryResult->selectClause.getRefs()[0];
         std::vector<std::string> synonymValues =
             QueryEvaluator::getAll(selectRef);
 
@@ -139,7 +143,7 @@ QueryEvaluator::handleNoTables(QueryResult *queryResult) {
         }
         return result;
     } else {
-        std::vector<Reference> selectedRefs = queryResult->selectClause.refs;
+        std::vector<Reference> selectedRefs = queryResult->selectClause.getRefs();
         ClauseTable result = ClauseTable();
         return extractTuplesFromTable(selectedRefs, result);
     }

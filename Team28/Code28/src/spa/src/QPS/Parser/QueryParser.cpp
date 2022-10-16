@@ -1,10 +1,6 @@
 #include "QueryParser.h"
 #include "../../SP/SP.h"
 
-// TOFIX: Magic number ";"
-// TOFIX: one regex check at parser level instead of parsexxClause
-// TOFIX: Exceptions can be constants (magic value)
-
 SolvableQuery QueryParser::parse(std::string query) {
     if (query.back() == CLAUSE_SEPARATOR) {
         throw SyntaxError("Semicolon at the end not allowed");
@@ -17,7 +13,7 @@ SolvableQuery QueryParser::parse(std::string query) {
     std::vector<PatternClause> patternCls;
     std::vector<WithClause> withCls;
 
-    if (clauses.size() >= 2) {
+    if (clauses.size() >= MIN_CLAUSE_NUM) {
         decl = QueryParser::parseDeclaration(clauses);
     }
 
@@ -71,31 +67,36 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
         throw SyntaxError("Invalid select clause syntax");
     }
 
-    // TOFIX: Nested - 4 levels
     std::string selectValue = Utils::trimSpaces(matches[1]);
-    std::vector<Reference> selectedRefs;
-    if (selectValue.compare("BOOLEAN") == 0) {
-        return SelectClause(selectedRefs, SelectType::BOOLEAN);
+    if (std::regex_search(selectValue, SELECT_BOOL_REGEX)) {
+        return SelectClause({}, SelectType::BOOLEAN);
     } else if (std::regex_search(selectValue, SELECT_TUP_REGEX)) {
-        selectValue = selectValue.substr(1, selectValue.size() - 2);
-        std::vector<std::string> selectStrings =
-            Utils::splitString(selectValue, ARG_SEPARATOR);
-        for (int i = 0; i < selectStrings.size(); i++) {
-            std::string value = Utils::trimSpaces(selectStrings[i]);
-            if (!std::regex_search(value, ATTR_REF_REGEX) &&
-                !std::regex_search(value, SYN_REGEX)) {
-                throw SyntaxError("Invalid select value");
-            }
-            Reference selectedRef = QueryParser::getReference(value, syns);
-            selectedRefs.push_back(selectedRef);
-        }
-        return SelectClause(selectedRefs, SelectType::TUPLE);
+        return parseSelectTuple(selectValue, syns);
     } else if (std::regex_search(selectValue, ATTR_REF_REGEX) ||
                std::regex_search(selectValue, SYN_REGEX)) {
         Reference selectedRef = QueryParser::getReference(selectValue, syns);
-        selectedRefs.push_back(selectedRef);
-        return SelectClause(selectedRefs, SelectType::SINGLE);
+        return SelectClause({selectedRef}, SelectType::SINGLE);
+    } else {
+        throw SyntaxError("Invalid select clause syntax");
     }
+}
+
+SelectClause QueryParser::parseSelectTuple(std::string selectValue,
+                                           std::vector<Synonym> syns) {
+    std::vector<Reference> selectedRefs;
+    selectValue = selectValue.substr(1, selectValue.size() - 2);
+    std::vector<std::string> selectStrings =
+        Utils::splitString(selectValue, ARG_SEPARATOR);
+    for (int i = 0; i < selectStrings.size(); i++) {
+        std::string value = Utils::trimSpaces(selectStrings[i]);
+        if (!std::regex_search(value, ATTR_REF_REGEX) &&
+            !std::regex_search(value, SYN_REGEX)) {
+            throw SyntaxError("Invalid select value");
+        }
+        Reference selectedRef = QueryParser::getReference(value, syns);
+        selectedRefs.push_back(selectedRef);
+    }
+    return SelectClause(selectedRefs, SelectType::TUPLE);
 }
 
 void QueryParser::parseSuchThatClause(

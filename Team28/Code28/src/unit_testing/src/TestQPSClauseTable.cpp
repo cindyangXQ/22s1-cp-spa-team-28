@@ -64,10 +64,10 @@ TEST_CASE("ClauseTable can create new table from two input table") {
     ClauseTable table1 = ClauseTable(header1);
     ClauseTable table2 = ClauseTable(header2);
     ClauseTable tableJoin = ClauseTable::ConstructTable(table1, table2);
-    REQUIRE(tableJoin.header.size() == 3);
-    REQUIRE(tableJoin.header[0].syn.name == syn2.name);
-    REQUIRE(tableJoin.header[1].syn.name == syn1.name);
-    REQUIRE(tableJoin.header[2].syn.name == syn3.name);
+    REQUIRE(tableJoin.getHeader().size() == 3);
+    REQUIRE(tableJoin.getHeader()[0].syn.name == syn2.name);
+    REQUIRE(tableJoin.getHeader()[1].syn.name == syn1.name);
+    REQUIRE(tableJoin.getHeader()[2].syn.name == syn3.name);
 }
 
 TEST_CASE("ClauseTable can join two tables with common headers") {
@@ -92,10 +92,10 @@ TEST_CASE("ClauseTable can join two tables with common headers") {
                                     Value(ValueType::STMT_NUM, "5")}));
     ClauseTable result = ClauseTable::joinTables(table1, table2);
     REQUIRE(result.size() == 2);
-    REQUIRE(result.header.size() == 3);
-    REQUIRE(result.header[0].syn.name == syn2.name);
-    REQUIRE(result.header[1].syn.name == syn1.name);
-    REQUIRE(result.header[2].syn.name == syn3.name);
+    REQUIRE(result.getHeader().size() == 3);
+    REQUIRE(result.getHeader()[0].syn.name == syn2.name);
+    REQUIRE(result.getHeader()[1].syn.name == syn1.name);
+    REQUIRE(result.getHeader()[2].syn.name == syn3.name);
 }
 
 TEST_CASE("ClauseTable can join two tables with no common headers") {
@@ -121,9 +121,9 @@ TEST_CASE("ClauseTable can join two tables with no common headers") {
                                     Value(ValueType::STMT_NUM, "5")}));
     ClauseTable result = ClauseTable::joinTables(table1, table2);
     REQUIRE(result.size() == 9);
-    REQUIRE(result.header.size() == 4);
-    REQUIRE(result.header[0].syn.name == syn1.name);
-    REQUIRE(result.header[1].syn.name == syn2.name);
-    REQUIRE(result.header[2].syn.name == syn3.name);
-    REQUIRE(result.header[3].syn.name == syn4.name);
+    REQUIRE(result.getHeader().size() == 4);
+    REQUIRE(result.getHeader()[0].syn.name == syn1.name);
+    REQUIRE(result.getHeader()[1].syn.name == syn2.name);
+    REQUIRE(result.getHeader()[2].syn.name == syn3.name);
+    REQUIRE(result.getHeader()[3].syn.name == syn4.name);
 }

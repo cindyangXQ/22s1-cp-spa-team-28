@@ -10,3 +10,13 @@ SolvableQuery::SolvableQuery(Declaration decl, SelectClause selectClause,
     this->patternCls = patternCls;
     this->withCls = withCls;
 }
+
+Declaration SolvableQuery::getDecl() { return this->decl; }
+SelectClause SolvableQuery::getSelectClause() { return this->selectClause; }
+std::vector<SuchThatClause> SolvableQuery::getSuchThatCls() {
+    return this->suchThatCls;
+}
+std::vector<PatternClause> SolvableQuery::getPatternCls() {
+    return this->patternCls;
+}
+std::vector<WithClause> SolvableQuery::getWithCls() { return this->withCls; }
