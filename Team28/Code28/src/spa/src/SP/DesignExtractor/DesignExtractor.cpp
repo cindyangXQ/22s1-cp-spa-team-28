@@ -12,32 +12,6 @@ DesignExtractor::DesignExtractor(ProgramNode *program,
     this->storage = storage;
 }
 
-template <class T>
-static void DesignExtractor::extractUtil(
-    std::vector<T> &result, ProgramNode *program,
-    std::function<void(StatementNode *stmt, std::vector<T> &result)> func) {
-    std::vector<ProcedureNode *> procList = program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        for (StatementNode *stmt : stmtList) {
-            func(stmt, result);
-        }
-    }
-}
-
-template <class T>
-static void DesignExtractor::extractUtilStmtList(
-    std::vector<T> &result, ProgramNode *program,
-    std::function<void(std::vector<StatementNode *> stmtList,
-                       std::vector<T> &result)>
-        func) {
-    std::vector<ProcedureNode *> procList = program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        func(stmtList, result);
-    }
-}
-
 template <typename T>
 EntityExtractor<T>::EntityExtractor(ProgramNode *program,
                                     PopulateFacade *storage, Designation type)
@@ -53,6 +27,10 @@ RelationExtractor<U, V>::RelationExtractor(ProgramNode *program,
     this->type = type;
 }
 
+ProcedureExtractor::ProcedureExtractor(ProgramNode *program,
+                                       PopulateFacade *storage)
+    : EntityExtractor<Procedure>(program, storage, Designation::PROC){};
+
 std::vector<Procedure *> ProcedureExtractor::extract() {
     std::vector<Procedure *> result;
 
@@ -65,6 +43,10 @@ std::vector<Procedure *> ProcedureExtractor::extract() {
 
     return result;
 }
+
+StatementExtractor::StatementExtractor(ProgramNode *program,
+                                       PopulateFacade *storage)
+    : EntityExtractor(program, storage, Designation::STMT){};
 
 std::vector<Statement *> StatementExtractor::extract() {
     std::vector<Statement *> result;
@@ -80,6 +62,10 @@ std::vector<Statement *> StatementExtractor::extract() {
 
     return result;
 }
+
+VariableExtractor::VariableExtractor(ProgramNode *program,
+                                     PopulateFacade *storage)
+    : EntityExtractor(program, storage, Designation::VAR){};
 
 std::vector<Variable *> VariableExtractor::extract() {
     std::vector<std::string> preresult;
@@ -102,6 +88,10 @@ std::vector<Variable *> VariableExtractor::extract() {
     return result;
 }
 
+ConstantExtractor::ConstantExtractor(ProgramNode *program,
+                                     PopulateFacade *storage)
+    : EntityExtractor(program, storage, Designation::CONST){};
+
 std::vector<Constant *> ConstantExtractor::extract() {
     std::vector<std::string> preresult;
     std::vector<Constant *> result;
@@ -123,6 +113,10 @@ std::vector<Constant *> ConstantExtractor::extract() {
     return result;
 }
 
+FollowsExtractor::FollowsExtractor(ProgramNode *program,
+                                   PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::FOLLOWS){};
+
 std::vector<Relationship<int, int> *> FollowsExtractor::extract() {
     std::vector<Relationship<int, int> *> result;
 
@@ -135,6 +129,9 @@ std::vector<Relationship<int, int> *> FollowsExtractor::extract() {
 
     return result;
 }
+
+FollowsExtrT::FollowsExtrT(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::FOLLOWS_T){};
 
 std::vector<Relationship<int, int> *> FollowsExtrT::extract() {
     std::vector<Relationship<int, int> *> result;
@@ -149,6 +146,9 @@ std::vector<Relationship<int, int> *> FollowsExtrT::extract() {
     return result;
 }
 
+ParentExtractor::ParentExtractor(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::PARENT){};
+
 std::vector<Relationship<int, int> *> ParentExtractor::extract() {
     std::vector<Relationship<int, int> *> result;
 
@@ -160,6 +160,9 @@ std::vector<Relationship<int, int> *> ParentExtractor::extract() {
     return result;
 }
 
+ParentExtrT::ParentExtrT(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::PARENT_T){};
+
 std::vector<Relationship<int, int> *> ParentExtrT::extract() {
     std::vector<Relationship<int, int> *> result;
 
@@ -170,6 +173,9 @@ std::vector<Relationship<int, int> *> ParentExtrT::extract() {
 
     return result;
 }
+
+UsesSExtractor::UsesSExtractor(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::USE_S){};
 
 std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
     std::vector<Relationship<int, std::string> *> result;
@@ -196,6 +202,9 @@ void UsesSExtractor::conVar(
     }
 }
 
+UsesPExtractor::UsesPExtractor(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::USE_P){};
+
 std::vector<Relationship<std::string, std::string> *>
 UsesPExtractor::extract() {
     std::vector<Relationship<std::string, std::string> *> result;
@@ -213,6 +222,9 @@ UsesPExtractor::extract() {
     return result;
 }
 
+ModSExtractor::ModSExtractor(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::MOD_S){};
+
 std::vector<Relationship<int, std::string> *> ModSExtractor::extract() {
     std::vector<Relationship<int, std::string> *> result;
 
@@ -225,6 +237,9 @@ std::vector<Relationship<int, std::string> *> ModSExtractor::extract() {
 
     return result;
 }
+
+ModPExtractor::ModPExtractor(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::MOD_P){};
 
 std::vector<Relationship<std::string, std::string> *> ModPExtractor::extract() {
     std::vector<Relationship<std::string, std::string> *> result;
@@ -243,6 +258,9 @@ std::vector<Relationship<std::string, std::string> *> ModPExtractor::extract() {
     return result;
 }
 
+CallsExtractor::CallsExtractor(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::CALL){};
+
 std::vector<Relationship<std::string, std::string> *>
 CallsExtractor::extract() {
     std::vector<Relationship<std::string, std::string> *> result;
@@ -260,6 +278,9 @@ CallsExtractor::extract() {
 
     return result;
 }
+
+CallsExtrT::CallsExtrT(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::CALL_T){};
 
 std::vector<Relationship<std::string, std::string> *> CallsExtrT::extract() {
     std::vector<Relationship<std::string, std::string> *> result;
@@ -299,6 +320,9 @@ std::vector<Relationship<std::string, std::string> *> CallsExtrT::extract() {
     return result;
 }
 
+BranchInExtr::BranchInExtr(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::B_IN){};
+
 std::vector<Relationship<int, int> *> BranchInExtr::extract() {
     std::vector<Relationship<int, int> *> result;
 
@@ -309,6 +333,9 @@ std::vector<Relationship<int, int> *> BranchInExtr::extract() {
 
     return result;
 }
+
+BranchOutExtr::BranchOutExtr(ProgramNode *program, PopulateFacade *storage)
+    : RelationExtractor(program, storage, Designation::B_OUT){};
 
 std::vector<Relationship<int, int> *> BranchOutExtr::extract() {
     std::vector<Relationship<int, int> *> result;
@@ -348,12 +375,13 @@ void DesignExtractor::extractAll() {
 
 template <typename T> void EntityExtractor<T>::populate() {
     std::vector<T *> entites = this->extract();
-    this->storage->store<T>(&entites, this->type);
+    this->storage->template store<T>(&entites, this->type);
 }
 
 template <typename U, typename V> void RelationExtractor<U, V>::populate() {
     std::vector<Relationship<U, V> *> relationships = this->extract();
-    this->storage->store<Relationship<U, V>>(&relationships, this->type);
+    this->storage->template store<Relationship<U, V>>(&relationships,
+                                                      this->type);
 }
 
 void StatementExtractor::populate() {
