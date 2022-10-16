@@ -36,5 +36,5 @@ a21
 8 - repeated pattern and chained and 
 while w; if ifs; variable v;
 Select < v, w >  pattern w(v,_)  and  ifs(v,_,_) and ifs(_,_,_) and w(v,_) and ifs("a29",_,_)
-a17 8, a21 7, a2 2, a17 18
+none
 5000

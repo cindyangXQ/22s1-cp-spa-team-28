@@ -59,18 +59,14 @@ ClauseTable ClauseTable::ConstructTable(ClauseTable table1,
     std::vector<int> indices1 = table1.getIndices(headers);
     std::vector<int> indices2 = table2.getIndices(headers);
 
-    for (int i = 0, j = 0; i < table1.header.size(); i++) {
-        if (j < indices1.size() && i == indices1[j]) {
-            j++;
-        } else {
+    for (int i = 0; i < table1.header.size(); i++) {
+        if (std::find(indices1.begin(), indices1.end(), i) == indices1.end()) {
             headers.push_back(table1.header[i]);
         }
     }
 
-    for (int i = 0, k = 0; i < table2.header.size(); i++) {
-        if (k < indices2.size() && i == indices2[k]) {
-            k++;
-        } else {
+    for (int i = 0; i < table2.header.size(); i++) {
+        if (std::find(indices2.begin(), indices2.end(), i) == indices2.end()) {
             headers.push_back(table2.header[i]);
         }
     }
