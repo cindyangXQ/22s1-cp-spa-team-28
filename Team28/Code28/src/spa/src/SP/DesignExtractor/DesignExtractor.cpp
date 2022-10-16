@@ -12,8 +12,7 @@ DesignExtractor::DesignExtractor(ProgramNode *program,
     this->storage = storage;
 }
 
-template <class T>
-static void DesignExtractor::extractUtil(
+template <class T> void DesignExtractor::extractUtil(
     std::vector<T> &result, ProgramNode *program,
     std::function<void(StatementNode *stmt, std::vector<T> &result)> func) {
     std::vector<ProcedureNode *> procList = program->getProcList();
@@ -25,8 +24,7 @@ static void DesignExtractor::extractUtil(
     }
 }
 
-template <class T>
-static void DesignExtractor::extractUtilStmtList(
+template <class T> void DesignExtractor::extractUtilStmtList(
     std::vector<T> &result, ProgramNode *program,
     std::function<void(std::vector<StatementNode *> stmtList,
                        std::vector<T> &result)>
@@ -348,12 +346,12 @@ void DesignExtractor::extractAll() {
 
 template <typename T> void EntityExtractor<T>::populate() {
     std::vector<T *> entites = this->extract();
-    this->storage->store<T>(&entites, this->type);
+    this->storage->template store<T>(&entites, this->type);
 }
 
 template <typename U, typename V> void RelationExtractor<U, V>::populate() {
     std::vector<Relationship<U, V> *> relationships = this->extract();
-    this->storage->store<Relationship<U, V>>(&relationships, this->type);
+    this->storage->template store<Relationship<U, V>>(&relationships, this->type);
 }
 
 void StatementExtractor::populate() {

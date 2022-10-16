@@ -1,17 +1,15 @@
 #include "ClauseTable.h"
 
-// TOFIX: use camelcase for variables
-// TOFIX: maybe can declare -1 as a const (magic number) [very minor]
 // TOFIX: all loops that are commonly used can be abstracted
 // TOFIX: joinTables() can be abstracted further, might be good to use more
 // helper funcs
 
 std::vector<int>
-ClauseTable::getIndices(std::vector<Reference> common_headers) {
+ClauseTable::getIndices(std::vector<Reference> commonHeaders) {
     std::vector<int> indices;
-    for (int i = 0; i < common_headers.size(); i++) {
+    for (int i = 0; i < commonHeaders.size(); i++) {
         for (int j = 0; j < header.size(); j++) {
-            if (header[j].syn.name == common_headers[i].syn.name) {
+            if (header[j].syn.name == commonHeaders[i].syn.name) {
                 indices.push_back(j);
             }
         }
@@ -24,14 +22,14 @@ void ClauseTable::insert(Tuple row) { this->rows.push_back(row); }
 size_t ClauseTable::size() { return this->rows.size(); }
 
 std::vector<Value> ClauseTable::getValues(Reference select) {
-    int column = -1;
+    int column = UNINTIALIZED;
     for (int i = 0; i < this->header.size(); i++) {
         if (this->header[i].syn.name == select.syn.name) {
             column = i;
             break;
         }
     }
-    if (column == -1) {
+    if (column == UNINTIALIZED) {
         return std::vector<Value>{};
     } else {
         std::vector<Value> values;
@@ -46,15 +44,15 @@ std::vector<Reference> ClauseTable::getCommonHeaders(ClauseTable table1,
                                                      ClauseTable table2) {
     std::vector<Reference> header1 = table1.header;
     std::vector<Reference> header2 = table2.header;
-    std::vector<Reference> header_common;
+    std::vector<Reference> headerCommon;
     for (int i = 0; i < header1.size(); i++) {
         for (int j = 0; j < header2.size(); j++) {
             if (header1[i].syn.name == header2[j].syn.name) {
-                header_common.push_back(header1[i]);
+                headerCommon.push_back(header1[i]);
             }
         }
     }
-    return header_common;
+    return headerCommon;
 }
 
 ClauseTable ClauseTable::ConstructTable(ClauseTable table1,
@@ -89,10 +87,10 @@ ClauseTable ClauseTable::joinTables(ClauseTable table1, ClauseTable table2) {
     if (table2.header.size() == 0) {
         return table1;
     }
-    std::vector<Reference> common_headers =
+    std::vector<Reference> commonHeaders =
         ClauseTable::getCommonHeaders(table1, table2);
 
-    if (common_headers.empty()) {
+    if (commonHeaders.empty()) {
         ClauseTable result = ClauseTable::ConstructTable(table1, table2);
         for (int i = 0; i < table1.size(); i++) {
             for (int j = 0; j < table2.size(); j++) {
@@ -103,8 +101,8 @@ ClauseTable ClauseTable::joinTables(ClauseTable table1, ClauseTable table2) {
         return result;
     } else {
         ClauseTable result = ClauseTable::ConstructTable(table1, table2);
-        std::vector<int> table1Indices = table1.getIndices(common_headers);
-        std::vector<int> table2Indices = table2.getIndices(common_headers);
+        std::vector<int> table1Indices = table1.getIndices(commonHeaders);
+        std::vector<int> table2Indices = table2.getIndices(commonHeaders);
         for (int i = 0; i < table1.size(); i++) {
             for (int j = 0; j < table2.size(); j++) {
                 Tuple t1 = table1.rows[i];

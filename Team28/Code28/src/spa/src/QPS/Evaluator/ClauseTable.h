@@ -5,8 +5,13 @@
 #include <vector>
 
 /*
+ * Default value of uninitialized ClauseTable value.
+*/
+const int UNINTIALIZED = -1;
+
+/*
  * Encapsulate a table for storing synonyms and possible values the synonyms can
- * be
+ * be.
  */
 class ClauseTable {
 public:
@@ -51,4 +56,15 @@ public:
      * Given two tables, joins the tables
      */
     static ClauseTable joinTables(ClauseTable table1, ClauseTable table2);
+
+private:
+    /*
+     * Joins two tables without any common headers.
+    */
+    //static ClauseTable handleEmptyCommonHeadersJoin(ClauseTable table1, ClauseTable table2);
+
+    /*
+     * Joins two tables some common headers.
+    */
+    //static ClauseTable handleEmptyCommonHeadersJoin(ClauseTable table1, ClauseTable table2);
 };
