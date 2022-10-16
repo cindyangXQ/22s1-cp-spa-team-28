@@ -25,6 +25,19 @@ static void DesignExtractor::extractUtil(
     }
 }
 
+template <class T>
+static void DesignExtractor::extractUtilStmtList(
+    std::vector<T> &result, ProgramNode *program,
+    std::function<void(std::vector<StatementNode *> stmtList,
+                       std::vector<T> &result)>
+        func) {
+    std::vector<ProcedureNode *> procList = program->getProcList();
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
+        func(stmtList, result);
+    }
+}
+
 std::vector<Procedure *> ProcedureExtractor::extract() {
     std::vector<Procedure *> result;
 
@@ -98,11 +111,12 @@ std::vector<Constant *> ConstantExtractor::extract() {
 std::vector<Relationship<int, int> *> FollowsExtractor::extract() {
     std::vector<Relationship<int, int> *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        SPUtils::follows(stmtList, result);
-    }
+    DesignExtractor::extractUtilStmtList<Relationship<int, int> *>(
+        result, program,
+        [](std::vector<StatementNode *> stmtList,
+           std::vector<Relationship<int, int> *> &res) -> void {
+            SPUtils::follows(stmtList, res);
+        });
 
     return result;
 }
@@ -110,11 +124,12 @@ std::vector<Relationship<int, int> *> FollowsExtractor::extract() {
 std::vector<Relationship<int, int> *> FollowsExtrT::extract() {
     std::vector<Relationship<int, int> *> result;
 
-    std::vector<ProcedureNode *> procList = this->program->getProcList();
-    for (size_t i = 0; i < procList.size(); i++) {
-        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
-        SPUtils::followsT(stmtList, result);
-    }
+    DesignExtractor::extractUtilStmtList<Relationship<int, int> *>(
+        result, program,
+        [](std::vector<StatementNode *> stmtList,
+           std::vector<Relationship<int, int> *> &res) -> void {
+            SPUtils::followsT(stmtList, res);
+        });
 
     return result;
 }
