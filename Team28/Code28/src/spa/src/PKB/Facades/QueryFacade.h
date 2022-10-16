@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../commons/AssignExpression.h"
 #include "../Storage/Storage.h"
 
 /*
@@ -53,30 +54,17 @@ public:
 
     /*
      * Return list of possible values of assignments that satisfy the given
-     * varName and partial/wildcard expression.
+     * varName and expression.
      */
-    std::vector<Value> getAssign(std::string varName, std::string expression);
-
-    /*
-     * Return list of possible values of assignments that satisfy the given
-     * varName and exact expression.
-     */
-    std::vector<Value> getAssignExact(std::string varName,
-                                      std::string expression);
+    std::vector<Value> getAssign(std::string varName,
+                                 AssignExpression expression);
 
     /*
      * Return list of possible (Assignment, Variable) pairs which satisfy the
-     * given partial/wildcard expression.
+     * given expression.
      */
     std::vector<std::pair<Value, Value>>
-    getAssignAndVar(std::string expression);
-
-    /*
-     * Return list of possible (Assignment, Variable) pairs which satisfy the
-     * given exact expression.
-     */
-    std::vector<std::pair<Value, Value>>
-    getAssignAndVarExact(std::string expression);
+    getAssignAndVar(AssignExpression expression);
 
     /*
      * Return list of possible values of conditional statements that satisfy the
