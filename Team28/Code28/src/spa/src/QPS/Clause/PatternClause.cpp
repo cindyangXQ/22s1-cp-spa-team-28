@@ -1,6 +1,7 @@
 #include "PatternClause.h"
 
-// TOFIX: maybe use map to handle if-else
+// TOFIX: maybe use map to handle if-else. Even better would be to polymorph
+// PatternClause and avoid switching on EntityName at all
 PatternClause::PatternClause(Synonym syn, Reference entRef,
                              Expression expression, bool isExact) {
     if (syn.entity == EntityName::ASSIGN) {
