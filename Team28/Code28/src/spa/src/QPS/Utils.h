@@ -16,7 +16,7 @@ public:
     /*
      * Removes trailing space at the start and end of a string.
      */
-    static std::string removeTrailingSpaces(std::string s);
+    static std::string trimSpaces(std::string s);
 
     /*
      * Tokenizes a string based on a list of characters.
