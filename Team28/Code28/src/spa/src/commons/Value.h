@@ -39,7 +39,7 @@ template <> struct hash<Value> {
     }
 };
 
-}
+} // namespace std
 
 struct value_pair_hash {
     inline std::size_t operator()(const std::pair<Value, Value> &v) const {
