@@ -98,6 +98,8 @@ public:
 
 private:
     Storage *storage;
+    const std::string STMT_NO_SECONDARY_ATTRIBUTE =
+        "StmtNum does not have a secondary attribute";
 
     /*
      * Helper method for validating wildcard, checks against P and S tables.
@@ -117,4 +119,17 @@ private:
      * Helper method to check RefType of given leftSynonym.
      */
     ReferenceType getRefType(EntityName leftSynonym);
+
+    /*
+     * Helper method to check if the query is a wildcarded uses
+     * query
+     */
+    bool isWildcardedUses(ReferenceType leftRef, RelationshipReference relType);
+
+    /*
+     * Helper method to check if the query is a wildcarded modifies
+     * query
+     */
+    bool isWildcardedModifies(ReferenceType leftRef,
+                              RelationshipReference relType);
 };

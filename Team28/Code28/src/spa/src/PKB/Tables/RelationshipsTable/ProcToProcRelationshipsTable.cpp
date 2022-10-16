@@ -2,27 +2,26 @@
 
 bool ProcToProcRelationshipsTable::validate(Reference leftRef,
                                             Reference rightRef) {
-    // TODO: Better way to handle wildcards
     if (leftRef.isWildcard() && rightRef.isWildcard()) {
         return !leftToRightsMap.empty();
     }
 
+    std::string left = leftRef.getValueString();
+    std::string right = rightRef.getValueString();
+
     if (leftRef.isWildcard()) {
-        std::string right = rightRef.value.value;
         return !rightToLeftsMap[right].empty();
     }
     if (rightRef.isWildcard()) {
-        std::string left = leftRef.value.value;
         return !leftToRightsMap[left].empty();
     }
-    std::string left = leftRef.value.value;
-    std::string right = rightRef.value.value;
+
     return leftToRightsMap[left].count(right) == 1;
 };
 
 std::vector<Value> ProcToProcRelationshipsTable::solveRight(
     Reference leftRef, EntityName rightSynonym, StorageView *storage) {
-    // Validate rightSynonym is a procedure. TODO: throw error if not
+    // Validate rightSynonym is a procedure.
     if (rightSynonym != EntityName::PROCEDURE) {
         return std::vector<Value>();
     }
@@ -36,7 +35,7 @@ std::vector<Value> ProcToProcRelationshipsTable::solveRight(
         addNonemptyPossibleRights(&possibleRights, &intermediateResult,
                                   ValueType::VAR_NAME);
     } else {
-        std::string left = leftRef.value.value;
+        std::string left = leftRef.getValueString();
         addPossibleRights(&possibleRights, left, &intermediateResult,
                           ValueType::VAR_NAME);
     }
@@ -48,7 +47,7 @@ std::vector<Value> ProcToProcRelationshipsTable::solveRight(
 
 std::vector<Value> ProcToProcRelationshipsTable::solveLeft(
     Reference rightRef, EntityName leftSynonym, StorageView *storage) {
-    // Validate leftSynonym is a procedure. TODO: throw error if not
+    // Validate leftSynonym is a procedure.
     if (leftSynonym != EntityName::PROCEDURE) {
         return std::vector<Value>();
     }
@@ -62,7 +61,7 @@ std::vector<Value> ProcToProcRelationshipsTable::solveLeft(
         addNonemptyPossibleLefts(&possibleLefts, &intermediateResult,
                                  ValueType::VAR_NAME);
     } else {
-        std::string right = rightRef.value.value;
+        std::string right = rightRef.getValueString();
         addPossibleLefts(&possibleLefts, right, &intermediateResult,
                          ValueType::VAR_NAME);
     }

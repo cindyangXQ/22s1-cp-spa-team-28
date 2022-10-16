@@ -8,15 +8,15 @@ bool StmtToStmtRelationshipsTable::validate(Reference leftRef,
     }
 
     if (leftRef.isWildcard()) {
-        int right = std::stoi(rightRef.value.value);
+        int right = std::stoi(rightRef.getValueString());
         return !rightToLeftsMap[right].empty();
     }
     if (rightRef.isWildcard()) {
-        int left = std::stoi(leftRef.value.value);
+        int left = std::stoi(leftRef.getValueString());
         return !leftToRightsMap[left].empty();
     }
-    int left = std::stoi(leftRef.value.value);
-    int right = std::stoi(rightRef.value.value);
+    int left = std::stoi(leftRef.getValueString());
+    int right = std::stoi(rightRef.getValueString());
     return leftToRightsMap[left].count(right) == 1;
 };
 
@@ -40,7 +40,7 @@ std::vector<Value> StmtToStmtRelationshipsTable::solveRight(
         addNonemptyPossibleRights(&possibleRights, &intermediateResult,
                                   ValueType::STMT_NUM);
     } else {
-        int left = std::stoi(leftRef.value.value);
+        int left = std::stoi(leftRef.getValueString());
         addPossibleRights(&possibleRights, left, &intermediateResult,
                           ValueType::STMT_NUM);
     }
@@ -70,7 +70,7 @@ std::vector<Value> StmtToStmtRelationshipsTable::solveLeft(
         addNonemptyPossibleLefts(&possibleLefts, &intermediateResult,
                                  ValueType::STMT_NUM);
     } else {
-        int right = std::stoi(rightRef.value.value);
+        int right = std::stoi(rightRef.getValueString());
         addPossibleLefts(&possibleLefts, right, &intermediateResult,
                          ValueType::STMT_NUM);
     }
