@@ -27,27 +27,10 @@ std::vector<Value> StmtToVarRelationshipsTable::solveLeft(
         return std::vector<Value>();
     }
     StatementsTable *statements = storage->getTable<StatementsTable>();
-    std::vector<int> possibleLefts;
-    if (leftSynonym == EntityName::STMT) {
-        possibleLefts = statements->getAllLineNumbers();
-    } else {
-        StatementType statementType =
-            Statement::getStmtTypeFromEntityName(leftSynonym);
-        possibleLefts = statements->getStatementsByType(statementType);
-    }
-    std::unordered_set<Value> intermediateResult;
-    if (rightRef.isWildcard()) {
-        addNonemptyPossibleLefts(&possibleLefts, &intermediateResult,
-                                 ValueType::STMT_NUM);
-    } else {
-        std::string right = rightRef.getValueString();
-        addPossibleLefts(&possibleLefts, right, &intermediateResult,
-                         ValueType::STMT_NUM);
-    }
-    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
-                                                   intermediateResult.end());
-    std::sort(result.begin(), result.end());
-    return result;
+    std::vector<int> possibleLefts =
+        getStatementsHelper(statements, leftSynonym);
+
+    return solveLeftHelper(&possibleLefts, rightRef, ValueType::STMT_NUM);
 };
 
 std::vector<std::pair<Value, Value>> StmtToVarRelationshipsTable::solveBoth(
@@ -59,26 +42,13 @@ std::vector<std::pair<Value, Value>> StmtToVarRelationshipsTable::solveBoth(
     }
     StatementsTable *statements = storage->getTable<StatementsTable>();
     VariablesTable *variables = storage->getTable<VariablesTable>();
-    std::vector<int> possibleLefts;
+    std::vector<int> possibleLefts =
+        getStatementsHelper(statements, leftSynonym);
     // TODO: iterate through set don't convert to vector
     std::unordered_set<std::string> possibleRightsSet = variables->getAll();
     std::vector<std::string> possibleRights = std::vector<std::string>(
         possibleRightsSet.begin(), possibleRightsSet.end());
-    if (leftSynonym == EntityName::STMT) {
-        possibleLefts = statements->getAllLineNumbers();
-    } else {
-        StatementType statementType =
-            Statement::getStmtTypeFromEntityName(leftSynonym);
-        possibleLefts = statements->getStatementsByType(statementType);
-    }
 
-    std::unordered_set<std::pair<Value, Value>, value_pair_hash>
-        intermediateResult;
-    addMatchingLeftRights(&possibleLefts, &possibleRights, &intermediateResult,
-                          ValueType::STMT_NUM, ValueType::VAR_NAME);
-    std::vector<std::pair<Value, Value>> result =
-        std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
-                                             intermediateResult.end());
-    std::sort(result.begin(), result.end(), value_pair_sort());
-    return result;
+    return solveBothHelper(&possibleLefts, &possibleRights, ValueType::STMT_NUM,
+                           ValueType::VAR_NAME);
 }

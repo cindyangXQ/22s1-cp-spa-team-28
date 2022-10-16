@@ -345,6 +345,7 @@ TEST_CASE("StmtToStmt: No duplicate results") {
     expectedResult = {value1, value2};
     output = facade.solveLeft(RelationshipReference::FOLLOWS_T, rightRef,
                               leftEntityName);
+    std::sort(output.begin(), output.end());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }

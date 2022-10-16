@@ -224,4 +224,56 @@ protected:
             intermediateResult.begin(), intermediateResult.end());
         return result;
     }
+
+    /*
+     * Helper function to solveLeft for Solvable RelationshipsTable.
+     */
+    std::vector<Value> solveLeftHelper(std::vector<Left> *possibleLefts,
+                                       Reference rightRef,
+                                       ValueType valueType) {
+        std::unordered_set<Value> intermediateResult;
+        if (rightRef.isWildcard()) {
+            addNonemptyPossibleLefts(possibleLefts, &intermediateResult,
+                                     valueType);
+        } else {
+            Right right = convertToType<Right>(rightRef.getValueString());
+            addPossibleLefts(possibleLefts, right, &intermediateResult,
+                             valueType);
+        }
+        std::vector<Value> result = std::vector<Value>(
+            intermediateResult.begin(), intermediateResult.end());
+        return result;
+    }
+
+    /*
+     * Helper function to solveBoth for Solvable RelationshipsTable.
+     */
+    std::vector<std::pair<Value, Value>>
+    solveBothHelper(std::vector<Left> *possibleLefts,
+                    std::vector<Right> *possibleRights, ValueType leftValueType,
+                    ValueType rightValueType) {
+        std::unordered_set<std::pair<Value, Value>, value_pair_hash>
+            intermediateResult;
+        addMatchingLeftRights(possibleLefts, possibleRights,
+                              &intermediateResult, leftValueType,
+                              rightValueType);
+        std::vector<std::pair<Value, Value>> result =
+            std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
+                                                 intermediateResult.end());
+        // std::sort(result.begin(), result.end(), value_pair_sort());
+        return result;
+    }
+
+    /*
+     * Helper function to get StmtNum based on EntityName.
+     */
+    std::vector<int> getStatementsHelper(StatementsTable *statements,
+                                         EntityName synName) {
+        if (synName == EntityName::STMT) {
+            return statements->getAllLineNumbers();
+        }
+        StatementType statementType =
+            Statement::getStmtTypeFromEntityName(synName);
+        return statements->getStatementsByType(statementType);
+    }
 };
