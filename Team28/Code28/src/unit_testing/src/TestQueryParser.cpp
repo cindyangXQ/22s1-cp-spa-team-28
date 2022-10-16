@@ -22,14 +22,14 @@ TEST_CASE("QueryParser can parse declaration correctly") {
         "assign a", "constant c", "variable v",
         "Select v such that Modifies(1, v) pattern a(v, _)"};
     Declaration declare = QueryParser::parseDeclaration(clauses);
-    REQUIRE(declare.syns.size() == 3);
+    REQUIRE(declare.getSyns().size() == 3);
 
     std::vector<std::string> multipleDeclarationClauses = {
         "assign a, b, a2", "constant c, constant, yey", "variable v, v2, v3",
         "Select v such that Modifies(1, v) pattern a(v, _)"};
     Declaration multipleDeclare =
         QueryParser::parseDeclaration(multipleDeclarationClauses);
-    REQUIRE(multipleDeclare.syns.size() == 9);
+    REQUIRE(multipleDeclare.getSyns().size() == 9);
 
     std::vector<std::string> syntaxClauses = {
         "assign a, b, a2,", "constant c, constant, yey", "variable v, v2, v3",

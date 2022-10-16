@@ -19,13 +19,8 @@ public:
     */
     explicit ClauseResult(std::vector<Reference> headers)
         : table(ClauseTable(headers)){};
-
-public:
     /*
      * Inserts a tuple into the table.
     */
-    void insert(Tuple t) {
-        this->isEmpty = false;
-        this->table.insert(t);
-    }
+    void insert(Tuple t) ;
 };

@@ -1,6 +1,5 @@
 #include "PatternEvaluator.h"
 
-// TOFIX: ensure all control paths return a value/throw exception
 // TOFIX: use polymorphism instead (subclass patternClause)
 ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
     if (patternCl->patternType == PatternType::ASSIGN) {
@@ -9,6 +8,8 @@ ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
         return handleWhile(patternCl);
     } else if (patternCl->patternType == PatternType::IF) {
         return handleIf(patternCl);
+    } else {
+        return ClauseResult(true);
     }
 }
 

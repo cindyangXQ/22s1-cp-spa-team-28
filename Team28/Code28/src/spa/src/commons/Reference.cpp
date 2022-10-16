@@ -31,13 +31,13 @@ Reference::Reference(Synonym syn, EntityAttribute attr) {
 
 Reference::Reference(std::string value) {
     this->isSynonym = false;
-    if (std::regex_match(value, wildcardRegex)) {
+    if (std::regex_match(value, WILDCARD_REGEX)) {
         this->type = ReferenceType::WILDCARD;
         this->value = Value(ValueType::WILDCARD, "_");
-    } else if (std::regex_match(value, intRegex)) {
+    } else if (std::regex_match(value, INT_REGEX)) {
         this->type = ReferenceType::STMT_REF;
         this->value = Value(ValueType::STMT_NUM, value);
-    } else if (std::regex_match(value, nameRegex)) {
+    } else if (std::regex_match(value, NAME_REGEX)) {
         this->type = ReferenceType::ENT_REF;
         this->value = Value(ValueType::VAR_NAME, value);
     } else {

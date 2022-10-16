@@ -11,6 +11,12 @@
 #include <iostream>
 #include <regex>
 
+const char CLAUSE_SEPARATOR = ';';
+const char ARG_SEPARATOR = ',';
+const int SUCH_THAT_REGEX_CHECK = 5;
+const int PATTERN_REGEX_CHECK = 7; 
+const int WITH_REGEX_CHECK = 4; 
+
 /*
  * Class responsible for parsing the strings of query.
  */
@@ -28,6 +34,7 @@ public:
                                    std::vector<PatternClause> *patternCls);
     static void parseWithClause(std::string *clause, std::vector<Synonym> syns,
                                 std::vector<WithClause> *withCls);
+    static bool isSelectClause(std::string *clause);
     static bool isSuchThatClause(std::string *clause);
     static bool isPatternClause(std::string *clause);
     static bool isWithClause(std::string *clause);

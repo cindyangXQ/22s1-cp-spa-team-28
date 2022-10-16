@@ -55,16 +55,15 @@ QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
     }
 }
 
-// TOFIX: camelCase for all_values
 std::vector<std::string>
 QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
                                        ClauseTable result) {
     for (int i = 0; i < selectRefs.size(); i++) {
         ClauseTable table = ClauseTable({selectRefs[i]});
-        std::vector<std::string> all_values =
+        std::vector<std::string> allValues =
             QueryEvaluator::getAll(selectRefs[i]);
-        for (int j = 0; j < all_values.size(); j++) {
-            table.insert(Tuple({Value(ValueType::WILDCARD, all_values[j])}));
+        for (int j = 0; j < allValues.size(); j++) {
+            table.insert(Tuple({Value(ValueType::WILDCARD, allValues[j])}));
         }
 
         result = ClauseTable::joinTables(result, table);
@@ -83,8 +82,6 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
     return output;
 }
 
-// TOFIX: camelCase for remove_duplicates
-
 std::vector<std::string>
 QueryEvaluator::extractReferenceFromTable(Reference selectedRef,
                                           ClauseTable result) {
@@ -100,14 +97,14 @@ QueryEvaluator::extractReferenceFromTable(Reference selectedRef,
         }
         return result;
     } else {
-        std::unordered_set<std::string> remove_duplicates;
+        std::unordered_set<std::string> removeDuplicates;
         std::vector<std::string> output;
         for (int k = 0; k < selectValues.size(); k++) {
-            remove_duplicates.insert(
+            removeDuplicates.insert(
                 getAttributeValue(selectedRef, selectValues[k].value));
         }
-        output.insert(output.end(), remove_duplicates.begin(),
-                      remove_duplicates.end());
+        output.insert(output.end(), removeDuplicates.begin(),
+                      removeDuplicates.end());
         return output;
     }
 }
