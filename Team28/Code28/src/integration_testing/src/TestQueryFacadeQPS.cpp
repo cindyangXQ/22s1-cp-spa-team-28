@@ -77,6 +77,7 @@ TEST_CASE("QPS evaluate select variables") {
     std::list<std::string> results;
     qps.evaluate(input, results);
     std::list<std::string> correctOutput{"test1", "test2"};
+    results.sort();
     REQUIRE(results == correctOutput);
 }
 
@@ -96,6 +97,7 @@ TEST_CASE("QPS evaluate select constants") {
     std::list<std::string> results;
     qps.evaluate(input, results);
     std::list<std::string> correctOutput{"test1", "test2"};
+    results.sort();
     REQUIRE(results == correctOutput);
 }
 
@@ -115,6 +117,7 @@ TEST_CASE("QPS evaluate select procedures") {
     std::list<std::string> results;
     qps.evaluate(input, results);
     std::list<std::string> correctOutput{"test1", "test2"};
+    results.sort();
     REQUIRE(results == correctOutput);
 }
 
