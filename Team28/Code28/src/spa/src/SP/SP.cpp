@@ -4,6 +4,7 @@
 #include "./ProgramParser/EntityNode.h"
 #include "./ProgramParser/ExprParser.h"
 #include "./ProgramParser/Parser.h"
+#include "./ProgramParser/ParseError.h"
 #include "./Tokenizer/Token.h"
 #include "./Tokenizer/Tokenizer.h"
 
@@ -28,8 +29,8 @@ void SP::parse(std::string filename) {
             delete tokens.back();
             tokens.pop_back();
         }
-    } catch (...) {
-        std::cout << "Parsing failed. Exiting program." << std::endl;
+    } catch (ParseError e) {
+        std::cout << e.what() << ". Parsing failed. Exiting program." << std::endl;
         exit(1);
     }
 }
