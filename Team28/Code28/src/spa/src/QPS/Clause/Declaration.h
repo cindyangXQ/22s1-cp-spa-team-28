@@ -14,7 +14,7 @@ public:
 
     /*
      * Return list of declared synonym.
-    */
+     */
     std::vector<Synonym> getSyns();
 
 private:

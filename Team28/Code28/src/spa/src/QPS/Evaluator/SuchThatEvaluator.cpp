@@ -70,8 +70,7 @@ ClauseResult SuchThatEvaluator::handleBothSynonym(RelationshipReference relRef,
     std::vector<std::pair<Value, Value>> result =
         queryFacade->solveBoth(relRef, leftName, rightName);
     for (int i = 0; i < result.size(); i++) {
-        clauseResult.insert(
-            Tuple({result[i].first, result[i].second}));
+        clauseResult.insert(Tuple({result[i].first, result[i].second}));
     }
     return clauseResult;
 }

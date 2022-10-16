@@ -12,8 +12,7 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
         clauseResultList.push_back(suchThatResult);
     }
     for (size_t i = 0; i < patternCls.size(); i++) {
-        ClauseResult patternResult =
-            patternEvaluator.evaluate(&patternCls[i]);
+        ClauseResult patternResult = patternEvaluator.evaluate(&patternCls[i]);
         clauseResultList.push_back(patternResult);
     }
     return QueryResult(selectClause, clauseResultList);
@@ -21,7 +20,8 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
 
 std::vector<std::string>
 QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
-    std::vector<ClauseResult> clauseResultList = queryResult->getClauseResultList();
+    std::vector<ClauseResult> clauseResultList =
+        queryResult->getClauseResultList();
     SelectClause selectClause = queryResult->getSelectClause();
     SelectType type = selectClause.getSelectType();
     bool haveTableToJoin = false;
@@ -173,7 +173,8 @@ ClauseTable QueryEvaluator::joinAllClauseTables(
     std::vector<ClauseResult> clauseResultList) {
     ClauseTable result = ClauseTable();
     for (int i = 0; i < clauseResultList.size(); i++) {
-        result = ClauseTable::joinTables(result, clauseResultList[i].getTable());
+        result =
+            ClauseTable::joinTables(result, clauseResultList[i].getTable());
     }
     return result;
 }
