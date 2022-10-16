@@ -182,4 +182,46 @@ protected:
             }
         }
     }
+
+    /*
+     * Helper function to validate that both left and right exists in table for
+     * Solvable RelationshipsTable.
+     */
+    bool validateHelper(Reference leftRef, Reference rightRef) {
+        if (leftRef.isWildcard() && rightRef.isWildcard()) {
+            return !leftToRightsMap.empty();
+        }
+
+        if (leftRef.isWildcard()) {
+            Right right = convertToType<Right>(rightRef.getValueString());
+            return !rightToLeftsMap[right].empty();
+        }
+        if (rightRef.isWildcard()) {
+            Left left = convertToType<Left>(leftRef.getValueString());
+            return !leftToRightsMap[left].empty();
+        }
+        Left left = convertToType<Left>(leftRef.getValueString());
+        Right right = convertToType<Right>(rightRef.getValueString());
+        return leftToRightsMap[left].count(right) == 1;
+    }
+
+    /*
+     * Helper function to solveRight for Solvable RelationshipsTable.
+     */
+    std::vector<Value> solveRightHelper(std::vector<Right> *possibleRights,
+                                        Reference leftRef,
+                                        ValueType valueType) {
+        std::unordered_set<Value> intermediateResult;
+        if (leftRef.isWildcard()) {
+            addNonemptyPossibleRights(possibleRights, &intermediateResult,
+                                      valueType);
+        } else {
+            Left left = convertToType<Left>(leftRef.getValueString());
+            addPossibleRights(possibleRights, left, &intermediateResult,
+                              valueType);
+        }
+        std::vector<Value> result = std::vector<Value>(
+            intermediateResult.begin(), intermediateResult.end());
+        return result;
+    }
 };

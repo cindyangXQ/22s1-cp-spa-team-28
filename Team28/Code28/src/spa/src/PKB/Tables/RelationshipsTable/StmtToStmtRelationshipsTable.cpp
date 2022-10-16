@@ -2,22 +2,7 @@
 
 bool StmtToStmtRelationshipsTable::validate(Reference leftRef,
                                             Reference rightRef) {
-    // TODO: Better way to handle wildcards
-    if (leftRef.isWildcard() && rightRef.isWildcard()) {
-        return !leftToRightsMap.empty();
-    }
-
-    if (leftRef.isWildcard()) {
-        int right = std::stoi(rightRef.getValueString());
-        return !rightToLeftsMap[right].empty();
-    }
-    if (rightRef.isWildcard()) {
-        int left = std::stoi(leftRef.getValueString());
-        return !leftToRightsMap[left].empty();
-    }
-    int left = std::stoi(leftRef.getValueString());
-    int right = std::stoi(rightRef.getValueString());
-    return leftToRightsMap[left].count(right) == 1;
+    return validateHelper(leftRef, rightRef);
 };
 
 std::vector<Value> StmtToStmtRelationshipsTable::solveRight(
@@ -35,19 +20,8 @@ std::vector<Value> StmtToStmtRelationshipsTable::solveRight(
             Statement::getStmtTypeFromEntityName(rightSynonym);
         possibleRights = statements->getStatementsByType(statementType);
     }
-    std::unordered_set<Value> intermediateResult;
-    if (leftRef.isWildcard()) {
-        addNonemptyPossibleRights(&possibleRights, &intermediateResult,
-                                  ValueType::STMT_NUM);
-    } else {
-        int left = std::stoi(leftRef.getValueString());
-        addPossibleRights(&possibleRights, left, &intermediateResult,
-                          ValueType::STMT_NUM);
-    }
-    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
-                                                   intermediateResult.end());
-    std::sort(result.begin(), result.end());
-    return result;
+
+    return solveRightHelper(&possibleRights, leftRef, ValueType::STMT_NUM);
 };
 
 std::vector<Value> StmtToStmtRelationshipsTable::solveLeft(

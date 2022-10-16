@@ -2,21 +2,7 @@
 
 bool ProcToVarRelationshipsTable::validate(Reference leftRef,
                                            Reference rightRef) {
-    // TODO: Better way to handle wildcards
-    if (leftRef.isWildcard() && rightRef.isWildcard()) {
-        return !leftToRightsMap.empty();
-    }
-    std::string left = leftRef.getValueString();
-    std::string right = rightRef.getValueString();
-
-    if (leftRef.isWildcard()) {
-        return !rightToLeftsMap[right].empty();
-    }
-    if (rightRef.isWildcard()) {
-        return !leftToRightsMap[left].empty();
-    }
-
-    return leftToRightsMap[left].count(right) == 1;
+    return validateHelper(leftRef, rightRef);
 };
 
 std::vector<Value> ProcToVarRelationshipsTable::solveRight(
@@ -30,19 +16,8 @@ std::vector<Value> ProcToVarRelationshipsTable::solveRight(
     std::unordered_set<std::string> possibleRightsSet = variables->getAll();
     std::vector<std::string> possibleRights = std::vector<std::string>(
         possibleRightsSet.begin(), possibleRightsSet.end());
-    std::unordered_set<Value> intermediateResult;
-    if (leftRef.isWildcard()) {
-        addNonemptyPossibleRights(&possibleRights, &intermediateResult,
-                                  ValueType::VAR_NAME);
-    } else {
-        std::string left = leftRef.getValueString();
-        addPossibleRights(&possibleRights, left, &intermediateResult,
-                          ValueType::VAR_NAME);
-    }
-    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
-                                                   intermediateResult.end());
-    std::sort(result.begin(), result.end());
-    return result;
+
+    return solveRightHelper(&possibleRights, leftRef, ValueType::VAR_NAME);
 }
 
 std::vector<Value> ProcToVarRelationshipsTable::solveLeft(
