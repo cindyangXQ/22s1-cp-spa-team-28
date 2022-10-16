@@ -4,7 +4,7 @@
 #include "RelationshipsTable.h"
 
 class StmtToVarRelationshipsTable : public RelationshipsTable<int, std::string>,
-                                    public virtual Solvable {
+                                    public Solvable {
 public:
     /*
      * Returns true if the relationship holds between leftReference and
