@@ -94,6 +94,28 @@ TEST_CASE("isIfStatement works correctly") {
     REQUIRE(!table.isIfStatement(6));
 }
 
+TEST_CASE("StatementsTable getAllAsString works correctly") {
+    StatementsTable table;
+    Statement assignStmt = Statement(1, StatementType::ASSIGN);
+    Statement callStmt = Statement(2, StatementType::CALL);
+    Statement ifStmt = Statement(3, StatementType::IF);
+    Statement printStmt = Statement(4, StatementType::PRINT);
+    Statement readStmt = Statement(5, StatementType::READ);
+    Statement whileStmt = Statement(6, StatementType::WHILE);
+
+    table.store(&assignStmt);
+    table.store(&callStmt);
+    table.store(&ifStmt);
+    table.store(&printStmt);
+    table.store(&readStmt);
+    table.store(&whileStmt);
+
+    std::vector<std::string> expectedResult = {"1", "2", "3", "4", "5", "6"};
+    std::vector<std::string> output = table.getAllAsString();
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
 TEST_CASE("isAttributableStatement works correctly") {
     StatementsTable table;
     Statement assignStmt = Statement(1, StatementType::ASSIGN);
