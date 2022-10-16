@@ -23,7 +23,9 @@ public:
     template <class T>
     static void extractUtilStmtList(
         std::vector<T> &result, ProgramNode *program,
-        std::function<void(std::vector<StatementNode *> stmtList, std::vector<T> &result)> func);
+        std::function<void(std::vector<StatementNode *> stmtList,
+                           std::vector<T> &result)>
+            func);
 };
 
 // Extract Entities
