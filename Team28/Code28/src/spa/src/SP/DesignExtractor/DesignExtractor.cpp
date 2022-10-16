@@ -353,7 +353,8 @@ template <typename T> void EntityExtractor<T>::populate() {
 
 template <typename U, typename V> void RelationExtractor<U, V>::populate() {
     std::vector<Relationship<U, V> *> relationships = this->extract();
-    this->storage->template store<Relationship<U, V>>(&relationships, this->type);
+    this->storage->template store<Relationship<U, V>>(&relationships,
+                                                      this->type);
 }
 
 void StatementExtractor::populate() {
