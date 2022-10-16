@@ -1,5 +1,7 @@
 #include "PatternEvaluator.h"
 
+// TOFIX: ensure all control paths return a value/throw exception
+// TOFIX: use polymorphism instead (subclass patternClause)
 ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
     if (patternCl->patternType == PatternType::ASSIGN) {
         return handleAssign(patternCl);
@@ -10,6 +12,7 @@ ClauseResult PatternEvaluator::evaluate(PatternClause *patternCl) {
     }
 }
 
+// all of this can be polymorphed under 1 handle method
 ClauseResult PatternEvaluator::handleAssign(PatternClause *patternCl) {
     if (patternCl->entRef.isSynonym) {
         ClauseResult clauseResult = ClauseResult(

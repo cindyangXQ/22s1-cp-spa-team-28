@@ -1,6 +1,10 @@
 #include "QueryParser.h"
 #include "../../SP/SP.h"
 
+// TOFIX: Magic number ";"
+// TOFIX: one regex check at parser level instead of parsexxClause
+// TOFIX: Exceptions can be constants (magic value)
+
 SolvableQuery QueryParser::parse(std::string query) {
     if (query.back() == ';') {
         throw SyntaxError("Semicolon at the end not allowed");
@@ -40,7 +44,7 @@ Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
     std::vector<Synonym> all_syns;
     std::vector<Synonym> curr_syns;
     std::vector<std::string> tokens;
-    std::vector<char> special_chars{','};
+    std::vector<char> special_chars{','}; // TOFIX: camelCase
 
     for (int i = 0; i < clauses.size() - 1; i++) {
         tokens = Utils::tokenize(clauses[i], special_chars);
@@ -67,6 +71,7 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
         throw SyntaxError("Invalid select clause syntax");
     }
 
+    // TOFIX: Nested - 4 levels
     std::string selectValue = Utils::removeTrailingSpaces(matches[1]);
     std::vector<Reference> selectedRefs;
     if (selectValue.compare("BOOLEAN") == 0) {
@@ -177,7 +182,7 @@ void QueryParser::parseWithClause(std::string *clause,
         std::string withClause = matches[1];
 
         std::regex_match(withClause, matches, withRegex);
-        if (matches.size() != 4) {
+        if (matches.size() != 4) { // magic number
             throw SyntaxError("Invalid with clause syntax");
         }
 

@@ -1,5 +1,6 @@
 #include "PatternClause.h"
 
+// TOFIX: maybe use map to handle if-else
 PatternClause::PatternClause(Synonym syn, Reference entRef,
                              Expression expression, bool isExact) {
     if (syn.entity == EntityName::ASSIGN) {

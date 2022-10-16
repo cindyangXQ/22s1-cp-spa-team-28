@@ -8,6 +8,8 @@
 #include "SuchThatEvaluator.h"
 #include <string>
 
+// comment header for all public api
+
 class QueryEvaluator {
 private:
     QueryFacade *queryFacade;

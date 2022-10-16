@@ -3,6 +3,8 @@
 
 enum class ValueType { STMT_NUM, VAR_NAME, WILDCARD };
 
+// private all fields
+
 /*
  * Class encapsulating returned value in query.
  */

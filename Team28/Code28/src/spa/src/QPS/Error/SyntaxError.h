@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+// Define a toString method to return "SyntaxError" -> this will standardise
+// your string name in QPS.cpp
 /*
  * Error class for the validation of query during parsing.
  */

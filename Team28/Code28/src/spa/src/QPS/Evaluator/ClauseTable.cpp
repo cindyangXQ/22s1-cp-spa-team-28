@@ -1,5 +1,11 @@
 #include "ClauseTable.h"
 
+// TOFIX: use camelcase for variables
+// TOFIX: maybe can declare -1 as a const (magic number) [very minor]
+// TOFIX: all loops that are commonly used can be abstracted
+// TOFIX: joinTables() can be abstracted further, might be good to use more
+// helper funcs
+
 std::vector<int>
 ClauseTable::getIndices(std::vector<Reference> common_headers) {
     std::vector<int> indices;

@@ -1,5 +1,9 @@
 #pragma once
 #include "ClauseTable.h"
+
+// TOFIX: ClauseResult() function definition not found (warning)
+// TOFIX: Class header comment / method comment
+
 class ClauseResult {
 public:
     ClauseTable table;

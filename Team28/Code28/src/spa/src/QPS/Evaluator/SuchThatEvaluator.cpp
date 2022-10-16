@@ -1,5 +1,7 @@
 #include "SuchThatEvaluator.h"
 
+// TOFIX: ensure all control paths return a value/throw exception
+// TOFIX: inherit suchthatClause to polymorph handle
 ClauseResult SuchThatEvaluator::evaluate(SuchThatClause *suchThatCl) {
     if (suchThatCl->relationship == RelationshipReference::EMPTY) {
         return ClauseResult(false);
@@ -33,6 +35,7 @@ ClauseResult SuchThatEvaluator::handleNoSynonym(RelationshipReference relRef,
 ClauseResult SuchThatEvaluator::handleLeftSynonym(RelationshipReference relRef,
                                                   Reference left,
                                                   Reference right) {
+    // Possible improvement: overload constructor
     ClauseResult clauseResult = ClauseResult(std::vector{left});
     EntityName leftName = left.syn.entity;
     std::vector<Value> result = queryFacade->solveLeft(relRef, right, leftName);

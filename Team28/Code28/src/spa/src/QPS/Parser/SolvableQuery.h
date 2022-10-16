@@ -7,6 +7,8 @@
 #include "../Clause/WithClause.h"
 #include <iostream>
 
+// TOFIX: public fields to private
+
 /*
  * Class encapsulating the logical representation of the query after parsing.
  */

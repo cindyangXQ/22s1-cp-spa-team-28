@@ -19,6 +19,7 @@ std::vector<std::string> Utils::splitString(std::string str, char splitter) {
     return result;
 }
 
+// Possible optimisation: construct 1 regex and reuse it
 std::string Utils::removeTrailingSpaces(std::string s) {
     return regex_replace(s, std::regex("^ +| +$|( ) +"), "$1");
 }

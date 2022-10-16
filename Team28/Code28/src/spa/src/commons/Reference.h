@@ -5,6 +5,9 @@
 
 enum class ReferenceType { STMT_REF, ENT_REF, WILDCARD, ATTR_REF };
 
+// TOFIX: private all fields. Use getter instead.
+// TOFIX: .syn.name calls can be a single getSynName() method
+
 /*
  * Class encapsulating Reference used in Relationship.
  */

@@ -1,6 +1,9 @@
 #pragma once
 #include "../../commons/Value.h"
 #include <vector>
+
+// TOFIX: separate methods into .cpp file
+
 /*
  * Encapsulates a single row in a table.
  */
@@ -26,6 +29,7 @@ public:
             first.push_back(v);
         }
         bool inIndices;
+        // TOFIX: unsigned int can be int instead?
         for (unsigned int i = 0; i < this->values.size(); i++) {
             inIndices = false;
             for (unsigned int j = 0; j < indices.size(); j++) {
@@ -50,6 +54,7 @@ public:
         return Tuple(new_values);
     }
 
+    // first if can be a guard clause
     bool equal(Tuple rhs) {
         if (this->size() != rhs.size()) {
             return false;

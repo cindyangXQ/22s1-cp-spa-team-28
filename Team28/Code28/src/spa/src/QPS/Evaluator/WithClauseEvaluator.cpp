@@ -1,5 +1,6 @@
 #include "WithClauseEvaluator.h"
 
+// TOFIX: ensure all control paths return a value/throw exception
 ClauseResult WithClauseEvaluator::evaluate(WithClause *withCl) {
     Reference left = withCl->refLeft;
     Reference right = withCl->refRight;
