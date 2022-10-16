@@ -13,11 +13,11 @@ TEST_CASE("getAllStatements returns all statements correctly") {
     statements->store(&test2);
 
     // returned number of statements is equal to number stored
-    REQUIRE(facade.getAllStatements().size() == 2);
+    REQUIRE(facade.getAllStatementsByType(StatementType::STMT).size() == 2);
     // first statement is test1
-    REQUIRE(*facade.getAllStatements().at(0) == test1);
+    REQUIRE(*facade.getAllStatementsByType(StatementType::STMT).at(0) == test1);
     // second statement is test2
-    REQUIRE(*facade.getAllStatements().at(1) == test2);
+    REQUIRE(*facade.getAllStatementsByType(StatementType::STMT).at(1) == test2);
 }
 
 TEST_CASE("getAllStatementByType returns all While statements correctly") {
@@ -46,7 +46,7 @@ TEST_CASE("getAllStatementByType returns all While statements correctly") {
             test5);
 }
 
-TEST_CASE("getAllVariables returns all variables correctly") {
+TEST_CASE("getAllEntities(Variables) returns all variables correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     VariablesTable *variables = storage->getTable<VariablesTable>();
@@ -57,10 +57,10 @@ TEST_CASE("getAllVariables returns all variables correctly") {
     variables->store(&test2);
 
     // returned number of variables is equal to number stored
-    REQUIRE(facade.getAllVariables().size() == 2);
+    REQUIRE(facade.getAllEntities(Designation::VAR).size() == 2);
 }
 
-TEST_CASE("getAllConstants returns all constants correctly") {
+TEST_CASE("getAllEntities(Constants) returns all constants correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     ConstantsTable *constants = storage->getTable<ConstantsTable>();
@@ -71,10 +71,10 @@ TEST_CASE("getAllConstants returns all constants correctly") {
     constants->store(&test2);
 
     // returned number of variables is equal to number stored
-    REQUIRE(facade.getAllConstants().size() == 2);
+    REQUIRE(facade.getAllEntities(Designation::CONST).size() == 2);
 }
 
-TEST_CASE("getAllProcedures returns all constants correctly") {
+TEST_CASE("getAllEntities(Procedures) returns all constants correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
@@ -85,51 +85,18 @@ TEST_CASE("getAllProcedures returns all constants correctly") {
     procedures->store(&test2);
 
     // returned number of procedures is equal to number stored
-    REQUIRE(facade.getAllProcedures().size() == 2);
+    REQUIRE(facade.getAllEntities(Designation::PROC).size() == 2);
 }
 
-TEST_CASE("getStatementByLineNo retrieves statement correctly") {
+TEST_CASE("getAllEntities(Non-Entities) returns nothing") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     StatementsTable *statements = storage->getTable<StatementsTable>();
-    Statement test = Statement(1, StatementType::ASSIGN);
+    Statement test1 = Statement(1, StatementType::ASSIGN);
+    statements->store(&test1);
 
-    statements->store(&test);
-
-    REQUIRE(*facade.getStatementByLineNo(test.getLineNumber()) == test);
-}
-
-TEST_CASE("getProcedureByName retrieves procedure correctly") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    Procedure test = Procedure("test", 1);
-
-    procedures->store(&test);
-
-    REQUIRE(*facade.getProcedureByName(test.getName()) == test);
-}
-
-TEST_CASE("getConstantByName retrieves procedure correctly") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    ConstantsTable *constants = storage->getTable<ConstantsTable>();
-    Constant test = Constant("test");
-
-    constants->store(&test);
-
-    REQUIRE(*facade.getConstantByName(test.getName()) == test);
-}
-
-TEST_CASE("getVariableByName retrieves procedure correctly") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    VariablesTable *variables = storage->getTable<VariablesTable>();
-    Variable test = Variable("test");
-
-    variables->store(&test);
-
-    REQUIRE(*facade.getVariableByName(test.getName()) == test);
+    // returned number of procedures is equal to number stored
+    REQUIRE(facade.getAllEntities(Designation::STMT).size() == 0);
 }
 
 TEST_CASE("StmtToStmt: Validate returns correct results") {
@@ -1123,22 +1090,22 @@ TEST_CASE("GetWhile returns correct results") {
     std::vector<Value> expectedResult;
     std::vector<Value> output;
 
-    // getWhile("x") returns {"1"}
-    output = facade.getWhile("x");
+    // getCond(Designation::WHILE_C, "x") returns {"1"}
+    output = facade.getCond(Designation::WHILE_C, "x");
     expectedResult = {Value(ValueType::STMT_NUM, "1")};
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getWhile("_") returns {"1", "2", "3"}
-    output = facade.getWhile("_");
+    // getCond(Designation::WHILE_C, "_") returns {"1", "2", "3"}
+    output = facade.getCond(Designation::WHILE_C, "_");
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2"),
                       Value(ValueType::STMT_NUM, "3")};
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getWhile("invalid") returns {}
-    output = facade.getWhile("invalid");
+    // getCond(Designation::WHILE_C, "invalid") returns {}
+    output = facade.getCond(Designation::WHILE_C, "invalid");
     expectedResult = {};
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
@@ -1170,7 +1137,7 @@ TEST_CASE("GetWhileAndVar returns correct results") {
     Value stmt3 = Value(ValueType::STMT_NUM, "3");
 
     // getWhileAndVar returns {("1","x"), ("2","y"), ("3","z"),}
-    output = facade.getWhileAndVar();
+    output = facade.getCondAndVar(Designation::WHILE_C);
     expectedResult = {std::make_pair(stmt1, varX), std::make_pair(stmt2, varY),
                       std::make_pair(stmt3, varZ)};
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
@@ -1195,22 +1162,22 @@ TEST_CASE("GetIf returns correct results") {
     std::vector<Value> expectedResult;
     std::vector<Value> output;
 
-    // getIf("x") returns {"1"}
-    output = facade.getIf("x");
+    // getCond(Designation::IF_C, "x") returns {"1"}
+    output = facade.getCond(Designation::IF_C, "x");
     expectedResult = {Value(ValueType::STMT_NUM, "1")};
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getIf("_") returns {"1", "2", "3"}
-    output = facade.getIf("_");
+    // getCond(Designation::IF_C, "_") returns {"1", "2", "3"}
+    output = facade.getCond(Designation::IF_C, "_");
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2"),
                       Value(ValueType::STMT_NUM, "3")};
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // getIf("invalid") returns {}
-    output = facade.getIf("invalid");
+    // getCond(Designation::IF_C, "invalid") returns {}
+    output = facade.getCond(Designation::IF_C, "invalid");
     expectedResult = {};
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
@@ -1242,9 +1209,59 @@ TEST_CASE("GetIfAndVar returns correct results") {
     Value stmt3 = Value(ValueType::STMT_NUM, "3");
 
     // getIfAndVar returns {("1","x"), ("2","y"), ("3","z"),}
-    output = facade.getIfAndVar();
+    output = facade.getCondAndVar(Designation::IF_C);
     expectedResult = {std::make_pair(stmt1, varX), std::make_pair(stmt2, varY),
                       std::make_pair(stmt3, varZ)};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("GetCond(invalidDesignation, validValue) returns nothing") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    IfControlVarTable *ifs = storage->getTable<IfControlVarTable>();
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    ifs->store(&test1);
+    ifs->store(&test2);
+    ifs->store(&test3);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // getCond(Designation::STMT, "x") returns {}}
+    output = facade.getCond(Designation::STMT, "x");
+    expectedResult = {};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("GetCondAndVar(invalidDesignation) returns nothing") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    IfControlVarTable *ifs = storage->getTable<IfControlVarTable>();
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    ifs->store(&test1);
+    ifs->store(&test2);
+    ifs->store(&test3);
+
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // getCondAndVar(invalid) returns {}
+    output = facade.getCondAndVar(Designation::STMT);
+    expectedResult = {};
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }

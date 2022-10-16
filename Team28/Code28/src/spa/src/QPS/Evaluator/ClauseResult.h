@@ -5,7 +5,7 @@ public:
     ClauseTable table;
     bool isEmpty = true;
     ClauseResult();
-    ClauseResult(bool empty) { this->isEmpty = empty; }
+    ClauseResult(bool isEmpty) : isEmpty(isEmpty){};
     explicit ClauseResult(std::vector<Reference> headers)
         : table(ClauseTable(headers)){};
 

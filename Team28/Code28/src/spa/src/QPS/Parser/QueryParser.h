@@ -33,9 +33,10 @@ public:
     static bool isWithClause(std::string *clause);
 
 private:
-    static bool isValidName(std::string name);
     static bool isValidSuchThatClause(RelationshipReference relRef,
                                       Reference left, Reference right);
+    static bool isValidPatternClause(Synonym syn, Reference entRef,
+                                     Expression expr);
     static bool isValidWithClause(Reference left, Reference right);
     static std::vector<Synonym> parseSynonyms(std::vector<std::string> tokens);
     static bool isDuplicateSynonymName(std::vector<Synonym> syns);

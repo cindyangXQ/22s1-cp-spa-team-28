@@ -174,7 +174,8 @@ std::vector<std::string> QueryEvaluator::getAll(Reference select) {
     EntityName type = select.syn.entity;
     if (type == EntityName::STMT) {
         std::vector<Statement *> statementList =
-            (std::vector<Statement *>)this->queryFacade->getAllStatements();
+            (std::vector<Statement *>)this->queryFacade->getAllStatementsByType(
+                StatementType::STMT);
         std::vector<std::string> result;
         for (int i = 0; i < statementList.size(); i++) {
             result.push_back(std::to_string(statementList[i]->getLineNumber()));
@@ -182,15 +183,15 @@ std::vector<std::string> QueryEvaluator::getAll(Reference select) {
         return result;
     } else if (type == EntityName::VARIABLE) {
         std::vector<std::string> variableList =
-            this->queryFacade->getAllVariables();
+            this->queryFacade->getAllEntities(Designation::VAR);
         return variableList;
     } else if (type == EntityName::CONSTANT) {
         std::vector<std::string> constantList =
-            this->queryFacade->getAllConstants();
+            this->queryFacade->getAllEntities(Designation::CONST);
         return constantList;
     } else if (type == EntityName::PROCEDURE) {
         std::vector<std::string> procedureList =
-            this->queryFacade->getAllProcedures();
+            this->queryFacade->getAllEntities(Designation::PROC);
         return procedureList;
     } else {
         StatementType stmtType = Statement::getStmtTypeFromEntityName(type);

@@ -13,7 +13,7 @@ DesignExtractor::DesignExtractor(ProgramNode *program,
 
 template<typename T>
 EntityExtractor<T>::EntityExtractor(ProgramNode *program,
-                                    PopulateFacade *storage, Populate type)
+                                    PopulateFacade *storage, Designation type)
     : DesignExtractor(program, storage) {
     this->type = type;
 }
@@ -21,7 +21,7 @@ EntityExtractor<T>::EntityExtractor(ProgramNode *program,
 template <typename U, typename V>
 RelationExtractor<U, V>::RelationExtractor(ProgramNode *program,
                                            PopulateFacade *storage,
-                                           Populate type)
+                                           Designation type)
     : DesignExtractor(program, storage) {
     this->type = type;
 }
@@ -348,24 +348,24 @@ template <typename U, typename V> void RelationExtractor<U, V>::populate() {
 
 void StatementExtractor::populate() {
     std::vector<Statement *> statements = this->extract();
-    this->storage->store<Statement>(&statements, Populate::STMT);
+    this->storage->store<Statement>(&statements, Designation::STMT);
 
     std::vector<Assignment *> assignments = this->extractAssignments();
-    this->storage->store<Assignment>(&assignments, Populate::ASSIGN);
+    this->storage->store<Assignment>(&assignments, Designation::ASSIGN);
 
     std::vector<Relationship<int, std::string> *> calls = this->extractCalls();
-    this->storage->store<Relationship<int, std::string>>(&calls,
-                                                         Populate::PROC_NAME);
+    this->storage->store<Relationship<int, std::string>>(
+        &calls, Designation::PROC_NAME);
 }
 
 void UsesSExtractor::populate() {
     std::vector<Relationship<int, std::string> *> usesS = this->extract();
     this->storage->store<Relationship<int, std::string>>(&usesS,
-                                                         Populate::USE_S);
+                                                         Designation::USE_S);
 
     this->conVar(ifCondVars, whileCondVars);
     this->storage->store<Relationship<int, std::string>>(&ifCondVars,
-                                                         Populate::IF_C);
+                                                         Designation::IF_C);
     this->storage->store<Relationship<int, std::string>>(&whileCondVars,
-                                                         Populate::WHILE_C);
+                                                         Designation::WHILE_C);
 }

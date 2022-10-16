@@ -19,8 +19,8 @@ TEST_CASE("QPS evaluate select statements") {
     std::string input = "stmt s; Select s";
     std::list<std::string> results;
     qps.evaluate(input, results);
-    std::list<std::string> correct_output{"1", "2"};
-    REQUIRE(results == correct_output);
+    std::list<std::string> correctOutput{"1", "2"};
+    REQUIRE(results == correctOutput);
 }
 
 TEST_CASE("QPS evaluate select assign statements") {
@@ -38,8 +38,8 @@ TEST_CASE("QPS evaluate select assign statements") {
     std::string input = "assign s; Select s";
     std::list<std::string> results;
     qps.evaluate(input, results);
-    std::list<std::string> correct_output{"1", "2"};
-    REQUIRE(results == correct_output);
+    std::list<std::string> correctOutput{"1", "2"};
+    REQUIRE(results == correctOutput);
 }
 
 TEST_CASE("QPS evaluate select if statements") {
@@ -57,8 +57,8 @@ TEST_CASE("QPS evaluate select if statements") {
     std::string input = "if s; Select s";
     std::list<std::string> results;
     qps.evaluate(input, results);
-    std::list<std::string> correct_output{"1"};
-    REQUIRE(results == correct_output);
+    std::list<std::string> correctOutput{"1"};
+    REQUIRE(results == correctOutput);
 }
 
 TEST_CASE("QPS evaluate select variables") {
@@ -76,8 +76,8 @@ TEST_CASE("QPS evaluate select variables") {
     std::string input = "variable v; Select v";
     std::list<std::string> results;
     qps.evaluate(input, results);
-    std::list<std::string> correct_output{"test1", "test2"};
-    REQUIRE(results == correct_output);
+    std::list<std::string> correctOutput{"test1", "test2"};
+    REQUIRE(results == correctOutput);
 }
 
 TEST_CASE("QPS evaluate select constants") {
@@ -95,8 +95,8 @@ TEST_CASE("QPS evaluate select constants") {
     std::string input = "constant c; Select c";
     std::list<std::string> results;
     qps.evaluate(input, results);
-    std::list<std::string> correct_output{"test1", "test2"};
-    REQUIRE(results == correct_output);
+    std::list<std::string> correctOutput{"test1", "test2"};
+    REQUIRE(results == correctOutput);
 }
 
 TEST_CASE("QPS evaluate select procedures") {
@@ -114,8 +114,8 @@ TEST_CASE("QPS evaluate select procedures") {
     std::string input = "procedure p; Select p";
     std::list<std::string> results;
     qps.evaluate(input, results);
-    std::list<std::string> correct_output{"test1", "test2"};
-    REQUIRE(results == correct_output);
+    std::list<std::string> correctOutput{"test1", "test2"};
+    REQUIRE(results == correctOutput);
 }
 
 TEST_CASE("QPS can evaluate select procedures when there are no procedures") {
@@ -147,8 +147,8 @@ TEST_CASE("QPS evaluate syntax error") {
         "variable v; Select v such that Modifies((1, v)";
     std::list<std::string> results;
     qps.evaluate(extra_bracket, results);
-    std::list<std::string> correct_output = {"SyntaxError"};
-    REQUIRE(results == correct_output);
+    std::list<std::string> correctOutput = {"SyntaxError"};
+    REQUIRE(results == correctOutput);
 }
 
 TEST_CASE("QPS evaluate semantic error") {
@@ -167,8 +167,8 @@ TEST_CASE("QPS evaluate semantic error") {
         "variable v; Select v such that Modifies(1, yey)";
     std::list<std::string> results;
     qps.evaluate(undeclared_synonym, results);
-    std::list<std::string> correct_output = {"SemanticError"};
-    REQUIRE(results == correct_output);
+    std::list<std::string> correctOutput = {"SemanticError"};
+    REQUIRE(results == correctOutput);
 }
 
 TEST_CASE("QPS can process queries with follows relationship") {
@@ -193,89 +193,89 @@ TEST_CASE("QPS can process queries with follows relationship") {
     QPS qps = QPS(&facade);
     std::string input;
     std::list<std::string> results;
-    std::list<std::string> correct_output;
-    std::unordered_set<std::string> results_set;
-    std::unordered_set<std::string> correct_output_set;
+    std::list<std::string> correctOutput;
+    std::unordered_set<std::string> resultsSet;
+    std::unordered_set<std::string> correctOutputSet;
 
     input = "stmt s; Select s such that Follows(s, 2)";
-    correct_output = {"1"};
+    correctOutput = {"1"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "stmt s; Select s such that Follows(1, s)";
-    correct_output = {"2"};
+    correctOutput = {"2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "stmt s; Select s such that Follows(1, 2)";
-    correct_output = {"1", "2", "3"};
+    correctOutput = {"1", "2", "3"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "stmt s; Select s such that Follows(2, 1)";
-    correct_output = {};
+    correctOutput = {};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "stmt s; Select s such that Follows(s, 1)";
-    correct_output = {};
+    correctOutput = {};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "stmt s; Select s such that Follows(_, 3)";
-    correct_output = {"1", "2", "3"};
+    correctOutput = {"1", "2", "3"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "stmt s; Select s such that Follows(s, _)";
-    correct_output = {"1", "2"};
+    correctOutput = {"1", "2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "stmt s1; stmt s2; Select s1 such that Follows(s1, s2)";
-    correct_output = {"1", "2"};
+    correctOutput = {"1", "2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 }
 
 TEST_CASE("QPS can process queries with modifies relationship") {
@@ -303,49 +303,49 @@ TEST_CASE("QPS can process queries with modifies relationship") {
     QPS qps = QPS(&facade);
     std::string input;
     std::list<std::string> results;
-    std::list<std::string> correct_output;
-    std::unordered_set<std::string> results_set;
-    std::unordered_set<std::string> correct_output_set;
+    std::list<std::string> correctOutput;
+    std::unordered_set<std::string> resultsSet;
+    std::unordered_set<std::string> correctOutputSet;
 
     input = "stmt s; variable v; Select s such that Modifies(s, v)";
-    correct_output = {"1", "2"};
+    correctOutput = {"1", "2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "stmt s; variable v; Select s such that Modifies(s, \"a\")";
-    correct_output = {"1"};
+    correctOutput = {"1"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "stmt s; variable v; Select s such that Modifies(_, \"a\")";
     results = {};
     qps.evaluate(input, results);
-    correct_output = {"SemanticError"};
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    correctOutput = {"SemanticError"};
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "stmt s; variable v; Select s such that Modifies(1, \"a\")";
-    correct_output = {"1", "2"};
+    correctOutput = {"1", "2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 }
 
 TEST_CASE("QPS can process queries with pattern clause") {
@@ -366,49 +366,49 @@ TEST_CASE("QPS can process queries with pattern clause") {
     QPS qps = QPS(&facade);
     std::string input;
     std::list<std::string> results;
-    std::list<std::string> correct_output;
-    std::unordered_set<std::string> results_set;
-    std::unordered_set<std::string> correct_output_set;
+    std::list<std::string> correctOutput;
+    std::unordered_set<std::string> resultsSet;
+    std::unordered_set<std::string> correctOutputSet;
 
     input = "assign a; Select a pattern a(\"a\", _)";
-    correct_output = {"1"};
+    correctOutput = {"1"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "assign a; Select a pattern a(_, _)";
-    correct_output = {"1", "2"};
+    correctOutput = {"1", "2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "assign a; variable v; Select v pattern a(v, _)";
-    correct_output = {"a", "b"};
+    correctOutput = {"a", "b"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "assign a; variable v; Select a pattern a(\"b\", _\"a\"_)";
-    correct_output = {"2"};
+    correctOutput = {"2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 }
 
 TEST_CASE("QPS can process queries with such that and pattern clause") {
@@ -448,53 +448,53 @@ TEST_CASE("QPS can process queries with such that and pattern clause") {
     QPS qps = QPS(&facade);
     std::string input;
     std::list<std::string> results;
-    std::list<std::string> correct_output;
-    std::unordered_set<std::string> results_set;
-    std::unordered_set<std::string> correct_output_set;
+    std::list<std::string> correctOutput;
+    std::unordered_set<std::string> resultsSet;
+    std::unordered_set<std::string> correctOutputSet;
 
     input = "assign a; variable v; Select a such that Modifies(1, \"a\") "
             "pattern a(\"b\", _\"a\"_)";
-    correct_output = {"2"};
+    correctOutput = {"2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "assign a; variable v; Select v such that Modifies(1, v) pattern "
             "a(v, _\"b\"_)";
-    correct_output = {"a"};
+    correctOutput = {"a"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "assign a; variable v; Select a such that Modifies(a, v) pattern "
             "a(v, _\"b\"_)";
-    correct_output = {"1"};
+    correctOutput = {"1"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "assign a; variable v; Select v such that Uses(a, v) pattern a(_, "
             "_\"b\"_)";
-    correct_output = {"b"};
+    correctOutput = {"b"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 }
 
 TEST_CASE("QPS can process queries with advanced pattern clause") {
@@ -524,51 +524,51 @@ TEST_CASE("QPS can process queries with advanced pattern clause") {
     QPS qps = QPS(&facade);
     std::string input;
     std::list<std::string> results;
-    std::list<std::string> correct_output;
-    std::unordered_set<std::string> results_set;
-    std::unordered_set<std::string> correct_output_set;
+    std::list<std::string> correctOutput;
+    std::unordered_set<std::string> resultsSet;
+    std::unordered_set<std::string> correctOutputSet;
 
     input = "assign a; variable v; Select a pattern a(_, _\"b*a\"_)";
-    correct_output = {"1", "2"};
+    correctOutput = {"1", "2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "assign a; variable v; Select a pattern a(\"b\", \"b * a + (a - a "
             "/ b) * b\")";
-    correct_output = {"2"};
+    correctOutput = {"2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input =
         "assign a; variable v; Select v pattern a(v, _\"(a - a / b)     \"_)";
-    correct_output = {"b"};
+    correctOutput = {"b"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "assign a; variable v; Select v pattern a(v, _\"   1     \"_)";
-    correct_output = {"a"};
+    correctOutput = {"a"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 }
 
 TEST_CASE("QPS can process queries with procedure") {
@@ -609,53 +609,53 @@ TEST_CASE("QPS can process queries with procedure") {
     QPS qps = QPS(&facade);
     std::string input;
     std::list<std::string> results;
-    std::list<std::string> correct_output;
-    std::unordered_set<std::string> results_set;
-    std::unordered_set<std::string> correct_output_set;
+    std::list<std::string> correctOutput;
+    std::unordered_set<std::string> resultsSet;
+    std::unordered_set<std::string> correctOutputSet;
 
     input = "procedure proc1, proc2; variable v; Select proc1 such that "
             "Calls*(proc1, proc2)";
-    correct_output = {"bar"};
+    correctOutput = {"bar"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "procedure proc1, proc2; variable v; Select proc1 such that "
             "Calls(_, proc1)";
-    correct_output = {"foobar"};
+    correctOutput = {"foobar"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "procedure proc1, proc2; variable v; Select v such that "
             "Uses(\"bar\", v)";
-    correct_output = {"b"};
+    correctOutput = {"b"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "procedure proc1, proc2; variable v; Select proc1 such that "
             "Modifies(proc1, _)";
-    correct_output = {"foo"};
+    correctOutput = {"foo"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 }
 
 TEST_CASE("QPS can process queries with while pattern clause") {
@@ -676,39 +676,39 @@ TEST_CASE("QPS can process queries with while pattern clause") {
     QPS qps = QPS(&facade);
     std::string input;
     std::list<std::string> results;
-    std::list<std::string> correct_output;
-    std::unordered_set<std::string> results_set;
-    std::unordered_set<std::string> correct_output_set;
+    std::list<std::string> correctOutput;
+    std::unordered_set<std::string> resultsSet;
+    std::unordered_set<std::string> correctOutputSet;
 
     input = "while w; variable v; Select v pattern w(v, _)";
-    correct_output = {"x", "y", "z"};
+    correctOutput = {"x", "y", "z"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "while w; variable v; Select w pattern w(_, _)";
-    correct_output = {"1", "2", "3"};
+    correctOutput = {"1", "2", "3"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "while w; variable v; Select w pattern w(\"y\", _)";
-    correct_output = {"2"};
+    correctOutput = {"2"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 }
 
 TEST_CASE("QPS can process queries with if pattern clause") {
@@ -729,37 +729,37 @@ TEST_CASE("QPS can process queries with if pattern clause") {
     QPS qps = QPS(&facade);
     std::string input;
     std::list<std::string> results;
-    std::list<std::string> correct_output;
-    std::unordered_set<std::string> results_set;
-    std::unordered_set<std::string> correct_output_set;
+    std::list<std::string> correctOutput;
+    std::unordered_set<std::string> resultsSet;
+    std::unordered_set<std::string> correctOutputSet;
 
     input = "if ifs; variable v; Select ifs pattern ifs(v, _, _)";
-    correct_output = {"1", "2", "3"};
+    correctOutput = {"1", "2", "3"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "if ifs; variable v; Select v pattern ifs(v, _, _)";
-    correct_output = {"x", "y", "z"};
+    correctOutput = {"x", "y", "z"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 
     input = "if ifs; variable v; Select ifs pattern ifs(\"z\", _, _)";
-    correct_output = {"3"};
+    correctOutput = {"3"};
     results = {};
     qps.evaluate(input, results);
-    results_set.clear();
-    correct_output_set.clear();
-    results_set.insert(results.begin(), results.end());
-    correct_output_set.insert(correct_output.begin(), correct_output.end());
-    REQUIRE(results_set == correct_output_set);
+    resultsSet.clear();
+    correctOutputSet.clear();
+    resultsSet.insert(results.begin(), results.end());
+    correctOutputSet.insert(correctOutput.begin(), correctOutput.end());
+    REQUIRE(resultsSet == correctOutputSet);
 }

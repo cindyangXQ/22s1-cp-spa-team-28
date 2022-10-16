@@ -6,20 +6,19 @@ SolvableQuery QueryParser::parse(std::string query) {
         throw SyntaxError("Semicolon at the end not allowed");
     }
     std::vector<std::string> clauses = Utils::splitString(query, ';');
-    size_t size = clauses.size();
-
     Declaration decl;
     SelectClause selectClause;
     std::vector<SuchThatClause> suchThatCls;
     std::vector<PatternClause> patternCls;
     std::vector<WithClause> withCls;
 
-    if (size >= 2) {
+    if (clauses.size() >= 2) {
         decl = QueryParser::parseDeclaration(clauses);
     }
 
     // Extract main clause
-    std::string mainClause = Utils::removeTrailingSpaces(clauses[size - 1]);
+    std::string mainClause =
+        Utils::removeTrailingSpaces(clauses[clauses.size() - 1]);
     selectClause = QueryParser::parseSelectClause(&mainClause, decl.syns);
     while (!Utils::removeTrailingSpaces(mainClause).empty()) {
         if (QueryParser::isSuchThatClause(&mainClause)) {
@@ -34,7 +33,6 @@ SolvableQuery QueryParser::parse(std::string query) {
             throw SyntaxError("Unrecognized clause syntax");
         }
     }
-
     return SolvableQuery(decl, selectClause, suchThatCls, patternCls, withCls);
 }
 
@@ -43,6 +41,7 @@ Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
     std::vector<Synonym> curr_syns;
     std::vector<std::string> tokens;
     std::vector<char> special_chars{','};
+
     for (int i = 0; i < clauses.size() - 1; i++) {
         tokens = Utils::tokenize(clauses[i], special_chars);
         curr_syns = QueryParser::parseSynonyms(tokens);
@@ -56,46 +55,42 @@ Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {
 
 SelectClause QueryParser::parseSelectClause(std::string *clause,
                                             std::vector<Synonym> syns) {
-    if (std::regex_search(*clause, std::regex("\\b(Select)\\b"))) {
-        std::smatch matches;
-        std::regex_match(*clause, matches, selectClauseRegex);
-        std::string selectClause = matches[1];
-
-        std::regex_match(selectClause, matches, selectRegex);
-        if (matches.size() == 0) {
-            throw SyntaxError("Invalid select clause syntax");
-        }
-        std::string selectValue = matches[1];
-        std::vector<Reference> selectedRefs;
-        *clause = Utils::removeString(*clause, selectClause);
-
-        if (selectValue.compare("BOOLEAN") == 0) {
-            return SelectClause(selectedRefs, SelectType::BOOLEAN);
-        } else if (std::regex_search(selectValue, selectTupleRegex)) {
-            selectValue = selectValue.substr(1, selectValue.size() - 2);
-            std::vector<std::string> selectStrings =
-                Utils::splitString(selectValue, ',');
-            for (int i = 0; i < selectStrings.size(); i++) {
-                std::string value = selectStrings[i];
-                if (!std::regex_search(value, synRegex) &&
-                    !std::regex_search(value, attrRefRegex)) {
-                    throw SyntaxError("Invalid select value");
-                }
-                Reference selectedRef = QueryParser::getReference(
-                    Utils::removeTrailingSpaces(value), syns);
-                selectedRefs.push_back(selectedRef);
-            }
-            return SelectClause(selectedRefs, SelectType::TUPLE);
-        } else if (std::regex_search(selectValue, attrRefRegex) ||
-                   std::regex_search(selectValue, synRegex)) {
-            selectValue = Utils::removeTrailingSpaces(selectValue);
-            Reference selectedRef =
-                QueryParser::getReference(selectValue, syns);
-            selectedRefs.push_back(selectedRef);
-            return SelectClause(selectedRefs, SelectType::SINGLE);
-        }
+    if (!std::regex_search(*clause, std::regex("\\b(Select)\\b"))) {
+        throw SyntaxError("Expected select clause");
     }
-    throw SyntaxError("Expected select clause");
+    std::smatch matches;
+    std::regex_match(*clause, matches, selectClauseRegex);
+    std::string selectClause = matches[1];
+    *clause = Utils::removeString(*clause, selectClause);
+    std::regex_match(selectClause, matches, selectRegex);
+    if (matches.size() == 0) {
+        throw SyntaxError("Invalid select clause syntax");
+    }
+
+    std::string selectValue = Utils::removeTrailingSpaces(matches[1]);
+    std::vector<Reference> selectedRefs;
+    if (selectValue.compare("BOOLEAN") == 0) {
+        return SelectClause(selectedRefs, SelectType::BOOLEAN);
+    } else if (std::regex_search(selectValue, selectTupleRegex)) {
+        selectValue = selectValue.substr(1, selectValue.size() - 2);
+        std::vector<std::string> selectStrings =
+            Utils::splitString(selectValue, ',');
+        for (int i = 0; i < selectStrings.size(); i++) {
+            std::string value = Utils::removeTrailingSpaces(selectStrings[i]);
+            if (!std::regex_search(value, attrRefRegex) &&
+                !std::regex_search(value, synRegex)) {
+                throw SyntaxError("Invalid select value");
+            }
+            Reference selectedRef = QueryParser::getReference(value, syns);
+            selectedRefs.push_back(selectedRef);
+        }
+        return SelectClause(selectedRefs, SelectType::TUPLE);
+    } else if (std::regex_search(selectValue, attrRefRegex) ||
+               std::regex_search(selectValue, synRegex)) {
+        Reference selectedRef = QueryParser::getReference(selectValue, syns);
+        selectedRefs.push_back(selectedRef);
+        return SelectClause(selectedRefs, SelectType::SINGLE);
+    }
 }
 
 void QueryParser::parseSuchThatClause(
@@ -106,26 +101,23 @@ void QueryParser::parseSuchThatClause(
         std::smatch matches;
         std::regex_match(*clause, matches, suchThatClauseRegex);
         std::string suchThatClause = matches[1];
-
         std::regex_match(suchThatClause, matches, suchThatRegex);
         if (matches.size() != 5) {
             throw SyntaxError("Invalid such that clause syntax");
         }
 
         // throw an error if unable to find the relationship from the enum table
-        if (relationshipMap.find(matches[2].str()) == relationshipMap.end()) {
+        if (relationshipMap.find(matches[2]) == relationshipMap.end()) {
             throw SyntaxError("Invalid relationship type");
         }
-        RelationshipReference relationship =
-            relationshipMap.at(matches[2].str());
-        Reference left = getReference(matches[3].str(), syns);
-        Reference right = getReference(matches[4].str(), syns);
+        RelationshipReference relationship = relationshipMap.at(matches[2]);
+        Reference left = getReference(matches[3], syns);
+        Reference right = getReference(matches[4], syns);
         if (!isValidSuchThatClause(relationship, left, right)) {
             throw SemanticError("Invalid relationship arguments");
         }
 
         *clause = Utils::removeString(*clause, suchThatClause);
-
         suchThatCls->push_back(SuchThatClause(relationship, left, right));
     }
 }
@@ -138,56 +130,39 @@ void QueryParser::parsePatternClause(std::string *clause,
                              std::regex("^\\s*pattern\\s+|^\\s*and\\s+"))) {
         std::smatch matches;
         std::regex_match(*clause, matches, patternClauseRegex);
-        std::string patternClause = matches[1].str();
-
+        std::string patternClause = matches[1];
         std::regex_match(patternClause, matches, patternRegex);
         if (matches.size() != 7) {
             throw SyntaxError("Invalid pattern clause syntax");
         }
-
-        Synonym syn = getSynonym(matches[2].str(), syns);
-        if (!patternEntityMap.count(syn.entity)) {
-            throw SemanticError(
-                "Pattern only accepts assign, while and if synonym");
+        Synonym syn = getSynonym(matches[2], syns);
+        Reference entRef = getReference(matches[3], syns);
+        Expression expr = Utils::removeTrailingSpaces(matches[5]);
+        bool isExact = expr.find('_') == std::string::npos;
+        if (!isValidPatternClause(syn, entRef, expr)) {
+            throw SemanticError("Invalid pattern clause arguments");
         }
-
-        Reference entRef = getReference(matches[3].str(), syns);
-        if (entRef.isSynonym && entRef.syn.entity != EntityName::VARIABLE) {
-            throw SemanticError("Pattern first argument must be an entity "
-                                "reference or wildcard");
-        } else if (entRef.type == ReferenceType::STMT_REF) {
-            throw SemanticError("Pattern first argument must be an entity "
-                                "reference or wildcard");
+        if (expr.find('_') != std::string::npos && expr != "_") {
+            // Remove _ at the start and end
+            expr = expr.substr(1, expr.size() - 2);
+            expr = Utils::removeTrailingSpaces(expr);
         }
-        Expression expr = matches[5].str();
-        bool isExact = true;
-
-        expr = Utils::removeTrailingSpaces(expr);
-        if (expr.find('_') != std::string::npos) {
-            isExact = false;
-            if (expr.compare("_") != 0) {
-                // Remove _ at the start and end
-                expr.erase(std::remove(expr.begin(), expr.end(), '_'),
-                           expr.end());
-            }
-        }
-        if (expr.compare("_") != 0) {
+        if (expr != "_") {
             if (syn.entity == EntityName::WHILE ||
                 syn.entity == EntityName::IF) {
-                throw SyntaxError("Pattern-if and pattern-while second (and "
-                                  "third) argument can only be a wildcard");
+                throw SyntaxError("Invalid pattern second argument");
             }
             try {
                 // Remove " at the start and end
-                expr.erase(std::remove(expr.begin(), expr.end(), '"'),
-                           expr.end());
+                expr = expr.substr(1, expr.size() - 2);
+                expr = Utils::removeTrailingSpaces(expr);
                 expr = SP::convertExpression(expr);
             } catch (...) {
                 throw SyntaxError("Invalid expression syntax");
             }
         }
-        *clause = Utils::removeString(*clause, patternClause);
 
+        *clause = Utils::removeString(*clause, patternClause);
         patternCls->push_back(PatternClause(syn, entRef, expr, isExact));
     }
 }
@@ -199,15 +174,19 @@ void QueryParser::parseWithClause(std::string *clause,
         std::regex_search(*clause, std::regex("^\\s*with\\s+|^\\s*and\\s+"))) {
         std::smatch matches;
         std::regex_match(*clause, matches, withClauseRegex);
-        std::string withClause = matches[1].str();
+        std::string withClause = matches[1];
 
         std::regex_match(withClause, matches, withRegex);
         if (matches.size() != 4) {
             throw SyntaxError("Invalid with clause syntax");
         }
 
-        Reference left = getReference(matches[2].str(), syns);
-        Reference right = getReference(matches[3].str(), syns);
+        Reference left = getReference(matches[2], syns);
+        Reference right = getReference(matches[3], syns);
+        if (left.type == ReferenceType::WILDCARD ||
+            right.type == ReferenceType::WILDCARD) {
+            throw SyntaxError("With clause arguments cannot be wildcards");
+        }
         if (!isValidWithClause(left, right)) {
             throw SemanticError("Invalid with clause arguments");
         }
@@ -235,7 +214,7 @@ QueryParser::parseSynonyms(std::vector<std::string> tokens) {
         throw SyntaxError("syntax error in declaration clause");
     }
     EntityName entity;
-    if (entityMap.find(tokens[0]) == entityMap.end()) {
+    if (!entityMap.count(tokens[0])) {
         throw SyntaxError("Invalid design entity name");
     } else {
         entity = entityMap.find(tokens[0])->second;
@@ -243,12 +222,12 @@ QueryParser::parseSynonyms(std::vector<std::string> tokens) {
     std::vector<Synonym> syns;
     for (int i = 1; i < tokens.size(); i++) {
         if (i % 2 == 1) {
-            if (!isValidName(tokens[i])) {
+            if (!std::regex_match(tokens[i], synRegex)) {
                 throw SyntaxError("Invalid name in declaration clause");
             }
             syns.push_back(Synonym(entity, tokens[i]));
         } else if (tokens[i].compare(",") != 0) {
-            throw SyntaxError("syntax error in declaration clause");
+            throw SyntaxError("Invalid declaration clause");
         }
     }
     return syns;
@@ -256,16 +235,18 @@ QueryParser::parseSynonyms(std::vector<std::string> tokens) {
 
 Reference QueryParser::getReference(std::string input,
                                     std::vector<Synonym> syns) {
-    if (std::all_of(input.begin(), input.end(), ::isdigit)) {
-        return Reference(input);
-    } else if (input[0] == '\"' && input.back() == '\"') {
-        input.erase(std::remove(input.begin(), input.end(), '\"'), input.end());
+
+    if (input[0] == '\"' && input.back() == '\"') {
+        // Remove " at the start and end
+        input = input.substr(1, input.size() - 2);
         input = Utils::removeTrailingSpaces(input);
         if (!std::regex_match(input, nameRegex)) {
             throw SyntaxError("Invalid reference format");
         }
         return Reference(input);
-    } else if (input == "_") {
+    }
+    if (std::regex_match(input, intRegex) ||
+        std::regex_match(input, wildcardRegex)) {
         return Reference(input);
     } else if (std::regex_match(input, synRegex)) {
         Synonym synonym = getSynonym(input, syns);
@@ -273,11 +254,11 @@ Reference QueryParser::getReference(std::string input,
     } else if (std::regex_match(input, attrRefRegex)) {
         std::smatch matches;
         std::regex_match(input, matches, attrRefRegex);
-        Synonym synonym = getSynonym(matches[1].str(), syns);
+        Synonym synonym = getSynonym(matches[1], syns);
         if (!entityAttrMap.count(matches[2])) {
             throw SyntaxError("Invalid attribute name");
         }
-        EntityAttribute attr = entityAttrMap.find(matches[2].str())->second;
+        EntityAttribute attr = entityAttrMap.find(matches[2])->second;
         return Reference(synonym, attr);
     }
     throw SyntaxError("Invalid reference format");
@@ -293,10 +274,6 @@ Synonym QueryParser::getSynonym(std::string input, std::vector<Synonym> syns) {
     throw SemanticError("Synonym not found");
 }
 
-bool QueryParser::isValidName(std::string name) {
-    return std::regex_match(name, std::regex("^[a-zA-Z][a-zA-Z0-9]*$"));
-}
-
 bool QueryParser::isValidSuchThatClause(RelationshipReference relRef,
                                         Reference left, Reference right) {
     if (relRef == RelationshipReference::EMPTY) {
@@ -304,27 +281,43 @@ bool QueryParser::isValidSuchThatClause(RelationshipReference relRef,
     }
     bool isLeftValid;
     bool isRightValid;
+    std::unordered_set<EntityName> validLeftArg =
+        relationshipLeftArgMap.find(relRef)->second;
+    std::unordered_set<EntityName> validRightArg =
+        relationshipRightArgMap.find(relRef)->second;
+    std::unordered_set<ReferenceType> validLeftRef =
+        relationshipLeftRefMap.find(relRef)->second;
+    std::unordered_set<ReferenceType> validRightRef =
+        relationshipRightRefMap.find(relRef)->second;
+
     if (left.isSynonym) {
-        isLeftValid =
-            relationshipLeftArgMap.find(relRef)->second.count(left.syn.entity);
+        isLeftValid = validLeftArg.count(left.syn.entity);
     } else {
-        isLeftValid =
-            relationshipLeftRefMap.find(relRef)->second.count(left.type);
+        isLeftValid = validLeftRef.count(left.type);
     }
     if (right.isSynonym) {
-        isRightValid = relationshipRightArgMap.find(relRef)->second.count(
-            right.syn.entity);
+        isRightValid = validRightArg.count(right.syn.entity);
     } else {
-        isRightValid =
-            relationshipRightRefMap.find(relRef)->second.count(right.type);
+        isRightValid = validRightRef.count(right.type);
     }
     return isLeftValid && isRightValid;
 }
 
+bool QueryParser::isValidPatternClause(Synonym syn, Reference entRef,
+                                       Expression expr) {
+    if (!patternEntityMap.count(syn.entity)) {
+        return false;
+    } else if ((entRef.isSynonym &&
+                entRef.syn.entity != EntityName::VARIABLE) ||
+               entRef.type == ReferenceType::STMT_REF ||
+               entRef.type == ReferenceType::ATTR_REF) {
+        return false;
+    }
+    return true;
+}
+
 bool QueryParser::isValidWithClause(Reference left, Reference right) {
-    if (left.isSynonym || right.isSynonym ||
-        left.type == ReferenceType::WILDCARD ||
-        right.type == ReferenceType::WILDCARD) {
+    if (left.isSynonym || right.isSynonym) {
         return false;
     }
     if (left.attr == EntityAttribute::PROC_NAME ||

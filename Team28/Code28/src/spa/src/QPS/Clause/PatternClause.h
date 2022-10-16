@@ -10,12 +10,13 @@ typedef std::string Expression;
  */
 class PatternClause {
 public:
-    Synonym syn = Synonym();
+    Synonym syn;
     PatternType patternType;
     Reference entRef;
     Expression expression;
     bool isExact;
-    PatternClause();
+
+    PatternClause(){};
     PatternClause(Synonym syn, Reference entRef, Expression expression,
                   bool isExact);
 };

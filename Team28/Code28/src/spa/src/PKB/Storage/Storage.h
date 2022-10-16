@@ -16,7 +16,6 @@
 
 #include "../Tables/AssignmentsTable/AssignmentsTable.h"
 #include "../Tables/NamesTable/NamesTable.h"
-#include "../Tables/RelationshipsTable/CallProcTable.h"
 #include "../Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
@@ -26,29 +25,6 @@
 #include "../Tables/Table.h"
 
 #include "StorageView.h"
-
-enum class Populate {
-    STMT,
-    ASSIGN,
-    VAR,
-    CONST,
-    PROC,
-    FOLLOWS,
-    FOLLOWS_T,
-    PARENT,
-    PARENT_T,
-    MOD_S,
-    MOD_P,
-    USE_S,
-    USE_P,
-    CALL,
-    CALL_T,
-    B_IN,
-    B_OUT,
-    IF_C,
-    WHILE_C,
-    PROC_NAME
-};
 
 /*
  * Encapsulates a Storage class which is responsible for storing information to
@@ -75,9 +51,14 @@ public:
     Solvable *getRsTable(RelationshipReference rsRef, ReferenceType leftType);
 
     /*
-     * Retrieve a table by Populate.
+     * Retrieve a table by Designation.
      */
-    Table *getStoreTable(Populate popType);
+    Table *getDesignationTable(Designation designType);
+
+    /*
+     * Retrieve a UsesControlVarTable by Designation.
+     */
+    UsesControlVarTable *getControlVarTable(Designation designType);
 
     /*
      * Retrieves Modifies Tables
@@ -102,18 +83,19 @@ private:
      */
     std::map<RelationshipReference, Solvable *> rsTables;
     /*
-     * Mapping of Populate to Table for PopulateFacade use.
+     * Mapping of Designation to Table for external facing APIs in
+     * PopulateFacade/QueryFacade to use.
      */
-    std::map<Populate, Table *> popTables;
+    std::map<Designation, Table *> designTables;
     StorageView *storageView;
 
     /*
      * Template method init and store Table that can be populated externally.
      */
-    template <typename TableClass> void initTable(Populate popType) {
+    template <typename TableClass> void initTable(Designation designType) {
         TableClass *table = new TableClass();
         this->tables[typeid(TableClass)] = table;
-        this->popTables[popType] = table;
+        this->designTables[designType] = table;
     }
 
     /*

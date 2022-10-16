@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include <vector>
 
 #include "../../../commons/Statement.h"
@@ -17,6 +18,11 @@ public:
      * Stores a statement into the StatementsTable.
      */
     void store(TableValue *statement);
+
+    /*
+     * Returns string form of all statements.
+     */
+    std::vector<std::string> getAllAsString();
 
     /*
      * Retrieves a statement from StatementsTable by index.

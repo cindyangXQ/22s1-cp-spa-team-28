@@ -29,6 +29,19 @@ public:
     }
 
     /*
+     * Returns string form of all relationships.
+     */
+    std::vector<std::string> getAllAsString() {
+        std::vector<std::string> result = {};
+        for (auto const &[left, val] : leftToRightsMap) {
+            for (Right right : val) {
+                result.push_back(toString(left) + ":" + toString(right));
+            }
+        }
+        return result;
+    };
+
+    /*
      * Stores a Left to RightToLeftsMap.
      */
     void storeLeftToRightMap(Right right, Left left) {
