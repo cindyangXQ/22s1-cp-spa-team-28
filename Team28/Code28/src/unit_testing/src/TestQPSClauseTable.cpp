@@ -46,10 +46,10 @@ TEST_CASE("ClauseTable can get indices of common headers from a tables") {
     Synonym syn3 = Synonym(EntityName::STMT, "s");
 
     std::vector<Reference> header1{Reference(syn1), Reference(syn2), Reference(syn3)};
-    std::vector<Reference> common_header{Reference(syn3), Reference(syn1)};
+    std::vector<Reference> commonHeader{Reference(syn3), Reference(syn1)};
 
     ClauseTable table1 = ClauseTable(header1);
-    std::vector<int> indices = table1.getIndices(common_header);
+    std::vector<int> indices = table1.getIndices(commonHeader);
     REQUIRE(indices.size() == 2);
     REQUIRE(indices[0] == 2);
     REQUIRE(indices[1] == 0);
