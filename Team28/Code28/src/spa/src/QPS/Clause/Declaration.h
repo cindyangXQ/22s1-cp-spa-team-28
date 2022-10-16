@@ -10,6 +10,6 @@
 class Declaration {
 public:
     std::vector<Synonym> syns;
-    Declaration();
-    Declaration(std::vector<Synonym> syns);
+    Declaration(){};
+    Declaration(std::vector<Synonym> syns) : syns(syns){};
 };
