@@ -2,6 +2,7 @@
 #include "../Tokenizer/Token.h"
 #include "EntityNode.h"
 #include "ExprParser.h"
+#include "ParseError.h"
 #include <map>
 #include <vector>
 
@@ -43,7 +44,7 @@ ProgramNode *ProgramParser::parse() {
         // Check if procedures have unique names.
         for (size_t i = 0; i < procNames.size(); i++) {
             if (temp->getName() == procNames[i]) {
-                throw "procedure of same name is not allowed";
+                throw ParseError("procedure of same name is not allowed");
             }
         }
         procNames.push_back(temp->getName());
@@ -68,7 +69,7 @@ ProgramNode *ProgramParser::parse() {
         for (size_t j = 0; j < procCallsMap[procNames[i]].size(); j++) {
             if (find(begin(procNames), end(procNames),
                      procCallsMap[procNames[i]][j]) == end(procNames)) {
-                throw "calling undeclared procedure is not allowed";
+                throw ParseError("calling undeclared procedure is not allowed");
             }
         }
     }
@@ -80,7 +81,7 @@ void ProgramParser::checkCall(
     std::string proc, std::vector<std::string> path,
     std::map<std::string, std::vector<std::string>> &callmap) {
     if (find(begin(path), end(path), proc) != end(path)) {
-        throw "cyclic calling is not allowed";
+        throw ParseError("cyclic calling is not allowed");
     }
 
     path.push_back(proc);
@@ -112,7 +113,7 @@ ProcedureNode *ProcedureParser::parse() {
             std::vector<std::string> stmCalls = temp->getAllCalls();
             for (size_t i = 0; i < stmCalls.size(); i++) {
                 if (stmCalls[i] == secondToken->getValue()) {
-                    throw "recursive call is not allowed";
+                    throw ParseError("recursive call is not allowed");
                 }
                 allCalls.push_back(stmCalls[i]);
             }
@@ -121,14 +122,14 @@ ProcedureNode *ProcedureParser::parse() {
 
             offset = parser.getOffset();
             if (offset >= tokenList.size()) {
-                throw "procedure wrong syntax";
+                throw ParseError("procedure wrong syntax");
             }
         }
     } else {
-        throw "procedure wrong syntax";
+        throw ParseError("procedure wrong syntax");
     }
     if (stmtList.size() == 0) {
-        throw "procedure wrong syntax";
+        throw ParseError("procedure wrong syntax");
     }
     offset++;
 
@@ -167,7 +168,7 @@ StatementNode *StatementParser::parse() {
             result = parser.parse();
             offset = parser.getOffset();
         } else {
-            throw "statement wrong syntax";
+            throw ParseError("statement wrong syntax");
         }
     } else {
         AssignStmParser parser = AssignStmParser(offset, tokenList, line);
@@ -190,7 +191,7 @@ ReadStatementNode *ReadStmParser::parse() {
         return new ReadStatementNode(new VariableNode(secondToken->getValue()),
                                      line);
     } else {
-        throw "read statement wrong syntax";
+        throw ParseError("read statement wrong syntax");
     }
 }
 
@@ -206,7 +207,7 @@ PrintStatementNode *PrintStmParser::parse() {
         return new PrintStatementNode(new VariableNode(secondToken->getValue()),
                                       line);
     } else {
-        throw "print statement wrong syntax";
+        throw ParseError("print statement wrong syntax");
     }
 }
 
@@ -222,7 +223,7 @@ CallStatementNode *CallStmParser::parse() {
         return new CallStatementNode(new VariableNode(secondToken->getValue()),
                                      line);
     } else {
-        throw "call statement wrong syntax";
+        throw ParseError("call statement wrong syntax");
     }
 }
 
@@ -240,7 +241,7 @@ AssignStatementNode *AssignStmParser::parse() {
         return new AssignStatementNode(new VariableNode(firstToken->getValue()),
                                        expr, line);
     } else {
-        throw "assignment statement wrong syntax";
+        throw ParseError("assignment statement wrong syntax");
     }
 }
 
@@ -256,16 +257,16 @@ WhileStatementNode *WhileStmParser::parse() {
         cond = parser.parse();
         if (std::find(std::begin(REL_LIST), std::end(REL_LIST),
                       cond->getToken()->getValue()) == std::end(REL_LIST)) {
-            throw "invalid cond expression";
+            throw ParseError("invalid cond expression");
         }
         offset = parser.getOffset();
         if (tokens.at(offset)->equals(")")) {
             offset++;
         } else {
-            throw "while statement wrong syntax";
+            throw ParseError("while statement wrong syntax");
         }
     } else {
-        throw "while statement wrong syntax";
+        throw ParseError("while statement wrong syntax");
     }
 
     Token *curr = tokens.at(offset++);
@@ -280,7 +281,7 @@ WhileStatementNode *WhileStmParser::parse() {
             stmtList.push_back(temp);
             offset = parser.getOffset();
             if (offset >= tokens.size()) {
-                throw "while statement wrong syntax";
+                throw ParseError("while statement wrong syntax");
             }
 
             std::vector<std::string> stmCalls = temp->getAllCalls();
@@ -289,7 +290,7 @@ WhileStatementNode *WhileStmParser::parse() {
             }
         }
         if (stmtList.size() == 0) {
-            throw "while statement wrong syntax";
+            throw ParseError("while statement wrong syntax");
         }
         offset++;
         WhileStatementNode *result =
@@ -297,7 +298,7 @@ WhileStatementNode *WhileStmParser::parse() {
         result->setAllCalls(allCalls);
         return result;
     } else {
-        throw "while statement wrong syntax";
+        throw ParseError("while statement wrong syntax");
     }
 }
 
@@ -314,15 +315,15 @@ IfStatementNode *IfStmParser::parse() {
         cond = parser.parse();
         if (std::find(std::begin(REL_LIST), std::end(REL_LIST),
                       cond->getToken()->getValue()) == std::end(REL_LIST)) {
-            throw "invalid cond expression";
+            throw ParseError("invalid cond expression");
         }
         offset = parser.getOffset();
         if (!tokens.at(offset++)->equals(")") ||
             !tokens.at(offset++)->equals("then")) {
-            throw "if statement wrong syntax";
+            throw ParseError("if statement wrong syntax");
         }
     } else {
-        throw "if statement wrong syntax";
+        throw ParseError("if statement wrong syntax");
     }
 
     Token *curr = tokens.at(offset++);
@@ -338,7 +339,7 @@ IfStatementNode *IfStmParser::parse() {
             ifStmtList.push_back(temp);
             offset = parser.getOffset();
             if (offset >= tokens.size()) {
-                throw "if statement wrong syntax";
+                throw ParseError("if statement wrong syntax");
             }
             std::vector<std::string> stmCalls = temp->getAllCalls();
             for (size_t i = 0; i < stmCalls.size(); i++) {
@@ -347,12 +348,12 @@ IfStatementNode *IfStmParser::parse() {
         }
         offset++;
     } else {
-        throw "while statement wrong syntax";
+        throw ParseError("while statement wrong syntax");
     }
 
     if (!tokens.at(offset++)->equals("else") ||
         !tokens.at(offset++)->equals("{")) {
-        throw "if statement wrong syntax";
+        throw ParseError("if statement wrong syntax");
     }
     while (!tokens.at(offset)->equals("}")) {
         StatementParser parser = StatementParser(offset, tokens, line);
@@ -361,7 +362,7 @@ IfStatementNode *IfStmParser::parse() {
         elseStmtList.push_back(temp);
         offset = parser.getOffset();
         if (offset >= tokens.size()) {
-            throw "while statement wrong syntax";
+            throw ParseError("while statement wrong syntax");
         }
         std::vector<std::string> stmCalls = temp->getAllCalls();
         for (size_t i = 0; i < stmCalls.size(); i++) {
@@ -370,7 +371,7 @@ IfStatementNode *IfStmParser::parse() {
     }
     offset++;
     if (ifStmtList.size() == 0 || elseStmtList.size() == 0) {
-        throw "if statement wrong syntax";
+        throw ParseError("if statement wrong syntax");
     }
     IfStatementNode *result =
         new IfStatementNode(ifStmtList, elseStmtList, cond, startline);
