@@ -17,8 +17,7 @@ SolvableQuery QueryParser::parse(std::string query) {
     }
 
     // Extract main clause
-    std::string mainClause =
-        Utils::trimSpaces(clauses[clauses.size() - 1]);
+    std::string mainClause = Utils::trimSpaces(clauses[clauses.size() - 1]);
     selectClause = QueryParser::parseSelectClause(&mainClause, decl.syns);
     while (!Utils::trimSpaces(mainClause).empty()) {
         if (QueryParser::isSuchThatClause(&mainClause)) {
