@@ -17,6 +17,14 @@ void StatementsTable::store(TableValue *statement) {
     this->statementTypeIndexes[type].push_back(index);
 }
 
+std::vector<std::string> StatementsTable::getAllAsString() {
+    std::vector<std::string> result = {};
+    for (Statement *stmt : this->statements) {
+        result.push_back(std::to_string(stmt->getLineNumber()));
+    }
+    return result;
+};
+
 Statement *StatementsTable::retrieve(const int &lineNum) {
     // currently assumes that lineNum is unique
     for (Statement *statement : this->statements) {

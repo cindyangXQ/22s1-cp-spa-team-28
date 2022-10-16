@@ -27,6 +27,11 @@ public:
     void store(TableValue *assignment);
 
     /*
+     * Returns string form of all assignments.
+     */
+    std::vector<std::string> getAllAsString();
+
+    /*
      * Return list of values of assignments of the given varName and expression
      * if they exists in an assignment.
      */

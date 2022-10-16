@@ -26,29 +26,6 @@
 
 #include "StorageView.h"
 
-enum class Designation {
-    STMT,
-    ASSIGN,
-    VAR,
-    CONST,
-    PROC,
-    FOLLOWS,
-    FOLLOWS_T,
-    PARENT,
-    PARENT_T,
-    MOD_S,
-    MOD_P,
-    USE_S,
-    USE_P,
-    CALL,
-    CALL_T,
-    B_IN,
-    B_OUT,
-    IF_C,
-    WHILE_C,
-    PROC_NAME
-};
-
 /*
  * Encapsulates a Storage class which is responsible for storing information to
  * tables in PKB.
@@ -76,7 +53,7 @@ public:
     /*
      * Retrieve a table by Designation.
      */
-    Table *getStoreTable(Designation designType);
+    Table *getDesignationTable(Designation designType);
 
     /*
      * Retrieves Modifies Tables

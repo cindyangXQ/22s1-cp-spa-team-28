@@ -183,15 +183,15 @@ std::vector<std::string> QueryEvaluator::getAll(Reference select) {
         return result;
     } else if (type == EntityName::VARIABLE) {
         std::vector<std::string> variableList =
-            this->queryFacade->getAllVariables();
+            this->queryFacade->getAllEntities(Designation::VAR);
         return variableList;
     } else if (type == EntityName::CONSTANT) {
         std::vector<std::string> constantList =
-            this->queryFacade->getAllConstants();
+            this->queryFacade->getAllEntities(Designation::CONST);
         return constantList;
     } else if (type == EntityName::PROCEDURE) {
         std::vector<std::string> procedureList =
-            this->queryFacade->getAllProcedures();
+            this->queryFacade->getAllEntities(Designation::PROC);
         return procedureList;
     } else {
         StatementType stmtType = Statement::getStmtTypeFromEntityName(type);

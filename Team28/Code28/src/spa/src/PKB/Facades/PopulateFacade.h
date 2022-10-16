@@ -19,7 +19,7 @@ public:
      */
     template <typename T>
     void store(std::vector<T *> *items, Designation popType) {
-        Table *table = this->storage->getStoreTable(popType);
+        Table *table = this->storage->getDesignationTable(popType);
         for (T *item : *items) {
             table->store(item);
         }

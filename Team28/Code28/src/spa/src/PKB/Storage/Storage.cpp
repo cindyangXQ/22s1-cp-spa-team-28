@@ -77,7 +77,7 @@ Solvable *Storage::getRsTable(RelationshipReference rsRef,
     return this->rsTables.at(rsRef);
 };
 
-Table *Storage::getStoreTable(Designation designType) {
+Table *Storage::getDesignationTable(Designation designType) {
     return this->designTables.at(designType);
 };
 

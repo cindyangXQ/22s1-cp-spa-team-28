@@ -19,6 +19,11 @@ public:
     void store(TableValue *statement);
 
     /*
+     * Returns string form of all statements.
+     */
+    std::vector<std::string> getAllAsString();
+
+    /*
      * Retrieves a statement from StatementsTable by index.
      */
     Statement *retrieve(const int &index);

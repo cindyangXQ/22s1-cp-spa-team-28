@@ -50,28 +50,12 @@ QueryFacade::getAllStatementsByType(StatementType type) {
     return results;
 }
 
-std::vector<std::string> QueryFacade::getAllVariables() {
-    VariablesTable *variables = this->storage->getTable<VariablesTable>();
-    std::unordered_set names = variables->getAll();
-    std::vector<std::string> result(names.begin(), names.end());
-
-    return result;
-}
-
-std::vector<std::string> QueryFacade::getAllConstants() {
-    ConstantsTable *constants = this->storage->getTable<ConstantsTable>();
-    std::unordered_set names = constants->getAll();
-    std::vector<std::string> result(names.begin(), names.end());
-
-    return result;
-}
-
-std::vector<std::string> QueryFacade::getAllProcedures() {
-    ProceduresTable *procedures = this->storage->getTable<ProceduresTable>();
-    std::unordered_set names = procedures->getAll();
-    std::vector<std::string> result(names.begin(), names.end());
-
-    return result;
+std::vector<std::string> QueryFacade::getAllEntities(Designation entityType) {
+    if (namedEntitiesSet.count(entityType) == 0) {
+        return std::vector<std::string>();
+    }
+    Table *entityTable = this->storage->getDesignationTable(entityType);
+    return entityTable->getAllAsString();
 }
 
 bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,

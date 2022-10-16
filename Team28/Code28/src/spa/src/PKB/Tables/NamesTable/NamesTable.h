@@ -27,6 +27,14 @@ public:
     };
 
     /*
+     * Returns all names.
+     */
+    std::vector<std::string> getAllAsString() {
+        std::vector<std::string> result(this->names.begin(), this->names.end());
+        return result;
+    };
+
+    /*
      * Retrieves an entity from NamesTable by Name.
      */
     virtual T *retrieve(const std::string &name) {

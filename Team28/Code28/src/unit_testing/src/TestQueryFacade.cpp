@@ -46,7 +46,7 @@ TEST_CASE("getAllStatementByType returns all While statements correctly") {
             test5);
 }
 
-TEST_CASE("getAllVariables returns all variables correctly") {
+TEST_CASE("getAllEntities(Variables) returns all variables correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     VariablesTable *variables = storage->getTable<VariablesTable>();
@@ -57,10 +57,10 @@ TEST_CASE("getAllVariables returns all variables correctly") {
     variables->store(&test2);
 
     // returned number of variables is equal to number stored
-    REQUIRE(facade.getAllVariables().size() == 2);
+    REQUIRE(facade.getAllEntities(Designation::VAR).size() == 2);
 }
 
-TEST_CASE("getAllConstants returns all constants correctly") {
+TEST_CASE("getAllEntities(Constants) returns all constants correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     ConstantsTable *constants = storage->getTable<ConstantsTable>();
@@ -71,10 +71,10 @@ TEST_CASE("getAllConstants returns all constants correctly") {
     constants->store(&test2);
 
     // returned number of variables is equal to number stored
-    REQUIRE(facade.getAllConstants().size() == 2);
+    REQUIRE(facade.getAllEntities(Designation::CONST).size() == 2);
 }
 
-TEST_CASE("getAllProcedures returns all constants correctly") {
+TEST_CASE("getAllEntities(Procedures) returns all constants correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
@@ -85,7 +85,18 @@ TEST_CASE("getAllProcedures returns all constants correctly") {
     procedures->store(&test2);
 
     // returned number of procedures is equal to number stored
-    REQUIRE(facade.getAllProcedures().size() == 2);
+    REQUIRE(facade.getAllEntities(Designation::PROC).size() == 2);
+}
+
+TEST_CASE("getAllEntities(Non-Entities) returns nothing") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    Statement test1 = Statement(1, StatementType::ASSIGN);
+    statements->store(&test1);
+
+    // returned number of procedures is equal to number stored
+    REQUIRE(facade.getAllEntities(Designation::STMT).size() == 0);
 }
 
 TEST_CASE("StmtToStmt: Validate returns correct results") {
