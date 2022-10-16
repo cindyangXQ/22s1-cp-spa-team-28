@@ -58,6 +58,9 @@ public:
     bool hasSecondaryAttribute(const int &index);
 
 private:
+    const std::string STMT_TYPE_NONE_INVALID_USE =
+        "StatementType cannot be NONE";
+
     std::map<StatementType, std::vector<int>> statementTypeIndexes = {
         {StatementType::READ, {}},   {StatementType::PRINT, {}},
         {StatementType::ASSIGN, {}}, {StatementType::CALL, {}},

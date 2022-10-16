@@ -32,6 +32,14 @@ TEST_CASE(
             StatementType::ASSIGN);
 }
 
+TEST_CASE("StatementsTable throws exception for NONE") {
+    StatementsTable table;
+    Statement test = Statement(1, StatementType::NONE);
+
+    // test is stored and retrieved correctly
+    REQUIRE_THROWS(table.store(&test), "StatementType cannot be NONE");
+}
+
 TEST_CASE("StatementsTable can getAll statements correctly") {
     StatementsTable table;
     Statement test1 = Statement(1, StatementType::ASSIGN);

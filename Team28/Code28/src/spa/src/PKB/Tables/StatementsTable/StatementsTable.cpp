@@ -10,7 +10,7 @@ void StatementsTable::store(TableValue *statement) {
     int index = stmt->getLineNumber();
 
     if (type == StatementType::NONE) {
-        // TODO error handling
+        throw std::invalid_argument(STMT_TYPE_NONE_INVALID_USE);
     }
 
     this->statements.push_back(stmt);
