@@ -20,8 +20,12 @@ std::vector<std::string> Utils::splitString(std::string str, char splitter) {
 }
 
 // Possible optimisation: construct 1 regex and reuse it
-std::string Utils::removeTrailingSpaces(std::string s) {
-    return regex_replace(s, std::regex("^ +| +$|( ) +"), "$1");
+std::string Utils::trimSpaces(std::string s) {
+    // Trim left
+    s = std::regex_replace(s, std::regex("^\\s+"), std::string(""));
+    // Trim right
+    s = std::regex_replace(s, std::regex("\\s+$"), std::string(""));
+    return s;
 }
 
 std::vector<std::string> Utils::tokenize(std::string str,

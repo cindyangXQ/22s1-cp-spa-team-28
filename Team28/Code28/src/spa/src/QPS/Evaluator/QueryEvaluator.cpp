@@ -77,7 +77,7 @@ QueryEvaluator::extractTuplesFromTable(std::vector<Reference> selectRefs,
             Value v = row.values[indices[j]];
             tuple += getAttributeValue(selectRefs[j], v.value) + " ";
         }
-        output.push_back(Utils::removeTrailingSpaces(tuple));
+        output.push_back(Utils::trimSpaces(tuple));
     }
     return output;
 }

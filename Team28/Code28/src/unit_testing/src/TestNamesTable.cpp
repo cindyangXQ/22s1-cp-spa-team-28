@@ -3,6 +3,9 @@
 #include "commons/Procedure.h"
 #include "commons/Variable.h"
 
+#include <algorithm>
+#include <string>
+
 #include "catch.hpp"
 
 TEST_CASE("ConstantsTable can store and retrieve correctly") {
@@ -100,6 +103,7 @@ TEST_CASE("VariablesTable getAllAsString works correctly") {
 
     std::vector<std::string> expectedResult = {"test1", "test2"};
     std::vector<std::string> output = table.getAllAsString();
+    std::sort(output.begin(), output.end());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
@@ -114,6 +118,7 @@ TEST_CASE("ConstantsTable getAllAsString works correctly") {
 
     std::vector<std::string> expectedResult = {"test1", "test2"};
     std::vector<std::string> output = table.getAllAsString();
+    std::sort(output.begin(), output.end());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
@@ -127,6 +132,7 @@ TEST_CASE("ProceduresTable getAllAsString works correctly") {
 
     std::vector<std::string> expectedResult = {"test1", "test2"};
     std::vector<std::string> output = table.getAllAsString();
+    std::sort(output.begin(), output.end());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
