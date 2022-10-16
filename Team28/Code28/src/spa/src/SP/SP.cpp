@@ -3,8 +3,8 @@
 #include "./DesignExtractor/DesignExtractor.h"
 #include "./ProgramParser/EntityNode.h"
 #include "./ProgramParser/ExprParser.h"
-#include "./ProgramParser/Parser.h"
 #include "./ProgramParser/ParseError.h"
+#include "./ProgramParser/Parser.h"
 #include "./Tokenizer/Token.h"
 #include "./Tokenizer/Tokenizer.h"
 
