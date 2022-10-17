@@ -275,6 +275,18 @@ protected:
         return statements->getStatementsByType(statementType);
     }
 
+    /*
+     * Helper function to get names from the given NamesTable.
+     */
+    template <typename T>
+    std::vector<std::string> getNamesHelper(NamesTable<T> *namesTable) {
+        // TODO: consider returning set directly
+        std::unordered_set<std::string> namesSet = namesTable->getAll();
+        std::vector<std::string> namesVector =
+            std::vector<std::string>(namesSet.begin(), namesSet.end());
+        return namesVector;
+    }
+
 private:
     const std::string MORE_THAN_ONE_RIGHT =
         "There exists more than 1 Right value mapped to given Left";
