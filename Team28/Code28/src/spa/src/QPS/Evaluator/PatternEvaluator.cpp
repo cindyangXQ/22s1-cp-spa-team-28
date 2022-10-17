@@ -44,8 +44,8 @@ ClauseResult PatternEvaluator::handleAssign(PatternClause *patternCl) {
 ClauseResult PatternEvaluator::handleWhile(PatternClause *patternCl) {
     Reference entRef = patternCl->getEntRef();
     if (entRef.isASynonym()) {
-        ClauseResult clauseResult = ClauseResult(std::vector{
-            Reference(patternCl->getSyn()), entRef});
+        ClauseResult clauseResult =
+            ClauseResult(std::vector{Reference(patternCl->getSyn()), entRef});
         std::vector<std::pair<Value, Value>> result =
             queryFacade->getCondAndVar(Designation::WHILE_C);
         for (int i = 0; i < result.size(); i++) {
@@ -57,8 +57,8 @@ ClauseResult PatternEvaluator::handleWhile(PatternClause *patternCl) {
         std::string expr = patternCl->getExpression();
         ClauseResult clauseResult =
             ClauseResult(std::vector{Reference(patternCl->getSyn())});
-        std::vector<Value> result = queryFacade->getCond(
-            Designation::WHILE_C, entRef.getValueString());
+        std::vector<Value> result =
+            queryFacade->getCond(Designation::WHILE_C, entRef.getValueString());
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(Tuple(std::vector{result[i]}));
         }
