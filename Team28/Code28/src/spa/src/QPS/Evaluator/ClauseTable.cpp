@@ -105,10 +105,10 @@ ClauseTable::handleCommonHeadersJoin(ClauseTable table1, ClauseTable table2,
 }
 
 ClauseTable ClauseTable::joinTables(ClauseTable table1, ClauseTable table2) {
-    if (table1.getHeader().size() == 0) {
+    if (table1.header.size() == 0) {
         return table2;
     }
-    if (table2.getHeader().size() == 0) {
+    if (table2.header.size() == 0) {
         return table1;
     }
     std::vector<Reference> commonHeaders =

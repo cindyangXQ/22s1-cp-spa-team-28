@@ -3,8 +3,6 @@
 #include "Entity.h"
 #include <iostream>
 
-// private all fields
-
 /*
  * Class encapsulating a synonym.
  */

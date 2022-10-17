@@ -121,7 +121,8 @@ void QueryEvaluator::checkAllClauseResult(
             return;
         }
         ClauseTable table = clauseResultList[i].getTable();
-        if (table.getHeader().size() > 0) {
+        std::vector<Reference> header = table.getHeader();
+        if (header.size() > 0) {
             *haveTableToJoin = true;
         }
     }
