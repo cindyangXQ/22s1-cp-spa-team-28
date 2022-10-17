@@ -40,7 +40,8 @@ std::vector<Reference> ClauseTable::getCommonHeaders(ClauseTable table1,
     std::vector<Reference> headerCommon;
     for (int i = 0; i < table1.header.size(); i++) {
         for (int j = 0; j < table2.header.size(); j++) {
-            if (table1.header[i].getSynonymName() == table2.header[j].getSynonymName()) {
+            if (table1.header[i].getSynonymName() ==
+                table2.header[j].getSynonymName()) {
                 headerCommon.push_back(table1.header[i]);
             }
         }
