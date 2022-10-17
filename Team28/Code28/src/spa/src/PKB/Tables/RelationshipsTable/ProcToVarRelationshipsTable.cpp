@@ -7,7 +7,7 @@ bool ProcToVarRelationshipsTable::validate(Reference leftRef,
 
 std::vector<Value> ProcToVarRelationshipsTable::solveRight(
     Reference leftRef, EntityName rightSynonym, StorageView *storage) {
-    // Validate rightSynonym is a variable. TODO: throw error if not
+    // Validate rightSynonym is a variable.
     if (rightSynonym != EntityName::VARIABLE) {
         return std::vector<Value>();
     }
@@ -22,7 +22,7 @@ std::vector<Value> ProcToVarRelationshipsTable::solveRight(
 
 std::vector<Value> ProcToVarRelationshipsTable::solveLeft(
     Reference rightRef, EntityName leftSynonym, StorageView *storage) {
-    // Validate leftSynonym is a procedure. TODO: throw error if not
+    // Validate leftSynonym is a procedure.
     if (leftSynonym != EntityName::PROCEDURE) {
         return std::vector<Value>();
     }
@@ -37,7 +37,7 @@ std::vector<Value> ProcToVarRelationshipsTable::solveLeft(
 
 std::vector<std::pair<Value, Value>> ProcToVarRelationshipsTable::solveBoth(
     EntityName leftSynonym, EntityName rightSynonym, StorageView *storage) {
-    // Validate leftSynonym is a statement. TODO: throw error if not
+    // Validate leftSynonym is a statement.
     if (leftSynonym != EntityName::PROCEDURE ||
         rightSynonym != EntityName::VARIABLE) {
         return std::vector<std::pair<Value, Value>>();

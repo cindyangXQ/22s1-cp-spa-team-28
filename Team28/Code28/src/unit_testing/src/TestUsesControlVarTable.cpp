@@ -59,6 +59,7 @@ TEST_CASE("getAllStmts caches properly and returns all statements used") {
                                    Value(ValueType::STMT_NUM, "2"),
                                    Value(ValueType::STMT_NUM, "3")};
     std::vector<Value> output = wTable.getAllStmts();
+    std::sort(output.begin(), output.end());
     REQUIRE(std::equal(expected.begin(), expected.end(), output.begin()));
 }
 
@@ -86,12 +87,14 @@ TEST_CASE("getStmt returns correct results") {
                 Value(ValueType::STMT_NUM, "2"),
                 Value(ValueType::STMT_NUM, "3")};
     output = wTable.getStmt("_");
+    std::sort(output.begin(), output.end());
     REQUIRE(std::equal(expected.begin(), expected.end(), output.begin()));
 
     // getStmt("x") returns {"2", "3"}
     expected = {Value(ValueType::STMT_NUM, "2"),
                 Value(ValueType::STMT_NUM, "3")};
     output = wTable.getStmt("x");
+    std::sort(output.begin(), output.end());
     REQUIRE(std::equal(expected.begin(), expected.end(), output.begin()));
 
     // getStmt("y") returns {"2"}
@@ -141,5 +144,6 @@ TEST_CASE("getStmtAndVar returns correct results") {
     expected = {std::make_pair(stmt10, varZ), std::make_pair(stmt2, varX),
                 std::make_pair(stmt2, varY), std::make_pair(stmt3, varX)};
     output = wTable.getStmtAndVar();
+    std::sort(output.begin(), output.end(), value_pair_sort());
     REQUIRE(std::equal(expected.begin(), expected.end(), output.begin()));
 }

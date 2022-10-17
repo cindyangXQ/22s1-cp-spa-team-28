@@ -7,7 +7,7 @@ bool StmtToVarRelationshipsTable::validate(Reference leftRef,
 
 std::vector<Value> StmtToVarRelationshipsTable::solveRight(
     Reference leftRef, EntityName rightSynonym, StorageView *storage) {
-    // Validate rightSynonym is a variable. TODO: throw error if not
+    // Validate rightSynonym is a variable.
     if (rightSynonym != EntityName::VARIABLE) {
         return std::vector<Value>();
     }
@@ -22,7 +22,7 @@ std::vector<Value> StmtToVarRelationshipsTable::solveRight(
 
 std::vector<Value> StmtToVarRelationshipsTable::solveLeft(
     Reference rightRef, EntityName leftSynonym, StorageView *storage) {
-    // Validate leftSynonym is a statement. TODO: throw error if not
+    // Validate leftSynonym is a statement.
     if (stmtRefSet.count(leftSynonym) == 0) {
         return std::vector<Value>();
     }
@@ -35,7 +35,7 @@ std::vector<Value> StmtToVarRelationshipsTable::solveLeft(
 
 std::vector<std::pair<Value, Value>> StmtToVarRelationshipsTable::solveBoth(
     EntityName leftSynonym, EntityName rightSynonym, StorageView *storage) {
-    // Validate leftSynonym is a statement. TODO: throw error if not
+    // Validate leftSynonym is a statement.
     if (stmtRefSet.count(leftSynonym) == 0 ||
         rightSynonym != EntityName::VARIABLE) {
         return std::vector<std::pair<Value, Value>>();
