@@ -37,13 +37,11 @@ std::vector<Value> ClauseTable::getValues(Reference select) {
 
 std::vector<Reference> ClauseTable::getCommonHeaders(ClauseTable table1,
                                                      ClauseTable table2) {
-    std::vector<Reference> header1 = table1.getHeader();
-    std::vector<Reference> header2 = table2.getHeader();
     std::vector<Reference> headerCommon;
-    for (int i = 0; i < header1.size(); i++) {
-        for (int j = 0; j < header2.size(); j++) {
-            if (header1[i].getSynonymName() == header2[j].getSynonymName()) {
-                headerCommon.push_back(header1[i]);
+    for (int i = 0; i < table1.header.size(); i++) {
+        for (int j = 0; j < table2.header.size(); j++) {
+            if (table1.header[i].getSynonymName() == table2.header[j].getSynonymName()) {
+                headerCommon.push_back(table1.header[i]);
             }
         }
     }
@@ -57,15 +55,15 @@ ClauseTable ClauseTable::ConstructTable(ClauseTable table1,
     std::vector<int> indices1 = table1.getIndices(headers);
     std::vector<int> indices2 = table2.getIndices(headers);
 
-    for (int i = 0; i < table1.getHeader().size(); i++) {
+    for (int i = 0; i < table1.header.size(); i++) {
         if (std::find(indices1.begin(), indices1.end(), i) == indices1.end()) {
-            headers.push_back(table1.getHeader()[i]);
+            headers.push_back(table1.header[i]);
         }
     }
 
-    for (int i = 0; i < table2.getHeader().size(); i++) {
+    for (int i = 0; i < table2.header.size(); i++) {
         if (std::find(indices2.begin(), indices2.end(), i) == indices2.end()) {
-            headers.push_back(table2.getHeader()[i]);
+            headers.push_back(table2.header[i]);
         }
     }
     return ClauseTable(headers);
@@ -77,7 +75,7 @@ ClauseTable ClauseTable::handleEmptyCommonHeadersJoin(ClauseTable table1,
     for (int i = 0; i < table1.size(); i++) {
         for (int j = 0; j < table2.size(); j++) {
             result.insert(Tuple::combineSubTuples(
-                std::vector<Tuple>{table1.getRows()[i], table2.getRows()[j]}));
+                std::vector<Tuple>{table1.rows[i], table2.rows[j]}));
         }
     }
     return result;
@@ -91,8 +89,8 @@ ClauseTable::handleCommonHeadersJoin(ClauseTable table1, ClauseTable table2,
     std::vector<int> table2Indices = table2.getIndices(commonHeaders);
     for (int i = 0; i < table1.size(); i++) {
         for (int j = 0; j < table2.size(); j++) {
-            Tuple t1 = table1.getRows()[i];
-            Tuple t2 = table2.getRows()[j];
+            Tuple t1 = table1.rows[i];
+            Tuple t2 = table2.rows[j];
             std::vector<Tuple> subTuple1 = t1.splitTuple(table1Indices);
             std::vector<Tuple> subTuple2 = t2.splitTuple(table2Indices);
             if (subTuple1[0].equal(subTuple2[0])) {
