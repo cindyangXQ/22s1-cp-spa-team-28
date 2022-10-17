@@ -12,10 +12,8 @@ std::vector<Value> StmtToVarRelationshipsTable::solveRight(
         return std::vector<Value>();
     }
     VariablesTable *variables = storage->getTable<VariablesTable>();
-    // TODO: iterate through set don't convert to vector
-    std::unordered_set<std::string> possibleRightsSet = variables->getAll();
-    std::vector<std::string> possibleRights = std::vector<std::string>(
-        possibleRightsSet.begin(), possibleRightsSet.end());
+    std::vector<std::string> possibleRights =
+        getNamesHelper<Variable>(variables);
 
     return solveRightHelper(&possibleRights, leftRef, ValueType::VAR_NAME);
 };
@@ -44,10 +42,8 @@ std::vector<std::pair<Value, Value>> StmtToVarRelationshipsTable::solveBoth(
     VariablesTable *variables = storage->getTable<VariablesTable>();
     std::vector<int> possibleLefts =
         getStatementsHelper(statements, leftSynonym);
-    // TODO: iterate through set don't convert to vector
-    std::unordered_set<std::string> possibleRightsSet = variables->getAll();
-    std::vector<std::string> possibleRights = std::vector<std::string>(
-        possibleRightsSet.begin(), possibleRightsSet.end());
+    std::vector<std::string> possibleRights =
+        getNamesHelper<Variable>(variables);
 
     return solveBothHelper(&possibleLefts, &possibleRights, ValueType::STMT_NUM,
                            ValueType::VAR_NAME);

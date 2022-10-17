@@ -12,10 +12,8 @@ std::vector<Value> ProcToProcRelationshipsTable::solveRight(
         return std::vector<Value>();
     }
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    // TODO: iterate through set don't convert to vector
-    std::unordered_set<std::string> possibleRightsSet = procedures->getAll();
-    std::vector<std::string> possibleRights = std::vector<std::string>(
-        possibleRightsSet.begin(), possibleRightsSet.end());
+    std::vector<std::string> possibleRights =
+        getNamesHelper<Procedure>(procedures);
 
     return solveRightHelper(&possibleRights, leftRef, ValueType::VAR_NAME);
 }
@@ -27,10 +25,8 @@ std::vector<Value> ProcToProcRelationshipsTable::solveLeft(
         return std::vector<Value>();
     }
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    // TODO: iterate through set don't convert to vector
-    std::unordered_set<std::string> possibleLeftsSet = procedures->getAll();
-    std::vector<std::string> possibleLefts = std::vector<std::string>(
-        possibleLeftsSet.begin(), possibleLeftsSet.end());
+    std::vector<std::string> possibleLefts =
+        getNamesHelper<Procedure>(procedures);
 
     return solveLeftHelper(&possibleLefts, rightRef, ValueType::VAR_NAME);
 };
@@ -43,13 +39,9 @@ std::vector<std::pair<Value, Value>> ProcToProcRelationshipsTable::solveBoth(
         return std::vector<std::pair<Value, Value>>();
     }
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    // TODO: iterate through set don't convert to vector
-    std::unordered_set<std::string> allProcedures = procedures->getAll();
-    std::vector<std::string> possibleLefts =
-        std::vector<std::string>(allProcedures.begin(), allProcedures.end());
-    std::vector<std::string> possibleRights =
-        std::vector<std::string>(allProcedures.begin(), allProcedures.end());
+    std::vector<std::string> possibleNames =
+        getNamesHelper<Procedure>(procedures);
 
-    return solveBothHelper(&possibleLefts, &possibleRights, ValueType::VAR_NAME,
+    return solveBothHelper(&possibleNames, &possibleNames, ValueType::VAR_NAME,
                            ValueType::VAR_NAME);
 }

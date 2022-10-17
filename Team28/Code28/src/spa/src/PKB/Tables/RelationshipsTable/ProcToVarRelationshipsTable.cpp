@@ -12,10 +12,8 @@ std::vector<Value> ProcToVarRelationshipsTable::solveRight(
         return std::vector<Value>();
     }
     VariablesTable *variables = storage->getTable<VariablesTable>();
-    // TODO: iterate through set don't convert to vector
-    std::unordered_set<std::string> possibleRightsSet = variables->getAll();
-    std::vector<std::string> possibleRights = std::vector<std::string>(
-        possibleRightsSet.begin(), possibleRightsSet.end());
+    std::vector<std::string> possibleRights =
+        getNamesHelper<Variable>(variables);
 
     return solveRightHelper(&possibleRights, leftRef, ValueType::VAR_NAME);
 }
@@ -27,10 +25,8 @@ std::vector<Value> ProcToVarRelationshipsTable::solveLeft(
         return std::vector<Value>();
     }
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
-    // TODO: iterate through set don't convert to vector
-    std::unordered_set<std::string> possibleLeftsSet = procedures->getAll();
-    std::vector<std::string> possibleLefts = std::vector<std::string>(
-        possibleLeftsSet.begin(), possibleLeftsSet.end());
+    std::vector<std::string> possibleLefts =
+        getNamesHelper<Procedure>(procedures);
 
     return solveLeftHelper(&possibleLefts, rightRef, ValueType::VAR_NAME);
 };
@@ -44,13 +40,10 @@ std::vector<std::pair<Value, Value>> ProcToVarRelationshipsTable::solveBoth(
     }
     ProceduresTable *procedures = storage->getTable<ProceduresTable>();
     VariablesTable *variables = storage->getTable<VariablesTable>();
-    // TODO: iterate through set don't convert to vector
-    std::unordered_set<std::string> possibleLeftsSet = procedures->getAll();
-    std::vector<std::string> possibleLefts = std::vector<std::string>(
-        possibleLeftsSet.begin(), possibleLeftsSet.end());
-    std::unordered_set<std::string> possibleRightsSet = variables->getAll();
-    std::vector<std::string> possibleRights = std::vector<std::string>(
-        possibleRightsSet.begin(), possibleRightsSet.end());
+    std::vector<std::string> possibleLefts =
+        getNamesHelper<Procedure>(procedures);
+    std::vector<std::string> possibleRights =
+        getNamesHelper<Variable>(variables);
 
     return solveBothHelper(&possibleLefts, &possibleRights, ValueType::VAR_NAME,
                            ValueType::VAR_NAME);
