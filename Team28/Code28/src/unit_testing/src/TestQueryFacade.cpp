@@ -1103,6 +1103,7 @@ TEST_CASE("GetWhile returns correct results") {
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2"),
                       Value(ValueType::STMT_NUM, "3")};
+    std::sort(output.begin(), output.end());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
@@ -1142,6 +1143,7 @@ TEST_CASE("GetWhileAndVar returns correct results") {
     output = facade.getCondAndVar(Designation::WHILE_C);
     expectedResult = {std::make_pair(stmt1, varX), std::make_pair(stmt2, varY),
                       std::make_pair(stmt3, varZ)};
+    std::sort(output.begin(), output.end(), value_pair_sort());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
@@ -1175,6 +1177,7 @@ TEST_CASE("GetIf returns correct results") {
     expectedResult = {Value(ValueType::STMT_NUM, "1"),
                       Value(ValueType::STMT_NUM, "2"),
                       Value(ValueType::STMT_NUM, "3")};
+    std::sort(output.begin(), output.end());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
@@ -1214,6 +1217,7 @@ TEST_CASE("GetIfAndVar returns correct results") {
     output = facade.getCondAndVar(Designation::IF_C);
     expectedResult = {std::make_pair(stmt1, varX), std::make_pair(stmt2, varY),
                       std::make_pair(stmt3, varZ)};
+    std::sort(output.begin(), output.end(), value_pair_sort());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
