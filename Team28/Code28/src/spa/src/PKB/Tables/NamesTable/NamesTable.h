@@ -27,6 +27,14 @@ public:
     };
 
     /*
+     * Returns all names as a string.
+     */
+    std::vector<std::string> getAllAsString() {
+        std::vector<std::string> result(this->names.begin(), this->names.end());
+        return result;
+    };
+
+    /*
      * Retrieves an entity from NamesTable by Name.
      */
     virtual T *retrieve(const std::string &name) {
@@ -36,14 +44,6 @@ public:
             return nullptr;
         }
         return (T *)key->second;
-    };
-
-    /*
-     * Gets NamedEntityMap for children.
-     * TODO: Consider removing.
-     */
-    std::map<std::string, T *> getNameEntityMap() {
-        return this->nameEntityMap;
     };
 
     /*

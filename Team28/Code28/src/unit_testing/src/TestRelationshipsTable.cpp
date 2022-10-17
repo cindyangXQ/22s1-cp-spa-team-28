@@ -1,9 +1,9 @@
 #include "catch.hpp"
 
-#include "PKB/Tables/RelationshipsTable/CallProcTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/RelationshipsTable.h"
+#include "PKB/Tables/RelationshipsTable/StmtToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
 
@@ -394,4 +394,21 @@ TEST_CASE(
     // successfully stored Call-ProcName relationship
     REQUIRE_THROWS(usesS.retrieveSingleRight(1),
                    "There exists more than 1 Right value mapped to given Left");
+}
+
+TEST_CASE("RelationshipsTable getAllAsString works correctly") {
+    UsesSTable usesS;
+
+    // procedure main { calls bar; calls bar; calls foo }
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    usesS.store(&test1);
+    usesS.store(&test2);
+
+    std::vector<std::string> expectedResult = {"1:x", "2:y"};
+    std::vector<std::string> output = usesS.getAllAsString();
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
 }

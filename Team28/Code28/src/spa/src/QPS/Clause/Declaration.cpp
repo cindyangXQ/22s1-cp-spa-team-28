@@ -1,4 +1,3 @@
 #include "Declaration.h"
 
-Declaration::Declaration() {}
-Declaration::Declaration(std::vector<Synonym> syns) { this->syns = syns; }
+std::vector<Synonym> Declaration::getSyns() { return this->syns; }

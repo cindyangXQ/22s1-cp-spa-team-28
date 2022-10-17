@@ -19,8 +19,12 @@ std::vector<std::string> Utils::splitString(std::string str, char splitter) {
     return result;
 }
 
-std::string Utils::removeTrailingSpaces(std::string s) {
-    return regex_replace(s, std::regex("^ +| +$|( ) +"), "$1");
+std::string Utils::trimSpaces(std::string s) {
+    // Trim left
+    s = std::regex_replace(s, LEFT_SPACE, std::string(""));
+    // Trim right
+    s = std::regex_replace(s, RIGHT_SPACE, std::string(""));
+    return s;
 }
 
 std::vector<std::string> Utils::tokenize(std::string str,

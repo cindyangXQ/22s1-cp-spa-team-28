@@ -3,14 +3,19 @@
 #include "PKB/Algorithms/ControlFlowGraph.h"
 #include "PKB/Storage/Storage.h"
 
-TEST_CASE("CFG Traverses Correctly (Next) - 1 procedure") {
+TEST_CASE("CFG Traverses Correctly - 1 procedure (Lecture example)") {
     Storage *storage = new Storage();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
     NextTable *nextTable = storage->getTable<NextTable>();
     NextTTable *nextTTable = storage->getTable<NextTTable>();
     FollowsTable *followsTable = storage->getTable<FollowsTable>();
     BranchInTable *branchIn = storage->getTable<BranchInTable>();
     BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
     ProceduresTable *procTable = storage->getTable<ProceduresTable>();
+
+    // Store ifs
+    Statement ifStmt = Statement(7, StatementType::IF);
+    statements->store(&ifStmt);
 
     // Follows
     Relationship<int, int> relation =
@@ -23,6 +28,8 @@ TEST_CASE("CFG Traverses Correctly (Next) - 1 procedure") {
     relation = Relationship(RelationshipReference::FOLLOWS, 5, 6);
     followsTable->store(&relation);
     relation = Relationship(RelationshipReference::FOLLOWS, 3, 7);
+    followsTable->store(&relation);
+    relation = Relationship(RelationshipReference::FOLLOWS, 7, 10);
     followsTable->store(&relation);
     relation = Relationship(RelationshipReference::FOLLOWS, 10, 11);
     followsTable->store(&relation);
@@ -67,6 +74,9 @@ TEST_CASE("CFG Traverses Correctly (Next) - 1 procedure") {
     REQUIRE(nextTable->validate(Reference("9"), Reference("10")));
     REQUIRE(nextTable->validate(Reference("10"), Reference("11")));
     REQUIRE(nextTable->validate(Reference("11"), Reference("12")));
+
+    // Should not be in nextTable
+    REQUIRE(!nextTable->validate(Reference("7"), Reference("10")));
 }
 
 TEST_CASE("CFG Traverses Correctly - multiple procedures") {

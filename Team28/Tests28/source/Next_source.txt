@@ -1,0 +1,32 @@
+procedure A {
+    x = x +           1444423;
+    y =                          y + 343453453;
+    while (a > 3544233) {
+        x = x + 5;
+        call B;
+        c = a;
+    }
+    if (a == b) then {
+        x = x *     34545453453;
+    } else {
+        y = y       + 5445564535645;
+    }
+    a = b;
+    b = c      + 89786;
+    c = c          * 25;
+    while (x > 4) {
+        if (x > 2) then {
+            a = 74;
+        } else {
+            a = 3335546;
+            b = sbdfdvsfvbgnbfshnmfgfbgfbdf;
+        }
+    }
+    a = 4 + 1;
+}
+
+procedure B {
+    while (x >= 1) {
+        x = x + 1;
+    }
+}

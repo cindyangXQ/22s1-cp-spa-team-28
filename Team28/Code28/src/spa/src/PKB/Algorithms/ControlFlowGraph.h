@@ -5,20 +5,20 @@
 #include "../Tables/Table.h"
 
 /*
- * Encapsulates a CFG class which is responsible for extracting the
- * Next relationship from the given source program.
+ * Encapsulates a CFG class responsible for extracting the
+ * Next/Affects relationship from the given source program.
  */
 class ControlFlowGraph {
 public:
     /*
-     * Explicit constructor for Storage.
+     * Explicit constructor for ControlFlowGraph.
      */
     ControlFlowGraph(NextTable *nextTable, NextTTable *nextTTable,
                      StorageView *storage);
 
     /*
      * Populates NextTable based on relationships currently found in Storage.
-     * Traversal of CFG is done through DFS.
+     * NOTE: Traversal of CFG is done through DFS.
      */
     void populateNext();
 
@@ -30,6 +30,7 @@ public:
 private:
     NextTable *next;
     NextTTable *nextT;
+    StatementsTable *statements;
     FollowsTable *follows;
     BranchInTable *branchIn;
     BranchOutTable *branchOut;
@@ -40,7 +41,7 @@ private:
     int totalLines;
 
     /*
-     * Depth First Search of CFG based on given integer.
+     * Depth First Search of CFG based on given lineNo.
      */
     void DFS(int i);
 

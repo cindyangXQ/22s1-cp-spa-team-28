@@ -1,0 +1,52 @@
+procedure a {
+    x = 1;
+    x = x+1;
+}
+
+procedure b {
+    x = y + 5;
+    call c;
+}
+
+procedure c {
+    y = x + 9 * p;
+    if (x == 9) then {
+        call d;
+    }
+    else {
+        if(y == 2) then {
+            call e;
+            x = x + 1;
+        } else {
+            call f;
+        }
+    }
+    call g;
+}
+
+procedure d {
+    call g;
+}
+
+procedure e {
+    call g;
+    while (x < 3){
+        while (y == 9) {
+            call f;
+        }
+        call h;
+    }
+}
+
+
+procedure f {
+    a = a + b;
+}
+
+procedure g {
+    b = a + b;
+}
+
+procedure h {
+    x = 1;
+}

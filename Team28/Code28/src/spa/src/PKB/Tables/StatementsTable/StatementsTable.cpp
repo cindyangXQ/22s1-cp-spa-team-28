@@ -10,13 +10,21 @@ void StatementsTable::store(TableValue *statement) {
     int index = stmt->getLineNumber();
 
     if (type == StatementType::NONE) {
-        // TODO error handling
+        throw std::invalid_argument(STMT_TYPE_NONE_INVALID_USE);
     }
 
     this->statements.push_back(stmt);
     this->statementTypeIndexes[type].push_back(index);
     this->tableSize++;
 }
+
+std::vector<std::string> StatementsTable::getAllAsString() {
+    std::vector<std::string> result = {};
+    for (Statement *stmt : this->statements) {
+        result.push_back(std::to_string(stmt->getLineNumber()));
+    }
+    return result;
+};
 
 Statement *StatementsTable::retrieve(const int &lineNum) {
     // currently assumes that lineNum is unique
@@ -55,7 +63,12 @@ std::vector<int> StatementsTable::getStatementsByType(StatementType type) {
     return this->statementTypeIndexes[type];
 }
 
-bool StatementsTable::isAttributableStatement(const int &lineNum) {
+bool StatementsTable::isIfStatement(const int &lineNum) {
+    std::vector<int> ifs = this->getStatementsByType(StatementType::IF);
+    return std::find(ifs.begin(), ifs.end(), lineNum) != ifs.end();
+}
+
+bool StatementsTable::hasSecondaryAttribute(const int &lineNum) {
     StatementType stmtType = this->getStatementType(lineNum);
     if (stmtType == StatementType::CALL || stmtType == StatementType::READ ||
         stmtType == StatementType::PRINT) {

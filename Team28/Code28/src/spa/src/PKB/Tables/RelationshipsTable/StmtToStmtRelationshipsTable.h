@@ -4,7 +4,7 @@
 #include "RelationshipsTable.h"
 
 class StmtToStmtRelationshipsTable : public RelationshipsTable<int, int>,
-                                     public virtual Solvable {
+                                     public Solvable {
 public:
     /*
      * Returns true if the relationship holds between leftReference and

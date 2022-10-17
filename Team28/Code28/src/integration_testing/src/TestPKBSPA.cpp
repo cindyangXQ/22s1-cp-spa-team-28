@@ -19,7 +19,7 @@ TEST_CASE("SPA can process query with 1 statement in PKB") {
     std::vector<Statement *> statements = {&test};
     std::list<std::string> results;
 
-    pkb.populateFacade->store<Statement>(&statements, Populate::STMT);
+    pkb.populateFacade->store<Statement>(&statements, Designation::STMT);
     spa.evaluateQuery("stmt s; Select s", results);
 
     REQUIRE(results.size() == 1);
@@ -42,7 +42,7 @@ TEST_CASE("SPA can process query with multiple statements in PKB") {
     std::list<std::string> results;
     std::list<std::string> expected = {"1", "2", "3", "4", "5", "6", "7", "8"};
 
-    pkb.populateFacade->store<Statement>(&statements, Populate::STMT);
+    pkb.populateFacade->store<Statement>(&statements, Designation::STMT);
     spa.evaluateQuery("stmt s; Select s", results);
 
     REQUIRE(results.size() == 8);
@@ -60,7 +60,7 @@ TEST_CASE("SPA can process query with 1 assign in PKB") {
     std::vector<Assignment *> assigns = {&test};
     std::list<std::string> results;
 
-    pkb.populateFacade->store<Assignment>(&assigns, Populate::ASSIGN);
+    pkb.populateFacade->store<Assignment>(&assigns, Designation::ASSIGN);
     spa.evaluateQuery("assign a; variable v; Select v pattern a(v,_)", results);
 
     REQUIRE(results.size() == 1);
@@ -83,7 +83,7 @@ TEST_CASE("SPA can process query with multiple assigns in PKB") {
     std::list<std::string> results;
     std::list<std::string> expected = {"a", "b", "c", "d", "e", "f", "g", "h"};
 
-    pkb.populateFacade->store<Assignment>(&assigns, Populate::ASSIGN);
+    pkb.populateFacade->store<Assignment>(&assigns, Designation::ASSIGN);
     spa.evaluateQuery("assign a; variable v; Select v pattern a(v,_)", results);
 
     REQUIRE(results.size() == 8);
@@ -105,8 +105,8 @@ TEST_CASE("SPA can process such that clause") {
     std::list<std::string> results;
 
     pkb.populateFacade->store<Relationship<int, int>>(&relations,
-                                                      Populate::FOLLOWS);
-    pkb.populateFacade->store<Statement>(&statements, Populate::STMT);
+                                                      Designation::FOLLOWS);
+    pkb.populateFacade->store<Statement>(&statements, Designation::STMT);
     spa.evaluateQuery("stmt s; Select s such that Follows(1, s)", results);
 
     REQUIRE(results.size() == 1);
@@ -127,9 +127,9 @@ TEST_CASE("SPA can process such that and pattern clause") {
     std::list<std::string> results;
 
     pkb.populateFacade->store<Relationship<int, int>>(&relations,
-                                                      Populate::FOLLOWS);
-    pkb.populateFacade->store<Statement>(&statements, Populate::STMT);
-    pkb.populateFacade->store<Assignment>(&assigns, Populate::ASSIGN);
+                                                      Designation::FOLLOWS);
+    pkb.populateFacade->store<Statement>(&statements, Designation::STMT);
+    pkb.populateFacade->store<Assignment>(&assigns, Designation::ASSIGN);
     spa.evaluateQuery(
         "stmt s; assign a; Select s such that Follows(1, s) pattern a(_,_)",
         results);

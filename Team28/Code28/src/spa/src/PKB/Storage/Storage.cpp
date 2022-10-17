@@ -8,29 +8,29 @@ Storage::Storage() {
 };
 
 void Storage::initDesignEntitiesTable() {
-    initTable<StatementsTable>(Populate::STMT);
-    initTable<AssignmentsTable>(Populate::ASSIGN);
-    initTable<ProceduresTable>(Populate::PROC);
-    initTable<VariablesTable>(Populate::VAR);
-    initTable<ConstantsTable>(Populate::CONST);
+    initTable<StatementsTable>(Designation::STMT);
+    initTable<AssignmentsTable>(Designation::ASSIGN);
+    initTable<ProceduresTable>(Designation::PROC);
+    initTable<VariablesTable>(Designation::VAR);
+    initTable<ConstantsTable>(Designation::CONST);
 };
 
 void Storage::initRelationshipsTable() {
-    initTable<ParentTable>(Populate::PARENT);
-    initTable<ParentTTable>(Populate::PARENT_T);
-    initTable<FollowsTable>(Populate::FOLLOWS);
-    initTable<FollowsTTable>(Populate::FOLLOWS_T);
-    initTable<ModifiesSTable>(Populate::MOD_S);
-    initTable<ModifiesPTable>(Populate::MOD_P);
-    initTable<UsesSTable>(Populate::USE_S);
-    initTable<UsesPTable>(Populate::USE_P);
-    initTable<CallsTable>(Populate::CALL);
-    initTable<CallsTTable>(Populate::CALL_T);
-    initTable<BranchInTable>(Populate::B_IN);
-    initTable<BranchOutTable>(Populate::B_OUT);
-    initTable<IfControlVarTable>(Populate::IF_C);
-    initTable<WhileControlVarTable>(Populate::WHILE_C);
-    initTable<CallProcTable>(Populate::PROC_NAME);
+    initTable<ParentTable>(Designation::PARENT);
+    initTable<ParentTTable>(Designation::PARENT_T);
+    initTable<FollowsTable>(Designation::FOLLOWS);
+    initTable<FollowsTTable>(Designation::FOLLOWS_T);
+    initTable<ModifiesSTable>(Designation::MOD_S);
+    initTable<ModifiesPTable>(Designation::MOD_P);
+    initTable<UsesSTable>(Designation::USE_S);
+    initTable<UsesPTable>(Designation::USE_P);
+    initTable<CallsTable>(Designation::CALL);
+    initTable<CallsTTable>(Designation::CALL_T);
+    initTable<BranchInTable>(Designation::B_IN);
+    initTable<BranchOutTable>(Designation::B_OUT);
+    initTable<IfControlVarTable>(Designation::IF_C);
+    initTable<WhileControlVarTable>(Designation::WHILE_C);
+    initTable<CallProcTable>(Designation::PROC_NAME);
     initTable<NextTable>();
     initTable<NextTTable>();
 };
@@ -77,8 +77,18 @@ Solvable *Storage::getRsTable(RelationshipReference rsRef,
     return this->rsTables.at(rsRef);
 };
 
-Table *Storage::getStoreTable(Populate popType) {
-    return this->popTables.at(popType);
+UsesControlVarTable *Storage::getControlVarTable(Designation designType) {
+    if (designType == Designation::IF_C) {
+        return this->getTable<IfControlVarTable>();
+    }
+    if (designType == Designation::WHILE_C) {
+        return this->getTable<WhileControlVarTable>();
+    }
+    return nullptr;
+};
+
+Table *Storage::getDesignationTable(Designation designType) {
+    return this->designTables.at(designType);
 };
 
 std::vector<Solvable *> Storage::getModifiesTables() {
