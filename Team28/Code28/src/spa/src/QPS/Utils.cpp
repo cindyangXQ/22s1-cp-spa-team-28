@@ -21,9 +21,9 @@ std::vector<std::string> Utils::splitString(std::string str, char splitter) {
 
 std::string Utils::trimSpaces(std::string s) {
     // Trim left
-    s = std::regex_replace(s, std::regex("^\\s+"), std::string(""));
+    s = std::regex_replace(s, LEFT_SPACE, std::string(""));
     // Trim right
-    s = std::regex_replace(s, std::regex("\\s+$"), std::string(""));
+    s = std::regex_replace(s, RIGHT_SPACE, std::string(""));
     return s;
 }
 

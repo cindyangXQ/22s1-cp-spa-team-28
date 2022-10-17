@@ -8,9 +8,6 @@ TEST_CASE("QueryParser is parsing correctly") {
     SolvableQuery solvableQ =
         QueryParser::parse("assign a; constant c; variable v; Select a such "
                            "that Modifies(1, v) pattern a(v, _\"x\"_)");
-
-    REQUIRE(solvableQ.selectClause.refs[0].getEntityName() ==
-            EntityName::ASSIGN);
     REQUIRE_THROWS(
         QueryParser::parse("assign a; constant c; variable v; Select a;"));
     REQUIRE_THROWS(
@@ -23,14 +20,16 @@ TEST_CASE("QueryParser can parse declaration correctly") {
         "assign a", "constant c", "variable v",
         "Select v such that Modifies(1, v) pattern a(v, _)"};
     Declaration declare = QueryParser::parseDeclaration(clauses);
-    REQUIRE(declare.syns.size() == 3);
+    std::vector<Synonym> syns = declare.getSyns();
+    REQUIRE(syns.size() == 3);
 
     std::vector<std::string> multipleDeclarationClauses = {
         "assign a, b, a2", "constant c, constant, yey", "variable v, v2, v3",
         "Select v such that Modifies(1, v) pattern a(v, _)"};
     Declaration multipleDeclare =
         QueryParser::parseDeclaration(multipleDeclarationClauses);
-    REQUIRE(multipleDeclare.syns.size() == 9);
+    std::vector<Synonym> multipleSyns = multipleDeclare.getSyns();
+    REQUIRE(multipleSyns.size() == 9);
 
     std::vector<std::string> syntaxClauses = {
         "assign a, b, a2,", "constant c, constant, yey", "variable v, v2, v3",
@@ -60,15 +59,21 @@ TEST_CASE("QueryParser can parse select clause") {
 
     std::string correct = "Select v";
     SelectClause selectClause = QueryParser::parseSelectClause(&correct, syns);
-    Synonym selectedSynonym = selectClause.refs[0].getSynonym();
+    Synonym selectedSynonym = selectClause.getRefs()[0].getSynonym();
     REQUIRE(selectedSynonym.getEntityName() == EntityName::VARIABLE);
     REQUIRE(selectedSynonym.getName() == "v");
 
     std::string misspelled = "Selct v";
     REQUIRE_THROWS(QueryParser::parseSelectClause(&misspelled, syns));
 
-    std::string missing_synonym = "Select";
-    REQUIRE_THROWS(QueryParser::parseSelectClause(&missing_synonym, syns));
+    std::string missingSynonym = "Select";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&missingSynonym, syns));
+
+    std::string wildcard = "Select _";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&wildcard, syns));
+
+    std::string number = "Select 1";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&number, syns));
 }
 
 TEST_CASE("QueryParser can parse boolean select clause") {
@@ -77,8 +82,9 @@ TEST_CASE("QueryParser can parse boolean select clause") {
 
     std::string correct = "Select BOOLEAN";
     SelectClause selectClause = QueryParser::parseSelectClause(&correct, syns);
-    REQUIRE(selectClause.selectType == SelectType::BOOLEAN);
-    REQUIRE(selectClause.refs.size() == 0);
+    std::vector<Reference> refs = selectClause.getRefs();
+    REQUIRE(selectClause.getSelectType() == SelectType::BOOLEAN);
+    REQUIRE(refs.size() == 0);
 
     std::string misspelled = "Select BOOLAN";
     REQUIRE_THROWS(QueryParser::parseSelectClause(&misspelled, syns));
@@ -95,24 +101,28 @@ TEST_CASE("QueryParser can parse tuple select clause") {
 
     std::string correct = "Select <v, a>";
     SelectClause selectClause = QueryParser::parseSelectClause(&correct, syns);
-    REQUIRE(selectClause.selectType == SelectType::TUPLE);
-    REQUIRE(selectClause.refs.size() == 2);
+    std::vector<Reference> refs = selectClause.getRefs();
+    REQUIRE(selectClause.getSelectType() == SelectType::TUPLE);
+    REQUIRE(refs.size() == 2);
 
     std::string many = "Select <v, a, p, a1, a2>";
     SelectClause selectClauseMany = QueryParser::parseSelectClause(&many, syns);
-    REQUIRE(selectClauseMany.selectType == SelectType::TUPLE);
-    REQUIRE(selectClauseMany.refs.size() == 5);
+    std::vector<Reference> refsMany = selectClauseMany.getRefs();
+    REQUIRE(selectClauseMany.getSelectType() == SelectType::TUPLE);
+    REQUIRE(refsMany.size() == 5);
 
     std::string one = "Select <v>";
     SelectClause selectClauseOne = QueryParser::parseSelectClause(&one, syns);
-    REQUIRE(selectClauseOne.selectType == SelectType::TUPLE);
-    REQUIRE(selectClauseOne.refs.size() == 1);
+    std::vector<Reference> refsOne = selectClauseOne.getRefs();
+    REQUIRE(selectClauseOne.getSelectType() == SelectType::TUPLE);
+    REQUIRE(refsOne.size() == 1);
 
     std::string duplicate = "Select <v, a1, a1>";
     SelectClause selectClauseDuplicate =
         QueryParser::parseSelectClause(&duplicate, syns);
-    REQUIRE(selectClauseDuplicate.selectType == SelectType::TUPLE);
-    REQUIRE(selectClauseDuplicate.refs.size() == 3);
+    std::vector<Reference> refsDuplicate = selectClauseDuplicate.getRefs();
+    REQUIRE(selectClauseDuplicate.getSelectType() == SelectType::TUPLE);
+    REQUIRE(refsDuplicate.size() == 3);
 
     std::string wrongSyntax = "Select <v, a1, <a2>>";
     REQUIRE_THROWS(QueryParser::parseSelectClause(&wrongSyntax, syns));
@@ -120,11 +130,14 @@ TEST_CASE("QueryParser can parse tuple select clause") {
     std::string wrongSyntax2 = "Select <v, a1, <a2>, p>";
     REQUIRE_THROWS(QueryParser::parseSelectClause(&wrongSyntax2, syns));
 
-    std::string wrong_syntax3 = "Select <v, <a2, p>, a1>";
-    REQUIRE_THROWS(QueryParser::parseSelectClause(&wrong_syntax3, syns));
+    std::string wrongSyntax3 = "Select <v, <a2, p>, a1>";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&wrongSyntax3, syns));
 
-    std::string missing_synonym = "Select";
-    REQUIRE_THROWS(QueryParser::parseSelectClause(&missing_synonym, syns));
+    std::string wildcard = "Select <_, v>";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&wildcard, syns));
+
+    std::string number = "Select <v, 1>";
+    REQUIRE_THROWS(QueryParser::parseSelectClause(&number, syns));
 }
 
 TEST_CASE("QueryParser can parse select clause with attribute") {
@@ -135,29 +148,37 @@ TEST_CASE("QueryParser can parse select clause with attribute") {
 
     std::string one = "Select w. stmt#";
     SelectClause selectClause = QueryParser::parseSelectClause(&one, syns);
-    REQUIRE(selectClause.selectType == SelectType::SINGLE);
-    REQUIRE(selectClause.refs.size() == 1);
-    REQUIRE(selectClause.refs[0].getEntityName() == EntityName::WHILE);
-    REQUIRE(selectClause.refs[0].getAttr() == EntityAttribute::STMT_NO);
+    std::vector<Reference> refs = selectClause.getRefs();
+    REQUIRE(selectClause.getSelectType() == SelectType::SINGLE);
+    REQUIRE(refs.size() == 1);
+    REQUIRE(refs[0].getEntityName() == EntityName::WHILE);
+    REQUIRE(refs[0].getAttr() == EntityAttribute::STMT_NO);
 
     std::string many = "Select <const .value , p.varName, v. varName, c.stmt#>";
     SelectClause selectClauseMany = QueryParser::parseSelectClause(&many, syns);
-    REQUIRE(selectClauseMany.selectType == SelectType::TUPLE);
-    REQUIRE(selectClauseMany.refs.size() == 4);
-    REQUIRE(selectClauseMany.refs[0].getEntityName() == EntityName::CONSTANT);
-    REQUIRE(selectClauseMany.refs[0].getAttr() == EntityAttribute::VALUE);
-    REQUIRE(selectClauseMany.refs[1].getEntityName() == EntityName::PRINT);
-    REQUIRE(selectClauseMany.refs[1].getAttr() == EntityAttribute::VAR_NAME);
-    REQUIRE(selectClauseMany.refs[2].getEntityName() == EntityName::VARIABLE);
-    REQUIRE(selectClauseMany.refs[2].getAttr() == EntityAttribute::VAR_NAME);
-    REQUIRE(selectClauseMany.refs[3].getEntityName() == EntityName::CALL);
-    REQUIRE(selectClauseMany.refs[3].getAttr() == EntityAttribute::STMT_NO);
+    std::vector<Reference> refsMany = selectClauseMany.getRefs();
+    REQUIRE(selectClauseMany.getSelectType() == SelectType::TUPLE);
+    REQUIRE(refsMany.size() == 4);
+    REQUIRE(refsMany[0].getEntityName() ==
+            EntityName::CONSTANT);
+    REQUIRE(refsMany[0].getAttr() == EntityAttribute::VALUE);
+    REQUIRE(refsMany[1].getEntityName() == EntityName::PRINT);
+    REQUIRE(refsMany[1].getAttr() ==
+            EntityAttribute::VAR_NAME);
+    REQUIRE(refsMany[2].getEntityName() ==
+            EntityName::VARIABLE);
+    REQUIRE(refsMany[2].getAttr() ==
+            EntityAttribute::VAR_NAME);
+    REQUIRE(refsMany[3].getEntityName() == EntityName::CALL);
+    REQUIRE(refsMany[3].getAttr() ==
+            EntityAttribute::STMT_NO);
 
     std::string mixed = "Select <w , p.varName, v, c.stmt#>";
     SelectClause selectClauseMixed =
         QueryParser::parseSelectClause(&mixed, syns);
-    REQUIRE(selectClauseMixed.selectType == SelectType::TUPLE);
-    REQUIRE(selectClauseMixed.refs.size() == 4);
+    std::vector<Reference> refsMixed = selectClauseMixed.getRefs();
+    REQUIRE(selectClauseMixed.getSelectType() == SelectType::TUPLE);
+    REQUIRE(refsMixed.size() == 4);
 
     std::string wrongAttribute = "Select v. stmt#";
     REQUIRE_THROWS(QueryParser::parseSelectClause(&wrongAttribute, syns));
@@ -175,72 +196,87 @@ TEST_CASE("Parser can parse such that clause") {
     std::string numSyn = "such that Modifies(1, v)";
     std::vector<SuchThatClause> clause1;
     QueryParser::parseSuchThatClause(&numSyn, syns, &clause1);
+    Reference left1 = clause1[0].getRefLeft();
+    Reference right1 = clause1[0].getRefRight();
+
     REQUIRE(clause1.size() == 1);
-    REQUIRE(clause1[0].relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause1[0].refLeft.isASynonym() == false);
-    REQUIRE(clause1[0].refLeft.getValueString() == "1");
-    REQUIRE(clause1[0].refRight.isASynonym() == true);
-    REQUIRE(clause1[0].refRight.getSynonymName() == "v");
+    REQUIRE(clause1[0].getRelationship() == RelationshipReference::MODIFIES);
+    REQUIRE(left1.isASynonym() == false);
+    REQUIRE(left1.getValueString() == "1");
+    REQUIRE(right1.isASynonym() == true);
+    REQUIRE(right1.getSynonymName() == "v");
 
     std::string synName = "such that Modifies(a, \"yey\")";
     std::vector<SuchThatClause> clause2;
     QueryParser::parseSuchThatClause(&synName, syns, &clause2);
+    Reference left2 = clause2[0].getRefLeft();
+    Reference right2 = clause2[0].getRefRight();
     REQUIRE(clause2.size() == 1);
-    REQUIRE(clause2[0].relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause2[0].refLeft.isASynonym() == true);
-    REQUIRE(clause2[0].refLeft.getSynonymName() == "a");
-    REQUIRE(clause2[0].refRight.isASynonym() == false);
-    REQUIRE(clause2[0].refRight.getValueString() == "yey");
+    REQUIRE(clause2[0].getRelationship() == RelationshipReference::MODIFIES);
+    REQUIRE(left2.isASynonym() == true);
+    REQUIRE(left2.getSynonymName() == "a");
+    REQUIRE(right2.isASynonym() == false);
+    REQUIRE(right2.getValueString() == "yey");
 
     std::string numName = "such that Modifies(1, \"yey\")";
     std::vector<SuchThatClause> clause3;
     QueryParser::parseSuchThatClause(&numName, syns, &clause3);
+    Reference left3 = clause3[0].getRefLeft();
+    Reference right3 = clause3[0].getRefRight();
     REQUIRE(clause3.size() == 1);
-    REQUIRE(clause3[0].relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause3[0].refLeft.isASynonym() == false);
-    REQUIRE(clause3[0].refLeft.getValueString() == "1");
-    REQUIRE(clause3[0].refRight.isASynonym() == false);
-    REQUIRE(clause3[0].refRight.getValueString() == "yey");
+    REQUIRE(clause3[0].getRelationship() == RelationshipReference::MODIFIES);
+    REQUIRE(left3.isASynonym() == false);
+    REQUIRE(left3.getValueString() == "1");
+    REQUIRE(right3.isASynonym() == false);
+    REQUIRE(right3.getValueString() == "yey");
 
     std::string synSyn = "such that Modifies(a, v)";
     std::vector<SuchThatClause> clause4;
     QueryParser::parseSuchThatClause(&synSyn, syns, &clause4);
+    Reference left4 = clause4[0].getRefLeft();
+    Reference right4 = clause4[0].getRefRight();
     REQUIRE(clause4.size() == 1);
-    REQUIRE(clause4[0].relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause4[0].refLeft.isASynonym() == true);
-    REQUIRE(clause4[0].refLeft.getSynonymName() == "a");
-    REQUIRE(clause4[0].refRight.isASynonym() == true);
-    REQUIRE(clause4[0].refRight.getSynonymName() == "v");
+    REQUIRE(clause4[0].getRelationship() == RelationshipReference::MODIFIES);
+    REQUIRE(left4.isASynonym() == true);
+    REQUIRE(left4.getSynonymName() == "a");
+    REQUIRE(right4.isASynonym() == true);
+    REQUIRE(right4.getSynonymName() == "v");
 
     std::string synWildcard = "such that Modifies(a, _)";
     std::vector<SuchThatClause> clause5;
     QueryParser::parseSuchThatClause(&synWildcard, syns, &clause5);
+    Reference left5 = clause5[0].getRefLeft();
+    Reference right5 = clause5[0].getRefRight();
     REQUIRE(clause5.size() == 1);
-    REQUIRE(clause5[0].relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause5[0].refLeft.isASynonym() == true);
-    REQUIRE(clause5[0].refLeft.getSynonymName() == "a");
-    REQUIRE(clause5[0].refRight.isASynonym() == false);
-    REQUIRE(clause5[0].refRight.getValueString() == "_");
+    REQUIRE(clause5[0].getRelationship() == RelationshipReference::MODIFIES);
+    REQUIRE(left5.isASynonym() == true);
+    REQUIRE(left5.getSynonymName() == "a");
+    REQUIRE(right5.isASynonym() == false);
+    REQUIRE(right5.getValueString() == "_");
 
     std::string wildcardSyn = "such that Follows(_, a)";
     std::vector<SuchThatClause> clause6;
     QueryParser::parseSuchThatClause(&wildcardSyn, syns, &clause6);
+    Reference left6 = clause6[0].getRefLeft();
+    Reference right6 = clause6[0].getRefRight();
     REQUIRE(clause6.size() == 1);
-    REQUIRE(clause6[0].relationship == RelationshipReference::FOLLOWS);
-    REQUIRE(clause6[0].refLeft.isASynonym() == false);
-    REQUIRE(clause6[0].refLeft.getValueString() == "_");
-    REQUIRE(clause6[0].refRight.isASynonym() == true);
-    REQUIRE(clause6[0].refRight.getSynonymName() == "a");
+    REQUIRE(clause6[0].getRelationship() == RelationshipReference::FOLLOWS);
+    REQUIRE(left6.isASynonym() == false);
+    REQUIRE(left6.getValueString() == "_");
+    REQUIRE(right6.isASynonym() == true);
+    REQUIRE(right6.getSynonymName() == "a");
 
     std::string wildcardSynStar = "such that Follows*(_, a)";
     std::vector<SuchThatClause> clause7;
     QueryParser::parseSuchThatClause(&wildcardSynStar, syns, &clause7);
+    Reference left7 = clause7[0].getRefLeft();
+    Reference right7 = clause7[0].getRefRight();
     REQUIRE(clause7.size() == 1);
-    REQUIRE(clause7[0].relationship == RelationshipReference::FOLLOWS_T);
-    REQUIRE(clause7[0].refLeft.isASynonym() == false);
-    REQUIRE(clause7[0].refLeft.getValueString() == "_");
-    REQUIRE(clause7[0].refRight.isASynonym() == true);
-    REQUIRE(clause7[0].refRight.getSynonymName() == "a");
+    REQUIRE(clause7[0].getRelationship() == RelationshipReference::FOLLOWS_T);
+    REQUIRE(left7.isASynonym() == false);
+    REQUIRE(left7.getValueString() == "_");
+    REQUIRE(right7.isASynonym() == true);
+    REQUIRE(right7.getSynonymName() == "a");
 
     std::vector<SuchThatClause> ignore;
     std::string extraBracket = "such that Modifies((1, v)";
@@ -285,31 +321,37 @@ TEST_CASE("Parser can parse such that clause with procedure") {
     std::string synSyn = "such that Modifies(proc, v)";
     std::vector<SuchThatClause> clause1;
     QueryParser::parseSuchThatClause(&synSyn, syns, &clause1);
+    Reference left1 = clause1[0].getRefLeft();
+    Reference right1 = clause1[0].getRefRight();
     REQUIRE(clause1.size() == 1);
-    REQUIRE(clause1[0].relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clause1[0].refLeft.isASynonym() == true);
-    REQUIRE(clause1[0].refLeft.getSynonymName() == "proc");
-    REQUIRE(clause1[0].refRight.isASynonym() == true);
-    REQUIRE(clause1[0].refRight.getSynonymName() == "v");
+    REQUIRE(clause1[0].getRelationship() == RelationshipReference::MODIFIES);
+    REQUIRE(left1.isASynonym() == true);
+    REQUIRE(left1.getSynonymName() == "proc");
+    REQUIRE(right1.isASynonym() == true);
+    REQUIRE(right1.getSynonymName() == "v");
 
     std::string synVal = "such that Uses(proc, \"x\")";
     std::vector<SuchThatClause> clause2;
     QueryParser::parseSuchThatClause(&synVal, syns, &clause2);
+    Reference left2 = clause2[0].getRefLeft();
+    Reference right2 = clause2[0].getRefRight();
     REQUIRE(clause2.size() == 1);
-    REQUIRE(clause2[0].relationship == RelationshipReference::USES);
-    REQUIRE(clause2[0].refLeft.isASynonym() == true);
-    REQUIRE(clause2[0].refLeft.getSynonymName() == "proc");
-    REQUIRE(clause2[0].refRight.isASynonym() == false);
-    REQUIRE(clause2[0].refRight.getValueString() == "x");
+    REQUIRE(clause2[0].getRelationship() == RelationshipReference::USES);
+    REQUIRE(left2.isASynonym() == true);
+    REQUIRE(left2.getSynonymName() == "proc");
+    REQUIRE(right2.isASynonym() == false);
+    REQUIRE(right2.getValueString() == "x");
 
     std::string synWildcard = "such that Calls*(proc, _)";
     std::vector<SuchThatClause> clause3;
     QueryParser::parseSuchThatClause(&synWildcard, syns, &clause3);
+    Reference left3 = clause3[0].getRefLeft();
+    Reference right3 = clause3[0].getRefRight();
     REQUIRE(clause3.size() == 1);
-    REQUIRE(clause3[0].relationship == RelationshipReference::CALLS_T);
-    REQUIRE(clause3[0].refLeft.isASynonym() == true);
-    REQUIRE(clause3[0].refLeft.getSynonymName() == "proc");
-    REQUIRE(clause3[0].refRight.isWildcard() == true);
+    REQUIRE(clause3[0].getRelationship() == RelationshipReference::CALLS_T);
+    REQUIRE(left3.isASynonym() == true);
+    REQUIRE(left3.getSynonymName() == "proc");
+    REQUIRE(right3.isWildcard() == true);
 }
 
 TEST_CASE("Parser can detect semantic error of using wrong type of synonym and "
@@ -346,32 +388,36 @@ TEST_CASE("Parser can parse pattern clause") {
                               Synonym(EntityName::ASSIGN, "a")};
     std::vector<PatternClause> clause;
     QueryParser::parsePatternClause(&correct, syns, &clause);
+    Reference entRef = clause[0].getEntRef();
+    Synonym syn = clause[0].getSyn();
     REQUIRE(clause.size() == 1);
-    REQUIRE(clause[0].entRef.isASynonym() == true);
-    REQUIRE(clause[0].entRef.getSynonymName() == "v");
-    REQUIRE(clause[0].entRef.getEntityName() == EntityName::VARIABLE);
-    REQUIRE(clause[0].syn.getName() == "a");
-    REQUIRE(clause[0].syn.getEntityName() == EntityName::ASSIGN);
-    REQUIRE(clause[0].expression == "(x)");
-    REQUIRE(clause[0].isExact == false);
+    REQUIRE(entRef.isASynonym() == true);
+    REQUIRE(entRef.getSynonymName() == "v");
+    REQUIRE(entRef.getEntityName() == EntityName::VARIABLE);
+    REQUIRE(syn.getName() == "a");
+    REQUIRE(syn.getEntityName() == EntityName::ASSIGN);
+    REQUIRE(clause[0].getExpression() == "(x)");
+    REQUIRE(clause[0].getIsExact() == false);
 
     std::string exact = "pattern a(v, \"x\")";
     std::vector<PatternClause> clauseExact;
     QueryParser::parsePatternClause(&exact, syns, &clauseExact);
+    Reference entRefExact = clauseExact[0].getEntRef();
+    Synonym synExact = clauseExact[0].getSyn();
     REQUIRE(clauseExact.size() == 1);
-    REQUIRE(clauseExact[0].entRef.isASynonym() == true);
-    REQUIRE(clauseExact[0].entRef.getSynonymName() == "v");
-    REQUIRE(clauseExact[0].entRef.getEntityName() == EntityName::VARIABLE);
-    REQUIRE(clauseExact[0].syn.getName() == "a");
-    REQUIRE(clauseExact[0].syn.getEntityName() == EntityName::ASSIGN);
-    REQUIRE(clauseExact[0].expression == "(x)");
-    REQUIRE(clauseExact[0].isExact == true);
+    REQUIRE(entRefExact.isASynonym() == true);
+    REQUIRE(entRefExact.getSynonymName() == "v");
+    REQUIRE(entRefExact.getEntityName() == EntityName::VARIABLE);
+    REQUIRE(synExact.getName() == "a");
+    REQUIRE(synExact.getEntityName() == EntityName::ASSIGN);
+    REQUIRE(clauseExact[0].getExpression() == "(x)");
+    REQUIRE(clauseExact[0].getIsExact() == true);
 
     std::string space = "pattern a(v, _    \"    x    \"    _)";
     std::vector<PatternClause> clauseSpace;
     QueryParser::parsePatternClause(&space, syns, &clauseSpace);
-    REQUIRE(clauseSpace[0].expression == "(x)");
-    REQUIRE(clauseSpace[0].isExact == false);
+    REQUIRE(clauseSpace[0].getExpression() == "(x)");
+    REQUIRE(clauseSpace[0].getIsExact() == false);
 
     std::vector<PatternClause> ignorePattern;
     std::string extraBracket = "pattern a((v, \"x\")";
@@ -448,7 +494,7 @@ TEST_CASE("Parser can parse multiple such that clauses") {
     std::vector<SuchThatClause> clauses;
     QueryParser::parseSuchThatClause(&input, syns, &clauses);
     REQUIRE(clauses.size() == 1);
-    REQUIRE(clauses[0].relationship == RelationshipReference::MODIFIES);
+    REQUIRE(clauses[0].getRelationship() == RelationshipReference::MODIFIES);
     REQUIRE(input == remainingInput);
 }
 
@@ -480,8 +526,8 @@ TEST_CASE("Parser can parse multiple such that clauses with explicit and") {
     std::vector<SuchThatClause> clauses;
     QueryParser::parseSuchThatClause(&input, syns, &clauses);
     REQUIRE(clauses.size() == 2);
-    REQUIRE(clauses[0].relationship == RelationshipReference::MODIFIES);
-    REQUIRE(clauses[1].relationship == RelationshipReference::FOLLOWS);
+    REQUIRE(clauses[0].getRelationship() == RelationshipReference::MODIFIES);
+    REQUIRE(clauses[1].getRelationship() == RelationshipReference::FOLLOWS);
     REQUIRE(input == remainingInput);
 }
 
@@ -532,14 +578,14 @@ TEST_CASE("Parser can parse while pattern clauses") {
     std::string correct = "pattern w(v, _)";
     std::vector<PatternClause> clause;
     QueryParser::parsePatternClause(&correct, syns, &clause);
-    REQUIRE(clause[0].expression == "_");
-    REQUIRE(clause[0].patternType == PatternType::WHILE);
+    REQUIRE(clause[0].getExpression() == "_");
+    REQUIRE(clause[0].getPatternType() == PatternType::WHILE);
 
     std::string space = "pattern w(_,    _      )";
     std::vector<PatternClause> clauseSpace;
     QueryParser::parsePatternClause(&space, syns, &clauseSpace);
-    REQUIRE(clauseSpace[0].expression == "_");
-    REQUIRE(clauseSpace[0].patternType == PatternType::WHILE);
+    REQUIRE(clauseSpace[0].getExpression() == "_");
+    REQUIRE(clauseSpace[0].getPatternType() == PatternType::WHILE);
 
     std::string noWildcard = "pattern w(v, \"x\")";
     REQUIRE_THROWS(QueryParser::parsePatternClause(&noWildcard, syns, &clause));
@@ -554,14 +600,14 @@ TEST_CASE("Parser can parse if pattern clauses") {
     std::string correct = "pattern ifs(v, _, _)";
     std::vector<PatternClause> clause;
     QueryParser::parsePatternClause(&correct, syns, &clause);
-    REQUIRE(clause[0].expression == "_");
-    REQUIRE(clause[0].patternType == PatternType::IF);
+    REQUIRE(clause[0].getExpression() == "_");
+    REQUIRE(clause[0].getPatternType() == PatternType::IF);
 
     std::string space = "pattern ifs(   _    ,   _   ,     _    )";
     std::vector<PatternClause> clauseSpace;
     QueryParser::parsePatternClause(&space, syns, &clauseSpace);
-    REQUIRE(clauseSpace[0].expression == "_");
-    REQUIRE(clauseSpace[0].patternType == PatternType::IF);
+    REQUIRE(clauseSpace[0].getExpression() == "_");
+    REQUIRE(clauseSpace[0].getPatternType() == PatternType::IF);
 
     std::string noWildcardLeft = "pattern ifs(v, \"x\", _)";
     REQUIRE_THROWS(
@@ -581,28 +627,38 @@ TEST_CASE("Parser can parse with clauses") {
     std::string attrVal = "with  c . procName = \"main\"";
     std::vector<WithClause> clause;
     QueryParser::parseWithClause(&attrVal, syns, &clause);
-    REQUIRE(clause[0].refLeft.getRefType() == ReferenceType::ATTR_REF);
-    REQUIRE(clause[0].refLeft.getAttr() == EntityAttribute::PROC_NAME);
-    REQUIRE(clause[0].refRight.getValueString() == "main");
+    Reference left1 = clause[0].getRefLeft();
+    Reference right1 = clause[0].getRefRight();
+    REQUIRE(left1.getRefType() == ReferenceType::ATTR_REF);
+    REQUIRE(left1.getAttr() == EntityAttribute::PROC_NAME);
+    REQUIRE(right1.getValueString() == "main");
 
     std::string attrVal2 = "with  const.value = 2";
     std::vector<WithClause> clause2;
     QueryParser::parseWithClause(&attrVal2, syns, &clause2);
-    REQUIRE(clause2[0].refLeft.getRefType() == ReferenceType::ATTR_REF);
-    REQUIRE(clause2[0].refLeft.getAttr() == EntityAttribute::VALUE);
-    REQUIRE(clause2[0].refRight.getValueString() == "2");
+    Reference left2 = clause2[0].getRefLeft();
+    Reference right2 = clause2[0].getRefRight();
+    REQUIRE(left2.getRefType() == ReferenceType::ATTR_REF);
+    REQUIRE(left2.getAttr() == EntityAttribute::VALUE);
+    REQUIRE(right2.getValueString() == "2");
 
     std::string valVal = "with  2 = 1";
     std::vector<WithClause> clauseValVal;
     QueryParser::parseWithClause(&valVal, syns, &clauseValVal);
-    REQUIRE(clauseValVal[0].refLeft.getValueString() == "2");
-    REQUIRE(clauseValVal[0].refRight.getValueString() == "1");
+    Reference left3 = clauseValVal[0].getRefLeft();
+    Reference right3 = clauseValVal[0].getRefRight();
+    REQUIRE(left3.getValueString() == "2");
+    REQUIRE(right3.getValueString() == "1");
 
     std::string attrAttr = "with  p. procName = r .varName";
     std::vector<WithClause> clauseAttrAttr;
     QueryParser::parseWithClause(&attrAttr, syns, &clauseAttrAttr);
-    REQUIRE(clauseAttrAttr[0].refLeft.getAttr() == EntityAttribute::PROC_NAME);
-    REQUIRE(clauseAttrAttr[0].refRight.getAttr() == EntityAttribute::VAR_NAME);
+    Reference left4 = clauseAttrAttr[0].getRefLeft();
+    Reference right4 = clauseAttrAttr[0].getRefRight();
+    REQUIRE(left4.getAttr() ==
+            EntityAttribute::PROC_NAME);
+    REQUIRE(right4.getAttr() ==
+            EntityAttribute::VAR_NAME);
 
     std::string missingDot = "with  w stmt# = 2";
     REQUIRE_THROWS(QueryParser::parseWithClause(&missingDot, syns, &clause));

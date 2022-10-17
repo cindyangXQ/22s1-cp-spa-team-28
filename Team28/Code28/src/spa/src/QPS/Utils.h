@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 
+const std::regex LEFT_SPACE("^\\s+");
+const std::regex RIGHT_SPACE("\\s+$");
+
 /*
  * Class containing helper functions for QPS.
  */

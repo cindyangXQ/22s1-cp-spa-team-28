@@ -9,7 +9,14 @@
  */
 class Declaration {
 public:
-    std::vector<Synonym> syns;
     Declaration(){};
     Declaration(std::vector<Synonym> syns) : syns(syns){};
+
+    /*
+     * Return list of declared synonym.
+     */
+    std::vector<Synonym> getSyns();
+
+private:
+    std::vector<Synonym> syns;
 };
