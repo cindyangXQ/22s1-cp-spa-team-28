@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../commons/AssignExpression.h"
+#include "../../commons/StringUtil.h"
 #include "../Storage/Storage.h"
 
 /*
@@ -53,6 +54,19 @@ public:
     std::vector<std::pair<Value, Value>>
     solveBoth(RelationshipReference relType, EntityName leftSynonym,
               EntityName rightSynonym);
+
+    /*
+     * Returns list of possible values that the synonym can be based on the
+     * given value and it's attribute.
+     */
+    std::vector<Value> solveOneAttribute(Reference ref, Value value);
+
+    /*
+     * Returns list of possible (Value, Value) that the pair of synonyms can be
+     * based on their attributes.
+     */
+    std::vector<std::pair<Value, Value>> solveBothAttribute(Reference left,
+                                                            Reference right);
 
     /*
      * Returns all possible values of assignments that satisfy the given varName
@@ -115,8 +129,14 @@ private:
     ReferenceType getRefType(EntityName leftSynonym);
 
     /*
-     * Helper method to check if the query is a wildcarded uses
-     * query.
+     * Helper method to add all pairs of Values from cross intersection of left
+     * and right.
+     */
+    void addAllPairsInto(std::vector<std::pair<Value, Value>> *result,
+                         std::vector<Value> *left, std::vector<Value> *right);
+
+    /*
+     *Helper method to check if the query is a wildcarded uses *query.
      */
     bool isWildcardedUses(ReferenceType leftRef, RelationshipReference relType);
 

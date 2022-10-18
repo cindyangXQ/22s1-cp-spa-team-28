@@ -1,11 +1,7 @@
 #pragma once
 
-#include "../Solvable.h"
-#include "RelationshipsTable.h"
+#include "StmtToNameRelationshipsTable.h"
 
-class StmtToProcRelationshipsTable
-    : public RelationshipsTable<int, std::string> {
-public:
-};
+class StmtToProcRelationshipsTable : public StmtToNameRelationshipsTable {};
 
 class CallProcTable : public StmtToProcRelationshipsTable {};

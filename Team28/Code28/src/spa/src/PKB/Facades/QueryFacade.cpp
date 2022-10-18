@@ -190,6 +190,50 @@ std::string QueryFacade::getSecondaryAttribute(int stmtNum) {
     return callProc->retrieveSingleRight(stmtNum);
 };
 
+std::vector<Value> QueryFacade::solveOneAttribute(Reference ref, Value value) {
+    std::string v = value.getValue();
+    EntityName entity = ref.getEntityName();
+    Table *table = this->storage->getAttributesTable(entity, ref.getAttr());
+
+    return table->getMatchingValue(v, entity);
+}
+
+std::vector<std::pair<Value, Value>>
+QueryFacade::solveBothAttribute(Reference left, Reference right) {
+    // TODO: find a method to inner join instead of cross product
+    EntityName leftEnt = left.getEntityName();
+    Table *leftTable =
+        this->storage->getAttributesTable(leftEnt, left.getAttr());
+    std::map<Value, std::vector<Value>> leftValuesMap =
+        leftTable->getAllValues(leftEnt);
+
+    EntityName rightEnt = right.getEntityName();
+    Table *rightTable =
+        this->storage->getAttributesTable(rightEnt, right.getAttr());
+    std::map<Value, std::vector<Value>> rightValuesMap =
+        rightTable->getAllValues(rightEnt);
+
+    std::vector<std::pair<Value, Value>> result;
+    for (auto const &[key, value] : leftValuesMap) {
+        if (rightValuesMap.count(key) > 0) {
+            this->addAllPairsInto(&result, &leftValuesMap[key],
+                                  &rightValuesMap[key]);
+        }
+    }
+
+    return result;
+}
+
+void QueryFacade::addAllPairsInto(std::vector<std::pair<Value, Value>> *result,
+                                  std::vector<Value> *left,
+                                  std::vector<Value> *right) {
+    for (Value lValue : *left) {
+        for (Value rValue : *right) {
+            result->push_back(std::make_pair(lValue, rValue));
+        }
+    }
+};
+
 bool QueryFacade::isWildcardedUses(ReferenceType leftRef,
                                    RelationshipReference relType) {
     return leftRef == ReferenceType::WILDCARD &&
@@ -205,7 +249,6 @@ bool QueryFacade::isWildcardedModifies(ReferenceType leftRef,
 // TODO: clean up this method
 std::vector<Value> QueryFacade::getReflexiveNextT(EntityName stmtEntity) {
     if (stmtRefSet.count(stmtEntity) != 1) {
-        std::cout << "DEBUG wrong" << std::endl;
         return std::vector<Value>();
     }
     StatementType stmtType = Statement::getStmtTypeFromEntityName(stmtEntity);

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "../Solvable.h"
-#include "RelationshipsTable.h"
+#include "StmtToNameRelationshipsTable.h"
 
-class StmtToVarRelationshipsTable : public RelationshipsTable<int, std::string>,
+class StmtToVarRelationshipsTable : public StmtToNameRelationshipsTable,
                                     public Solvable {
 public:
     /*

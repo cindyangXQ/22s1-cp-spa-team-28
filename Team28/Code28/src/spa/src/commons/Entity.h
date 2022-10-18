@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -29,8 +30,17 @@ const ENTITY_TYPE_SET stmtRefSet = {
 const ENTITY_TYPE_SET entRefSet = {EntityName::VARIABLE, EntityName::PROCEDURE,
                                    EntityName::CONSTANT};
 
+typedef std::map<EntityName, EntityAttribute> INFERRED_ENTITY_ATTRIBUTE_MAP;
+
+const INFERRED_ENTITY_ATTRIBUTE_MAP SECONDARY_ATTRIBUTE_MAP = {
+    {EntityName::CALL, EntityAttribute::PROC_NAME},
+    {EntityName::PRINT, EntityAttribute::VAR_NAME},
+    {EntityName::READ, EntityAttribute::VAR_NAME},
+};
+
 typedef std::unordered_map<EntityName, std::unordered_set<EntityAttribute>>
     ENTITY_ATTRIBUTE_MAP;
+
 const ENTITY_ATTRIBUTE_MAP entityAttributeMap = {
     {EntityName::PROCEDURE, {EntityAttribute::PROC_NAME}},
     {EntityName::STMT, {EntityAttribute::STMT_NO}},

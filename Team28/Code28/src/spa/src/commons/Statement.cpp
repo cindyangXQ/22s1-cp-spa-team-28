@@ -8,7 +8,8 @@ std::map<EntityName, StatementType> Statement::entityToStatementMap = {
     {EntityName::CALL, StatementType::CALL},
     {EntityName::WHILE, StatementType::WHILE},
     {EntityName::IF, StatementType::IF},
-    {EntityName::ASSIGN, StatementType::ASSIGN}};
+    {EntityName::ASSIGN, StatementType::ASSIGN},
+};
 
 int Statement::getLineNumberFromStatement(Statement *statement) {
     return statement->getLineNumber();

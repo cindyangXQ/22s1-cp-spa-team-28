@@ -148,3 +148,302 @@ TEST_CASE("isAttributableStatement works correctly") {
     REQUIRE(table.hasSecondaryAttribute(5));
     REQUIRE(!table.hasSecondaryAttribute(6));
 }
+
+TEST_CASE("getMatchingValue works correctly") {
+    StatementsTable table;
+    Statement assignStmt = Statement(1, StatementType::ASSIGN);
+    Statement callStmt = Statement(2, StatementType::CALL);
+    Statement ifStmt = Statement(3, StatementType::IF);
+    Statement printStmt = Statement(4, StatementType::PRINT);
+    Statement readStmt = Statement(5, StatementType::READ);
+    Statement whileStmt = Statement(6, StatementType::WHILE);
+
+    table.store(&assignStmt);
+    table.store(&callStmt);
+    table.store(&ifStmt);
+    table.store(&printStmt);
+    table.store(&readStmt);
+    table.store(&whileStmt);
+
+    std::vector<Value> test;
+    std::vector<Value> result;
+
+    std::vector<std::string> correctStr;
+    std::vector<std::string> wrongStr;
+
+    // getMatchingValue by STMT works correctly
+
+    correctStr = {"1", "2", "3", "4", "5", "6"};
+    wrongStr = {"7", "8", "9"};
+
+    for (std::string str : correctStr) {
+        test = table.getMatchingValue(str, EntityName::STMT);
+        result = {Value(ValueType::STMT_NUM, str)};
+        REQUIRE(test == result);
+    }
+
+    for (std::string str : wrongStr) {
+        test = table.getMatchingValue(str, EntityName::STMT);
+        result = {};
+        REQUIRE(test == result);
+    }
+
+    // getMatchingValue by ASSIGN works correctly
+    correctStr = {"1"};
+    wrongStr = {"2", "3", "4", "5", "6", "7", "8", "9"};
+    for (std::string str : correctStr) {
+        test = table.getMatchingValue(str, EntityName::ASSIGN);
+        result = {Value(ValueType::STMT_NUM, str)};
+        REQUIRE(test == result);
+    }
+
+    for (std::string str : wrongStr) {
+        test = table.getMatchingValue(str, EntityName::ASSIGN);
+        result = {};
+        REQUIRE(test == result);
+    }
+
+    // getMatchingValue by CALL works correctly
+    correctStr = {"2"};
+    wrongStr = {"1", "3", "4", "5", "6", "7", "8", "9"};
+    for (std::string str : correctStr) {
+        test = table.getMatchingValue(str, EntityName::CALL);
+        result = {Value(ValueType::STMT_NUM, str)};
+        REQUIRE(test == result);
+    }
+
+    for (std::string str : wrongStr) {
+        test = table.getMatchingValue(str, EntityName::CALL);
+        result = {};
+        REQUIRE(test == result);
+    }
+
+    // getMatchingValue by IF works correctly
+    correctStr = {"3"};
+    wrongStr = {"1", "2", "4", "5", "6", "7", "8", "9"};
+    for (std::string str : correctStr) {
+        test = table.getMatchingValue(str, EntityName::IF);
+        result = {Value(ValueType::STMT_NUM, str)};
+        REQUIRE(test == result);
+    }
+
+    for (std::string str : wrongStr) {
+        test = table.getMatchingValue(str, EntityName::IF);
+        result = {};
+        REQUIRE(test == result);
+    }
+    // getMatchingValue by PRINT works correctly
+    correctStr = {"4"};
+    wrongStr = {"1", "2", "3", "5", "6", "7", "8", "9"};
+    for (std::string str : correctStr) {
+        test = table.getMatchingValue(str, EntityName::PRINT);
+        result = {Value(ValueType::STMT_NUM, str)};
+        REQUIRE(test == result);
+    }
+
+    for (std::string str : wrongStr) {
+        test = table.getMatchingValue(str, EntityName::PRINT);
+        result = {};
+        REQUIRE(test == result);
+    }
+    // getMatchingValue by READ works correctly
+    correctStr = {"5"};
+    wrongStr = {"1", "2", "3", "4", "6", "7", "8", "9"};
+    for (std::string str : correctStr) {
+        test = table.getMatchingValue(str, EntityName::READ);
+        result = {Value(ValueType::STMT_NUM, str)};
+        REQUIRE(test == result);
+    }
+
+    for (std::string str : wrongStr) {
+        test = table.getMatchingValue(str, EntityName::READ);
+        result = {};
+        REQUIRE(test == result);
+    }
+    // getMatchingValue by WHILE works correctly
+    correctStr = {"6"};
+    wrongStr = {"1", "2", "3", "4", "5", "7", "8", "9"};
+    for (std::string str : correctStr) {
+        test = table.getMatchingValue(str, EntityName::WHILE);
+        result = {Value(ValueType::STMT_NUM, str)};
+        REQUIRE(test == result);
+    }
+
+    for (std::string str : wrongStr) {
+        test = table.getMatchingValue(str, EntityName::WHILE);
+        result = {};
+        REQUIRE(test == result);
+    }
+}
+
+TEST_CASE("getAllValues works correctly") {
+    StatementsTable table;
+    Statement assignStmt = Statement(1, StatementType::ASSIGN);
+    Statement callStmt = Statement(2, StatementType::CALL);
+    Statement ifStmt = Statement(3, StatementType::IF);
+    Statement printStmt = Statement(4, StatementType::PRINT);
+    Statement readStmt = Statement(5, StatementType::READ);
+    Statement whileStmt = Statement(6, StatementType::WHILE);
+
+    table.store(&assignStmt);
+    table.store(&callStmt);
+    table.store(&ifStmt);
+    table.store(&printStmt);
+    table.store(&readStmt);
+    table.store(&whileStmt);
+
+    std::map<Value, std::vector<Value>> test;
+    std::vector<Value> resKeys;
+    std::vector<std::vector<Value>> resValues;
+
+    std::vector<std::string> correctStr;
+
+    std::vector<Value> keys;
+    std::vector<std::vector<Value>> values;
+
+    // getAllValues by STMT works correctly
+    test = table.getAllValues(EntityName::STMT);
+
+    correctStr = {"1", "2", "3", "4", "5", "6"};
+
+    for (std::string str : correctStr) {
+        Value val = Value(ValueType::STMT_NUM, str);
+        resKeys.push_back(val);
+        resValues.push_back({val});
+    }
+
+    for (auto &elem : test) {
+        keys.push_back(elem.first);
+        values.push_back(elem.second);
+    }
+
+    for (int i = 0; i < correctStr.size(); i++) {
+        REQUIRE(keys[i] == resKeys[i]);
+        REQUIRE(values[i] == resValues[i]);
+    }
+
+    // getAllValues by ASSIGN works correctly
+    test = table.getAllValues(EntityName::ASSIGN);
+
+    correctStr = {"1"};
+
+    for (std::string str : correctStr) {
+        Value val = Value(ValueType::STMT_NUM, str);
+        resKeys.push_back(val);
+        resValues.push_back({val});
+    }
+
+    for (auto &elem : test) {
+        keys.push_back(elem.first);
+        values.push_back(elem.second);
+    }
+
+    for (int i = 0; i < correctStr.size(); i++) {
+        REQUIRE(keys[i] == resKeys[i]);
+        REQUIRE(values[i] == resValues[i]);
+    }
+
+    // getAllValues by CALL works correctly
+    test = table.getAllValues(EntityName::CALL);
+
+    correctStr = {"2"};
+
+    for (std::string str : correctStr) {
+        Value val = Value(ValueType::STMT_NUM, str);
+        resKeys.push_back(val);
+        resValues.push_back({val});
+    }
+
+    for (auto &elem : test) {
+        keys.push_back(elem.first);
+        values.push_back(elem.second);
+    }
+
+    for (int i = 0; i < correctStr.size(); i++) {
+        REQUIRE(keys[i] == resKeys[i]);
+        REQUIRE(values[i] == resValues[i]);
+    }
+
+    // getAllValues by IF works correctly
+    test = table.getAllValues(EntityName::IF);
+
+    correctStr = {"3"};
+
+    for (std::string str : correctStr) {
+        Value val = Value(ValueType::STMT_NUM, str);
+        resKeys.push_back(val);
+        resValues.push_back({val});
+    }
+
+    for (auto &elem : test) {
+        keys.push_back(elem.first);
+        values.push_back(elem.second);
+    }
+
+    for (int i = 0; i < correctStr.size(); i++) {
+        REQUIRE(keys[i] == resKeys[i]);
+        REQUIRE(values[i] == resValues[i]);
+    }
+    // getAllValues by PRINT works correctly
+    test = table.getAllValues(EntityName::PRINT);
+
+    correctStr = {"4"};
+
+    for (std::string str : correctStr) {
+        Value val = Value(ValueType::STMT_NUM, str);
+        resKeys.push_back(val);
+        resValues.push_back({val});
+    }
+
+    for (auto &elem : test) {
+        keys.push_back(elem.first);
+        values.push_back(elem.second);
+    }
+
+    for (int i = 0; i < correctStr.size(); i++) {
+        REQUIRE(keys[i] == resKeys[i]);
+        REQUIRE(values[i] == resValues[i]);
+    }
+
+    // getAllValues by READ works correctly
+    test = table.getAllValues(EntityName::READ);
+
+    correctStr = {"5"};
+
+    for (std::string str : correctStr) {
+        Value val = Value(ValueType::STMT_NUM, str);
+        resKeys.push_back(val);
+        resValues.push_back({val});
+    }
+
+    for (auto &elem : test) {
+        keys.push_back(elem.first);
+        values.push_back(elem.second);
+    }
+
+    for (int i = 0; i < correctStr.size(); i++) {
+        REQUIRE(keys[i] == resKeys[i]);
+        REQUIRE(values[i] == resValues[i]);
+    }
+
+    // getAllValues by WHILE works correctly
+    test = table.getAllValues(EntityName::WHILE);
+
+    correctStr = {"6"};
+
+    for (std::string str : correctStr) {
+        Value val = Value(ValueType::STMT_NUM, str);
+        resKeys.push_back(val);
+        resValues.push_back({val});
+    }
+
+    for (auto &elem : test) {
+        keys.push_back(elem.first);
+        values.push_back(elem.second);
+    }
+
+    for (int i = 0; i < correctStr.size(); i++) {
+        REQUIRE(keys[i] == resKeys[i]);
+        REQUIRE(values[i] == resValues[i]);
+    }
+}

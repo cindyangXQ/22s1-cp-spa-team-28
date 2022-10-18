@@ -173,3 +173,16 @@ AssignmentsTable::getAssignAndVarExact(std::string expression) {
     std::sort(result.begin(), result.end(), value_pair_sort());
     return result;
 };
+
+std::vector<Value> AssignmentsTable::getMatchingValue(std::string value,
+                                                      EntityName entity) {
+    UNUSED(value);
+    UNUSED(entity);
+    return std::vector<Value>{};
+};
+
+std::map<Value, std::vector<Value>>
+AssignmentsTable::getAllValues(EntityName entity) {
+    UNUSED(entity);
+    return std::map<Value, std::vector<Value>>{};
+};
