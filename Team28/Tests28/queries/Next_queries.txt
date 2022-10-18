@@ -1,260 +1,375 @@
-1 - everything next of end of while
+1 - next of end of while
 stmt s;
 Select s such that Next(6, s)
 3
 5000
-2 - next of if condition
+2 - next of if
 stmt s;
 Select s such that Next(7, s)
 8, 9
 5000
-3 - next of while condition
+3 - next of while
 stmt s;
 Select s such that Next(3, s)
 4, 7
 5000
-4 - next of else of if
+4 - next of else
 stmt s;
 Select s such that Next(9, s)
 10
 5000
-5 - next of then of if
+5 - next of then
 stmt s;
 Select s such that Next(8, s)
 10
 5000
-6 - next of statement list within while 
+6 - next of stmtlst in while 
 stmt s;
-Select s such that Next(4, s)
+    Select         s such       that   Next(         4,           s)
 5
 5000
-7 - next of statement list within if
+7 - next of stmtlst of if
 stmt s;
 Select s such that Next(16, s)
 17
 5000
-8 - boolean 2 wildcards
+8 - 2 wildcard boolean
 stmt s;
 Select BOOLEAN such that Next(_, _)
 TRUE
 5000
-9 - reflexivity with while
+9 - while reflexivity
 stmt s;
 Select s such that Next(s, s)
 none
 5000
-10 - invalid reflexivity
+10 - invalid stmt reflexivity
 assign s;
 Select s such that Next(s, s)
 none
 5000
-11 - Next of call (next statement, within proc)
+11 - Next of call within procedure 
 stmt s;
 Select s such that Next(5,    s)
 6
 5000
-12 - left wildcard next statements
-stmt s;
-Select s        such that Next(_,          s)
+12 - left wildcard
+stmt             s              ;
+Select s        such that Next(       _,          s)
 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 5000
-13 - right wildcard next statements
-stmt s;
-Select s such that               Next(s, _)
+13 - right wildcard
+      stmt               s;
+Select s such that               Next          (s, _)
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 20
 5000
-14 - everything next of assign
+14 - assign next
 assign a;         stmt s;
 Select s     such that Next(a, s)
 2, 3, 5, 10, 11, 12, 13, 17, 19
 5000
-15 - everything next of end
+15 - next of last line
 stmt s;
 Select s such that Next(18, s)
 none
 5000
-16 - everything next of while
+16 - next of while
 while w; stmt s;
-Select s such that Next(w, s)
+Select s         such that Next(               w, s)
 4, 7, 14, 18, 20
 5000
-17 - everything next of if
+17 - next of if
 if ifs; stmt s;
 Select s such that Next(ifs, s)
 8, 9, 15, 16
 5000
-18 - everything next of assign
-assign a; stmt s;
-Select s such that Next(11, s)
-12
+18 - next of assign
+assign a;           stmt s;
+Select s such that Next(a       , s)
+2,3,5,10,11,12,13,17,19
 5000
-19 - everything next of call
+19 - next of call
 call c; stmt s;
-Select s such that Next(c, s)
+Select s such that Next(                             c, s)
 6
 5000
-20 - boolean with true
+20 - boolean true
 stmt s;
-Select BOOLEAN such that Next(13, 18)
+Select            BOOLEAN such that Next(13, 18)
 TRUE
 5000
-21 - boolean with false
+21 - boolean false
 stmt s;
-Select BOOLEAN such that Next(5, 19)
+Select    BOOLEAN    such that Next(    5, 19)
 FALSE
 5000
-22 - check with 2 statement lines
+22 - next captures in between 2 lines
 stmt s;
-Select s such that Next(6, 3)
+Select      s such that Next(6,          3)
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 5000
-23 - statement that comes before statement after while
+23 - statement that comes before statement outside while
 stmt s;
 Select s such that    Next(s, 7)
 3
 5000
-24 - statement that comes before statement after if
+24 - statement that comes before statement outside if
 stmt s;
 Select          s such that Next(s, 18)
 13
 5000
-25 - Next(c, _) for call
+25 - Next(call, _)
 call c;
 Select   c such        that Next(c,_)
 5
 5000
-26 - Next(r, _) for read
+26 - Next(read, _)
 read            r;
 Select r      such that Next(r,_)
 none
 5000
-27 - Next(p, _) for print
+27 - Next(print, _)
 print p;
 Select p such that   Next      (p,_)
 none
 5000
-28 - Next(w, _) for while
+28 - Next(while, _)
 while w;
 Select w such         that Next(     w,_       )
 3,13,19
 5000
-29 - Next(ifs, _) for if
+29 - Next(if, _)
 if ifs;
 Select ifs such       that            Next(ifs,_)
 7,14
 5000
-30 - Next(a, _) for assign
+30 - Next(assign, _)
     assign a;
 Select a    such that   Next(a,         _)
 1,10,11,12,15,16,17,2,20,4,6,8,9
 5000
-31 - Next(s, _) for stmt
+31 - Next(stmt, _)
 stmt s;
 Select      s such that Next(s,_)
 1,10,11,12,13,14,15,16,17,19,2,20,3,4,5,6,7,8,9
 5000
-32 - Next(_, c) for call 
+32 - Next(_, call)
             call c;
 Select c such      that Next(_,c)
 5
 5000
-33 - Next(_, r) for read
+33 - Next(_, read)
 read r;
 Select r such that Next(_,r)
 none
 5000
-34 - Next(_, p) for print
+34 - Next(_, print)
 print p;
 Select p such          that Next(_,p)
 none
 5000
-35 - Next(w,_) for while
+35 - Next(_,while)
           while w;
-Select w such that        Next(w,_)
+Select w such that        Next(_      ,         w)
 13,19,3
 5000
-36 - Next(_, ifs) for if
+36 - Next(_, if)
 if ifs;
-Select             ifs such that Next(_,ifs)
+Select             ifs such      that Next(_,ifs)
 7,14
 5000
-37 - Next(_, a) for assign
+37 - Next(_, assign)
 assign a;
          Select a such that Next(_,a)
 10,11,12,15,16,17,18,2,20,4,6,8,9
 5000
-38 - Next(_, s) for stmt
+38 - Next(_, stmt)
 stmt s;
-Select s such that Next(_,s)
+Select       s such        that      Next(_       ,s)
 10,11,12,13,14,15,16,17,18,19,2,20,3,4,5,6,7,8,9
 5000
-39 - Next(c1, c2) for left call
+39 - Next(c1, c2) check c1
 call c1,c2;
 Select c1 such           that Next(c1,c2)
 none
 5000
-40 - Next(c1, c2) for right call
+40 - Next(c1, c2) check c2
 call c1,c2;
 Select c2 such that   Next(c1   ,          c2)
 none
 5000
-41 - Next(r1, r2) for left read
+41 - Next(r1, r2) check r1
 read r1,r2;
 Select r1                such       that Next(r1,r2)
 none
 5000
-42 - Next(r1, r2) for right read
+42 - Next(r1, r2) check r2
 read r1,r2;
 Select r2 such that Next(r1,r2)
 none
 5000
-43 - Next(p1, p2) for left print
+43 - Next(p1, p2) check p1
 print p1,p2;
 Select p1            such that Next     (p1,p2)
 none
 5000
-44 - Next(p1, p2) for right print
+44 - Next(p1, p2) check p2
 print p1,p2;
 Select     p2 such that Next(p1,     p2)
 none
 5000
-45 - Next(w1, w2) for left while
+45 - Next(w1, w2) check w1
 while w1,w2;
 Select w1 such that Next( w1  ,w2)
 none
 5000
-46 - Next(w1, w2) for right while
+46 - Next(w1, w2) check w2
 while w1,w2;
-Select w2 such that Next(     w1,w2)
+Select w2 such that Next(     w1,       w2)
 none
 5000
-47 - Next(ifs1, ifs2) for left if
+47 - Next(ifs1, ifs2) check ifs1
 if ifs1,ifs2;
 Select ifs1 such that Next(ifs1,       ifs2)
 none
 5000
-48 - Next(ifs1, xifs2) for right if
+48 - Next(ifs1, xifs2) check ifs2
 if ifs1,ifs2;
-Select ifs2 such that Next(    ifs1,ifs2)
+Select ifs2 such that Next(    ifs1,      ifs2)
 none
 5000
-49 - Next(a1, a2) for left assign
+49 - Next(a1, a2) check a1
 assign a1,a2;
 Select a1 such that Next(a1,a2)
 1,10,11,16,8,9
 5000
-50 - Next(a1, a2) for right assign
+50 - Next(a1, a2) check a2
 assign a1,a2;
 Select a2 such that Next(a1,a2)
 10,11,12,17,2
 5000
-51 - Next(s1, s2) for left stmt
+51 - Next(s1, s2) check s1
 stmt s1,s2;
 Select s1 such that Next(s1,s2)
 1,10,11,12,13,14,15,16,17,19,2,20,3,4,5,6,7,8,9
 5000
-52 - Next(s1, s2) for right stmt
+52 - Next(s1, s2) check s2
 stmt s1,s2;
 Select s2 such that Next(s1,s2)
 10,11,12,13,14,15,16,17,18,19,2,20,3,4,5,6,7,8,9
+5000
+53 - next* end of while
+stmt s;
+Select s such that Next*(6, s)
+7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 3, 4, 5, 6
+5000
+54 - next* if cond
+stmt s;
+Select s such that Next*(7, s)
+8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
+5000
+55 - next* while cond
+stmt s;
+Select s such that Next*(3, s)
+4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 3
+5000
+56 - next* else
+stmt s;
+Select s such that Next*(9, s)
+10, 11, 12, 13, 14, 15, 16, 17, 18
+5000
+57 - next* if
+stmt s;
+Select s such that Next*(8, s)
+10, 11, 12, 13, 14, 15, 16, 17, 18
+5000
+58 - next* inside while
+stmt s;
+Select s such that Next*(4, s)
+3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
+5000
+59 - next* inside if
+stmt s;
+Select s such that Next*(16, s)
+17, 18, 13, 14, 15, 16
+5000
+60 - next* boolean 2 wildcard
+stmt s;
+Select BOOLEAN such that Next*(_, _)
+TRUE
+5000
+61 - next* while reflexivity
+stmt s;
+Select s such that Next*(s, s)
+3, 4, 5, 6, 13, 14, 15, 16, 17, 19, 20
+5000
+62 - next* reflexivity
+assign s;
+Select s such that Next*(s, s)
+4, 6, 15, 16, 17, 20
+5000
+63 - next* of call
+stmt s;
+Select s such that Next*(5, s)
+6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 3, 4, 5
+5000
+64 - Next*(_, stmt)
+stmt s;
+Select s such that Next*(_, s)
+2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+5000
+65 - Next*(stmt, _)
+stmt s;
+Select s such that Next*(s, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 20
+5000
+66 - Next*(assign, stmt)
+assign a; stmt s;
+Select s such that Next*(a, s)
+2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+5000
+67 - next* end 
+stmt s;
+Select s such that Next*(18, s)
+none
+5000
+68 - Next*(while, stmt)
+while w; stmt s;
+Select s such that Next*(w, s)
+3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+5000
+69 - Next*(if, stmt)
+if ifs; stmt s;
+Select s such       that          Next*        (ifs, s)
+8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
+5000
+70 - Next*(call, stmt)
+call c; stmt s;
+Select s such that Next*(c, s)
+6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 3, 4, 5
+5000
+71 - next* boolean true
+            stmt s;
+Select BOOLEAN          such that Next*(            13,      18)
+TRUE
+5000
+72 - next* boolean false
+stmt s;
+Select BOOLEAN such that Next*(19, 11)
+FALSE
+5000
+73 - next* 2 stmts
+            stmt s;
+Select s such that Next*            (6, 3)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+5000
+74 - next* outside while
+stmt s;
+Select          s such          that Next*     (s,            7)
+1, 2, 3, 4, 5, 6
+5000
+75 - next* outside if
+stmt s;
+Select s such            that Next*(s, 18)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17
 5000

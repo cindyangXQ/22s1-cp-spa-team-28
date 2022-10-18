@@ -102,6 +102,8 @@ public:
      */
     std::string getSecondaryAttribute(int stmtNum);
 
+    std::vector<Value> getReflexiveNextT(EntityName stmtEntity);
+
 private:
     Storage *storage;
     const std::string STMT_NO_SECONDARY_ATTRIBUTE =

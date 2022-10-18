@@ -60,6 +60,19 @@ ClauseResult SuchThatEvaluator::handleRightSynonym(RelationshipReference relRef,
 ClauseResult SuchThatEvaluator::handleBothSynonym(RelationshipReference relRef,
                                                   Reference left,
                                                   Reference right) {
+    if (relRef == RelationshipReference::NEXT_T &&
+        left.getSynonymName() == right.getSynonymName()) {
+        // TODO: clean up this if block
+        ClauseResult clauseResult = ClauseResult({left, right});
+
+        std::vector<Value> result =
+            queryFacade->getReflexiveNextT(left.getEntityName());
+        for (int i = 0; i < result.size(); i++) {
+            clauseResult.insert(Tuple({result[i], result[i]}));
+        }
+        return clauseResult;
+    }
+
     if (left.getEntityName() == right.getEntityName() &&
         left.getSynonymName() == right.getSynonymName()) {
         return ClauseResult(noSameSynonym.count(relRef));

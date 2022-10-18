@@ -61,6 +61,9 @@ std::vector<int> StatementsTable::getAllLineNumbers() {
 }
 
 std::vector<int> StatementsTable::getStatementsByType(StatementType type) {
+    if (type == StatementType::STMT) {
+        return getAllLineNumbers();
+    }
     return this->statementTypeIndexes[type];
 }
 
