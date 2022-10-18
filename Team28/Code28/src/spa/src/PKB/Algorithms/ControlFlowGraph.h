@@ -13,7 +13,8 @@ public:
     /*
      * Explicit constructor for ControlFlowGraph.
      */
-    ControlFlowGraph(NextTable *nextTable, StorageView *storage);
+    ControlFlowGraph(NextTable *nextTable, NextTTable *nextTTable,
+                     StorageView *storage);
 
     /*
      * Populates NextTable based on relationships currently found in Storage.
@@ -21,15 +22,23 @@ public:
      */
     void populateNext();
 
+    /*
+     * Populates NextTTable by iterating through current Next relationships.
+     */
+    void populateNextT();
+
 private:
     NextTable *next;
+    NextTTable *nextT;
     StatementsTable *statements;
     FollowsTable *follows;
     BranchInTable *branchIn;
     BranchOutTable *branchOut;
     ProceduresTable *procedures;
 
-    std::map<int, bool> visited;
+    std::map<std::pair<int, int>, bool> visited;
+
+    int totalLines;
 
     /*
      * Depth First Search of CFG based on given lineNo.
@@ -41,10 +50,13 @@ private:
      */
     template <typename Subclass> void DFSHelper(int i, Subclass *table) {
         for (int j : table->retrieveLeft(i)) {
-            Relationship<int, int> rs =
+            Relationship<int, int> nextRs =
                 Relationship(RelationshipReference::NEXT, i, j);
-            this->next->store(&rs);
-            if (!this->visited[j]) {
+            this->next->store(&nextRs);
+            std::pair<int, int> curr = std::make_pair(i, j);
+            bool isVisited = this->visited.find(curr) != this->visited.end();
+            if (!isVisited) {
+                this->visited[curr] = true;
                 DFS(j);
             }
         }

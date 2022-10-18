@@ -15,6 +15,7 @@ void StatementsTable::store(TableValue *statement) {
 
     this->statements.push_back(stmt);
     this->statementTypeIndexes[type].push_back(index);
+    this->tableSize++;
 }
 
 std::vector<std::string> StatementsTable::getAllAsString() {
@@ -75,3 +76,5 @@ bool StatementsTable::hasSecondaryAttribute(const int &lineNum) {
     }
     return false;
 }
+
+int StatementsTable::getTableSize() { return this->tableSize; }

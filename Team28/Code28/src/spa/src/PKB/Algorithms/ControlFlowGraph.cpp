@@ -2,17 +2,20 @@
 
 #include <map>
 
-ControlFlowGraph::ControlFlowGraph(NextTable *nextTable, StorageView *storage) {
+ControlFlowGraph::ControlFlowGraph(NextTable *nextTable, NextTTable *nextTTable,
+                                   StorageView *storage) {
     this->next = nextTable;
+    this->nextT = nextTTable;
     this->statements = storage->getTable<StatementsTable>();
     this->follows = storage->getTable<FollowsTable>();
     this->branchIn = storage->getTable<BranchInTable>();
     this->branchOut = storage->getTable<BranchOutTable>();
     this->procedures = storage->getTable<ProceduresTable>();
+    this->totalLines = storage->getTable<StatementsTable>()->getTableSize();
 };
 
 void ControlFlowGraph::populateNext() {
-    this->visited = std::map<int, bool>();
+    this->visited = std::map<std::pair<int, int>, bool>();
 
     for (int stmtNum : this->procedures->getAllStmtNum()) {
         if (!(follows->isLeftValueExist(stmtNum) ||
@@ -23,13 +26,47 @@ void ControlFlowGraph::populateNext() {
     }
 };
 
-void ControlFlowGraph::DFS(int i) {
-    if (!(follows->isLeftValueExist(i) || branchIn->isLeftValueExist(i) ||
-          branchOut->isLeftValueExist(i))) {
-        return;
+void ControlFlowGraph::populateNextT() {
+    std::map<std::pair<int, int>, bool> matrix;
+
+    for (int i = 1; i <= this->totalLines; i++) {
+        for (int j = 1; j <= this->totalLines; j++) {
+            std::pair<int, int> curr = std::make_pair(i, j);
+            matrix[curr] = false;
+        }
     }
 
-    this->visited[i] = true;
+    for (const auto &elem : this->visited) {
+        matrix[elem.first] = elem.second;
+    }
+
+    for (int k = 1; k <= this->totalLines; k++) {
+        for (int i = 1; i <= this->totalLines; i++) {
+            for (int j = 1; j <= this->totalLines; j++) {
+                std::pair<int, int> curr = std::make_pair(i, j);
+                std::pair<int, int> left = std::make_pair(i, k);
+                std::pair<int, int> right = std::make_pair(k, j);
+                matrix[curr] = matrix[curr] || (matrix[left] && matrix[right]);
+            }
+        }
+    }
+
+    for (const auto &elem : matrix) {
+        if (elem.second) {
+            Relationship<int, int> nextTRs =
+                Relationship(RelationshipReference::NEXT_T, elem.first.first,
+                             elem.first.second);
+            this->nextT->store(&nextTRs);
+        }
+    }
+};
+
+void ControlFlowGraph::DFS(int i) {
+    if (!(this->follows->isLeftValueExist(i) ||
+          this->branchIn->isLeftValueExist(i) ||
+          this->branchOut->isLeftValueExist(i))) {
+        return;
+    }
 
     DFSHelper(i, this->branchIn);
     DFSHelper(i, this->branchOut);

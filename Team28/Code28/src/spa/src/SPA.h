@@ -10,7 +10,7 @@ public:
 
     void parse(std::string filename);
 
-    void preprocessPkb();
+    void preprocess();
 
     void evaluateQuery(std::string query, std::list<std::string> &results);
 

@@ -57,7 +57,14 @@ public:
      */
     bool hasSecondaryAttribute(const int &index);
 
+    /*
+     * Get table size.
+     * TODO check if this can be removed. Only used for Next* currently.
+     */
+    int getTableSize();
+
 private:
+    int tableSize = 0;
     const std::string STMT_TYPE_NONE_INVALID_USE =
         "StatementType cannot be NONE";
 
