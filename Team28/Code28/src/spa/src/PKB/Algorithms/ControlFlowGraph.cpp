@@ -56,6 +56,7 @@ void ControlFlowGraph::populateNextT() {
             Relationship<int, int> nextTRs =
                 Relationship(RelationshipReference::NEXT_T, elem.first.first,
                              elem.first.second);
+
             this->nextT->store(&nextTRs);
         }
     }

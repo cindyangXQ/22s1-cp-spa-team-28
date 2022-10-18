@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Algorithms/ControlFlowGraph.h"
 #include "Facades/PopulateFacade.h"
 #include "Facades/QueryFacade.h"
 #include "Storage/Storage.h"
@@ -31,5 +32,6 @@ public:
     void populateNextT();
 
 private:
+    ControlFlowGraph *cfg;
     Storage *storage;
 };
