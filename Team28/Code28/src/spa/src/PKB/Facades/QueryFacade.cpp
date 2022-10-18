@@ -201,3 +201,26 @@ bool QueryFacade::isWildcardedModifies(ReferenceType leftRef,
     return leftRef == ReferenceType::WILDCARD &&
            relType == RelationshipReference::MODIFIES;
 }
+
+std::vector<Value> QueryFacade::getReflexiveNextT(EntityName stmtEntity) {
+    if (stmtRefSet.count(stmtEntity) != 1) {
+        std::cout << "DEBUG wrong" << std::endl;
+        return std::vector<Value>();
+    }
+    StatementType stmtType = Statement::getStmtTypeFromEntityName(stmtEntity);
+    StatementsTable *statements = this->storage->getTable<StatementsTable>();
+    std::vector<int> possibleValues = statements->getStatementsByType(stmtType);
+    std::unordered_set<int> setOfPossibleValues(possibleValues.begin(),
+                                                possibleValues.end());
+    NextTTable *nextT = this->storage->getTable<NextTTable>();
+    std::vector<Value> result;
+
+    for (auto const &[key, val] : nextT->getLeftMap()) {
+        if (setOfPossibleValues.count(key) > 0) {
+            if (val.count(key) > 0) {
+                result.push_back(Value(ValueType::STMT_NUM, toString(key)));
+            }
+        }
+    }
+    return result;
+};
