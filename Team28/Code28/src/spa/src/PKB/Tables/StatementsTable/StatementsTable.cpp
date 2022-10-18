@@ -1,5 +1,6 @@
 #include "StatementsTable.h"
 
+#include "../../../commons/StringUtil.h"
 #include <algorithm>
 
 StatementsTable::StatementsTable() = default;
@@ -75,6 +76,42 @@ bool StatementsTable::hasSecondaryAttribute(const int &lineNum) {
         return true;
     }
     return false;
+}
+
+std::vector<Value> StatementsTable::getMatchingValue(std::string value,
+                                                     EntityName entity) {
+    int v = std::stoi(value);
+    std::vector<int> values;
+    std::vector<Value> result = {};
+    if (entity == EntityName::STMT) {
+        values = this->getAllLineNumbers();
+    } else {
+        StatementType stmtType = Statement::entityToStatementMap[entity];
+        values = this->getStatementsByType(stmtType);
+    }
+    for (int i : values) {
+        if (i == v) {
+            result.push_back(Value(ValueType::STMT_NUM, toString(i)));
+        }
+    }
+    return result;
+}
+
+std::map<Value, std::vector<Value>>
+StatementsTable::getAllValues(EntityName entity) {
+    std::vector<int> values;
+    std::map<Value, std::vector<Value>> result = {};
+    if (entity == EntityName::STMT) {
+        values = this->getAllLineNumbers();
+    } else {
+        StatementType stmtType = Statement::entityToStatementMap[entity];
+        values = this->getStatementsByType(stmtType);
+    }
+    for (int i : values) {
+        Value v = Value(ValueType::STMT_NUM, toString(i));
+        result[v] = {v};
+    }
+    return result;
 }
 
 int StatementsTable::getTableSize() { return this->tableSize; }

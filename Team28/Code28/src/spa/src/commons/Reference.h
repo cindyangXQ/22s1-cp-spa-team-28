@@ -15,6 +15,7 @@ public:
     Reference(Synonym syn, EntityAttribute attr);
     Reference(std::string value);
     bool isWildcard();
+    bool isSecondaryAttribute();
     bool isASynonym();
     ReferenceType getRefType();
     Synonym getSynonym();

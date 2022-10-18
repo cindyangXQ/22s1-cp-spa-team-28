@@ -147,3 +147,18 @@ TEST_CASE("getStmtAndVar returns correct results") {
     std::sort(output.begin(), output.end(), value_pair_sort());
     REQUIRE(std::equal(expected.begin(), expected.end(), output.begin()));
 }
+
+TEST_CASE(
+    "UsesControlVarTables getMatchingValue and getAllValues returns empty "
+    "vector") {
+    WhileControlVarTable wTable;
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 2, std::string("x"));
+    wTable.store(&test1);
+
+    // Return empty
+    REQUIRE(wTable.getMatchingValue("2", EntityName::STMT).size() == 0);
+    REQUIRE(wTable.getMatchingValue("x", EntityName::STMT).size() == 0);
+    REQUIRE(wTable.getAllValues(EntityName::STMT).size() == 0);
+}

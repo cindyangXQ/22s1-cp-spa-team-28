@@ -63,6 +63,10 @@ public:
      */
     int getTableSize();
 
+    std::vector<Value> getMatchingValue(std::string value, EntityName entity);
+
+    std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
+
 private:
     int tableSize = 0;
     const std::string STMT_TYPE_NONE_INVALID_USE =

@@ -52,6 +52,13 @@ bool Reference::isWildcard() {
     return this->value.getValueType() == ValueType::WILDCARD;
 }
 
+bool Reference::isSecondaryAttribute() {
+    if (SECONDARY_ATTRIBUTE_MAP.count(getEntityName())) {
+        return SECONDARY_ATTRIBUTE_MAP.find(getEntityName())->second == attr;
+    }
+    return false;
+}
+
 bool Reference::isASynonym() { return this->isSynonym; }
 
 ReferenceType Reference::getRefType() { return this->type; }

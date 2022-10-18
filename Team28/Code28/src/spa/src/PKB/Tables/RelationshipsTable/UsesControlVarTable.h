@@ -27,6 +27,9 @@ public:
      */
     std::vector<std::pair<Value, Value>> getStmtAndVar();
 
+    std::vector<Value> getMatchingValue(std::string value, EntityName entity);
+    std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
+
 private:
     const std::string WILDCARD_SYMBOL = "_";
     std::vector<Value> allStmts;

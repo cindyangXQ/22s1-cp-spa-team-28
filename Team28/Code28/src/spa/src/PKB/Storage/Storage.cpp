@@ -5,6 +5,7 @@ Storage::Storage() {
     initRelationshipsTable();
     initRsTablesMap();
     initStorageView();
+    initAttributesTableMap();
 };
 
 void Storage::initDesignEntitiesTable() {
@@ -101,4 +102,39 @@ std::vector<Solvable *> Storage::getUsesTables() {
                                    this->getTable<UsesPTable>()};
 };
 
-StorageView *Storage::getStorageView() { return this->storageView; }
+StorageView *Storage::getStorageView() { return this->storageView; };
+
+Table *Storage::getAttributesTable(EntityName entity,
+                                   EntityAttribute attribute) {
+    return this->attributesTables[{entity, attribute}];
+};
+
+void Storage::initAttributesTableMap() {
+    this->attributesTables = {
+        {std::make_pair(EntityName::STMT, EntityAttribute::STMT_NO),
+         this->getTable<StatementsTable>()},
+        {std::make_pair(EntityName::READ, EntityAttribute::STMT_NO),
+         this->getTable<StatementsTable>()},
+        {std::make_pair(EntityName::PRINT, EntityAttribute::STMT_NO),
+         this->getTable<StatementsTable>()},
+        {std::make_pair(EntityName::CALL, EntityAttribute::STMT_NO),
+         this->getTable<StatementsTable>()},
+        {std::make_pair(EntityName::WHILE, EntityAttribute::STMT_NO),
+         this->getTable<StatementsTable>()},
+        {std::make_pair(EntityName::IF, EntityAttribute::STMT_NO),
+         this->getTable<StatementsTable>()},
+        {std::make_pair(EntityName::ASSIGN, EntityAttribute::STMT_NO),
+         this->getTable<StatementsTable>()},
+        {std::make_pair(EntityName::CONSTANT, EntityAttribute::VALUE),
+         this->getTable<ConstantsTable>()},
+        {std::make_pair(EntityName::PROCEDURE, EntityAttribute::PROC_NAME),
+         this->getTable<ProceduresTable>()},
+        {std::make_pair(EntityName::CALL, EntityAttribute::PROC_NAME),
+         this->getTable<CallProcTable>()},
+        {std::make_pair(EntityName::VARIABLE, EntityAttribute::VAR_NAME),
+         this->getTable<VariablesTable>()},
+        {std::make_pair(EntityName::READ, EntityAttribute::VAR_NAME),
+         this->getTable<ModifiesSTable>()},
+        {std::make_pair(EntityName::PRINT, EntityAttribute::VAR_NAME),
+         this->getTable<UsesSTable>()}};
+};
