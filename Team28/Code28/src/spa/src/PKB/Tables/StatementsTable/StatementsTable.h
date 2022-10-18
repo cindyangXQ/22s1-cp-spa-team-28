@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include <vector>
 
 #include "../../../commons/Statement.h"
@@ -17,6 +18,11 @@ public:
      * Stores a statement into the StatementsTable.
      */
     void store(TableValue *statement);
+
+    /*
+     * Returns string form of all statements.
+     */
+    std::vector<std::string> getAllAsString();
 
     /*
      * Retrieves a statement from StatementsTable by index.
@@ -43,17 +49,29 @@ public:
      */
     std::vector<int> getStatementsByType(StatementType type);
 
+    bool isIfStatement(const int &index);
+
     /*
      * Returns a boolean of whether the given statement is one of Calls, Print
-     * or Read.
+     * or Read, which have a secondary attribute (varName/procName).
      */
-    bool isAttributableStatement(const int &index);
+    bool hasSecondaryAttribute(const int &index);
+
+    /*
+     * Get table size.
+     * TODO check if this can be removed. Only used for Next* currently.
+     */
+    int getTableSize();
 
     std::vector<Value> getMatchingValue(std::string value, EntityName entity);
 
     std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
 
 private:
+    int tableSize = 0;
+    const std::string STMT_TYPE_NONE_INVALID_USE =
+        "StatementType cannot be NONE";
+
     std::map<StatementType, std::vector<int>> statementTypeIndexes = {
         {StatementType::READ, {}},   {StatementType::PRINT, {}},
         {StatementType::ASSIGN, {}}, {StatementType::CALL, {}},

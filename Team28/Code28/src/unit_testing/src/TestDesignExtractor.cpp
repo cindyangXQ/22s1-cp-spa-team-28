@@ -43,11 +43,10 @@ TEST_CASE("extract assignments small program") {
     ProgramNode *program = ProgramParser(0, tokens).parse();
     StatementExtractor extr(program, nullptr);
     std::vector<Assignment *> extracted = extr.extractAssignments();
-
-    
 }
 
-TEST_CASE("extract statement small program, extracts assignements and calls as well") {
+TEST_CASE("extract statement small program, extracts assignements and calls as "
+          "well") {
     std::vector<Statement *> expected;
     expected.push_back(new Statement(1, StatementType::ASSIGN));
     expected.push_back(new Statement(2, StatementType::ASSIGN));
@@ -70,17 +69,16 @@ TEST_CASE("extract statement small program, extracts assignements and calls as w
     Relationship<int, std::string> r1(RelationshipReference::USES, 5, "Puggol");
     expectedCalls.push_back(&r1);
 
-    std::string sourceProgram =
-        "procedure Bedok {"
-        "    west = 9 + east;"
-        "    y = east - 4;"
-        "    z = west + 2;"
-        "    west = 9 + east + west;"
-        "    call Puggol;"
-        "}"
-        "procedure Puggol {"
-        "    read a;"
-        "}";
+    std::string sourceProgram = "procedure Bedok {"
+                                "    west = 9 + east;"
+                                "    y = east - 4;"
+                                "    z = west + 2;"
+                                "    west = 9 + east + west;"
+                                "    call Puggol;"
+                                "}"
+                                "procedure Puggol {"
+                                "    read a;"
+                                "}";
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
     StatementExtractor extr(program, nullptr);
@@ -471,7 +469,7 @@ TEST_CASE("extract condVars, nested if/while") {
                                 "        }"
                                 "    }"
                                 "}";
-    
+
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
     UsesSExtractor extr(program, nullptr);

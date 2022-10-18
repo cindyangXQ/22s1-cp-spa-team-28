@@ -1,7 +1,4 @@
 #include "WithClause.h"
 
-WithClause::WithClause() {}
-WithClause::WithClause(Reference refLeft, Reference refRight) {
-    this->refLeft = refLeft;
-    this->refRight = refRight;
-}
+Reference WithClause::getRefLeft() { return this->refLeft; }
+Reference WithClause::getRefRight() { return this->refRight; }

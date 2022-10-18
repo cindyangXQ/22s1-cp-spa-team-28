@@ -5,33 +5,43 @@
 #include "../Tables/Table.h"
 
 /*
- * Encapsulates a CFG class which is responsible for extracting the
- * Next relationship from the given source program.
+ * Encapsulates a CFG class responsible for extracting the
+ * Next/Affects relationship from the given source program.
  */
 class ControlFlowGraph {
 public:
     /*
-     * Explicit constructor for Storage.
+     * Explicit constructor for ControlFlowGraph.
      */
-    ControlFlowGraph(NextTable *nextTable, StorageView *storage);
+    ControlFlowGraph(NextTable *nextTable, NextTTable *nextTTable,
+                     StorageView *storage);
 
     /*
      * Populates NextTable based on relationships currently found in Storage.
-     * Traversal of CFG is done through DFS.
+     * NOTE: Traversal of CFG is done through DFS.
      */
     void populateNext();
 
+    /*
+     * Populates NextTTable by iterating through current Next relationships.
+     */
+    void populateNextT();
+
 private:
     NextTable *next;
+    NextTTable *nextT;
+    StatementsTable *statements;
     FollowsTable *follows;
     BranchInTable *branchIn;
     BranchOutTable *branchOut;
     ProceduresTable *procedures;
 
-    std::map<int, bool> visited;
+    std::map<std::pair<int, int>, bool> visited;
+
+    int totalLines;
 
     /*
-     * Depth First Search of CFG based on given integer.
+     * Depth First Search of CFG based on given lineNo.
      */
     void DFS(int i);
 
@@ -40,10 +50,13 @@ private:
      */
     template <typename Subclass> void DFSHelper(int i, Subclass *table) {
         for (int j : table->retrieveLeft(i)) {
-            Relationship<int, int> rs =
+            Relationship<int, int> nextRs =
                 Relationship(RelationshipReference::NEXT, i, j);
-            this->next->store(&rs);
-            if (!this->visited[j]) {
+            this->next->store(&nextRs);
+            std::pair<int, int> curr = std::make_pair(i, j);
+            bool isVisited = this->visited.find(curr) != this->visited.end();
+            if (!isVisited) {
+                this->visited[curr] = true;
                 DFS(j);
             }
         }

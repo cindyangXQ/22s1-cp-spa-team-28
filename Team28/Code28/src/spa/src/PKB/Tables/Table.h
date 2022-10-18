@@ -7,7 +7,7 @@
 #define UNUSED(x) (void)(x)
 
 /*
- * A superclass for tables which acts as our database.
+ * Abstract class to encapsulate expected behaviours for tables in PKB.
  */
 class Table {
 public:
@@ -22,4 +22,5 @@ public:
      */
     virtual std::map<Value, std::vector<Value>>
     getAllValues(EntityName entity) = 0;
+    virtual std::vector<std::string> getAllAsString() = 0;
 };

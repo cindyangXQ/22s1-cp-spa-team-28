@@ -8,6 +8,11 @@ SPA::SPA() {
 
 void SPA::parse(std::string filename) { this->sp.parse(filename); }
 
+void SPA::preprocess() {
+    this->pkb.populateNext();
+    this->pkb.populateNextT();
+}
+
 void SPA::evaluateQuery(std::string query, std::list<std::string> &results) {
     this->qps.evaluate(query, results);
 }

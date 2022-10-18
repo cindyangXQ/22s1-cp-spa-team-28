@@ -10,6 +10,14 @@ void AssignmentsTable::store(TableValue *assignment) {
         Value(ValueType::STMT_NUM, std::to_string(lineNo)));
 };
 
+std::vector<std::string> AssignmentsTable::getAllAsString() {
+    std::vector<std::string> result = {};
+    for (Assignment assign : this->allAssignments) {
+        result.push_back(assign.toString());
+    }
+    return result;
+};
+
 std::vector<Value>
 AssignmentsTable::containsVarAndExpr(std::string varName,
                                      std::string expression) {
@@ -31,8 +39,8 @@ AssignmentsTable::containsVarAndExpr(std::string varName,
 std::vector<Value>
 AssignmentsTable::getAssignFromVarAndExpr(std::string varName,
                                           std::string expression) {
-    if (expression == "_") {
-        expression = "";
+    if (expression == WILDCARD_SYMBOL) {
+        expression = EMPTY_STRING;
     }
 
     std::unordered_set<Value> intermediateResult;
@@ -105,10 +113,10 @@ AssignmentsTable::getAssignFromExprExact(std::string expression) {
 
 std::vector<Value> AssignmentsTable::getAssign(std::string varName,
                                                std::string expression) {
-    if (varName == "_" && expression == "_") {
+    if (varName == WILDCARD_SYMBOL && expression == WILDCARD_SYMBOL) {
         return this->allLineNumbers;
     }
-    if (varName == "_") {
+    if (varName == WILDCARD_SYMBOL) {
         return this->getAssignFromExpr(expression);
     }
     return this->getAssignFromVarAndExpr(varName, expression);
@@ -116,7 +124,7 @@ std::vector<Value> AssignmentsTable::getAssign(std::string varName,
 
 std::vector<Value> AssignmentsTable::getAssignExact(std::string varName,
                                                     std::string expression) {
-    if (varName == "_") {
+    if (varName == WILDCARD_SYMBOL) {
         return this->getAssignFromExprExact(expression);
     }
     return this->getAssignFromVarAndExprExact(varName, expression);
@@ -124,8 +132,8 @@ std::vector<Value> AssignmentsTable::getAssignExact(std::string varName,
 
 std::vector<std::pair<Value, Value>>
 AssignmentsTable::getAssignAndVar(std::string expression) {
-    if (expression == "_") {
-        expression = "";
+    if (expression == WILDCARD_SYMBOL) {
+        expression = EMPTY_STRING;
     }
 
     std::unordered_set<std::pair<Value, Value>, value_pair_hash>

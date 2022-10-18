@@ -9,8 +9,13 @@ enum class SelectType { SINGLE, TUPLE, BOOLEAN };
  */
 class SelectClause {
 public:
+    SelectClause(){};
+    SelectClause(std::vector<Reference> refs, SelectType selectType)
+        : refs(refs), selectType(selectType){};
+    std::vector<Reference> getRefs();
+    SelectType getSelectType();
+
+private:
     std::vector<Reference> refs;
     SelectType selectType;
-    SelectClause();
-    SelectClause(std::vector<Reference> refs, SelectType selectType);
 };

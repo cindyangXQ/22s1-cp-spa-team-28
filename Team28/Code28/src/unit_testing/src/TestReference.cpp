@@ -16,10 +16,10 @@ TEST_CASE("Reference isAttributable works correctly") {
     Reference printS =
         Reference(Synonym(EntityName::PRINT, "p2"), EntityAttribute::STMT_NO);
 
-    REQUIRE(callP.isInferredAttribute());
-    REQUIRE(!callS.isInferredAttribute());
-    REQUIRE(readV.isInferredAttribute());
-    REQUIRE(!readS.isInferredAttribute());
-    REQUIRE(printV.isInferredAttribute());
-    REQUIRE(!printS.isInferredAttribute());
+    REQUIRE(callP.isSecondaryAttribute());
+    REQUIRE(!callS.isSecondaryAttribute());
+    REQUIRE(readV.isSecondaryAttribute());
+    REQUIRE(!readS.isSecondaryAttribute());
+    REQUIRE(printV.isSecondaryAttribute());
+    REQUIRE(!printS.isSecondaryAttribute());
 }

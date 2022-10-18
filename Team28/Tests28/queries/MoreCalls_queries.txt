@@ -1,0 +1,315 @@
+1 - All procedures
+procedure p;
+Select p
+a, b, c, d, e, f, g, h
+5000
+2 - All procedures that call another procedure
+procedure p,             q;
+       Select p such that     Calls(    p, q    )
+b,c,d,e
+5000
+3 - All procedures that are called by another procedure
+procedure p, q;
+Select q such that Calls(p, q)
+c, d, e, f, g, h
+5000
+4 - All procedures that call another procedure wildcard
+procedure p;
+Select p such that Calls(p, _)
+b, c, d, e
+5000
+5 - All procedures that are called by another procedure wildcard
+procedure q;
+Select q such that Calls(_, q)
+c, d, e, f, g, h
+5000
+6 - Different synonym used where both wild cards
+stmt s;
+Select s such that Calls(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
+5000
+7 - Procedures called by specific procedure
+procedure p;
+Select p such that Calls("  c", p)
+d, e, f, g
+5000
+8 - Procedures called by specific procedure
+procedure p;
+Select p such that Calls("  a", p)
+none
+5000
+9 - Procedures calling specific procedure
+procedure p;
+Select p such that Calls(p, "g")
+c, d, e
+5000
+10 - Procedures calling a specific procedure
+procedure p;
+Select p such that Calls(p, "a")
+none
+5000
+11 - invalid, statements that call another procedure
+stmt p;
+Select p such that Calls(p, "g")
+SemanticError
+5000
+12 - Synonym not in Calls, no match
+stmt s;
+Select s such that Calls(_, "   a  ")
+none
+5000
+13 - Synonym not in Calls, have match
+stmt s;
+Select s such that Calls("  b", _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
+5000
+14 - Boolean true
+stmt s;
+Select BOOLEAN such that Calls("b", "   c")
+TRUE
+5000
+15 - Boolean false
+stmt s;
+Select BOOLEAN such that Calls("a",   "c")
+FALSE
+5000
+16 - All tuple procedure pairs that call and are called
+procedure p, q;
+Select <p, q> such that Calls(p, q)
+b c, c d, c e, c f, c g, d g, e f, e g, e h
+5000
+17 - Procedures recursive call
+procedure p;
+Select p such that Calls(p, p)
+none
+5000
+18 - Call all bools
+stmt s;
+Select BOOLEAN
+TRUE
+5000
+19 - All procedures that call another procedure using procName
+procedure p, q;
+Select p.procName such that Calls(p, q)
+b, c, d, e
+5000
+20 - All procedures that are called by another procedure using procName
+procedure p, q;
+Select q.procName such that Calls(p, q)
+c, d, e, f, g, h
+5000
+21 - All procedures that call another procedure with wildcard using procName
+procedure p;
+Select p.procName such that Calls(p, _)
+b, c, d, e
+5000
+22 - All procedures that are called by another procedure with wildcard using procName
+procedure q;
+Select q.procName such that Calls(_, q)
+c, d, e, f, g, h
+5000
+23 - Select tuple where both are wild cards using procName
+call c; procedure p;
+Select <c.procName, p.procName> such that Calls(_, _) and Parent(6, c)
+d a, d b, d c, d d, d e, d f, d g, d h
+5000
+24 - Procedures called by a specific procedure using procName
+procedure p;
+Select p.procName such that Calls("  c", p)
+d, e, f, g
+5000
+25 - Procedures called by a specific procedure (doesn't exist) using procName
+procedure p;
+Select p.procName such that Calls("  a", p)
+none
+5000
+26 - Procedures calling a specific procedure using procName
+procedure p;
+Select p.procName such that Calls(p, "g")
+c, d, e
+5000
+27 - Procedures calling a specific procedure (doesn't exist) using procName
+procedure p;
+Select p.procName such that Calls(p, "a")
+none
+5000
+28 - Invalid, statements that call another procedure using procName
+stmt p;
+Select p.procName such that Calls(p, "g")
+SemanticError
+5000
+29 - Get all procedures using procName
+procedure p;
+Select p.procName
+a, b, c, d, e, f, g, h
+5000
+30 - All tuple procedure pairs that call and are called using procName
+procedure p, q;
+Select <p.procName, q.procName> such that Calls(p, q)
+b c, c d, c e, c f, c g, d g, e f, e g, e h
+5000
+31 - Recursive procedure calls using procName
+procedure p;
+Select p.procName such that Calls(p, p)
+none
+5000
+32 - All tuple procedure pairs using procName
+procedure p, q;
+Select <p, q.procName> such that Calls(p, q)
+b c,  c d, c e, c f, c g, d g, e f, e g, e h
+5000
+33 - All procedures that Call* another procedure
+procedure p, q;
+Select p such that Calls*(p, q)
+b, c, d, e
+5000
+34 - All procedures that are Call* by another procedure
+procedure p, q;
+Select q such that Calls*(p, q)
+c, d, e, f, g, h
+5000
+35 - All procedures that Call* another procedure with wildcard
+procedure p;
+Select p such that Calls*(p, _)
+b, c, d, e
+5000
+36 - All procedures that are Call* by another procedure with wildcard
+procedure q;
+Select q such that Calls*(_, q)
+c, d, e, f, g, h
+5000
+37 - Different synonym, both wild cards
+stmt s;
+Select s such that Calls*(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
+5000
+38 - Procedures Call* by a specific procedure
+procedure        p;
+                             Select p such that Calls*("  b", p)
+c, d, e, f, g, h
+5000
+39 - Procedures Call* by a specific procedure
+procedure p;
+Select                 p such that Calls*("  a", p)
+none
+5000
+40 - Procedures Call* a specific procedure
+procedure p;
+Select p such that Calls*(p, "h")
+b, c, e
+5000
+41 - Procedures Call* a specific procedure
+procedure p;
+Select p such           that Calls*(p, "a")
+none
+5000
+42 - Invalid, statements that Call* another procedure
+stmt p;
+Select p such      that Calls*(       p,         "g")
+SemanticError
+5000
+43 - Synonym not in, true condition
+stmt s;
+Select s such that Calls*("  b", _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
+5000
+44 - Boolean, true condition
+stmt                    s;
+Select    BOOLEAN such         that            Calls*("b", "   h")
+TRUE
+5000
+45 - Boolean, false condition
+stmt         s;
+Select           BOOLEAN such that Calls*("a",   "c")
+FALSE
+5000
+46 - All tuple procedure pairs that Call* and are Call* by another procedure
+procedure p, q;
+Select <p, q> such that Calls*(p, q)
+b c, b d, b e, b f, b g, b h, c d, c e, c f, c g, c h, d g, e f, e g, e h
+5000
+47 - Procedures that Call* recursive 
+procedure p;
+Select p such that Calls*(p, p)
+none
+5000
+48 - Get all Call statements
+call c;
+Select c
+4, 7, 9, 11, 12, 13, 14, 17, 18
+5000
+49 - Synonym not in relationship, Call true condition
+stmt s;
+Select s such that Calls("b", "c")
+1,10,11,12,13,14,15,16,17,18,2,3,4,5,6,7,8,9, 19, 20, 21
+5000
+50 - Synonym not in relationship, false condition
+stmt s;
+Select s such that Calls("b", "g")
+none
+5000
+51 - Synonym not in relationship, Call* true condition
+stmt s;
+Select s such that Calls*("b", "g")
+1,10,11,12,13,14,15,16,17,18,2,3,4,5,6,7,8,9, 19, 20, 21
+5000
+52 - Synonym not in relationship, Call* false condition
+stmt s;
+Select         s such that             Calls*        ("c", "b")
+none
+5000
+53 - 2 Calls/* relationships
+procedure p;
+Select p such that Calls*(p, "f") such that Calls(p, "g")
+c, e
+5000
+54 - 2 Calls/* relationships, explicit and
+procedure p;
+Select p such that Calls*(p, "f") and Calls(p, "g")
+c, e
+5000
+55 - Synonym not in condition, 1 true 1 false condition
+procedure p;
+Select p such that Calls*("c", "g") and Calls("a", _)
+none
+5000
+56 - Select BOOLEAN, 1 true 1 false condition
+procedure p;
+Select              BOOLEAN such that Calls*("c", p) and             Calls("a", _)
+FALSE
+5000
+57 - Invalid, using invalid variable synonym type
+variable v;
+Select BOOLEAN such that Calls("c", v)
+SemanticError
+5000
+58 - Invalid, using invalid call synonym type
+call c;
+Select c such that Calls(c, _)
+SemanticError
+5000
+59 - invalid, false condition followed by invalid Calls
+constant a;
+Select BOOLEAN such that Calls("a   ", _) and Calls*(_, a)
+SemanticError
+5000
+60 - Query with one false condition
+procedure p;
+Select p such that Calls("a", _) and Calls*(p, _)
+none
+5000
+61 - Select procedure using procName with 3 Calls
+procedure p, q;
+Select <p.procName, q> such that Calls*(p, "g") and Calls*(p, q) and Calls(q, _)
+b c, b d, b e, c d, c e
+5000
+62 - Recursive procedure
+procedure p, q;
+Select p such that Calls*(p, q) and Calls*(q, p)
+none
+5000
+63 - Select invalid attribute
+procedure p;
+Select p.varName such that Calls(p, _)
+SemanticError
+5000

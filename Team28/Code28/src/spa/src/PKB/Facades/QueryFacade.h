@@ -1,10 +1,11 @@
 #pragma once
 
+#include "../../commons/AssignExpression.h"
 #include "../../commons/StringUtil.h"
 #include "../Storage/Storage.h"
 
 /*
- * A Facade class for QPS->PKB interactions.
+ * Encapsulates a Facade class for QPS->PKB interactions.
  */
 class QueryFacade {
 public:
@@ -14,74 +15,41 @@ public:
     explicit QueryFacade(Storage *storage);
 
     /*
-     * Returns all statements inside the StatementsTable.
-     */
-    std::vector<Statement *> getAllStatements();
-
-    /*
-     * Returns all statements inside the StatementsTable.
+     * Returns all statements inside the source program that correspond to a
+     * given StatementType.
      */
     std::vector<Statement *> getAllStatementsByType(StatementType type);
 
     /*
-     * Returns statement with the given line number.
+     * Returns all names inside the source program based on the designated
+     * entity.
      */
-    Statement *getStatementByLineNo(const int &lineNo);
+    std::vector<std::string> getAllEntities(Designation entity);
 
     /*
-     * Returns all variable names inside the VariablesTable.
-     */
-    std::vector<std::string> getAllVariables();
-
-    /*
-     * Returns variable that matches a given name.
-     */
-    Variable *getVariableByName(const std::string &name);
-
-    /*
-     * Returns all constant names inside the ConstantsTable.
-     */
-    std::vector<std::string> getAllConstants();
-
-    /*
-     * Returns constant that matches a given name.
-     */
-    Constant *getConstantByName(const std::string &name);
-
-    /*
-     * Returns all procedure names inside the ProceduresTable.
-     */
-    std::vector<std::string> getAllProcedures();
-
-    /*
-     * Returns procedure that matches a given name.
-     */
-    Procedure *getProcedureByName(const std::string &name);
-
-    /*
-     * Returns true if relationship holds between leftReference and
-     * rightReference.
+     * Returns a boolean indicating if a provided relationship type holds
+     * between the left reference and right reference.
      */
     bool validate(RelationshipReference relType, Reference leftRef,
                   Reference rightRef);
 
     /*
-     * Returns list of possible values that the right synonym can be based on
-     * their relationship.
+     * Returns all possible values that the right synonym can take on based on
+     * the provided relationship type.
      */
     std::vector<Value> solveRight(RelationshipReference relType,
                                   Reference leftRef, EntityName rightSynonym);
 
     /*
-     * Returns list of possible values that the left synonym can be based on
-     * their relationship.
+     * Returns all possible values that the left synonym can take on based on
+     * the provided relationship type.
      */
     std::vector<Value> solveLeft(RelationshipReference relType,
                                  Reference rightRef, EntityName leftSynonym);
 
     /*
-     * Returns list of possible (Value, Value) that the pair of synonyms can be
-     * based on their relationship.
+     * Returns all possible pairs of values that the left and right synonyms can
+     * take on based on the provided relationship type.
      */
     std::vector<std::pair<Value, Value>>
     solveBoth(RelationshipReference relType, EntityName leftSynonym,
@@ -101,52 +69,43 @@ public:
                                                             Reference right);
 
     /*
-     * Return list of possible values of assignments that satisfy the given
-     * varName and expression.
+     * Returns all possible values of assignments that satisfy the given varName
+     * and partial/wildcard expression.
      */
-    std::vector<Value> getAssign(std::string varName, std::string expression,
-                                 bool isExactExpr);
+    std::vector<Value> getAssign(std::string varName,
+                                 AssignExpression expression);
 
     /*
-     * Return list of possible (Assignment, Variable) pairs which satisfy the
+     * Returns all possible pairs of assignments and variables that satisfy the
      * given expression.
      */
-    std::vector<std::pair<Value, Value>> getAssignAndVar(std::string expression,
-                                                         bool isExactExpr);
+    std::vector<std::pair<Value, Value>>
+    getAssignAndVar(AssignExpression expression);
 
     /*
-     * Return list of possible values of Whiles that satisfy the given
-     * varName and expression.
+     * Returns all possible values of conditional statements that satisfy
+     * the given varName based on the designated conditional desType.
+     * NOTE: desType == IF_C || desType == WHILE_C
      */
-    std::vector<Value> getWhile(std::string varName);
+    std::vector<Value> getCond(Designation desType, std::string varName);
 
     /*
-     * Return list of possible (While, Variable) pairs which satisfy the
-     * given expression.
+     * Returns all possible pairs of Cond and Variable based on the designated
+     * conditional desType.
+     * NOTE: desType == IF_C || desType == WHILE_C
      */
-    std::vector<std::pair<Value, Value>> getWhileAndVar();
+    std::vector<std::pair<Value, Value>> getCondAndVar(Designation desType);
 
     /*
-     * Return list of possible values of Ifs that satisfy the given
-     * varName and expression.
+     * Returns the secondary attribute of the given stmtNum of a Print, Read or
+     * Call statement.
      */
-    std::vector<Value> getIf(std::string varName);
-
-    /*
-     * Return list of possible (If, Variable) pairs which satisfy the
-     * given expression.
-     */
-    std::vector<std::pair<Value, Value>> getIfAndVar();
-
-    /*
-     * Return attribute of the given stmtNum of a Print, Read or Call statement,
-     * where attribute refers to the varName/procName used in the corresponding
-     * statement number.
-     */
-    std::string getAttribute(int stmtNum);
+    std::string getSecondaryAttribute(int stmtNum);
 
 private:
     Storage *storage;
+    const std::string STMT_NO_SECONDARY_ATTRIBUTE =
+        "StmtNum does not have a secondary attribute";
 
     /*
      * Helper method for validating wildcard, checks against P and S tables.
@@ -156,7 +115,7 @@ private:
 
     /*
      * Helper method to concatenate solveRight results from a vector
-     * of Solvable
+     * of Solvable.
      */
     std::vector<Value>
     concatSolveRightResults(std::vector<Solvable *> solvables,
@@ -173,4 +132,16 @@ private:
      */
     void addAllPairsInto(std::vector<std::pair<Value, Value>> *result,
                          std::vector<Value> *left, std::vector<Value> *right);
+
+    /*
+     *Helper method to check if the query is a wildcarded uses *query.
+     */
+    bool isWildcardedUses(ReferenceType leftRef, RelationshipReference relType);
+
+    /*
+     * Helper method to check if the query is a wildcarded modifies
+     * query.
+     */
+    bool isWildcardedModifies(ReferenceType leftRef,
+                              RelationshipReference relType);
 };

@@ -5,6 +5,9 @@
 
 class UsesControlVarTable : public StmtToVarRelationshipsTable {
 public:
+    /*
+     * Constructor for UsesControlVarTable.
+     */
     UsesControlVarTable();
 
     /*
@@ -28,6 +31,7 @@ public:
     std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
 
 private:
+    const std::string WILDCARD_SYMBOL = "_";
     std::vector<Value> allStmts;
 
     bool isProcessed = false;

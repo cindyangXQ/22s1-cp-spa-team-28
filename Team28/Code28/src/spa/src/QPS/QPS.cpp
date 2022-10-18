@@ -16,3 +16,5 @@ void QPS::evaluate(std::string query, std::list<std::string> &results) {
         results.push_back("SemanticError");
     }
 }
+
+QueryEvaluator QPS::getEvaluator() { return this->evaluator; }

@@ -3,6 +3,7 @@
 #include "PKB/Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/RelationshipsTable.h"
+#include "PKB/Tables/RelationshipsTable/StmtToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/StmtToVarRelationshipsTable.h"
 
@@ -397,7 +398,6 @@ TEST_CASE(
 
 TEST_CASE("usesS getMatchingValue works correctly") {
     UsesSTable usesS;
-
     // procedure main { x = x + 1; y = y + 1; }
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("x"));
@@ -405,6 +405,8 @@ TEST_CASE("usesS getMatchingValue works correctly") {
         Relationship(RelationshipReference::USES, 2, std::string("y"));
     usesS.store(&test1);
     usesS.store(&test2);
+
+    // procedure main { x = x + 1; y = y + 1; }
     std::vector<Value> expectedResult;
     std::vector<Value> output;
 
@@ -465,9 +467,9 @@ TEST_CASE("modifiesS getMatchingValue works correctly") {
 
     // procedure main { x = x + 1; y = y + 1; }
     Relationship<int, std::string> test1 =
-        Relationship(RelationshipReference::USES, 1, std::string("x"));
+        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
     Relationship<int, std::string> test2 =
-        Relationship(RelationshipReference::USES, 2, std::string("y"));
+        Relationship(RelationshipReference::MODIFIES, 2, std::string("y"));
     modifiesS.store(&test1);
     modifiesS.store(&test2);
     std::vector<Value> expectedResult;
@@ -595,4 +597,20 @@ TEST_CASE("ProcToVarRsTables getMatchingValue and getAllValues returns empty "
     REQUIRE(usesP.getMatchingValue("foo", EntityName::STMT).size() == 0);
     REQUIRE(usesP.getMatchingValue("x", EntityName::STMT).size() == 0);
     REQUIRE(usesP.getAllValues(EntityName::STMT).size() == 0);
+}
+
+TEST_CASE("RelationshipsTable getAllAsString works correctly") {
+    UsesSTable usesS;
+
+    // procedure main { calls bar; calls bar; calls foo }
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 2, std::string("y"));
+    usesS.store(&test1);
+    usesS.store(&test2);
+    std::vector<std::string> expectedResult = {"1:x", "2:y"};
+    std::vector<std::string> output = usesS.getAllAsString();
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
 }

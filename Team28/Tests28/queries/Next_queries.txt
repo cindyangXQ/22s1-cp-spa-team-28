@@ -1,0 +1,260 @@
+1 - everything next of end of while
+stmt s;
+Select s such that Next(6, s)
+3
+5000
+2 - next of if condition
+stmt s;
+Select s such that Next(7, s)
+8, 9
+5000
+3 - next of while condition
+stmt s;
+Select s such that Next(3, s)
+4, 7
+5000
+4 - next of else of if
+stmt s;
+Select s such that Next(9, s)
+10
+5000
+5 - next of then of if
+stmt s;
+Select s such that Next(8, s)
+10
+5000
+6 - next of statement list within while 
+stmt s;
+Select s such that Next(4, s)
+5
+5000
+7 - next of statement list within if
+stmt s;
+Select s such that Next(16, s)
+17
+5000
+8 - boolean 2 wildcards
+stmt s;
+Select BOOLEAN such that Next(_, _)
+TRUE
+5000
+9 - reflexivity with while
+stmt s;
+Select s such that Next(s, s)
+none
+5000
+10 - invalid reflexivity
+assign s;
+Select s such that Next(s, s)
+none
+5000
+11 - Next of call (next statement, within proc)
+stmt s;
+Select s such that Next(5,    s)
+6
+5000
+12 - left wildcard next statements
+stmt s;
+Select s        such that Next(_,          s)
+2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+5000
+13 - right wildcard next statements
+stmt s;
+Select s such that               Next(s, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 20
+5000
+14 - everything next of assign
+assign a;         stmt s;
+Select s     such that Next(a, s)
+2, 3, 5, 10, 11, 12, 13, 17, 19
+5000
+15 - everything next of end
+stmt s;
+Select s such that Next(18, s)
+none
+5000
+16 - everything next of while
+while w; stmt s;
+Select s such that Next(w, s)
+4, 7, 14, 18, 20
+5000
+17 - everything next of if
+if ifs; stmt s;
+Select s such that Next(ifs, s)
+8, 9, 15, 16
+5000
+18 - everything next of assign
+assign a; stmt s;
+Select s such that Next(11, s)
+12
+5000
+19 - everything next of call
+call c; stmt s;
+Select s such that Next(c, s)
+6
+5000
+20 - boolean with true
+stmt s;
+Select BOOLEAN such that Next(13, 18)
+TRUE
+5000
+21 - boolean with false
+stmt s;
+Select BOOLEAN such that Next(5, 19)
+FALSE
+5000
+22 - check with 2 statement lines
+stmt s;
+Select s such that Next(6, 3)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+5000
+23 - statement that comes before statement after while
+stmt s;
+Select s such that    Next(s, 7)
+3
+5000
+24 - statement that comes before statement after if
+stmt s;
+Select          s such that Next(s, 18)
+13
+5000
+25 - Next(c, _) for call
+call c;
+Select   c such        that Next(c,_)
+5
+5000
+26 - Next(r, _) for read
+read            r;
+Select r      such that Next(r,_)
+none
+5000
+27 - Next(p, _) for print
+print p;
+Select p such that   Next      (p,_)
+none
+5000
+28 - Next(w, _) for while
+while w;
+Select w such         that Next(     w,_       )
+3,13,19
+5000
+29 - Next(ifs, _) for if
+if ifs;
+Select ifs such       that            Next(ifs,_)
+7,14
+5000
+30 - Next(a, _) for assign
+    assign a;
+Select a    such that   Next(a,         _)
+1,10,11,12,15,16,17,2,20,4,6,8,9
+5000
+31 - Next(s, _) for stmt
+stmt s;
+Select      s such that Next(s,_)
+1,10,11,12,13,14,15,16,17,19,2,20,3,4,5,6,7,8,9
+5000
+32 - Next(_, c) for call 
+            call c;
+Select c such      that Next(_,c)
+5
+5000
+33 - Next(_, r) for read
+read r;
+Select r such that Next(_,r)
+none
+5000
+34 - Next(_, p) for print
+print p;
+Select p such          that Next(_,p)
+none
+5000
+35 - Next(w,_) for while
+          while w;
+Select w such that        Next(w,_)
+13,19,3
+5000
+36 - Next(_, ifs) for if
+if ifs;
+Select             ifs such that Next(_,ifs)
+7,14
+5000
+37 - Next(_, a) for assign
+assign a;
+         Select a such that Next(_,a)
+10,11,12,15,16,17,18,2,20,4,6,8,9
+5000
+38 - Next(_, s) for stmt
+stmt s;
+Select s such that Next(_,s)
+10,11,12,13,14,15,16,17,18,19,2,20,3,4,5,6,7,8,9
+5000
+39 - Next(c1, c2) for left call
+call c1,c2;
+Select c1 such           that Next(c1,c2)
+none
+5000
+40 - Next(c1, c2) for right call
+call c1,c2;
+Select c2 such that   Next(c1   ,          c2)
+none
+5000
+41 - Next(r1, r2) for left read
+read r1,r2;
+Select r1                such       that Next(r1,r2)
+none
+5000
+42 - Next(r1, r2) for right read
+read r1,r2;
+Select r2 such that Next(r1,r2)
+none
+5000
+43 - Next(p1, p2) for left print
+print p1,p2;
+Select p1            such that Next     (p1,p2)
+none
+5000
+44 - Next(p1, p2) for right print
+print p1,p2;
+Select     p2 such that Next(p1,     p2)
+none
+5000
+45 - Next(w1, w2) for left while
+while w1,w2;
+Select w1 such that Next( w1  ,w2)
+none
+5000
+46 - Next(w1, w2) for right while
+while w1,w2;
+Select w2 such that Next(     w1,w2)
+none
+5000
+47 - Next(ifs1, ifs2) for left if
+if ifs1,ifs2;
+Select ifs1 such that Next(ifs1,       ifs2)
+none
+5000
+48 - Next(ifs1, xifs2) for right if
+if ifs1,ifs2;
+Select ifs2 such that Next(    ifs1,ifs2)
+none
+5000
+49 - Next(a1, a2) for left assign
+assign a1,a2;
+Select a1 such that Next(a1,a2)
+1,10,11,16,8,9
+5000
+50 - Next(a1, a2) for right assign
+assign a1,a2;
+Select a2 such that Next(a1,a2)
+10,11,12,17,2
+5000
+51 - Next(s1, s2) for left stmt
+stmt s1,s2;
+Select s1 such that Next(s1,s2)
+1,10,11,12,13,14,15,16,17,19,2,20,3,4,5,6,7,8,9
+5000
+52 - Next(s1, s2) for right stmt
+stmt s1,s2;
+Select s2 such that Next(s1,s2)
+10,11,12,13,14,15,16,17,18,19,2,20,3,4,5,6,7,8,9
+5000

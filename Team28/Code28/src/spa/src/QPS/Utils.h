@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 
+const std::regex LEFT_SPACE("^\\s+");
+const std::regex RIGHT_SPACE("\\s+$");
+
 /*
  * Class containing helper functions for QPS.
  */
@@ -16,7 +19,7 @@ public:
     /*
      * Removes trailing space at the start and end of a string.
      */
-    static std::string removeTrailingSpaces(std::string s);
+    static std::string trimSpaces(std::string s);
 
     /*
      * Tokenizes a string based on a list of characters.

@@ -32,7 +32,7 @@ const ENTITY_TYPE_SET entRefSet = {EntityName::VARIABLE, EntityName::PROCEDURE,
 
 typedef std::map<EntityName, EntityAttribute> INFERRED_ENTITY_ATTRIBUTE_MAP;
 
-const INFERRED_ENTITY_ATTRIBUTE_MAP inferredAttributeMap = {
+const INFERRED_ENTITY_ATTRIBUTE_MAP SECONDARY_ATTRIBUTE_MAP = {
     {EntityName::CALL, EntityAttribute::PROC_NAME},
     {EntityName::PRINT, EntityAttribute::VAR_NAME},
     {EntityName::READ, EntityAttribute::VAR_NAME},

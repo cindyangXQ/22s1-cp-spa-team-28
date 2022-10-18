@@ -19,7 +19,15 @@ public:
         : queryFacade(queryFacade),
           suchThatEvaluator(SuchThatEvaluator(queryFacade)),
           patternEvaluator(PatternEvaluator(queryFacade)){};
+
+    /*
+     * Evaluate a query after it is parsed.
+     */
     QueryResult evaluate(SolvableQuery *solvableQ);
+
+    /*
+     * Return the final results after all the clauses are evaluated.
+     */
     std::vector<std::string> interpretQueryResult(QueryResult *queryResult);
 
 private:

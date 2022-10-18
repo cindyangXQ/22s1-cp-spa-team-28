@@ -8,7 +8,7 @@
 TEST_CASE("ClauseTable is initialised correctly") {
     std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
                               Synonym(EntityName::ASSIGN, "a")};
-    std::vector<Reference> refs{Reference(syns[0]), Reference(syns[1])};                    
+    std::vector<Reference> refs{Reference(syns[0]), Reference(syns[1])};
     ClauseTable table = ClauseTable(refs);
     REQUIRE(table.size() == 0);
 }
@@ -16,7 +16,7 @@ TEST_CASE("ClauseTable is initialised correctly") {
 TEST_CASE("ClauseTable can insert tuple") {
     std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
                               Synonym(EntityName::ASSIGN, "a")};
-    std::vector<Reference> refs{Reference(syns[0]), Reference(syns[1])};                    
+    std::vector<Reference> refs{Reference(syns[0]), Reference(syns[1])};
     ClauseTable table = ClauseTable(refs);
     REQUIRE(table.size() == 0);
     table.insert(Tuple(std::vector{Value(ValueType::VAR_NAME, "foo"),
@@ -45,11 +45,12 @@ TEST_CASE("ClauseTable can get indices of common headers from a tables") {
     Synonym syn2 = Synonym(EntityName::ASSIGN, "a");
     Synonym syn3 = Synonym(EntityName::STMT, "s");
 
-    std::vector<Reference> header1{Reference(syn1), Reference(syn2), Reference(syn3)};
-    std::vector<Reference> common_header{Reference(syn3), Reference(syn1)};
+    std::vector<Reference> header1{Reference(syn1), Reference(syn2),
+                                   Reference(syn3)};
+    std::vector<Reference> commonHeader{Reference(syn3), Reference(syn1)};
 
     ClauseTable table1 = ClauseTable(header1);
-    std::vector<int> indices = table1.getIndices(common_header);
+    std::vector<int> indices = table1.getIndices(commonHeader);
     REQUIRE(indices.size() == 2);
     REQUIRE(indices[0] == 2);
     REQUIRE(indices[1] == 0);
@@ -64,10 +65,11 @@ TEST_CASE("ClauseTable can create new table from two input table") {
     ClauseTable table1 = ClauseTable(header1);
     ClauseTable table2 = ClauseTable(header2);
     ClauseTable tableJoin = ClauseTable::ConstructTable(table1, table2);
-    REQUIRE(tableJoin.header.size() == 3);
-    REQUIRE(tableJoin.header[0].syn.name == syn2.name);
-    REQUIRE(tableJoin.header[1].syn.name == syn1.name);
-    REQUIRE(tableJoin.header[2].syn.name == syn3.name);
+    std::vector<Reference> header = tableJoin.getHeader();
+    REQUIRE(header.size() == 3);
+    REQUIRE(header[0].getSynonymName() == syn2.getName());
+    REQUIRE(header[1].getSynonymName() == syn1.getName());
+    REQUIRE(header[2].getSynonymName() == syn3.getName());
 }
 
 TEST_CASE("ClauseTable can join two tables with common headers") {
@@ -91,11 +93,12 @@ TEST_CASE("ClauseTable can join two tables with common headers") {
     table2.insert(Tuple(std::vector{Value(ValueType::VAR_NAME, "wtf"),
                                     Value(ValueType::STMT_NUM, "5")}));
     ClauseTable result = ClauseTable::joinTables(table1, table2);
+    std::vector<Reference> header = result.getHeader();
     REQUIRE(result.size() == 2);
-    REQUIRE(result.header.size() == 3);
-    REQUIRE(result.header[0].syn.name == syn2.name);
-    REQUIRE(result.header[1].syn.name == syn1.name);
-    REQUIRE(result.header[2].syn.name == syn3.name);
+    REQUIRE(header.size() == 3);
+    REQUIRE(header[0].getSynonymName() == syn2.getName());
+    REQUIRE(header[1].getSynonymName() == syn1.getName());
+    REQUIRE(header[2].getSynonymName() == syn3.getName());
 }
 
 TEST_CASE("ClauseTable can join two tables with no common headers") {
@@ -120,10 +123,11 @@ TEST_CASE("ClauseTable can join two tables with no common headers") {
     table2.insert(Tuple(std::vector{Value(ValueType::VAR_NAME, "wtf"),
                                     Value(ValueType::STMT_NUM, "5")}));
     ClauseTable result = ClauseTable::joinTables(table1, table2);
+    std::vector<Reference> header = result.getHeader();
     REQUIRE(result.size() == 9);
-    REQUIRE(result.header.size() == 4);
-    REQUIRE(result.header[0].syn.name == syn1.name);
-    REQUIRE(result.header[1].syn.name == syn2.name);
-    REQUIRE(result.header[2].syn.name == syn3.name);
-    REQUIRE(result.header[3].syn.name == syn4.name);
+    REQUIRE(header.size() == 4);
+    REQUIRE(header[0].getSynonymName() == syn1.getName());
+    REQUIRE(header[1].getSynonymName() == syn2.getName());
+    REQUIRE(header[2].getSynonymName() == syn3.getName());
+    REQUIRE(header[3].getSynonymName() == syn4.getName());
 }

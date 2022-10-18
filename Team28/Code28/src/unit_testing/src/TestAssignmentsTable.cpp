@@ -34,3 +34,21 @@ TEST_CASE(
         0);
     REQUIRE(assignmentsTable.getAllValues(EntityName::ASSIGN).size() == 0);
 }
+
+TEST_CASE("AssignmentsTable getAllAsString works correctly") {
+    AssignmentsTable assignmentsTable;
+
+    std::string expr1 = "((1)+(2))";
+    Assignment assignment1 = Assignment(1, std::string("x1"), expr1);
+    assignmentsTable.store(&assignment1);
+
+    std::string expr2 = "((1)+(3))";
+    Assignment assignment2 = Assignment(2, std::string("x2"), expr2);
+    assignmentsTable.store(&assignment2);
+
+    std::vector<std::string> expectedResult = {"1, x1 = ((1)+(2))",
+                                               "2, x2 = ((1)+(3))"};
+    std::vector<std::string> output = assignmentsTable.getAllAsString();
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}

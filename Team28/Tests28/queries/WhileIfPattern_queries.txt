@@ -33,3 +33,8 @@ while w; if ifs; variable v;
 Select v pattern w(v, _) pattern ifs(v, _, _) such that Parent*(w, ifs)
 a21
 5000
+8 - repeated pattern and chained and 
+while w; if ifs; variable v;
+Select < v, w >  pattern w(v,_)  and  ifs(v,_,_) and ifs(_,_,_) and w(v,_) and ifs("a29",_,_)
+none
+5000

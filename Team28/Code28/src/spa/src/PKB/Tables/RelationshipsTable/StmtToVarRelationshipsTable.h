@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../Solvable.h"
-#include "RelationshipsTable.h"
+#include "StmtToNameRelationshipsTable.h"
 
-class StmtToVarRelationshipsTable : public RelationshipsTable<int, std::string>,
-                                    public virtual Solvable {
+class StmtToVarRelationshipsTable : public StmtToNameRelationshipsTable,
+                                    public Solvable {
 public:
     /*
      * Returns true if the relationship holds between leftReference and
@@ -30,12 +30,7 @@ public:
     std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym,
                                                    EntityName rightSynonym,
                                                    StorageView *storage);
-
-    virtual std::vector<Value> getMatchingValue(std::string value,
-                                                EntityName entity);
-    virtual std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
 };
 
 class ModifiesSTable : public StmtToVarRelationshipsTable {};
 class UsesSTable : public StmtToVarRelationshipsTable {};
-class CallProcTable : public StmtToVarRelationshipsTable {};

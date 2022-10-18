@@ -5,6 +5,7 @@
 #include "../../commons/Variable.h"
 #include "../ProgramParser/EntityNode.h"
 
+#include <functional>
 #include <vector>
 
 class DesignExtractor {
@@ -15,25 +16,59 @@ protected:
 public:
     DesignExtractor(ProgramNode *program, PopulateFacade *storage);
     void extractAll();
+    template <class T>
+    static void extractUtil(
+        std::vector<T> &result, ProgramNode *program,
+        std::function<void(StatementNode *stmt, std::vector<T> &result)> func) {
+        std::vector<ProcedureNode *> procList = program->getProcList();
+        for (size_t i = 0; i < procList.size(); i++) {
+            std::vector<StatementNode *> stmtList =
+                procList.at(i)->getStmtList();
+            for (StatementNode *stmt : stmtList) {
+                func(stmt, result);
+            }
+        }
+    };
+    template <class T>
+    static void extractUtilStmtList(
+        std::vector<T> &result, ProgramNode *program,
+        std::function<void(std::vector<StatementNode *> stmtList,
+                           std::vector<T> &result)>
+            func) {
+        std::vector<ProcedureNode *> procList = program->getProcList();
+        for (size_t i = 0; i < procList.size(); i++) {
+            std::vector<StatementNode *> stmtList =
+                procList.at(i)->getStmtList();
+            func(stmtList, result);
+        }
+    };
 };
 
 // Extract Entities
-class ProcedureExtractor : public DesignExtractor {
+template <typename T> class EntityExtractor : public DesignExtractor {
+protected:
+    Designation type;
 
 public:
-    ProcedureExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
-    std::vector<Procedure *> extract();
-    void populate();
+    EntityExtractor(ProgramNode *program, PopulateFacade *storage,
+                    Designation type);
+    virtual std::vector<T *> extract() { return std::vector<T *>(); };
+    virtual void populate();
 };
 
-class StatementExtractor : public DesignExtractor {
+class ProcedureExtractor : public EntityExtractor<Procedure> {
+
+public:
+    ProcedureExtractor(ProgramNode *program, PopulateFacade *storage);
+    std::vector<Procedure *> extract();
+};
+
+class StatementExtractor : public EntityExtractor<Statement> {
     std::vector<Assignment *> assign;
     std::vector<Relationship<int, std::string> *> call;
 
 public:
-    StatementExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    StatementExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Statement *> extract();
     std::vector<Assignment *> extractAssignments() { return assign; };
     std::vector<Relationship<int, std::string> *> extractCalls() {
@@ -42,120 +77,107 @@ public:
     void populate();
 };
 
-class VariableExtractor : public DesignExtractor {
+class VariableExtractor : public EntityExtractor<Variable> {
 public:
-    VariableExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    VariableExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Variable *> extract();
-    void populate();
 };
 
-class ConstantExtractor : public DesignExtractor {
+class ConstantExtractor : public EntityExtractor<Constant> {
 public:
-    ConstantExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    ConstantExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Constant *> extract();
-    void populate();
 };
 
 // Extract Abstractions
-class FollowsExtractor : public DesignExtractor {
+template <typename U, typename V>
+class RelationExtractor : public DesignExtractor {
+protected:
+    Designation type;
+
 public:
-    FollowsExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
-    std::vector<Relationship<int, int> *> extract();
-    void populate();
+    RelationExtractor(ProgramNode *program, PopulateFacade *storage,
+                      Designation type);
+    virtual std::vector<Relationship<U, V> *> extract() {
+        return std::vector<Relationship<U, V> *>();
+    };
+    virtual void populate();
 };
 
-class FollowsExtrT : public DesignExtractor {
+class FollowsExtractor : public RelationExtractor<int, int> {
 public:
-    FollowsExtrT(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    FollowsExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<int, int> *> extract();
-    void populate();
 };
 
-class ParentExtractor : public DesignExtractor {
+class FollowsExtrT : public RelationExtractor<int, int> {
 public:
-    ParentExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    FollowsExtrT(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<int, int> *> extract();
-    void populate();
 };
 
-class ParentExtrT : public DesignExtractor {
+class ParentExtractor : public RelationExtractor<int, int> {
 public:
-    ParentExtrT(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    ParentExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<int, int> *> extract();
-    void populate();
 };
 
-class UsesSExtractor : public DesignExtractor {
+class ParentExtrT : public RelationExtractor<int, int> {
+public:
+    ParentExtrT(ProgramNode *program, PopulateFacade *storage);
+    std::vector<Relationship<int, int> *> extract();
+};
+
+class UsesSExtractor : public RelationExtractor<int, std::string> {
     std::vector<Relationship<int, std::string> *> ifCondVars;
     std::vector<Relationship<int, std::string> *> whileCondVars;
 
 public:
-    UsesSExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    UsesSExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<int, std::string> *> extract();
     void conVar(std::vector<Relationship<int, std::string> *> &ifResult,
                 std::vector<Relationship<int, std::string> *> &whileResult);
     void populate();
 };
 
-class UsesPExtractor : public DesignExtractor {
+class UsesPExtractor : public RelationExtractor<std::string, std::string> {
 public:
-    UsesPExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    UsesPExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<std::string, std::string> *> extract();
-    void populate();
 };
 
-class ModSExtractor : public DesignExtractor {
+class ModSExtractor : public RelationExtractor<int, std::string> {
 public:
-    ModSExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    ModSExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<int, std::string> *> extract();
-    void populate();
 };
 
-class ModPExtractor : public DesignExtractor {
+class ModPExtractor : public RelationExtractor<std::string, std::string> {
 public:
-    ModPExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    ModPExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<std::string, std::string> *> extract();
-    void populate();
 };
 
-class CallsExtractor : public DesignExtractor {
+class CallsExtractor : public RelationExtractor<std::string, std::string> {
 public:
-    CallsExtractor(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    CallsExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<std::string, std::string> *> extract();
-    void populate();
 };
 
-class CallsExtrT : public DesignExtractor {
+class CallsExtrT : public RelationExtractor<std::string, std::string> {
 public:
-    CallsExtrT(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    CallsExtrT(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<std::string, std::string> *> extract();
-    void populate();
 };
 
-class BranchInExtr : public DesignExtractor {
+class BranchInExtr : public RelationExtractor<int, int> {
 public:
-    BranchInExtr(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    BranchInExtr(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<int, int> *> extract();
-    void populate();
 };
 
-class BranchOutExtr : public DesignExtractor {
+class BranchOutExtr : public RelationExtractor<int, int> {
 public:
-    BranchOutExtr(ProgramNode *program, PopulateFacade *storage)
-        : DesignExtractor(program, storage){};
+    BranchOutExtr(ProgramNode *program, PopulateFacade *storage);
     std::vector<Relationship<int, int> *> extract();
-    void populate();
 };

@@ -11,13 +11,12 @@ std::vector<Value> UsesControlVarTable::getAllStmts() {
         this->allStmts.push_back(
             Value(ValueType::STMT_NUM, std::to_string(key)));
     }
-    std::sort(this->allStmts.begin(), this->allStmts.end());
     this->isProcessed = true;
     return this->allStmts;
 }
 
 std::vector<Value> UsesControlVarTable::getStmt(std::string varName) {
-    if (varName == "_") {
+    if (varName == WILDCARD_SYMBOL) {
         return this->getAllStmts();
     }
     std::unordered_set<Value> intermediateResult;
@@ -28,7 +27,6 @@ std::vector<Value> UsesControlVarTable::getStmt(std::string varName) {
     }
     std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
                                                    intermediateResult.end());
-    std::sort(result.begin(), result.end());
     return result;
 };
 
@@ -46,7 +44,6 @@ std::vector<std::pair<Value, Value>> UsesControlVarTable::getStmtAndVar() {
     std::vector<std::pair<Value, Value>> result =
         std::vector<std::pair<Value, Value>>(intermediateResult.begin(),
                                              intermediateResult.end());
-    std::sort(result.begin(), result.end(), value_pair_sort());
     return result;
 };
 

@@ -110,30 +110,30 @@ TEST_CASE("Evaluator can retrieve specific statement types") {
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
 
     input = "stmt s; Select s";
-    SolvableQuery solvableQ_stmt = QueryParser::parse(input);
-    QueryResult queryResult_stmt = queryEvaluator.evaluate(&solvableQ_stmt);
-    result = queryEvaluator.interpretQueryResult(&queryResult_stmt);
+    SolvableQuery solvableQStmt = QueryParser::parse(input);
+    QueryResult queryResultStmt = queryEvaluator.evaluate(&solvableQStmt);
+    result = queryEvaluator.interpretQueryResult(&queryResultStmt);
 
     REQUIRE(result.size() == 5);
 
     input = "if s; Select s";
-    SolvableQuery solvableQ_if = QueryParser::parse(input);
-    QueryResult queryResult_if = queryEvaluator.evaluate(&solvableQ_if);
-    result = queryEvaluator.interpretQueryResult(&queryResult_if);
+    SolvableQuery solvableQIf = QueryParser::parse(input);
+    QueryResult queryResultIf = queryEvaluator.evaluate(&solvableQIf);
+    result = queryEvaluator.interpretQueryResult(&queryResultIf);
 
     REQUIRE(result.size() == 1);
 
     input = "assign s; Select s";
-    SolvableQuery solvableQ_assign = QueryParser::parse(input);
-    QueryResult queryResult_assign = queryEvaluator.evaluate(&solvableQ_assign);
-    result = queryEvaluator.interpretQueryResult(&queryResult_assign);
+    SolvableQuery solvableQAssign = QueryParser::parse(input);
+    QueryResult queryResultAssign = queryEvaluator.evaluate(&solvableQAssign);
+    result = queryEvaluator.interpretQueryResult(&queryResultAssign);
 
     REQUIRE(result.size() == 2);
 
     input = "while s; Select s";
-    SolvableQuery solvableQ_while = QueryParser::parse(input);
-    QueryResult queryResult_while = queryEvaluator.evaluate(&solvableQ_while);
-    result = queryEvaluator.interpretQueryResult(&queryResult_while);
+    SolvableQuery solvableQWhile = QueryParser::parse(input);
+    QueryResult queryResultWhile = queryEvaluator.evaluate(&solvableQWhile);
+    result = queryEvaluator.interpretQueryResult(&queryResultWhile);
 
     REQUIRE(result.size() == 2);
 }
@@ -212,47 +212,47 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
 
-    SolvableQuery solvableQ_right =
+    SolvableQuery solvableQRight =
         QueryParser::parse("stmt s; Select s such that Follows(1,s)");
-    QueryResult queryResult_right = queryEvaluator.evaluate(&solvableQ_right);
+    QueryResult queryResultRight = queryEvaluator.evaluate(&solvableQRight);
     std::vector<std::string> result_right =
-        queryEvaluator.interpretQueryResult(&queryResult_right);
+        queryEvaluator.interpretQueryResult(&queryResultRight);
 
     REQUIRE(result_right.size() == 1);
 
-    SolvableQuery solvableQ_left =
+    SolvableQuery solvableQLeft =
         QueryParser::parse("stmt s; Select s such that Follows(s,2)");
-    QueryResult queryResult_left = queryEvaluator.evaluate(&solvableQ_left);
-    std::vector<std::string> result_left =
-        queryEvaluator.interpretQueryResult(&queryResult_left);
+    QueryResult queryResultLeft = queryEvaluator.evaluate(&solvableQLeft);
+    std::vector<std::string> resultLeft =
+        queryEvaluator.interpretQueryResult(&queryResultLeft);
 
-    REQUIRE(result_left.size() == 1);
+    REQUIRE(resultLeft.size() == 1);
 
-    SolvableQuery solvableQ_wildcard =
+    SolvableQuery solvableQWildcard =
         QueryParser::parse("stmt s; Select s such that Follows(_, s)");
-    QueryResult queryResult_wildcard =
-        queryEvaluator.evaluate(&solvableQ_wildcard);
-    std::vector<std::string> result_wildcard =
-        queryEvaluator.interpretQueryResult(&queryResult_wildcard);
+    QueryResult queryResultWildcard =
+        queryEvaluator.evaluate(&solvableQWildcard);
+    std::vector<std::string> resultWildcard =
+        queryEvaluator.interpretQueryResult(&queryResultWildcard);
 
-    REQUIRE(result_wildcard.size() == 1);
+    REQUIRE(resultWildcard.size() == 1);
 
-    SolvableQuery solvableQ_wildcard_right =
+    SolvableQuery solvableQWildcardRight =
         QueryParser::parse("stmt s; Select s such that Follows(s, _)");
-    QueryResult queryResult_wildcard_right =
-        queryEvaluator.evaluate(&solvableQ_wildcard_right);
-    std::vector<std::string> result_wildcard_right =
-        queryEvaluator.interpretQueryResult(&queryResult_wildcard_right);
+    QueryResult queryResultWildcardRight =
+        queryEvaluator.evaluate(&solvableQWildcardRight);
+    std::vector<std::string> resultWildcardRight =
+        queryEvaluator.interpretQueryResult(&queryResultWildcardRight);
 
-    REQUIRE(result_wildcard_right.size() == 1);
+    REQUIRE(resultWildcardRight.size() == 1);
 
-    SolvableQuery solvableQ_zero =
+    SolvableQuery solvableQZero =
         QueryParser::parse("stmt s; Select s such that Follows(s,1)");
-    QueryResult queryResult_zero = queryEvaluator.evaluate(&solvableQ_zero);
-    std::vector<std::string> result_zero =
-        queryEvaluator.interpretQueryResult(&queryResult_zero);
+    QueryResult queryResultZero = queryEvaluator.evaluate(&solvableQZero);
+    std::vector<std::string> resultZero =
+        queryEvaluator.interpretQueryResult(&queryResultZero);
 
-    REQUIRE(result_zero.size() == 0);
+    REQUIRE(resultZero.size() == 0);
 }
 
 TEST_CASE("Query evaluator can evaluate query with single such that clause "
@@ -261,39 +261,39 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
     QueryFacade facade = QueryFacade(storage);
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
 
-    SolvableQuery solvableQ_follow =
+    SolvableQuery solvableQFollow =
         QueryParser::parse("stmt s; Select s such that Follows(s, s)");
-    QueryResult queryResult_follow = queryEvaluator.evaluate(&solvableQ_follow);
-    std::vector<std::string> result_follow =
-        queryEvaluator.interpretQueryResult(&queryResult_follow);
+    QueryResult queryResultFollow = queryEvaluator.evaluate(&solvableQFollow);
+    std::vector<std::string> resultFollow =
+        queryEvaluator.interpretQueryResult(&queryResultFollow);
 
-    REQUIRE(result_follow.size() == 0);
+    REQUIRE(resultFollow.size() == 0);
 
-    SolvableQuery solvableQ_followT =
+    SolvableQuery solvableQFollowT =
         QueryParser::parse("stmt s; Select s such that Follows*(s, s)");
-    QueryResult queryResult_followT =
-        queryEvaluator.evaluate(&solvableQ_followT);
-    std::vector<std::string> result_followT =
-        queryEvaluator.interpretQueryResult(&queryResult_followT);
+    QueryResult queryResultFollowT =
+        queryEvaluator.evaluate(&solvableQFollowT);
+    std::vector<std::string> resultFollowT =
+        queryEvaluator.interpretQueryResult(&queryResultFollowT);
 
-    REQUIRE(result_followT.size() == 0);
+    REQUIRE(resultFollowT.size() == 0);
 
-    SolvableQuery solvableQ_parent =
+    SolvableQuery solvableQParent =
         QueryParser::parse("stmt s; Select s such that Parent*(s, s)");
-    QueryResult queryResult_parent = queryEvaluator.evaluate(&solvableQ_parent);
-    std::vector<std::string> result_parent =
-        queryEvaluator.interpretQueryResult(&queryResult_parent);
+    QueryResult queryResultParent = queryEvaluator.evaluate(&solvableQParent);
+    std::vector<std::string> resultParent =
+        queryEvaluator.interpretQueryResult(&queryResultParent);
 
-    REQUIRE(result_parent.size() == 0);
+    REQUIRE(resultParent.size() == 0);
 
-    SolvableQuery solvableQ_parentT =
+    SolvableQuery solvableQParentT =
         QueryParser::parse("stmt s; Select s such that Parent*(s, s)");
-    QueryResult queryResult_parentT =
-        queryEvaluator.evaluate(&solvableQ_parentT);
-    std::vector<std::string> result_parentT =
-        queryEvaluator.interpretQueryResult(&queryResult_parentT);
+    QueryResult queryResultParentT =
+        queryEvaluator.evaluate(&solvableQParentT);
+    std::vector<std::string> resultParentT =
+        queryEvaluator.interpretQueryResult(&queryResultParentT);
 
-    REQUIRE(result_parentT.size() == 0);
+    REQUIRE(resultParentT.size() == 0);
 }
 
 TEST_CASE("Select alternate attribute with no clauses") { 
@@ -333,27 +333,26 @@ TEST_CASE("Select alternate attribute with no clauses") {
 
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
     Synonym r = Synonym(EntityName::READ, "r");
-    Reference r_varName = Reference(r, EntityAttribute::VAR_NAME);
-    SelectClause selectCl_r = SelectClause({r_varName}, SelectType::SINGLE);
-    QueryResult queryResult_r = QueryResult(selectCl_r, {});
-    result = queryEvaluator.interpretQueryResult(&queryResult_r);
+    Reference rVarName = Reference(r, EntityAttribute::VAR_NAME);
+    SelectClause selectClR = SelectClause({rVarName}, SelectType::SINGLE);
+    QueryResult queryResultR = QueryResult(selectClR, {});
+    result = queryEvaluator.interpretQueryResult(&queryResultR);
     REQUIRE(result.size() == 1);
     REQUIRE(result[0] == "x");
 
-
     Synonym p = Synonym(EntityName::PRINT, "p");
-    Reference p_varName = Reference(p, EntityAttribute::VAR_NAME);
-    SelectClause selectCl_p = SelectClause({p_varName}, SelectType::SINGLE);
-    QueryResult queryResult_p = QueryResult(selectCl_p, {});
-    result = queryEvaluator.interpretQueryResult(&queryResult_p);
+    Reference pVarName = Reference(p, EntityAttribute::VAR_NAME);
+    SelectClause selectClP = SelectClause({pVarName}, SelectType::SINGLE);
+    QueryResult queryResultP = QueryResult(selectClP, {});
+    result = queryEvaluator.interpretQueryResult(&queryResultP);
     REQUIRE(result.size() == 1);
     REQUIRE(result[0] == "a");
 
     Synonym c = Synonym(EntityName::CALL, "c");
-    Reference c_procName = Reference(c, EntityAttribute::PROC_NAME);
-    SelectClause selectCl_c = SelectClause({c_procName}, SelectType::SINGLE);
-    QueryResult queryResult_c = QueryResult(selectCl_c, {});
-    result = queryEvaluator.interpretQueryResult(&queryResult_c);
+    Reference cProcName = Reference(c, EntityAttribute::PROC_NAME);
+    SelectClause selectClC = SelectClause({cProcName}, SelectType::SINGLE);
+    QueryResult queryResultC = QueryResult(selectClC, {});
+    result = queryEvaluator.interpretQueryResult(&queryResultC);
     REQUIRE(result.size() == 1);
     REQUIRE(result[0] == "bar");
 }
