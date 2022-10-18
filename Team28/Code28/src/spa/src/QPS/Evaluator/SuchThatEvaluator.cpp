@@ -62,6 +62,7 @@ ClauseResult SuchThatEvaluator::handleBothSynonym(RelationshipReference relRef,
                                                   Reference right) {
     if (relRef == RelationshipReference::NEXT_T &&
         left.getSynonymName() == right.getSynonymName()) {
+        // TODO: clean up this if block
         ClauseResult clauseResult = ClauseResult({left, right});
 
         std::vector<Value> result =

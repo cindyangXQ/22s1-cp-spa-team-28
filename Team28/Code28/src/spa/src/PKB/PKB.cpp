@@ -18,4 +18,5 @@ void PKB::populateNext() {
     this->cfg = cfg;
 }
 
+// TODO: add a flag to only do work if populateNext has been executed
 void PKB::populateNextT() { this->cfg->populateNextT(); }
