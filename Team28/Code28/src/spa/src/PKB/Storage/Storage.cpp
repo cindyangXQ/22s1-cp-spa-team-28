@@ -34,6 +34,8 @@ void Storage::initRelationshipsTable() {
     initTable<CallProcTable>(Designation::PROC_NAME);
     initTable<NextTable>();
     initTable<NextTTable>();
+    initTable<AffectsTable>();
+    initTable<AffectsTTable>();
 };
 
 void Storage::initRsTablesMap() {
@@ -51,6 +53,10 @@ void Storage::initRsTablesMap() {
     this->rsTables[RelationshipReference::NEXT] = this->getTable<NextTable>();
     this->rsTables[RelationshipReference::NEXT_T] =
         this->getTable<NextTTable>();
+    this->rsTables[RelationshipReference::AFFECTS] =
+        this->getTable<AffectsTable>();
+    this->rsTables[RelationshipReference::AFFECTS_T] =
+        this->getTable<AffectsTTable>();
 };
 
 void Storage::initStorageView() {

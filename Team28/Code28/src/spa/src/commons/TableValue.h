@@ -27,7 +27,9 @@ enum class Designation {
     B_OUT,
     IF_C,
     WHILE_C,
-    PROC_NAME
+    PROC_NAME,
+    AFFECTS,
+    AFFECTS_T
 };
 
 typedef std::unordered_set<Designation> DESIGNATION_TYPE_SET;
