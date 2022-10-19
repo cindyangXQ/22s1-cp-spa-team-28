@@ -189,7 +189,7 @@ TEST_CASE("Storage stores and retrieves CallsT correctly") {
 
     callsT->store(&test);
 
-    // Relationship stored to Calls correctly
+    // Relationship stored to CallsT correctly
     REQUIRE(callsT->retrieveLeft("proc1").size() == 1);
     REQUIRE(callsT->retrieveRight("proc2").size() == 1);
 }
@@ -215,7 +215,7 @@ TEST_CASE("Storage stores and retrieves BranchOut correctly") {
 
     branchOut->store(&test);
 
-    // Relationship stored to FollowsTTable correctly
+    // Relationship stored to BranchoutTable correctly
     REQUIRE(branchOut->retrieveLeft(1).size() == 1);
     REQUIRE(branchOut->retrieveRight(2).size() == 1);
 }
@@ -228,7 +228,7 @@ TEST_CASE("Storage stores and retrieves Next correctly") {
 
     next->store(&test);
 
-    // Relationship stored to FollowsTTable correctly
+    // Relationship stored to NextTable correctly
     REQUIRE(next->retrieveLeft(1).size() == 1);
     REQUIRE(next->retrieveRight(2).size() == 1);
 }
@@ -241,7 +241,7 @@ TEST_CASE("Storage stores and retrieves NextT correctly") {
 
     nextT->store(&test);
 
-    // Relationship stored to FollowsTTable correctly
+    // Relationship stored to NextTTable correctly
     REQUIRE(nextT->retrieveLeft(1).size() == 1);
     REQUIRE(nextT->retrieveRight(2).size() == 1);
 }
@@ -254,7 +254,7 @@ TEST_CASE("Storage stores and retrieves IfControl correctly") {
 
     ifsControl->store(&test);
 
-    // Relationship stored to FollowsTTable correctly
+    // Relationship stored to IfControlTable correctly
     REQUIRE(ifsControl->retrieveLeft(1).size() == 1);
     REQUIRE(ifsControl->retrieveRight("x").size() == 1);
 }
@@ -268,7 +268,48 @@ TEST_CASE("Storage stores and retrieves WhileControl correctly") {
 
     whileControl->store(&test);
 
-    // Relationship stored to FollowsTTable correctly
+    // Relationship stored to WhileControlTable correctly
     REQUIRE(whileControl->retrieveLeft(1).size() == 1);
     REQUIRE(whileControl->retrieveRight("x").size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves Affects correctly") {
+    Storage *storage = new Storage();
+    AffectsTable *affects = storage->getTable<AffectsTable>();
+    Relationship<int, int> test =
+        Relationship(RelationshipReference::AFFECTS, 1, 2);
+
+    affects->store(&test);
+
+    // Relationship stored to AffectsTable correctly
+    REQUIRE(affects->retrieveLeft(1).size() == 1);
+    REQUIRE(affects->retrieveRight(2).size() == 1);
+}
+
+TEST_CASE("Storage stores and retrieves AffectsT correctly") {
+    Storage *storage = new Storage();
+    AffectsTTable *affectsT = storage->getTable<AffectsTTable>();
+    Relationship<int, int> test =
+        Relationship(RelationshipReference::AFFECTS, 1, 2);
+
+    affectsT->store(&test);
+
+    // Relationship stored to AffectsTable correctly
+    REQUIRE(affectsT->retrieveLeft(1).size() == 1);
+    REQUIRE(affectsT->retrieveRight(2).size() == 1);
+}
+
+TEST_CASE("getControlVarTable works correctly") {
+    Storage *storage = new Storage();
+    std::type_index ifControl =
+        typeid(*storage->getControlVarTable(Designation::IF_C));
+    std::type_index whileControl =
+        typeid(*storage->getControlVarTable(Designation::WHILE_C));
+
+    UsesControlVarTable *invalid =
+        storage->getControlVarTable(Designation::FOLLOWS);
+
+    REQUIRE(ifControl == typeid(IfControlVarTable));
+    REQUIRE(whileControl == typeid(WhileControlVarTable));
+    REQUIRE(invalid == nullptr);
 }

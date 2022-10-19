@@ -40,3 +40,5 @@ class NextTable : public StmtToStmtRelationshipsTable {};
 class NextTTable : public StmtToStmtRelationshipsTable {};
 class BranchInTable : public StmtToStmtRelationshipsTable {};
 class BranchOutTable : public StmtToStmtRelationshipsTable {};
+class AffectsTable : public StmtToStmtRelationshipsTable {};
+class AffectsTTable : public StmtToStmtRelationshipsTable {};
