@@ -62,6 +62,9 @@ private:
         }
     };
 
+    /*
+     * Helper method for computing transitive closure.
+     */
     std::map<std::pair<int, int>, bool>
     computeClosure(std::map<std::pair<int, int>, bool> map);
 };
