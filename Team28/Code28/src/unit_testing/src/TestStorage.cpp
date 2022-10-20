@@ -375,3 +375,84 @@ TEST_CASE("getControlVarTable works correctly") {
     REQUIRE(whileControl == typeid(WhileControlVarTable));
     REQUIRE(invalid == nullptr);
 }
+
+TEST_CASE("getDesignationTable works correctly") {
+    Storage *storage = new Storage();
+
+    Table *table = storage->getDesignationTable(Designation::STMT);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table = storage->getDesignationTable(Designation::ASSIGN);
+    REQUIRE(typeid(*table) == typeid(AssignmentsTable));
+    table = storage->getDesignationTable(Designation::VAR);
+    REQUIRE(typeid(*table) == typeid(VariablesTable));
+    table = storage->getDesignationTable(Designation::CONST);
+    REQUIRE(typeid(*table) == typeid(ConstantsTable));
+    table = storage->getDesignationTable(Designation::PROC);
+    REQUIRE(typeid(*table) == typeid(ProceduresTable));
+    table = storage->getDesignationTable(Designation::FOLLOWS);
+    REQUIRE(typeid(*table) == typeid(FollowsTable));
+    table = storage->getDesignationTable(Designation::FOLLOWS_T);
+    REQUIRE(typeid(*table) == typeid(FollowsTTable));
+    table = storage->getDesignationTable(Designation::PARENT);
+    REQUIRE(typeid(*table) == typeid(ParentTable));
+    table = storage->getDesignationTable(Designation::PARENT_T);
+    REQUIRE(typeid(*table) == typeid(ParentTTable));
+    table = storage->getDesignationTable(Designation::MOD_S);
+    REQUIRE(typeid(*table) == typeid(ModifiesSTable));
+    table = storage->getDesignationTable(Designation::MOD_P);
+    REQUIRE(typeid(*table) == typeid(ModifiesPTable));
+    table = storage->getDesignationTable(Designation::USE_S);
+    REQUIRE(typeid(*table) == typeid(UsesSTable));
+    table = storage->getDesignationTable(Designation::USE_P);
+    REQUIRE(typeid(*table) == typeid(UsesPTable));
+    table = storage->getDesignationTable(Designation::CALL);
+    REQUIRE(typeid(*table) == typeid(CallsTable));
+    table = storage->getDesignationTable(Designation::CALL_T);
+    REQUIRE(typeid(*table) == typeid(CallsTTable));
+    table = storage->getDesignationTable(Designation::B_IN);
+    REQUIRE(typeid(*table) == typeid(BranchInTable));
+    table = storage->getDesignationTable(Designation::B_OUT);
+    REQUIRE(typeid(*table) == typeid(BranchOutTable));
+    table = storage->getDesignationTable(Designation::IF_C);
+    REQUIRE(typeid(*table) == typeid(IfControlVarTable));
+    table = storage->getDesignationTable(Designation::WHILE_C);
+    REQUIRE(typeid(*table) == typeid(WhileControlVarTable));
+    table = storage->getDesignationTable(Designation::PROC_NAME);
+    REQUIRE(typeid(*table) == typeid(CallProcTable));
+}
+
+TEST_CASE("getModifiesTables works correctly") {
+    Storage *storage = new Storage();
+
+    std::vector<Solvable *> modifies = storage->getModifiesTables();
+    std::vector<std::type_index> indexes = {};
+    std::vector<std::type_index> expected = {typeid(ModifiesSTable),
+                                             typeid(ModifiesPTable)};
+
+    for (Solvable *table : modifies) {
+        std::type_index index = typeid(*table);
+        indexes.push_back(index);
+    }
+
+    std::sort(indexes.begin(), indexes.end());
+    std::sort(expected.begin(), expected.end());
+    REQUIRE(indexes == expected);
+}
+
+TEST_CASE("getUsesTables works correctly") {
+    Storage *storage = new Storage();
+
+    std::vector<Solvable *> uses = storage->getUsesTables();
+    std::vector<std::type_index> indexes = {};
+    std::vector<std::type_index> expected = {typeid(UsesSTable),
+                                             typeid(UsesPTable)};
+
+    for (Solvable *table : uses) {
+        std::type_index index = typeid(*table);
+        indexes.push_back(index);
+    }
+
+    std::sort(indexes.begin(), indexes.end());
+    std::sort(expected.begin(), expected.end());
+    REQUIRE(indexes == expected);
+}
