@@ -12,7 +12,6 @@ ClauseResult WithClauseEvaluator::evaluate(WithClause *withCl) {
     } else {
         return handleOneSynonym(left, right);
     }
-    return ClauseResult(true);
 }
 
 ClauseResult WithClauseEvaluator::handleBothSynonyms(Reference left,
