@@ -43,3 +43,8 @@ variable v; call c;
 Select v with v.varName = c.procName
 call
 5000
+1 - 1 with clause attrRef with attrRef false
+read r; print p;
+Select <r, p> with r.varName = p.varName
+none
+5000
