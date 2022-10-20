@@ -61,4 +61,7 @@ private:
             }
         }
     };
+
+    std::map<std::pair<int, int>, bool>
+    computeClosure(std::map<std::pair<int, int>, bool> map);
 };
