@@ -299,6 +299,68 @@ TEST_CASE("Storage stores and retrieves AffectsT correctly") {
     REQUIRE(affectsT->retrieveRight(2).size() == 1);
 }
 
+TEST_CASE("getRsTable works correctly") {
+    Storage *storage = new Storage();
+
+    // Test valid combos
+    Solvable *table = storage->getRsTable(RelationshipReference::MODIFIES,
+                                          ReferenceType::STMT_REF);
+    REQUIRE(typeid(*table) == typeid(ModifiesSTable));
+    table = storage->getRsTable(RelationshipReference::MODIFIES,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(ModifiesPTable));
+    table = storage->getRsTable(RelationshipReference::USES,
+                                ReferenceType::STMT_REF);
+    REQUIRE(typeid(*table) == typeid(UsesSTable));
+    table = storage->getRsTable(RelationshipReference::USES,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(UsesPTable));
+    table = storage->getRsTable(RelationshipReference::FOLLOWS,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(FollowsTable));
+    table = storage->getRsTable(RelationshipReference::FOLLOWS_T,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(FollowsTTable));
+    table = storage->getRsTable(RelationshipReference::PARENT,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(ParentTable));
+    table = storage->getRsTable(RelationshipReference::PARENT_T,
+                                ReferenceType::STMT_REF);
+    REQUIRE(typeid(*table) == typeid(ParentTTable));
+    table = storage->getRsTable(RelationshipReference::CALLS,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(CallsTable));
+    table = storage->getRsTable(RelationshipReference::CALLS_T,
+                                ReferenceType::ATTR_REF);
+    REQUIRE(typeid(*table) == typeid(CallsTTable));
+    table = storage->getRsTable(RelationshipReference::NEXT,
+                                ReferenceType::WILDCARD);
+    REQUIRE(typeid(*table) == typeid(NextTable));
+    table = storage->getRsTable(RelationshipReference::NEXT_T,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(NextTTable));
+    table = storage->getRsTable(RelationshipReference::AFFECTS,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(AffectsTable));
+    table = storage->getRsTable(RelationshipReference::AFFECTS_T,
+                                ReferenceType::WILDCARD);
+    REQUIRE(typeid(*table) == typeid(AffectsTTable));
+    // Test invalid combos, should return nullptr
+    table = storage->getRsTable(RelationshipReference::MODIFIES,
+                                ReferenceType::WILDCARD);
+    REQUIRE(!table);
+    table = storage->getRsTable(RelationshipReference::USES,
+                                ReferenceType::ATTR_REF);
+    REQUIRE(!table);
+    // TODO: Handle case where EMPTY is passed in/ Remove EMPTY? Exception
+    // because EMPTY is never added
+    /*
+    table = storage->getRsTable(RelationshipReference::EMPTY,
+                                ReferenceType::ATTR_REF);
+    REQUIRE(!table);
+    */
+}
+
 TEST_CASE("getControlVarTable works correctly") {
     Storage *storage = new Storage();
     std::type_index ifControl =
