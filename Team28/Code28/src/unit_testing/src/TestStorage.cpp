@@ -456,3 +456,47 @@ TEST_CASE("getUsesTables works correctly") {
     std::sort(expected.begin(), expected.end());
     REQUIRE(indexes == expected);
 }
+
+TEST_CASE("getAttributesTables works correctly") {
+    Storage *storage = new Storage();
+
+    Table *table =
+        storage->getAttributesTable(EntityName::STMT, EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table =
+        storage->getAttributesTable(EntityName::READ, EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table = storage->getAttributesTable(EntityName::PRINT,
+                                        EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table =
+        storage->getAttributesTable(EntityName::CALL, EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table = storage->getAttributesTable(EntityName::WHILE,
+                                        EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table =
+        storage->getAttributesTable(EntityName::IF, EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table = storage->getAttributesTable(EntityName::ASSIGN,
+                                        EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table = storage->getAttributesTable(EntityName::CONSTANT,
+                                        EntityAttribute::VALUE);
+    REQUIRE(typeid(*table) == typeid(ConstantsTable));
+    table = storage->getAttributesTable(EntityName::PROCEDURE,
+                                        EntityAttribute::PROC_NAME);
+    REQUIRE(typeid(*table) == typeid(ProceduresTable));
+    table = storage->getAttributesTable(EntityName::CALL,
+                                        EntityAttribute::PROC_NAME);
+    REQUIRE(typeid(*table) == typeid(CallProcTable));
+    table = storage->getAttributesTable(EntityName::VARIABLE,
+                                        EntityAttribute::VAR_NAME);
+    REQUIRE(typeid(*table) == typeid(VariablesTable));
+    table = storage->getAttributesTable(EntityName::READ,
+                                        EntityAttribute::VAR_NAME);
+    REQUIRE(typeid(*table) == typeid(ModifiesSTable));
+    table = storage->getAttributesTable(EntityName::PRINT,
+                                        EntityAttribute::VAR_NAME);
+    REQUIRE(typeid(*table) == typeid(UsesSTable));
+}
