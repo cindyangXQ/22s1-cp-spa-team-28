@@ -6,6 +6,7 @@
 #include "PatternEvaluator.h"
 #include "QueryResult.h"
 #include "SuchThatEvaluator.h"
+#include "WithClauseEvaluator.h"
 #include <string>
 
 class QueryEvaluator {
@@ -13,12 +14,14 @@ private:
     QueryFacade *queryFacade;
     SuchThatEvaluator suchThatEvaluator;
     PatternEvaluator patternEvaluator;
+    WithClauseEvaluator withEvaluator;
 
 public:
     explicit QueryEvaluator(QueryFacade *queryFacade)
         : queryFacade(queryFacade),
           suchThatEvaluator(SuchThatEvaluator(queryFacade)),
-          patternEvaluator(PatternEvaluator(queryFacade)){};
+          patternEvaluator(PatternEvaluator(queryFacade)),
+          withEvaluator(WithClauseEvaluator(queryFacade)){};
 
     /*
      * Evaluate a query after it is parsed.

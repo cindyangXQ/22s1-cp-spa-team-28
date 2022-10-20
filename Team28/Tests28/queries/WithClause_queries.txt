@@ -1,0 +1,35 @@
+1 - 1 with clause non attrRef with non attrRef true
+variable v;
+Select v with 1 = 1
+a12,a1,a10,a11,a13,a14,a15,a16,a17,z,a18,a19,a2,a20,a21,a22,a23,a24,a25,a26,a27,a28,a29,a3,print,a4,a5,procedure,a6,a7,a8,a9,call,constant,variable,read,x,y
+5000
+1 - 1 with clause non attrRef with non attrRef false
+variable v;
+Select v with 1 = 2
+none
+5000
+1 - 1 with clause attrRef with non attrRef true v.varName
+variable v;
+Select v with v.varName = "a28"
+a28 
+5000
+1 - 1 with clause non attrRef with attrRef true v.varName
+variable v;
+Select v with "a15" = v.varName
+a15
+5000
+1 - 1 with clause attrRef with non attrRef false v.varName
+variable v;
+Select v with v.varName = "a50"
+none
+5000
+1 - 1 with clause non attrRef with attrRef false v.varName
+variable v;
+Select v with "a50" = v.varName
+none
+5000
+1 - 1 with clause attrRef with attrRef true
+variable v; call c;
+Select v with v.varName = c.procName
+call
+5000
