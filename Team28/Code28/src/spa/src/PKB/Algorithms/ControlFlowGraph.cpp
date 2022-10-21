@@ -27,29 +27,7 @@ void ControlFlowGraph::populateNext() {
 };
 
 void ControlFlowGraph::populateNextT() {
-    std::map<std::pair<int, int>, bool> matrix;
-
-    for (int i = 1; i <= this->totalLines; i++) {
-        for (int j = 1; j <= this->totalLines; j++) {
-            std::pair<int, int> curr = std::make_pair(i, j);
-            matrix[curr] = false;
-        }
-    }
-
-    for (const auto &elem : this->visited) {
-        matrix[elem.first] = elem.second;
-    }
-
-    for (int k = 1; k <= this->totalLines; k++) {
-        for (int i = 1; i <= this->totalLines; i++) {
-            for (int j = 1; j <= this->totalLines; j++) {
-                std::pair<int, int> curr = std::make_pair(i, j);
-                std::pair<int, int> left = std::make_pair(i, k);
-                std::pair<int, int> right = std::make_pair(k, j);
-                matrix[curr] = matrix[curr] || (matrix[left] && matrix[right]);
-            }
-        }
-    }
+    std::map<std::pair<int, int>, bool> matrix = computeClosure(this->visited);
 
     for (const auto &elem : matrix) {
         if (elem.second) {
@@ -75,3 +53,32 @@ void ControlFlowGraph::DFS(int i) {
         DFSHelper(i, this->follows);
     }
 };
+
+std::map<std::pair<int, int>, bool>
+ControlFlowGraph::computeClosure(std::map<std::pair<int, int>, bool> map) {
+    std::map<std::pair<int, int>, bool> matrix;
+
+    for (int i = 1; i <= this->totalLines; i++) {
+        for (int j = 1; j <= this->totalLines; j++) {
+            std::pair<int, int> curr = std::make_pair(i, j);
+            matrix[curr] = false;
+        }
+    }
+
+    for (const auto &elem : map) {
+        matrix[elem.first] = elem.second;
+    }
+
+    for (int k = 1; k <= this->totalLines; k++) {
+        for (int i = 1; i <= this->totalLines; i++) {
+            for (int j = 1; j <= this->totalLines; j++) {
+                std::pair<int, int> curr = std::make_pair(i, j);
+                std::pair<int, int> left = std::make_pair(i, k);
+                std::pair<int, int> right = std::make_pair(k, j);
+                matrix[curr] = matrix[curr] || (matrix[left] && matrix[right]);
+            }
+        }
+    }
+
+    return matrix;
+}
