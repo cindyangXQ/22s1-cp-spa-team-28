@@ -11,6 +11,7 @@ ControlFlowGraph::ControlFlowGraph(NextTable *nextTable, NextTTable *nextTTable,
     this->branchIn = storage->getTable<BranchInTable>();
     this->branchOut = storage->getTable<BranchOutTable>();
     this->procedures = storage->getTable<ProceduresTable>();
+    // TODO: fix LoD
     this->totalLines = storage->getTable<StatementsTable>()->getTableSize();
 };
 

@@ -31,6 +31,8 @@ public:
      */
     void populateNextT();
 
+    void initAffects();
+
 private:
     ControlFlowGraph *cfg;
     Storage *storage;
