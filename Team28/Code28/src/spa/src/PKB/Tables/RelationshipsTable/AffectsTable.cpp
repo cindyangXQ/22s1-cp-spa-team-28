@@ -41,27 +41,72 @@ bool AffectsTable::validate(Reference leftRef, Reference rightRef) {
 std::vector<Value> AffectsTable::solveRight(Reference leftRef,
                                             EntityName rightSynonym,
                                             StorageView *storage) {
+    if (!isAssignmentEntity(rightSynonym)) {
+        return std::vector<Value>();
+    }
+    std::vector<Value> result;
+    // TODO: handle wildcard
+    if (leftRef.isWildcard()) {
+        return std::vector<Value>();
+    } else {
+        int left = convertToType<int>(leftRef.getValueString());
+        for (int right : this->assignments) {
+            if (checkAffects(left, right)) {
+                result.push_back(Value(ValueType::STMT_NUM, toString(right)));
+            }
+        }
+    }
 
-    return std::vector<Value>();
+    return result;
 }
 
 std::vector<Value> AffectsTable::solveLeft(Reference rightRef,
                                            EntityName leftSynonym,
                                            StorageView *storage) {
-
-    return std::vector<Value>();
+    if (!isAssignmentEntity(leftSynonym)) {
+        return std::vector<Value>();
+    }
+    std::vector<Value> result;
+    // TODO: handle wildcard
+    if (rightRef.isWildcard()) {
+        return std::vector<Value>();
+    } else {
+        int right = convertToType<int>(rightRef.getValueString());
+        for (int left : this->assignments) {
+            if (checkAffects(left, right)) {
+                result.push_back(Value(ValueType::STMT_NUM, toString(right)));
+            }
+        }
+    }
+    return result;
 };
 
 std::vector<std::pair<Value, Value>>
 AffectsTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
                         StorageView *storage) {
-
-    return std::vector<std::pair<Value, Value>>();
+    if (!isAssignmentEntity(leftSynonym) || !isAssignmentEntity(rightSynonym)) {
+        return std::vector<std::pair<Value, Value>>();
+    }
+    std::vector<std::pair<Value, Value>> result;
+    for (int left : this->assignments) {
+        for (int right : this->assignments) {
+            if (checkAffects(left, right)) {
+                Value leftValue = Value(ValueType::STMT_NUM, toString(left));
+                Value rightValue = Value(ValueType::STMT_NUM, toString(right));
+                result.push_back(std::make_pair(leftValue, rightValue));
+            }
+        }
+    }
+    return result;
 }
 
 bool AffectsTable::areAssignments(int left, int right) {
     return (this->assignments.count(left) > 0) &&
            (this->assignments.count(right) > 0);
+};
+
+bool AffectsTable::isAssignmentEntity(EntityName entity) {
+    return (entity == EntityName::ASSIGN) || (entity == EntityName::STMT);
 };
 
 bool AffectsTable::checkAffects(int left, int right) {
@@ -91,6 +136,8 @@ void AffectsTable::calculateAffects(int left, int right) {
             if (calculateAffectsHelper(i, right, commonVariables, visited)) {
                 this->matrix[std::make_pair(left, right)] = Status::TRUE;
                 return;
+            } else {
+                this->matrix[std::make_pair(left, right)] = Status::FALSE;
             }
         }
     }

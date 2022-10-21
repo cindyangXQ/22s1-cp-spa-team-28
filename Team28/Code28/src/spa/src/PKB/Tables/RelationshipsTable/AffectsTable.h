@@ -50,6 +50,7 @@ private:
                                 std::map<int, int> visited);
 
     bool areAssignments(int left, int right);
+    bool isAssignmentEntity(EntityName entity);
 
     std::vector<std::string> getCommonVariables(int left, int right);
 
