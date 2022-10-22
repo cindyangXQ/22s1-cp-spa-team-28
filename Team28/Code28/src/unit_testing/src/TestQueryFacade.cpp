@@ -983,13 +983,13 @@ TEST_CASE("Affects: Validate for Affects(1,2) works correctly") {
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
-    affects->initAffects(storage->getStorageView());
     next->store(&nextRs);
     nextT->store(&nextTRs);
     usesS->store(&usesS2);
     modS->store(&modS1);
     statements->store(&s1);
     statements->store(&s2);
+    affects->initAffects(storage->getStorageView());
 
     Reference leftRef = Reference("1");
     Reference rightRef = Reference("2");
@@ -1025,13 +1025,13 @@ TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
-    affects->initAffects(storage->getStorageView());
     next->store(&nextRs);
     nextT->store(&nextTRs);
     usesS->store(&usesS2);
     modS->store(&modS1);
     statements->store(&s1);
     statements->store(&s2);
+    affects->initAffects(storage->getStorageView());
 
     Reference leftRef;
     EntityName rightEntityName;
@@ -1090,13 +1090,13 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
-    affects->initAffects(storage->getStorageView());
     next->store(&nextRs);
     nextT->store(&nextTRs);
     usesS->store(&usesS2);
     modS->store(&modS1);
     statements->store(&s1);
     statements->store(&s2);
+    affects->initAffects(storage->getStorageView());
 
     Reference rightRef;
     EntityName leftEntityName;
@@ -1155,13 +1155,13 @@ TEST_CASE("Affects: solveBoth for Affects(1,2) works correctly") {
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
-    affects->initAffects(storage->getStorageView());
     next->store(&nextRs);
     nextT->store(&nextTRs);
     usesS->store(&usesS2);
     modS->store(&modS1);
     statements->store(&s1);
     statements->store(&s2);
+    affects->initAffects(storage->getStorageView());
 
     Value value1 = Value(ValueType::STMT_NUM, "1");
     Value value2 = Value(ValueType::STMT_NUM, "2");
