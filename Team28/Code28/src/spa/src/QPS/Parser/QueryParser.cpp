@@ -307,6 +307,8 @@ bool QueryParser::isValidSuchThatClause(RelationshipReference relRef,
     } else {
         isRightValid = validRightRef.count(right.getRefType());
     }
+    std::cout << "LEFT " << isLeftValid << std::endl;
+    std::cout << "RIGHT " << isRightValid << std::endl;
     return isLeftValid && isRightValid;
 }
 
