@@ -49,6 +49,7 @@ private:
                                 std::vector<std::string> commonVariables,
                                 std::map<int, int> visited);
 
+    bool isAssignment(int stmt);
     bool areAssignments(int left, int right);
     bool isAssignmentEntity(EntityName entity);
 
