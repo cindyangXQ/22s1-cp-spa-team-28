@@ -75,35 +75,35 @@ AffectsTable *InitAffectsTable::initCode6() {
     }
 
     Relationship<int, std::string> use1 =
-        Relationship(RelationshipReference::USES, 3, "i");
+        Relationship(RelationshipReference::USES, 3, std::string("i"));
     Relationship<int, std::string> use2 =
-        Relationship(RelationshipReference::USES, 4, "x");
+        Relationship(RelationshipReference::USES, 4, std::string("x"));
     Relationship<int, std::string> use3 =
-        Relationship(RelationshipReference::USES, 4, "y");
+        Relationship(RelationshipReference::USES, 4, std::string("y"));
     Relationship<int, std::string> use4 =
-        Relationship(RelationshipReference::USES, 6, "i");
+        Relationship(RelationshipReference::USES, 6, std::string("i"));
     Relationship<int, std::string> use5 =
-        Relationship(RelationshipReference::USES, 7, "x");
+        Relationship(RelationshipReference::USES, 7, std::string("x"));
     Relationship<int, std::string> use6 =
-        Relationship(RelationshipReference::USES, 8, "x");
+        Relationship(RelationshipReference::USES, 8, std::string("x"));
     Relationship<int, std::string> use7 =
-        Relationship(RelationshipReference::USES, 10, "z");
+        Relationship(RelationshipReference::USES, 10, std::string("z"));
     Relationship<int, std::string> use8 =
-        Relationship(RelationshipReference::USES, 10, "x");
+        Relationship(RelationshipReference::USES, 10, std::string("x"));
     Relationship<int, std::string> use9 =
-        Relationship(RelationshipReference::USES, 10, "i");
+        Relationship(RelationshipReference::USES, 10, std::string("i"));
     Relationship<int, std::string> use10 =
-        Relationship(RelationshipReference::USES, 11, "z");
+        Relationship(RelationshipReference::USES, 11, std::string("z"));
     Relationship<int, std::string> use11 =
-        Relationship(RelationshipReference::USES, 12, "x");
+        Relationship(RelationshipReference::USES, 12, std::string("x"));
     Relationship<int, std::string> use12 =
-        Relationship(RelationshipReference::USES, 12, "y");
+        Relationship(RelationshipReference::USES, 12, std::string("y"));
     Relationship<int, std::string> use13 =
-        Relationship(RelationshipReference::USES, 12, "z");
+        Relationship(RelationshipReference::USES, 12, std::string("z"));
     Relationship<int, std::string> use14 =
-        Relationship(RelationshipReference::USES, 14, "z");
+        Relationship(RelationshipReference::USES, 14, std::string("z"));
     Relationship<int, std::string> use15 =
-        Relationship(RelationshipReference::USES, 15, "v");
+        Relationship(RelationshipReference::USES, 15, std::string("v"));
     std::vector<Relationship<int, std::string> *> uses = {
         &use1, &use2,  &use3,  &use4,  &use5,  &use6,  &use7, &use8,
         &use9, &use10, &use11, &use12, &use13, &use14, &use15};
@@ -112,31 +112,31 @@ AffectsTable *InitAffectsTable::initCode6() {
     }
 
     Relationship<int, std::string> mod1 =
-        Relationship(RelationshipReference::MODIFIES, 1, "x");
+        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
     Relationship<int, std::string> mod2 =
-        Relationship(RelationshipReference::MODIFIES, 2, "i");
+        Relationship(RelationshipReference::MODIFIES, 2, std::string("i"));
     Relationship<int, std::string> mod3 =
-        Relationship(RelationshipReference::MODIFIES, 3, "i");
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("i"));
     Relationship<int, std::string> mod4 =
-        Relationship(RelationshipReference::MODIFIES, 4, "x");
+        Relationship(RelationshipReference::MODIFIES, 4, std::string("x"));
     Relationship<int, std::string> mod5 =
-        Relationship(RelationshipReference::MODIFIES, 6, "i");
+        Relationship(RelationshipReference::MODIFIES, 6, std::string("i"));
     Relationship<int, std::string> mod6 =
-        Relationship(RelationshipReference::MODIFIES, 7, "x");
+        Relationship(RelationshipReference::MODIFIES, 7, std::string("x"));
     Relationship<int, std::string> mod7 =
-        Relationship(RelationshipReference::MODIFIES, 8, "x");
+        Relationship(RelationshipReference::MODIFIES, 8, std::string("x"));
     Relationship<int, std::string> mod8 =
-        Relationship(RelationshipReference::MODIFIES, 9, "z");
+        Relationship(RelationshipReference::MODIFIES, 9, std::string("z"));
     Relationship<int, std::string> mod9 =
-        Relationship(RelationshipReference::MODIFIES, 10, "z");
+        Relationship(RelationshipReference::MODIFIES, 10, std::string("z"));
     Relationship<int, std::string> mod10 =
-        Relationship(RelationshipReference::MODIFIES, 11, "y");
+        Relationship(RelationshipReference::MODIFIES, 11, std::string("y"));
     Relationship<int, std::string> mod11 =
-        Relationship(RelationshipReference::MODIFIES, 12, "x");
+        Relationship(RelationshipReference::MODIFIES, 12, std::string("x"));
     Relationship<int, std::string> mod12 =
-        Relationship(RelationshipReference::MODIFIES, 13, "z");
+        Relationship(RelationshipReference::MODIFIES, 13, std::string("z"));
     Relationship<int, std::string> mod13 =
-        Relationship(RelationshipReference::MODIFIES, 14, "v");
+        Relationship(RelationshipReference::MODIFIES, 14, std::string("v"));
     std::vector<Relationship<int, std::string> *> mods = {
         &mod1, &mod2, &mod3,  &mod4,  &mod5,  &mod6, &mod7,
         &mod8, &mod9, &mod10, &mod11, &mod12, &mod13};
