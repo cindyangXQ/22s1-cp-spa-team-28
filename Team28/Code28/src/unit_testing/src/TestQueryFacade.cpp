@@ -972,25 +972,20 @@ TEST_CASE("Affects: Validate for Affects(1,2) works correctly") {
     ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
 
-    Relationship<int, int> affectsRs =
-        Relationship(RelationshipReference::AFFECTS, 1, 2);
     Relationship<int, int> nextRs =
         Relationship(RelationshipReference::NEXT, 1, 2);
     Relationship<int, int> nextTRs =
         Relationship(RelationshipReference::NEXT_T, 1, 2);
-    Relationship<int, std::string> usesS1 =
-        Relationship(RelationshipReference::USES, 1, std::string("x"));
     Relationship<int, std::string> usesS2 =
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 3, std::string("y"));
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
-    affects->store(&affectsRs);
+    affects->initAffects(storage->getStorageView());
     next->store(&nextRs);
     nextT->store(&nextTRs);
-    usesS->store(&usesS1);
     usesS->store(&usesS2);
     modS->store(&modS1);
     statements->store(&s1);
@@ -999,7 +994,6 @@ TEST_CASE("Affects: Validate for Affects(1,2) works correctly") {
     Reference leftRef = Reference("1");
     Reference rightRef = Reference("2");
     Reference wildcardRef = Reference("_");
-    Reference wrongRef = Reference("Foo");
 
     REQUIRE(facade.validate(RelationshipReference::AFFECTS, leftRef, rightRef));
     REQUIRE(
@@ -1020,25 +1014,20 @@ TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
     ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
 
-    Relationship<int, int> affectsRs =
-        Relationship(RelationshipReference::AFFECTS, 1, 2);
     Relationship<int, int> nextRs =
         Relationship(RelationshipReference::NEXT, 1, 2);
     Relationship<int, int> nextTRs =
         Relationship(RelationshipReference::NEXT_T, 1, 2);
-    Relationship<int, std::string> usesS1 =
-        Relationship(RelationshipReference::USES, 1, std::string("x"));
     Relationship<int, std::string> usesS2 =
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 3, std::string("y"));
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
-    affects->store(&affectsRs);
+    affects->initAffects(storage->getStorageView());
     next->store(&nextRs);
     nextT->store(&nextTRs);
-    usesS->store(&usesS1);
     usesS->store(&usesS2);
     modS->store(&modS1);
     statements->store(&s1);
@@ -1090,25 +1079,20 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
     ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
 
-    Relationship<int, int> affectsRs =
-        Relationship(RelationshipReference::AFFECTS, 1, 2);
     Relationship<int, int> nextRs =
         Relationship(RelationshipReference::NEXT, 1, 2);
     Relationship<int, int> nextTRs =
         Relationship(RelationshipReference::NEXT_T, 1, 2);
-    Relationship<int, std::string> usesS1 =
-        Relationship(RelationshipReference::USES, 1, std::string("x"));
     Relationship<int, std::string> usesS2 =
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 3, std::string("y"));
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
-    affects->store(&affectsRs);
+    affects->initAffects(storage->getStorageView());
     next->store(&nextRs);
     nextT->store(&nextTRs);
-    usesS->store(&usesS1);
     usesS->store(&usesS2);
     modS->store(&modS1);
     statements->store(&s1);
@@ -1160,25 +1144,20 @@ TEST_CASE("Affects: solveBoth for Affects(1,2) works correctly") {
     ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
 
-    Relationship<int, int> affectsRs =
-        Relationship(RelationshipReference::AFFECTS, 1, 2);
     Relationship<int, int> nextRs =
         Relationship(RelationshipReference::NEXT, 1, 2);
     Relationship<int, int> nextTRs =
         Relationship(RelationshipReference::NEXT_T, 1, 2);
-    Relationship<int, std::string> usesS1 =
-        Relationship(RelationshipReference::USES, 1, std::string("x"));
     Relationship<int, std::string> usesS2 =
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 3, std::string("y"));
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
-    affects->store(&affectsRs);
+    affects->initAffects(storage->getStorageView());
     next->store(&nextRs);
     nextT->store(&nextTRs);
-    usesS->store(&usesS1);
     usesS->store(&usesS2);
     modS->store(&modS1);
     statements->store(&s1);
