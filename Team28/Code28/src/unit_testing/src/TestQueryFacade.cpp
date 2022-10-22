@@ -2,6 +2,43 @@
 
 #include "catch.hpp"
 
+struct InitAffectsStorage {
+public:
+    static QueryFacade createSimple();
+};
+
+QueryFacade InitAffectsStorage::createSimple() {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    AffectsTable *affects = storage->getTable<AffectsTable>();
+    NextTable *next = storage->getTable<NextTable>();
+    NextTTable *nextT = storage->getTable<NextTTable>();
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
+    ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+
+    Relationship<int, int> nextRs =
+        Relationship(RelationshipReference::NEXT, 1, 2);
+    Relationship<int, int> nextTRs =
+        Relationship(RelationshipReference::NEXT_T, 1, 2);
+    Relationship<int, std::string> usesS2 =
+        Relationship(RelationshipReference::USES, 2, std::string("x"));
+    Relationship<int, std::string> modS1 =
+        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
+    Statement s1 = Statement(1, StatementType::ASSIGN);
+    Statement s2 = Statement(2, StatementType::ASSIGN);
+
+    next->store(&nextRs);
+    nextT->store(&nextTRs);
+    usesS->store(&usesS2);
+    modS->store(&modS1);
+    statements->store(&s1);
+    statements->store(&s2);
+    affects->initAffects(storage->getStorageView());
+
+    return facade;
+}
+
 TEST_CASE("getAllStatements returns all statements correctly") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
@@ -963,33 +1000,7 @@ TEST_CASE("ProcToVar: SolveBoth queries for Calls('proc1', 'proc2') return "
 }
 
 TEST_CASE("Affects: Validate for Affects(1,2) works correctly") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    AffectsTable *affects = storage->getTable<AffectsTable>();
-    NextTable *next = storage->getTable<NextTable>();
-    NextTTable *nextT = storage->getTable<NextTTable>();
-    UsesSTable *usesS = storage->getTable<UsesSTable>();
-    ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
-    StatementsTable *statements = storage->getTable<StatementsTable>();
-
-    Relationship<int, int> nextRs =
-        Relationship(RelationshipReference::NEXT, 1, 2);
-    Relationship<int, int> nextTRs =
-        Relationship(RelationshipReference::NEXT_T, 1, 2);
-    Relationship<int, std::string> usesS2 =
-        Relationship(RelationshipReference::USES, 2, std::string("x"));
-    Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
-    Statement s1 = Statement(1, StatementType::ASSIGN);
-    Statement s2 = Statement(2, StatementType::ASSIGN);
-
-    next->store(&nextRs);
-    nextT->store(&nextTRs);
-    usesS->store(&usesS2);
-    modS->store(&modS1);
-    statements->store(&s1);
-    statements->store(&s2);
-    affects->initAffects(storage->getStorageView());
+    QueryFacade facade = InitAffectsStorage::createSimple();
 
     Reference leftRef = Reference("1");
     Reference rightRef = Reference("2");
@@ -1005,33 +1016,7 @@ TEST_CASE("Affects: Validate for Affects(1,2) works correctly") {
 }
 
 TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    AffectsTable *affects = storage->getTable<AffectsTable>();
-    NextTable *next = storage->getTable<NextTable>();
-    NextTTable *nextT = storage->getTable<NextTTable>();
-    UsesSTable *usesS = storage->getTable<UsesSTable>();
-    ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
-    StatementsTable *statements = storage->getTable<StatementsTable>();
-
-    Relationship<int, int> nextRs =
-        Relationship(RelationshipReference::NEXT, 1, 2);
-    Relationship<int, int> nextTRs =
-        Relationship(RelationshipReference::NEXT_T, 1, 2);
-    Relationship<int, std::string> usesS2 =
-        Relationship(RelationshipReference::USES, 2, std::string("x"));
-    Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
-    Statement s1 = Statement(1, StatementType::ASSIGN);
-    Statement s2 = Statement(2, StatementType::ASSIGN);
-
-    next->store(&nextRs);
-    nextT->store(&nextTRs);
-    usesS->store(&usesS2);
-    modS->store(&modS1);
-    statements->store(&s1);
-    statements->store(&s2);
-    affects->initAffects(storage->getStorageView());
+    QueryFacade facade = InitAffectsStorage::createSimple();
 
     Reference leftRef;
     EntityName rightEntityName;
@@ -1070,33 +1055,7 @@ TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
 }
 
 TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    AffectsTable *affects = storage->getTable<AffectsTable>();
-    NextTable *next = storage->getTable<NextTable>();
-    NextTTable *nextT = storage->getTable<NextTTable>();
-    UsesSTable *usesS = storage->getTable<UsesSTable>();
-    ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
-    StatementsTable *statements = storage->getTable<StatementsTable>();
-
-    Relationship<int, int> nextRs =
-        Relationship(RelationshipReference::NEXT, 1, 2);
-    Relationship<int, int> nextTRs =
-        Relationship(RelationshipReference::NEXT_T, 1, 2);
-    Relationship<int, std::string> usesS2 =
-        Relationship(RelationshipReference::USES, 2, std::string("x"));
-    Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
-    Statement s1 = Statement(1, StatementType::ASSIGN);
-    Statement s2 = Statement(2, StatementType::ASSIGN);
-
-    next->store(&nextRs);
-    nextT->store(&nextTRs);
-    usesS->store(&usesS2);
-    modS->store(&modS1);
-    statements->store(&s1);
-    statements->store(&s2);
-    affects->initAffects(storage->getStorageView());
+    QueryFacade facade = InitAffectsStorage::createSimple();
 
     Reference rightRef;
     EntityName leftEntityName;
@@ -1135,33 +1094,7 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
 }
 
 TEST_CASE("Affects: solveBoth for Affects(1,2) works correctly") {
-    Storage *storage = new Storage();
-    QueryFacade facade = QueryFacade(storage);
-    AffectsTable *affects = storage->getTable<AffectsTable>();
-    NextTable *next = storage->getTable<NextTable>();
-    NextTTable *nextT = storage->getTable<NextTTable>();
-    UsesSTable *usesS = storage->getTable<UsesSTable>();
-    ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
-    StatementsTable *statements = storage->getTable<StatementsTable>();
-
-    Relationship<int, int> nextRs =
-        Relationship(RelationshipReference::NEXT, 1, 2);
-    Relationship<int, int> nextTRs =
-        Relationship(RelationshipReference::NEXT_T, 1, 2);
-    Relationship<int, std::string> usesS2 =
-        Relationship(RelationshipReference::USES, 2, std::string("x"));
-    Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
-    Statement s1 = Statement(1, StatementType::ASSIGN);
-    Statement s2 = Statement(2, StatementType::ASSIGN);
-
-    next->store(&nextRs);
-    nextT->store(&nextTRs);
-    usesS->store(&usesS2);
-    modS->store(&modS1);
-    statements->store(&s1);
-    statements->store(&s2);
-    affects->initAffects(storage->getStorageView());
+    QueryFacade facade = InitAffectsStorage::createSimple();
 
     Value value1 = Value(ValueType::STMT_NUM, "1");
     Value value2 = Value(ValueType::STMT_NUM, "2");
