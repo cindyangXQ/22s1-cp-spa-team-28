@@ -73,4 +73,78 @@ AffectsTable *InitAffectsTable::initCode6() {
     for (Relationship<int, int> *ns : nextTs) {
         nextT->store(ns);
     }
+
+    Relationship<int, std::string> use1 =
+        Relationship(RelationshipReference::USES, 3, "i");
+    Relationship<int, std::string> use2 =
+        Relationship(RelationshipReference::USES, 4, "x");
+    Relationship<int, std::string> use3 =
+        Relationship(RelationshipReference::USES, 4, "y");
+    Relationship<int, std::string> use4 =
+        Relationship(RelationshipReference::USES, 6, "i");
+    Relationship<int, std::string> use5 =
+        Relationship(RelationshipReference::USES, 7, "x");
+    Relationship<int, std::string> use6 =
+        Relationship(RelationshipReference::USES, 8, "x");
+    Relationship<int, std::string> use7 =
+        Relationship(RelationshipReference::USES, 10, "z");
+    Relationship<int, std::string> use8 =
+        Relationship(RelationshipReference::USES, 10, "x");
+    Relationship<int, std::string> use9 =
+        Relationship(RelationshipReference::USES, 10, "i");
+    Relationship<int, std::string> use10 =
+        Relationship(RelationshipReference::USES, 11, "z");
+    Relationship<int, std::string> use11 =
+        Relationship(RelationshipReference::USES, 12, "x");
+    Relationship<int, std::string> use12 =
+        Relationship(RelationshipReference::USES, 12, "y");
+    Relationship<int, std::string> use13 =
+        Relationship(RelationshipReference::USES, 12, "z");
+    Relationship<int, std::string> use14 =
+        Relationship(RelationshipReference::USES, 14, "z");
+    Relationship<int, std::string> use15 =
+        Relationship(RelationshipReference::USES, 15, "v");
+    std::vector<Relationship<int, std::string> *> uses = {
+        &use1, &use2,  &use3,  &use4,  &use5,  &use6,  &use7, &use8,
+        &use9, &use10, &use11, &use12, &use13, &use14, &use15};
+    for (Relationship<int, std::string> *use : uses) {
+        usesS->store(use);
+    }
+
+    Relationship<int, std::string> mod1 =
+        Relationship(RelationshipReference::MODIFIES, 1, "x");
+    Relationship<int, std::string> mod2 =
+        Relationship(RelationshipReference::MODIFIES, 2, "i");
+    Relationship<int, std::string> mod3 =
+        Relationship(RelationshipReference::MODIFIES, 3, "i");
+    Relationship<int, std::string> mod4 =
+        Relationship(RelationshipReference::MODIFIES, 4, "x");
+    Relationship<int, std::string> mod5 =
+        Relationship(RelationshipReference::MODIFIES, 6, "i");
+    Relationship<int, std::string> mod6 =
+        Relationship(RelationshipReference::MODIFIES, 7, "x");
+    Relationship<int, std::string> mod7 =
+        Relationship(RelationshipReference::MODIFIES, 8, "x");
+    Relationship<int, std::string> mod8 =
+        Relationship(RelationshipReference::MODIFIES, 9, "z");
+    Relationship<int, std::string> mod9 =
+        Relationship(RelationshipReference::MODIFIES, 10, "z");
+    Relationship<int, std::string> mod10 =
+        Relationship(RelationshipReference::MODIFIES, 11, "y");
+    Relationship<int, std::string> mod11 =
+        Relationship(RelationshipReference::MODIFIES, 12, "x");
+    Relationship<int, std::string> mod12 =
+        Relationship(RelationshipReference::MODIFIES, 13, "z");
+    Relationship<int, std::string> mod13 =
+        Relationship(RelationshipReference::MODIFIES, 14, "v");
+    std::vector<Relationship<int, std::string> *> mods = {
+        &mod1, &mod2, &mod3,  &mod4,  &mod5,  &mod6, &mod7,
+        &mod8, &mod9, &mod10, &mod11, &mod12, &mod13};
+    for (Relationship<int, std::string> *modify : mods) {
+        modS->store(modify);
+    }
+
+    affects->initAffects(storage->getStorageView());
+
+    return affects;
 }
