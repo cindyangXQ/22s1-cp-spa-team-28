@@ -36,6 +36,7 @@ public:
 
 private:
     std::unordered_set<int> assignments;
+    std::unordered_set<int> modifiableStatements;
     NextTable *next;
     NextTTable *nextT;
     ModifiesSTable *modifiesS;
@@ -51,6 +52,7 @@ private:
 
     bool isAssignment(int stmt);
     bool areAssignments(int left, int right);
+    bool isModifiableStmt(int stmt);
     bool isAssignmentEntity(EntityName entity);
 
     std::vector<std::string> getCommonVariables(int left, int right);
