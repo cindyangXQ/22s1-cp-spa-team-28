@@ -1,3 +1,4 @@
+#include "PKB/Algorithms/ControlFlowGraph.h"
 #include "PKB/Storage/Storage.h"
 #include "PKB/Tables/RelationshipsTable/AffectsTable.h"
 #include "commons/Relationship.h"
@@ -18,6 +19,8 @@ std::pair<AffectsTable *, StorageView *> InitAffectsTable::initCode6() {
     UsesSTable *usesS = storage->getTable<UsesSTable>();
     ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
+    BranchInTable *branchIn = storage->getTable<BranchInTable>();
+    BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
 
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
@@ -41,37 +44,26 @@ std::pair<AffectsTable *, StorageView *> InitAffectsTable::initCode6() {
         statements->store(stmt);
     }
 
-    Relationship<int, int> n1 = Relationship(RelationshipReference::NEXT, 2, 3);
-    Relationship<int, int> n2 = Relationship(RelationshipReference::NEXT, 3, 4);
-    Relationship<int, int> n3 = Relationship(RelationshipReference::NEXT, 3, 7);
-    Relationship<int, int> n4 = Relationship(RelationshipReference::NEXT, 5, 6);
-    Relationship<int, int> n5 = Relationship(RelationshipReference::NEXT, 7, 9);
-    Relationship<int, int> n6 =
-        Relationship(RelationshipReference::NEXT, 8, 10);
-    std::vector<Relationship<int, int> *> nexts = {&n1, &n2, &n3,
-                                                   &n4, &n5, &n6};
-    for (Relationship<int, int> *n : nexts) {
-        next->store(n);
+    Relationship<int, int> bi1 =
+        Relationship(RelationshipReference::NEXT, 3, 4);
+    Relationship<int, int> bi2 =
+        Relationship(RelationshipReference::NEXT, 7, 8);
+    Relationship<int, int> bi3 =
+        Relationship(RelationshipReference::NEXT, 7, 9);
+    std::vector<Relationship<int, int> *> bis = {&bi1, &bi2, &bi3};
+    for (Relationship<int, int> *bi : bis) {
+        branchIn->store(bi);
     }
 
-    Relationship<int, int> ns1 =
-        Relationship(RelationshipReference::NEXT_T, 1, 2);
-    Relationship<int, int> ns2 =
-        Relationship(RelationshipReference::NEXT_T, 1, 3);
-    Relationship<int, int> ns3 =
-        Relationship(RelationshipReference::NEXT_T, 2, 5);
-    Relationship<int, int> ns4 =
-        Relationship(RelationshipReference::NEXT_T, 4, 3);
-    Relationship<int, int> ns5 =
-        Relationship(RelationshipReference::NEXT_T, 5, 5);
-    Relationship<int, int> ns6 =
-        Relationship(RelationshipReference::NEXT_T, 5, 8);
-    Relationship<int, int> ns7 =
-        Relationship(RelationshipReference::NEXT_T, 5, 12);
-    std::vector<Relationship<int, int> *> nextTs = {&ns1, &ns2, &ns3, &ns4,
-                                                    &ns5, &ns6, &ns7};
-    for (Relationship<int, int> *ns : nextTs) {
-        nextT->store(ns);
+    Relationship<int, int> bo1 =
+        Relationship(RelationshipReference::NEXT, 6, 3);
+    Relationship<int, int> bo2 =
+        Relationship(RelationshipReference::NEXT, 8, 10);
+    Relationship<int, int> bo3 =
+        Relationship(RelationshipReference::NEXT, 9, 10);
+    std::vector<Relationship<int, int> *> bos = {&bo1, &bo2, &bo3};
+    for (Relationship<int, int> *bo : bos) {
+        branchOut->store(bo);
     }
 
     Relationship<int, std::string> use1 =
@@ -144,6 +136,10 @@ std::pair<AffectsTable *, StorageView *> InitAffectsTable::initCode6() {
         modS->store(modify);
     }
 
+    ControlFlowGraph cfg =
+        ControlFlowGraph(next, nextT, storage->getStorageView());
+    cfg.populateNext();
+    cfg.populateNextT();
     affects->initAffects(storage->getStorageView());
 
     return std::make_pair(affects, storage->getStorageView());
