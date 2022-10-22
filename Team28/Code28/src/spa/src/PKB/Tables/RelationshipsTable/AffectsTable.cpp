@@ -6,7 +6,15 @@ void AffectsTable::initAffects(StorageView *storage) {
     this->modifiesS = storage->getTable<ModifiesSTable>();
     this->usesS = storage->getTable<UsesSTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
-    this->assignments = statements->getAllAssignments();
+    this->assignments =
+        statements->getStatementsSetByType(StatementType::ASSIGN);
+    std::unordered_set<int> calls =
+        statements->getStatementsSetByType(StatementType::CALL);
+    this->modifiableStatements =
+        statements->getStatementsSetByType(StatementType::READ);
+    this->modifiableStatements.insert(calls.begin(), calls.end());
+    this->modifiableStatements.insert(this->assignments.begin(),
+                                      this->assignments.end());
     this->totalLines = statements->getTableSize();
 
     for (int i : this->assignments) {
@@ -149,6 +157,10 @@ bool AffectsTable::areAssignments(int left, int right) {
            (this->assignments.count(right) > 0);
 };
 
+bool AffectsTable::isModifiableStmt(int stmt) {
+    return this->modifiableStatements.count(stmt) > 0;
+};
+
 bool AffectsTable::isAssignmentEntity(EntityName entity) {
     return (entity == EntityName::ASSIGN) || (entity == EntityName::STMT);
 };
@@ -205,11 +217,16 @@ bool AffectsTable::calculateAffectsHelper(
     if (visited[current] > 2) {
         return false;
     }
-    std::vector<std::string> remainingVariables =
-        getRemainingVariables(&commonVariables, current);
-    if (remainingVariables.size() == 0) {
-        return false;
+    std::vector<std::string> remainingVariables;
+    if (isModifiableStmt(current)) {
+        remainingVariables = getRemainingVariables(&commonVariables, current);
+        if (remainingVariables.size() == 0) {
+            return false;
+        }
+    } else {
+        remainingVariables = commonVariables;
     }
+
     for (int i : next->retrieveLeft(current)) {
         if (nextT->retrieveLeft(i).count(goal) > 0) {
             if (calculateAffectsHelper(i, goal, commonVariables, visited)) {
