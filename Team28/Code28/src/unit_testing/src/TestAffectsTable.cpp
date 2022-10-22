@@ -6,10 +6,10 @@
 
 struct InitAffectsTable {
 public:
-    AffectsTable *initCode6();
+    static std::pair<AffectsTable *, StorageView *> initCode6();
 };
 
-AffectsTable *InitAffectsTable::initCode6() {
+std::pair<AffectsTable *, StorageView *> InitAffectsTable::initCode6() {
     // Refer to Tests28/source/Affects_code6_source.txt. Ignore First
     Storage *storage = new Storage();
     AffectsTable *affects = storage->getTable<AffectsTable>();
@@ -146,5 +146,87 @@ AffectsTable *InitAffectsTable::initCode6() {
 
     affects->initAffects(storage->getStorageView());
 
-    return affects;
+    return std::make_pair(affects, storage->getStorageView());
+}
+
+TEST_CASE("AffectsTable: solveRight works correctly") {
+    std::pair<AffectsTable *, StorageView *> pair =
+        InitAffectsTable::initCode6();
+    AffectsTable *affects = pair.first;
+    StorageView *storage = pair.second;
+
+    Reference leftRef = Reference("1");
+    EntityName rightSynonym = EntityName::STMT;
+
+    // Affects(1, s)
+    std::vector<Value> output =
+        affects->solveRight(leftRef, rightSynonym, storage);
+    std::vector<Value> expectedResult = {
+        Value(ValueType::STMT_NUM, "4"), Value(ValueType::STMT_NUM, "8"),
+        Value(ValueType::STMT_NUM, "10"), Value(ValueType::STMT_NUM, "12")};
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Affects(1, a)
+    rightSynonym = EntityName::ASSIGN;
+    output = affects->solveRight(leftRef, rightSynonym, storage);
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Affects(1, p), empty
+    rightSynonym = EntityName::PROCEDURE;
+    output = affects->solveRight(leftRef, rightSynonym, storage);
+    expectedResult = {};
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("AffectsTable: solveLeft works correctly") {
+    std::pair<AffectsTable *, StorageView *> pair =
+        InitAffectsTable::initCode6();
+    AffectsTable *affects = pair.first;
+    StorageView *storage = pair.second;
+
+    Reference rightRef = Reference("10");
+    EntityName leftSynonym = EntityName::STMT;
+
+    // Affects(s, 10)
+    std::vector<Value> output =
+        affects->solveLeft(rightRef, leftSynonym, storage);
+    std::vector<Value> expectedResult = {
+        Value(ValueType::STMT_NUM, "1"), Value(ValueType::STMT_NUM, "2"),
+        Value(ValueType::STMT_NUM, "4"), Value(ValueType::STMT_NUM, "9")};
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Affects(a, 10)
+    leftSynonym = EntityName::ASSIGN;
+    output = affects->solveLeft(rightRef, leftSynonym, storage);
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Affects(p, 10), empty
+    leftSynonym = EntityName::PROCEDURE;
+    output = affects->solveLeft(rightRef, leftSynonym, storage);
+    expectedResult = {};
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
 }
