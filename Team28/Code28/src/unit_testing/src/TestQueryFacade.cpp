@@ -1150,6 +1150,79 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
                        output.begin()));
 }
 
+TEST_CASE("Affects: solveBoth for Affects(1,2) works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    AffectsTable *affects = storage->getTable<AffectsTable>();
+    NextTable *next = storage->getTable<NextTable>();
+    NextTTable *nextT = storage->getTable<NextTTable>();
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
+    ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+
+    Relationship<int, int> affectsRs =
+        Relationship(RelationshipReference::AFFECTS, 1, 2);
+    Relationship<int, int> nextRs =
+        Relationship(RelationshipReference::NEXT, 1, 2);
+    Relationship<int, int> nextTRs =
+        Relationship(RelationshipReference::NEXT_T, 1, 2);
+    Relationship<int, std::string> usesS1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> usesS2 =
+        Relationship(RelationshipReference::USES, 2, std::string("x"));
+    Relationship<int, std::string> modS1 =
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("y"));
+    Statement s1 = Statement(1, StatementType::ASSIGN);
+    Statement s2 = Statement(2, StatementType::ASSIGN);
+
+    affects->store(&affectsRs);
+    next->store(&nextRs);
+    nextT->store(&nextTRs);
+    usesS->store(&usesS1);
+    usesS->store(&usesS2);
+    modS->store(&modS1);
+    statements->store(&s1);
+    statements->store(&s2);
+
+    Value value1 = Value(ValueType::STMT_NUM, "1");
+    Value value2 = Value(ValueType::STMT_NUM, "2");
+
+    EntityName leftEntityName;
+    EntityName rightEntityName;
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // SolveLeft(Affects, Assign, Assign) for Affects(1,2) returns
+    // {('1','2')}
+    leftEntityName = EntityName::ASSIGN;
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {std::make_pair(value1, value2)};
+    output = facade.solveBoth(RelationshipReference::AFFECTS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveBoth(Affects, Assign, Print) for Affects(1,2) returns {}
+    leftEntityName = EntityName::ASSIGN;
+    rightEntityName = EntityName::PRINT;
+    output = facade.solveBoth(RelationshipReference::AFFECTS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveBoth(Affects, Procedure, Assign) for Affects(1,2) returns {}
+    leftEntityName = EntityName::PROCEDURE;
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::AFFECTS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
 TEST_CASE("getAssign/getAssignExact returns correct results") {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
