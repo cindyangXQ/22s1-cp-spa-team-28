@@ -1192,7 +1192,7 @@ TEST_CASE("Affects: solveBoth for Affects(1,2) works correctly") {
     std::vector<std::pair<Value, Value>> expectedResult;
     std::vector<std::pair<Value, Value>> output;
 
-    // SolveLeft(Affects, Assign, Assign) for Affects(1,2) returns
+    // SolveBoth(Affects, Assign, Assign) for Affects(1,2) returns
     // {('1','2')}
     leftEntityName = EntityName::ASSIGN;
     rightEntityName = EntityName::ASSIGN;
