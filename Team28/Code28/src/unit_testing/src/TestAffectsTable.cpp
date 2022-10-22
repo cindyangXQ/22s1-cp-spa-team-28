@@ -149,6 +149,18 @@ std::pair<AffectsTable *, StorageView *> InitAffectsTable::initCode6() {
     return std::make_pair(affects, storage->getStorageView());
 }
 
+TEST_CASE("AffectsTable: validate works correctly") {
+    std::pair<AffectsTable *, StorageView *> pair =
+        InitAffectsTable::initCode6();
+    AffectsTable *affects = pair.first;
+    StorageView *storage = pair.second;
+
+    Reference leftRef = Reference("2");
+    Reference rightRef = Reference("6");
+
+    REQUIRE(affects->validate(leftRef, rightRef));
+}
+
 TEST_CASE("AffectsTable: solveRight works correctly") {
     std::pair<AffectsTable *, StorageView *> pair =
         InitAffectsTable::initCode6();
