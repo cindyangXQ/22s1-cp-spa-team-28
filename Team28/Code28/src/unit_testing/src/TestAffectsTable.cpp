@@ -242,3 +242,76 @@ TEST_CASE("AffectsTable: solveLeft works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("AffectsTable:solveBoth works correctly") {
+    std::pair<AffectsTable *, StorageView *> pair =
+        InitAffectsTable::initCode6();
+    AffectsTable *affects = pair.first;
+    StorageView *storage = pair.second;
+
+    EntityName leftSynonym = EntityName::STMT;
+    EntityName rightSynonym = EntityName::STMT;
+
+    // Affects(s1, s2)
+    std::vector<std::pair<Value, Value>> output =
+        affects->solveBoth(leftSynonym, rightSynonym, storage);
+    std::vector<std::pair<Value, Value>> expectedResult = {
+        std::make_pair(Value(ValueType::STMT_NUM, "2"),
+                       Value(ValueType::STMT_NUM, "6")),
+        std::make_pair(Value(ValueType::STMT_NUM, "4"),
+                       Value(ValueType::STMT_NUM, "8")),
+        std::make_pair(Value(ValueType::STMT_NUM, "4"),
+                       Value(ValueType::STMT_NUM, "10")),
+        std::make_pair(Value(ValueType::STMT_NUM, "6"),
+                       Value(ValueType::STMT_NUM, "6")),
+        std::make_pair(Value(ValueType::STMT_NUM, "1"),
+                       Value(ValueType::STMT_NUM, "4")),
+        std::make_pair(Value(ValueType::STMT_NUM, "1"),
+                       Value(ValueType::STMT_NUM, "8")),
+        std::make_pair(Value(ValueType::STMT_NUM, "1"),
+                       Value(ValueType::STMT_NUM, "10")),
+        std::make_pair(Value(ValueType::STMT_NUM, "1"),
+                       Value(ValueType::STMT_NUM, "12")),
+        std::make_pair(Value(ValueType::STMT_NUM, "2"),
+                       Value(ValueType::STMT_NUM, "10")),
+        std::make_pair(Value(ValueType::STMT_NUM, "9"),
+                       Value(ValueType::STMT_NUM, "10")),
+    };
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Affects(a1, a2), equiv. to Affects(s1, s2)
+    leftSynonym = EntityName::ASSIGN;
+    rightSynonym = EntityName::ASSIGN;
+    output = affects->solveBoth(leftSynonym, rightSynonym, storage);
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Affects(a1, p), empty
+    leftSynonym = EntityName::ASSIGN;
+    rightSynonym = EntityName::PROCEDURE;
+    output = affects->solveBoth(leftSynonym, rightSynonym, storage);
+    expectedResult = {};
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Affects(p1, p2), empty
+    leftSynonym = EntityName::PROCEDURE;
+    rightSynonym = EntityName::PROCEDURE;
+    output = affects->solveBoth(leftSynonym, rightSynonym, storage);
+    expectedResult = {};
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
