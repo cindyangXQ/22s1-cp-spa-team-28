@@ -970,6 +970,7 @@ TEST_CASE("Affects: Validate for Affects(1,2) works correctly") {
     NextTTable *nextT = storage->getTable<NextTTable>();
     UsesSTable *usesS = storage->getTable<UsesSTable>();
     ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
 
     Relationship<int, int> affectsRs =
         Relationship(RelationshipReference::AFFECTS, 1, 2);
@@ -983,6 +984,8 @@ TEST_CASE("Affects: Validate for Affects(1,2) works correctly") {
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
         Relationship(RelationshipReference::MODIFIES, 3, std::string("y"));
+    Statement s1 = Statement(1, StatementType::ASSIGN);
+    Statement s2 = Statement(2, StatementType::ASSIGN);
 
     affects->store(&affectsRs);
     next->store(&nextRs);
@@ -990,6 +993,8 @@ TEST_CASE("Affects: Validate for Affects(1,2) works correctly") {
     usesS->store(&usesS1);
     usesS->store(&usesS2);
     modS->store(&modS1);
+    statements->store(&s1);
+    statements->store(&s2);
 
     Reference leftRef = Reference("1");
     Reference rightRef = Reference("2");
@@ -1013,6 +1018,7 @@ TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
     NextTTable *nextT = storage->getTable<NextTTable>();
     UsesSTable *usesS = storage->getTable<UsesSTable>();
     ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
 
     Relationship<int, int> affectsRs =
         Relationship(RelationshipReference::AFFECTS, 1, 2);
@@ -1026,6 +1032,8 @@ TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
         Relationship(RelationshipReference::MODIFIES, 3, std::string("y"));
+    Statement s1 = Statement(1, StatementType::ASSIGN);
+    Statement s2 = Statement(2, StatementType::ASSIGN);
 
     affects->store(&affectsRs);
     next->store(&nextRs);
@@ -1033,6 +1041,8 @@ TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
     usesS->store(&usesS1);
     usesS->store(&usesS2);
     modS->store(&modS1);
+    statements->store(&s1);
+    statements->store(&s2);
 
     Reference leftRef;
     EntityName rightEntityName;
@@ -1046,6 +1056,7 @@ TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
     expectedResult = {Value(ValueType::STMT_NUM, "2")};
     output = facade.solveRight(RelationshipReference::AFFECTS, leftRef,
                                rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
@@ -1054,6 +1065,7 @@ TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
     rightEntityName = EntityName::ASSIGN;
     output = facade.solveRight(RelationshipReference::AFFECTS, leftRef,
                                rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
@@ -1063,6 +1075,7 @@ TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
     expectedResult = {};
     output = facade.solveRight(RelationshipReference::AFFECTS, leftRef,
                                rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
@@ -1075,6 +1088,7 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
     NextTTable *nextT = storage->getTable<NextTTable>();
     UsesSTable *usesS = storage->getTable<UsesSTable>();
     ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
 
     Relationship<int, int> affectsRs =
         Relationship(RelationshipReference::AFFECTS, 1, 2);
@@ -1088,6 +1102,8 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
         Relationship(RelationshipReference::MODIFIES, 3, std::string("y"));
+    Statement s1 = Statement(1, StatementType::ASSIGN);
+    Statement s2 = Statement(2, StatementType::ASSIGN);
 
     affects->store(&affectsRs);
     next->store(&nextRs);
@@ -1095,6 +1111,8 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
     usesS->store(&usesS1);
     usesS->store(&usesS2);
     modS->store(&modS1);
+    statements->store(&s1);
+    statements->store(&s2);
 
     Reference rightRef;
     EntityName leftEntityName;
@@ -1108,6 +1126,7 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
     expectedResult = {Value(ValueType::STMT_NUM, "1")};
     output = facade.solveLeft(RelationshipReference::AFFECTS, rightRef,
                               leftEntityName);
+    REQUIRE(output.size() == expectedResult.size());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
@@ -1116,6 +1135,7 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
     leftEntityName = EntityName::ASSIGN;
     output = facade.solveLeft(RelationshipReference::AFFECTS, rightRef,
                               leftEntityName);
+    REQUIRE(output.size() == expectedResult.size());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
@@ -1125,6 +1145,7 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
     expectedResult = {};
     output = facade.solveLeft(RelationshipReference::AFFECTS, rightRef,
                               leftEntityName);
+    REQUIRE(output.size() == expectedResult.size());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
