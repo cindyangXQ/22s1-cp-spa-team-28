@@ -315,3 +315,21 @@ TEST_CASE("AffectsTable:solveBoth works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("AffectsTable: solveBothReflexive works correctly") {
+    std::pair<AffectsTable *, StorageView *> pair =
+        InitAffectsTable::initCode6();
+    AffectsTable *affects = pair.first;
+    StorageView *storage = pair.second;
+
+    EntityName synonym = EntityName::STMT;
+
+    // Affects(s, s)
+    std::vector<Value> output = affects->solveBothReflexive(synonym, storage);
+    std::vector<Value> expectedResult = {Value(ValueType::STMT_NUM, "6")};
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
