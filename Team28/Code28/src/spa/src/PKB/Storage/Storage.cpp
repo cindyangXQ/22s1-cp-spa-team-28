@@ -73,6 +73,9 @@ void Storage::initStorageView() {
         this->getTable<BranchOutTable>());
     this->storageView->setTable<NextTable>(this->getTable<NextTable>());
     this->storageView->setTable<NextTTable>(this->getTable<NextTTable>());
+    this->storageView->setTable<ModifiesSTable>(
+        this->getTable<ModifiesSTable>());
+    this->storageView->setTable<UsesSTable>(this->getTable<UsesSTable>());
 };
 
 Solvable *Storage::getRsTable(RelationshipReference rsRef,
