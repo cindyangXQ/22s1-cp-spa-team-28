@@ -34,6 +34,9 @@ public:
                                                    EntityName rightSynonym,
                                                    StorageView *storage);
 
+    std::vector<Value> solveBothReflexive(EntityName synonym,
+                                          StorageView *storage);
+
 private:
     std::unordered_set<int> assignments;
     std::unordered_set<int> modifiableStatements;

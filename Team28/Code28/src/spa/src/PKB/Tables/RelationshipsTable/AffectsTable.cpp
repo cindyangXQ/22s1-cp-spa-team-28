@@ -148,6 +148,21 @@ AffectsTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
     return result;
 }
 
+std::vector<Value> AffectsTable::solveBothReflexive(EntityName synonym,
+                                                    StorageView *storage) {
+    if (!isAssignmentEntity(synonym)) {
+        return std::vector<Value>();
+    }
+    std::vector<Value> result;
+    for (int stmt : this->assignments) {
+        if (checkAffects(stmt, stmt)) {
+            Value stmtValue = Value(ValueType::STMT_NUM, toString(stmt));
+            result.push_back(stmtValue);
+        }
+    }
+    return result;
+}
+
 bool AffectsTable::isAssignment(int stmt) {
     return this->assignments.count(stmt) > 0;
 };
