@@ -332,4 +332,23 @@ TEST_CASE("AffectsTable: solveBothReflexive works correctly") {
     REQUIRE(output.size() == expectedResult.size());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
+
+    // Affects(a, a)
+    synonym = EntityName::ASSIGN;
+    output = affects->solveBothReflexive(synonym, storage);
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Affects(p, p), empty
+    synonym = EntityName::PROCEDURE;
+    output = affects->solveBothReflexive(synonym, storage);
+    expectedResult = {};
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
 }
