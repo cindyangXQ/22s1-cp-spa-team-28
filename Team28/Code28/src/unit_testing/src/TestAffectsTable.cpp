@@ -129,9 +129,19 @@ std::pair<AffectsTable *, StorageView *> InitAffectsTable::initCode6() {
         Relationship(RelationshipReference::MODIFIES, 13, std::string("z"));
     Relationship<int, std::string> mod13 =
         Relationship(RelationshipReference::MODIFIES, 14, std::string("v"));
+    Relationship<int, std::string> mod14 =
+        Relationship(RelationshipReference::MODIFIES, 5, std::string("z"));
+    Relationship<int, std::string> mod15 =
+        Relationship(RelationshipReference::MODIFIES, 5, std::string("v"));
+    Relationship<int, std::string> mod16 =
+        Relationship(RelationshipReference::MODIFIES, 7, std::string("z"));
+    Relationship<int, std::string> mod17 =
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
+    Relationship<int, std::string> mod18 =
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("y"));
     std::vector<Relationship<int, std::string> *> mods = {
-        &mod1, &mod2, &mod3,  &mod4,  &mod5,  &mod6, &mod7,
-        &mod8, &mod9, &mod10, &mod11, &mod12, &mod13};
+        &mod1,  &mod2,  &mod3,  &mod4,  &mod5,  &mod6,  &mod7,  &mod8,  &mod9,
+        &mod10, &mod11, &mod12, &mod13, &mod14, &mod15, &mod16, &mod17, &mod18};
     for (Relationship<int, std::string> *modify : mods) {
         modS->store(modify);
     }
