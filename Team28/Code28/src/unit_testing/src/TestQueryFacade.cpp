@@ -1185,6 +1185,7 @@ TEST_CASE("Affects: solveBoth for Affects(1,2) works correctly") {
     // SolveBoth(Affects, Assign, Print) for Affects(1,2) returns {}
     leftEntityName = EntityName::ASSIGN;
     rightEntityName = EntityName::PRINT;
+    expectedResult = {};
     output = facade.solveBoth(RelationshipReference::AFFECTS, leftEntityName,
                               rightEntityName);
     REQUIRE(output.size() == expectedResult.size());
