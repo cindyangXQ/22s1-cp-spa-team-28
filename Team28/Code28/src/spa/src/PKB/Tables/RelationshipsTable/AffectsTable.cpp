@@ -18,21 +18,41 @@ void AffectsTable::initAffects(StorageView *storage) {
 }
 
 bool AffectsTable::validate(Reference leftRef, Reference rightRef) {
-    // TODO: handle wildcard
-    if (leftRef.isWildcard() || rightRef.isWildcard()) {
+    if (leftRef.isWildcard() && rightRef.isWildcard()) {
+
+        std::cout << "[DEBUG] both wildcards" << std::endl;
+        for (int left : this->assignments) {
+            for (int right : this->assignments) {
+                if (checkAffects(left, right)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
-    // if (leftRef.isWildcard() && rightRef.isWildcard()) {
-    //     return !leftToRightsMap.empty();
-    // }
-    // if (leftRef.isWildcard()) {
-    //     int right = convertToType<int>(rightRef.getValueString());
-    //     return !rightToLeftsMap[right].empty();
-    // }
-    // if (rightRef.isWildcard()) {
-    //     int left = convertToType<int>(leftRef.getValueString());
-    //     return !leftToRightsMap[left].empty();
-    // }
+    if (leftRef.isWildcard()) {
+        std::cout << "[DEBUG] left wildcard" << std::endl;
+        int right = convertToType<int>(rightRef.getValueString());
+        for (int left : this->assignments) {
+            std::cout << "[DEBUG] trying" << toString(left) << toString(right)
+                      << std::endl;
+            if (checkAffects(left, right)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    if (rightRef.isWildcard()) {
+        std::cout << "[DEBUG] right wildcard" << std::endl;
+        int left = convertToType<int>(leftRef.getValueString());
+        for (int right : this->assignments) {
+            if (checkAffects(left, right)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    std::cout << "[DEBUG] no wildcard" << std::endl;
     int left = convertToType<int>(leftRef.getValueString());
     int right = convertToType<int>(rightRef.getValueString());
     return checkAffects(left, right);
@@ -114,18 +134,23 @@ bool AffectsTable::checkAffects(int left, int right) {
     if (this->matrix[curr] == Status::UNKNOWN) {
         calculateAffects(left, right);
     }
+    std::cout << "[DEBUG] checkAffects" << toString(left) << toString(right)
+              << std::endl;
+
     return this->matrix[curr] == Status::TRUE;
 };
 
 void AffectsTable::calculateAffects(int left, int right) {
     if (nextT->retrieveLeft(left).count(right) == 0) {
         // no path from left to right
+        std::cout << "[DEBUG] no path" << std::endl;
         this->matrix[std::make_pair(left, right)] = Status::FALSE;
         return;
     }
     std::vector<std::string> commonVariables = getCommonVariables(left, right);
     if (commonVariables.size() == 0) {
         // no common variable
+        std::cout << "[DEBUG] no common variable" << std::endl;
         this->matrix[std::make_pair(left, right)] = Status::FALSE;
         return;
     }
@@ -134,6 +159,7 @@ void AffectsTable::calculateAffects(int left, int right) {
     for (int i : next->retrieveLeft(left)) {
         if (nextT->retrieveLeft(i).count(right) > 0) {
             if (calculateAffectsHelper(i, right, commonVariables, visited)) {
+                std::cout << "[DEBUG] affects is true" << std::endl;
                 this->matrix[std::make_pair(left, right)] = Status::TRUE;
                 return;
             } else {
@@ -171,7 +197,9 @@ bool AffectsTable::calculateAffectsHelper(
 std::vector<std::string> AffectsTable::getCommonVariables(int left, int right) {
     std::unordered_set<std::string> modifiedV =
         this->modifiesS->retrieveLeft(left);
+    std::cout << "[DEBUG] modifies size" << modifiedV.size() << std::endl;
     std::unordered_set<std::string> usedV = this->usesS->retrieveLeft(right);
+    std::cout << "[DEBUG] uses size" << usedV.size() << std::endl;
     std::vector<std::string> commonV;
     for (std::string variable : modifiedV) {
         if (usedV.count(variable) > 0) {

@@ -979,7 +979,7 @@ TEST_CASE("Affects: Validate for Affects(1,2) works correctly") {
     Relationship<int, std::string> usesS2 =
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
+        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
@@ -1021,7 +1021,7 @@ TEST_CASE("Affects: solveRight for Affects(1,2) works correctly") {
     Relationship<int, std::string> usesS2 =
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
+        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
@@ -1086,7 +1086,7 @@ TEST_CASE("Affects: solveLeft for Affects(1,2) works correctly") {
     Relationship<int, std::string> usesS2 =
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
+        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
@@ -1151,7 +1151,7 @@ TEST_CASE("Affects: solveBoth for Affects(1,2) works correctly") {
     Relationship<int, std::string> usesS2 =
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
-        Relationship(RelationshipReference::MODIFIES, 3, std::string("x"));
+        Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
