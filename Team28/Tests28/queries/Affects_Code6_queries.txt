@@ -27,3 +27,4 @@ Select s such that Affects(1, s) Affects(s, 8)
 stmt s1, s2;
 Select <s1, s2> such that Affects(s1, s2)
 2 6,4 8,4 10,6 6,1 4,1 8,1 10,1 12,2 10,9 10,6 10,8 10,8 12,10 11,10 12,11 12,13 14,4 4,4 12
+5000
