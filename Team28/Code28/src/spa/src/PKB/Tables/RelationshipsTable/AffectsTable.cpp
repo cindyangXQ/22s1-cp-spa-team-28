@@ -74,12 +74,12 @@ std::vector<Value> AffectsTable::solveRight(Reference leftRef,
     if (!isAssignmentEntity(rightSynonym)) {
         return std::vector<Value>();
     }
-    std::vector<Value> result;
+    std::unordered_set<Value> intermediateResult;
     if (leftRef.isWildcard()) {
         for (int left : this->assignments) {
             for (int right : this->assignments) {
                 if (checkAffects(left, right)) {
-                    result.push_back(
+                    intermediateResult.insert(
                         Value(ValueType::STMT_NUM, toString(right)));
                 }
             }
@@ -91,11 +91,13 @@ std::vector<Value> AffectsTable::solveRight(Reference leftRef,
         }
         for (int right : this->assignments) {
             if (checkAffects(left, right)) {
-                result.push_back(Value(ValueType::STMT_NUM, toString(right)));
+                intermediateResult.insert(
+                    Value(ValueType::STMT_NUM, toString(right)));
             }
         }
     }
-
+    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
+                                                   intermediateResult.end());
     return result;
 }
 
@@ -105,12 +107,12 @@ std::vector<Value> AffectsTable::solveLeft(Reference rightRef,
     if (!isAssignmentEntity(leftSynonym)) {
         return std::vector<Value>();
     }
-    std::vector<Value> result;
+    std::unordered_set<Value> intermediateResult;
     if (rightRef.isWildcard()) {
         for (int left : this->assignments) {
             for (int right : this->assignments) {
                 if (checkAffects(left, right)) {
-                    result.push_back(
+                    intermediateResult.insert(
                         Value(ValueType::STMT_NUM, toString(left)));
                 }
             }
@@ -122,10 +124,13 @@ std::vector<Value> AffectsTable::solveLeft(Reference rightRef,
         }
         for (int left : this->assignments) {
             if (checkAffects(left, right)) {
-                result.push_back(Value(ValueType::STMT_NUM, toString(left)));
+                intermediateResult.insert(
+                    Value(ValueType::STMT_NUM, toString(left)));
             }
         }
     }
+    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
+                                                   intermediateResult.end());
     return result;
 };
 
