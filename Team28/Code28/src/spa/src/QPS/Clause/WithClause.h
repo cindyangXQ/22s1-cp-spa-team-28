@@ -1,19 +1,22 @@
 #pragma once
 
-#include "../../commons/Reference.h"
+#include "QueryClause.h"
 
 /*
  * Class encapsulating the logic of the with clause.
  */
-class WithClause {
+class WithClause : public QueryClause {
 public:
     WithClause(){};
-    WithClause(Reference refLeft, Reference refRight)
-        : refLeft(refLeft), refRight(refRight){};
     Reference getRefLeft();
     Reference getRefRight();
+    void parse(std::smatch matches, std::vector<Synonym> syns);
+    bool validate();
+    ClauseResult evaluate(QueryFacade *queryFacade);
 
 private:
     Reference refLeft;
     Reference refRight;
+    ClauseResult handleBothSynonyms(QueryFacade *queryFacade);
+    ClauseResult handleOneSynonym(QueryFacade *queryFacade);
 };

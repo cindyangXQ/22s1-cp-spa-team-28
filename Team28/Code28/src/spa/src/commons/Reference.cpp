@@ -76,3 +76,34 @@ Value Reference::getValue() { return this->value; }
 ValueType Reference::getValueType() { return this->value.getValueType(); }
 
 std::string Reference::getValueString() { return this->value.getValue(); }
+
+Reference Reference::getReference(std::string input,
+                                  std::vector<Synonym> syns) {
+
+    if (input[0] == '\"' && input.back() == '\"') {
+        // Remove " at the start and end
+        input = input.substr(1, input.size() - 2);
+        input = Utils::trimSpaces(input);
+        if (!std::regex_match(input, NAME_REGEX)) {
+            throw SyntaxError("Invalid reference format");
+        }
+        return Reference(input);
+    }
+    if (std::regex_match(input, INT_REGEX) ||
+        std::regex_match(input, WILDCARD_REGEX)) {
+        return Reference(input);
+    } else if (std::regex_match(input, SYN_REGEX)) {
+        Synonym synonym = Synonym::getSynonym(input, syns);
+        return Reference(synonym);
+    } else if (std::regex_match(input, ATTR_REF_REGEX)) {
+        std::smatch matches;
+        std::regex_match(input, matches, ATTR_REF_REGEX);
+        Synonym synonym = Synonym::getSynonym(matches[1], syns);
+        if (!ENTITY_ATTR_MAP.count(matches[2])) {
+            throw SyntaxError("Invalid attribute name");
+        }
+        EntityAttribute attr = ENTITY_ATTR_MAP.find(matches[2])->second;
+        return Reference(synonym, attr);
+    }
+    throw SyntaxError("Invalid reference format");
+}

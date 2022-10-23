@@ -1,32 +1,46 @@
 #pragma once
 
 #include "../../PKB/Facades/QueryFacade.h"
+#include "../Clause/PatternClause.h"
+#include "../Clause/SelectClause.h"
+#include "../Clause/SuchThatClause.h"
+#include "../Clause/WithClause.h"
 #include "../Parser/SolvableQuery.h"
 #include "../Utils.h"
-#include "PatternEvaluator.h"
 #include "QueryResult.h"
-#include "SuchThatEvaluator.h"
-#include "WithClauseEvaluator.h"
 #include <string>
 
 class QueryEvaluator {
 private:
     QueryFacade *queryFacade;
-    SuchThatEvaluator suchThatEvaluator;
-    PatternEvaluator patternEvaluator;
-    WithClauseEvaluator withEvaluator;
 
 public:
     explicit QueryEvaluator(QueryFacade *queryFacade)
-        : queryFacade(queryFacade),
-          suchThatEvaluator(SuchThatEvaluator(queryFacade)),
-          patternEvaluator(PatternEvaluator(queryFacade)),
-          withEvaluator(WithClauseEvaluator(queryFacade)){};
+        : queryFacade(queryFacade){};
 
     /*
      * Evaluate a query after it is parsed.
      */
     QueryResult evaluate(SolvableQuery *solvableQ);
+
+    /*
+     * Evaluate a query after it is parsed.
+     */
+    template <typename QueryClass>
+    void evaluateClause(
+        std::unordered_map<std::type_index, std::vector<QueryClause *>> clauses,
+        std::vector<ClauseResult> *clauseResultList) {
+        if (clauses.count(typeid(QueryClass))) {
+            std::vector<QueryClause *> queryClassClauses =
+                clauses.at(typeid(QueryClass));
+            for (size_t i = 0; i < queryClassClauses.size(); i++) {
+                QueryClass *queryClass =
+                    static_cast<QueryClass *>(queryClassClauses[i]);
+                ClauseResult result = queryClass->evaluate(queryFacade);
+                clauseResultList->push_back(ClauseResult(true));
+            }
+        }
+    };
 
     /*
      * Return the final results after all the clauses are evaluated.
