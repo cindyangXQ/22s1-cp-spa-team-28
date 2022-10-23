@@ -206,6 +206,11 @@ TEST_CASE("AffectsTable: validate works correctly") {
     REQUIRE(affects->validate(Reference("1"), Reference("12")));
     REQUIRE(affects->validate(Reference("2"), Reference("10")));
     REQUIRE(affects->validate(Reference("9"), Reference("10")));
+    REQUIRE(affects->validate(Reference("_"), Reference("_")));
+    REQUIRE(affects->validate(Reference("2"), Reference("_")));
+    REQUIRE(affects->validate(Reference("_"), Reference("10")));
+    REQUIRE(!affects->validate(Reference("_"), Reference("15")));
+    REQUIRE(!affects->validate(Reference("15"), Reference("_")));
 }
 
 TEST_CASE("AffectsTable: solveRight works correctly") {
@@ -233,6 +238,21 @@ TEST_CASE("AffectsTable: solveRight works correctly") {
     // Affects(1, a)
     rightSynonym = EntityName::ASSIGN;
     output = affects->solveRight(leftRef, rightSynonym, storage);
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Affects(_, a)
+    leftRef = Reference("_");
+    rightSynonym = EntityName::ASSIGN;
+    output = affects->solveRight(leftRef, rightSynonym, storage);
+    expectedResult = {
+        Value(ValueType::STMT_NUM, "4"),  Value(ValueType::STMT_NUM, "6"),
+        Value(ValueType::STMT_NUM, "8"),  Value(ValueType::STMT_NUM, "10"),
+        Value(ValueType::STMT_NUM, "11"), Value(ValueType::STMT_NUM, "12"),
+        Value(ValueType::STMT_NUM, "14")};
     std::sort(output.begin(), output.end());
     std::sort(expectedResult.begin(), expectedResult.end());
     REQUIRE(output.size() == expectedResult.size());
@@ -276,6 +296,22 @@ TEST_CASE("AffectsTable: solveLeft works correctly") {
     // Affects(a, 10)
     leftSynonym = EntityName::ASSIGN;
     output = affects->solveLeft(rightRef, leftSynonym, storage);
+    std::sort(output.begin(), output.end());
+    std::sort(expectedResult.begin(), expectedResult.end());
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Affects(a, _)
+    leftSynonym = EntityName::ASSIGN;
+    rightRef = Reference("_");
+    output = affects->solveLeft(rightRef, leftSynonym, storage);
+    expectedResult = {
+        Value(ValueType::STMT_NUM, "1"),  Value(ValueType::STMT_NUM, "2"),
+        Value(ValueType::STMT_NUM, "4"),  Value(ValueType::STMT_NUM, "6"),
+        Value(ValueType::STMT_NUM, "8"),  Value(ValueType::STMT_NUM, "9"),
+        Value(ValueType::STMT_NUM, "10"), Value(ValueType::STMT_NUM, "11"),
+        Value(ValueType::STMT_NUM, "13")};
     std::sort(output.begin(), output.end());
     std::sort(expectedResult.begin(), expectedResult.end());
     REQUIRE(output.size() == expectedResult.size());
