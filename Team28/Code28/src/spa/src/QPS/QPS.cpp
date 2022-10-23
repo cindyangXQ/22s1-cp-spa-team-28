@@ -11,10 +11,8 @@ void QPS::evaluate(std::string query, std::list<std::string> &results) {
             results.push_back(result[i]);
         }
     } catch (SyntaxError e) {
-        std::cout << e.what() << std::endl;
         results.push_back("SyntaxError");
     } catch (SemanticError e) {
-        std::cout << e.what() << std::endl;
         results.push_back("SemanticError");
     }
 }
