@@ -185,8 +185,6 @@ bool AffectsTable::checkAffects(int left, int right) {
     if (this->matrix[curr] == Status::UNKNOWN) {
         calculateAffects(left, right);
     }
-    std::cout << "[DEBUG] checkAffects" << toString(left) << toString(right)
-              << std::endl;
 
     return this->matrix[curr] == Status::TRUE;
 };
@@ -194,25 +192,20 @@ bool AffectsTable::checkAffects(int left, int right) {
 void AffectsTable::calculateAffects(int left, int right) {
     if (nextT->retrieveLeft(left).count(right) == 0) {
         // no path from left to right
-        std::cout << "[DEBUG] no path" << std::endl;
         this->matrix[std::make_pair(left, right)] = Status::FALSE;
         return;
     }
     std::vector<std::string> commonVariables = getCommonVariables(left, right);
     if (commonVariables.size() == 0) {
         // no common variable
-        std::cout << "[DEBUG] no common variable" << std::endl;
         this->matrix[std::make_pair(left, right)] = Status::FALSE;
         return;
     }
     std::map<int, int> visited;
     visited[left] = 1;
     for (int i : next->retrieveLeft(left)) {
-        std::cout << "[DEBUG] next " << toString(i) << std::endl;
         if (i == right || nextT->retrieveLeft(i).count(right) > 0) {
-            std::cout << "[DEBUG] has CF path " << toString(i) << std::endl;
             if (calculateAffectsHelper(i, right, commonVariables, visited)) {
-                std::cout << "[DEBUG] affects is true" << std::endl;
                 this->matrix[std::make_pair(left, right)] = Status::TRUE;
                 return;
             } else {
@@ -243,12 +236,13 @@ bool AffectsTable::calculateAffectsHelper(
     }
 
     for (int i : next->retrieveLeft(current)) {
-        if (nextT->retrieveLeft(i).count(goal) > 0) {
+        if (nextT->retrieveLeft(i).count(goal) > 0 || i == goal) {
             if (calculateAffectsHelper(i, goal, commonVariables, visited)) {
                 return true;
             }
         }
     }
+
     return false;
 };
 
@@ -272,7 +266,7 @@ AffectsTable::getRemainingVariables(std::vector<std::string> *variables,
         this->modifiesS->retrieveLeft(stmt);
     std::vector<std::string> remainingV;
     for (std::string variable : *variables) {
-        if (modifiedV.count(variable) > 0) {
+        if (modifiedV.count(variable) == 0) {
             remainingV.push_back(variable);
         }
     }
