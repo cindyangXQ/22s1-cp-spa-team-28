@@ -20,7 +20,7 @@ Select s such that Affects(s, s)
 5000
 5 - multiple Affects
 stmt s;
-Select s such that Affects(1, s) Affects(s, 8)
+Select s such that Affects(1, s) and Affects(s, 8)
 4
 5000
 6 - solveBoth for Affects(s1, s2)
