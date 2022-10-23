@@ -34,6 +34,10 @@ public:
                                                    EntityName rightSynonym,
                                                    StorageView *storage);
 
+    /*
+     * Returns list of possible (Value, Value) that a reflexive pair of synonyms
+     * can be.
+     */
     std::vector<Value> solveBothReflexive(EntityName synonym,
                                           StorageView *storage);
 
