@@ -1,9 +1,3 @@
-procedure First {
-    read x;
-    read z;
-    call Second;
-}
-
 procedure Second {
     x = 0;
     i = 5;

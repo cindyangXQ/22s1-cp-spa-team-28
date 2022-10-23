@@ -9,9 +9,9 @@ Select s such that Affects(s, 10)
 1, 2, 4, 6, 8, 9
 5000
 3 - validate for Affects(2, 6) is true
-stmt s;
-Select s such that Affects(s, 6) with s.stmt#  = 2
-2
+
+Select BOOLEAN such that Affects(2, 6)
+TRUE
 5000
 4 - reflexic Affects
 stmt s;
