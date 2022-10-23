@@ -79,8 +79,8 @@ const RelationshipArgMap RELATIONSHIP_LEFT_ARG_MAP = {
     {RelationshipReference::NEXT_T,
      {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
       EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::AFFECTS, {EntityName::ASSIGN}},
-    {RelationshipReference::AFFECTS_T, {EntityName::ASSIGN}}};
+    {RelationshipReference::AFFECTS, {EntityName::ASSIGN, EntityName::STMT}},
+    {RelationshipReference::AFFECTS_T, {EntityName::ASSIGN, EntityName::STMT}}};
 
 // map relationship type to valid right arguments
 const RelationshipArgMap RELATIONSHIP_RIGHT_ARG_MAP = {
@@ -106,8 +106,8 @@ const RelationshipArgMap RELATIONSHIP_RIGHT_ARG_MAP = {
     {RelationshipReference::NEXT_T,
      {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
       EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::AFFECTS, {EntityName::ASSIGN}},
-    {RelationshipReference::AFFECTS_T, {EntityName::ASSIGN}}};
+    {RelationshipReference::AFFECTS, {EntityName::ASSIGN, EntityName::STMT}},
+    {RelationshipReference::AFFECTS_T, {EntityName::ASSIGN, EntityName::STMT}}};
 
 // map relationship type to valid left reference
 const RelationshipRefMap RELATIONSHIP_LEFT_REF_MAP = {
