@@ -6,7 +6,7 @@ Select s such that Affects(1, s)
 2 - solveLeft for Affects (s, 10)
 stmt s;
 Select s such that Affects(s, 10)
-1, 2, 4, 9
+1, 2, 4, 6, 8, 9
 5000
 3 - validate for Affects(2, 6) is true
 stmt s;
@@ -16,7 +16,7 @@ Select s such that Affects(s, 6) with s.stmt#  = 2
 4 - reflexic Affects
 stmt s;
 Select s such that Affects(s, s)
-6
+4, 6
 5000
 5 - multiple Affects
 stmt s;
@@ -26,4 +26,4 @@ Select s such that Affects(1, s) Affects(s, 8)
 6 - solveBoth for Affects(s1, s2)
 stmt s1, s2;
 Select <s1, s2> such that Affects(s1, s2)
-2 6,4 8,4 10,6 6,1 4,1 8,1 10,1 12,2 10,9 10
+2 6,4 8,4 10,6 6,1 4,1 8,1 10,1 12,2 10,9 10,6 10,8 10,8 12,10 11,10 12,11 12,13 14,4 4,4 12
