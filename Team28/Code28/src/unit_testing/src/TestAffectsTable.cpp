@@ -19,6 +19,8 @@ std::pair<AffectsTable *, StorageView *> InitAffectsTable::initCode6() {
     UsesSTable *usesS = storage->getTable<UsesSTable>();
     ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
+    ProceduresTable *procedures = storage->getTable<ProceduresTable>();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
     BranchInTable *branchIn = storage->getTable<BranchInTable>();
     BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
 
@@ -42,6 +44,39 @@ std::pair<AffectsTable *, StorageView *> InitAffectsTable::initCode6() {
                                       &s11, &s12, &s13, &s14, &s15};
     for (Statement *stmt : stmts) {
         statements->store(stmt);
+    }
+
+    Procedure p1 = Procedure("Second", 1);
+    Procedure p2 = Procedure("Third", 13);
+    std::vector<Procedure *> procs = {&p1, &p2};
+    for (Procedure *p : procs) {
+        procedures->store(p);
+    }
+
+    Relationship<int, int> f1 =
+        Relationship(RelationshipReference::FOLLOWS, 1, 2);
+    Relationship<int, int> f2 =
+        Relationship(RelationshipReference::FOLLOWS, 2, 3);
+    Relationship<int, int> f3 =
+        Relationship(RelationshipReference::FOLLOWS, 3, 7);
+    Relationship<int, int> f4 =
+        Relationship(RelationshipReference::FOLLOWS, 4, 5);
+    Relationship<int, int> f5 =
+        Relationship(RelationshipReference::FOLLOWS, 5, 6);
+    Relationship<int, int> f6 =
+        Relationship(RelationshipReference::FOLLOWS, 7, 10);
+    Relationship<int, int> f7 =
+        Relationship(RelationshipReference::FOLLOWS, 10, 11);
+    Relationship<int, int> f8 =
+        Relationship(RelationshipReference::FOLLOWS, 11, 12);
+    Relationship<int, int> f9 =
+        Relationship(RelationshipReference::FOLLOWS, 13, 14);
+    Relationship<int, int> f10 =
+        Relationship(RelationshipReference::FOLLOWS, 14, 15);
+    std::vector<Relationship<int, int> *> fs = {&f1, &f2, &f3, &f4, &f5,
+                                                &f6, &f7, &f8, &f9, &f10};
+    for (Relationship<int, int> *f : fs) {
+        follows->store(f);
     }
 
     Relationship<int, int> bi1 =
@@ -161,10 +196,16 @@ TEST_CASE("AffectsTable: validate works correctly") {
     AffectsTable *affects = pair.first;
     StorageView *storage = pair.second;
 
-    Reference leftRef = Reference("2");
-    Reference rightRef = Reference("6");
-
-    REQUIRE(affects->validate(leftRef, rightRef));
+    REQUIRE(affects->validate(Reference("2"), Reference("6")));
+    REQUIRE(affects->validate(Reference("4"), Reference("8")));
+    REQUIRE(affects->validate(Reference("4"), Reference("10")));
+    REQUIRE(affects->validate(Reference("6"), Reference("6")));
+    REQUIRE(affects->validate(Reference("1"), Reference("4")));
+    REQUIRE(affects->validate(Reference("1"), Reference("8")));
+    REQUIRE(affects->validate(Reference("1"), Reference("10")));
+    REQUIRE(affects->validate(Reference("1"), Reference("12")));
+    REQUIRE(affects->validate(Reference("2"), Reference("10")));
+    REQUIRE(affects->validate(Reference("9"), Reference("10")));
 }
 
 TEST_CASE("AffectsTable: solveRight works correctly") {
@@ -184,6 +225,7 @@ TEST_CASE("AffectsTable: solveRight works correctly") {
         Value(ValueType::STMT_NUM, "10"), Value(ValueType::STMT_NUM, "12")};
     std::sort(output.begin(), output.end());
     std::sort(expectedResult.begin(), expectedResult.end());
+
     REQUIRE(output.size() == expectedResult.size());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
@@ -222,9 +264,11 @@ TEST_CASE("AffectsTable: solveLeft works correctly") {
         affects->solveLeft(rightRef, leftSynonym, storage);
     std::vector<Value> expectedResult = {
         Value(ValueType::STMT_NUM, "1"), Value(ValueType::STMT_NUM, "2"),
-        Value(ValueType::STMT_NUM, "4"), Value(ValueType::STMT_NUM, "9")};
+        Value(ValueType::STMT_NUM, "4"), Value(ValueType::STMT_NUM, "6"),
+        Value(ValueType::STMT_NUM, "8"), Value(ValueType::STMT_NUM, "9")};
     std::sort(output.begin(), output.end());
     std::sort(expectedResult.begin(), expectedResult.end());
+
     REQUIRE(output.size() == expectedResult.size());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
@@ -282,6 +326,24 @@ TEST_CASE("AffectsTable:solveBoth works correctly") {
                        Value(ValueType::STMT_NUM, "10")),
         std::make_pair(Value(ValueType::STMT_NUM, "9"),
                        Value(ValueType::STMT_NUM, "10")),
+        std::make_pair(Value(ValueType::STMT_NUM, "6"),
+                       Value(ValueType::STMT_NUM, "10")),
+        std::make_pair(Value(ValueType::STMT_NUM, "8"),
+                       Value(ValueType::STMT_NUM, "10")),
+        std::make_pair(Value(ValueType::STMT_NUM, "8"),
+                       Value(ValueType::STMT_NUM, "12")),
+        std::make_pair(Value(ValueType::STMT_NUM, "10"),
+                       Value(ValueType::STMT_NUM, "11")),
+        std::make_pair(Value(ValueType::STMT_NUM, "10"),
+                       Value(ValueType::STMT_NUM, "12")),
+        std::make_pair(Value(ValueType::STMT_NUM, "11"),
+                       Value(ValueType::STMT_NUM, "12")),
+        std::make_pair(Value(ValueType::STMT_NUM, "13"),
+                       Value(ValueType::STMT_NUM, "14")),
+        std::make_pair(Value(ValueType::STMT_NUM, "4"),
+                       Value(ValueType::STMT_NUM, "4")),
+        std::make_pair(Value(ValueType::STMT_NUM, "4"),
+                       Value(ValueType::STMT_NUM, "12")),
     };
     std::sort(output.begin(), output.end());
     std::sort(expectedResult.begin(), expectedResult.end());
@@ -332,7 +394,8 @@ TEST_CASE("AffectsTable: solveBothReflexive works correctly") {
 
     // Affects(s, s)
     std::vector<Value> output = affects->solveBothReflexive(synonym, storage);
-    std::vector<Value> expectedResult = {Value(ValueType::STMT_NUM, "6")};
+    std::vector<Value> expectedResult = {Value(ValueType::STMT_NUM, "4"),
+                                         Value(ValueType::STMT_NUM, "6")};
     std::sort(output.begin(), output.end());
     std::sort(expectedResult.begin(), expectedResult.end());
     REQUIRE(output.size() == expectedResult.size());
