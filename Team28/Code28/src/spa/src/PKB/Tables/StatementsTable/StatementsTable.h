@@ -67,6 +67,8 @@ public:
 
     std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
 
+    std::unordered_set<int> getStatementsSetByType(StatementType type);
+
 private:
     int tableSize = 0;
     const std::string STMT_TYPE_NONE_INVALID_USE =

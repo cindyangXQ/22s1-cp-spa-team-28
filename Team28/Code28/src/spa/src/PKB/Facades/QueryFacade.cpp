@@ -268,3 +268,13 @@ std::vector<Value> QueryFacade::getReflexiveNextT(EntityName stmtEntity) {
     }
     return result;
 };
+
+std::vector<Value> QueryFacade::getReflexiveAffects(EntityName stmtEntity) {
+    if (stmtRefSet.count(stmtEntity) != 1) {
+        return std::vector<Value>();
+    }
+    StatementsTable *statements = this->storage->getTable<StatementsTable>();
+    AffectsTable *affects = this->storage->getTable<AffectsTable>();
+    return affects->solveBothReflexive(stmtEntity,
+                                       this->storage->getStorageView());
+};

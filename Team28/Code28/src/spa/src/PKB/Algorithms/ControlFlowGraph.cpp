@@ -11,7 +11,8 @@ ControlFlowGraph::ControlFlowGraph(NextTable *nextTable, NextTTable *nextTTable,
     this->branchIn = storage->getTable<BranchInTable>();
     this->branchOut = storage->getTable<BranchOutTable>();
     this->procedures = storage->getTable<ProceduresTable>();
-    this->totalLines = storage->getTable<StatementsTable>()->getTableSize();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    this->totalLines = statements->getTableSize();
 };
 
 void ControlFlowGraph::populateNext() {
@@ -34,7 +35,6 @@ void ControlFlowGraph::populateNextT() {
             Relationship<int, int> nextTRs =
                 Relationship(RelationshipReference::NEXT_T, elem.first.first,
                              elem.first.second);
-
             this->nextT->store(&nextTRs);
         }
     }

@@ -10,26 +10,27 @@ public:
      * Returns true if the relationship holds between leftReference and
      * rightReference.
      */
-    bool validate(Reference leftRef, Reference rightRef);
+    virtual bool validate(Reference leftRef, Reference rightRef);
 
     /*
      * Returns list of possible values that the right synonym can be.
      */
-    std::vector<Value> solveRight(Reference leftRef, EntityName rightSynonym,
-                                  StorageView *storage);
+    virtual std::vector<Value> solveRight(Reference leftRef,
+                                          EntityName rightSynonym,
+                                          StorageView *storage);
 
     /*
      * Returns list of possible values that the left synonym can be.
      */
-    std::vector<Value> solveLeft(Reference rightRef, EntityName leftSynonym,
-                                 StorageView *storage);
+    virtual std::vector<Value>
+    solveLeft(Reference rightRef, EntityName leftSynonym, StorageView *storage);
 
     /*
      * Returns list of possible (Value, Value) that the pair of synonyms can be.
      */
-    std::vector<std::pair<Value, Value>> solveBoth(EntityName leftSynonym,
-                                                   EntityName rightSynonym,
-                                                   StorageView *storage);
+    virtual std::vector<std::pair<Value, Value>>
+    solveBoth(EntityName leftSynonym, EntityName rightSynonym,
+              StorageView *storage);
 };
 
 class ParentTable : public StmtToStmtRelationshipsTable {};
@@ -40,5 +41,4 @@ class NextTable : public StmtToStmtRelationshipsTable {};
 class NextTTable : public StmtToStmtRelationshipsTable {};
 class BranchInTable : public StmtToStmtRelationshipsTable {};
 class BranchOutTable : public StmtToStmtRelationshipsTable {};
-class AffectsTable : public StmtToStmtRelationshipsTable {};
 class AffectsTTable : public StmtToStmtRelationshipsTable {};

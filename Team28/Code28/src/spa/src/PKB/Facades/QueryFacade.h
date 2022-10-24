@@ -103,6 +103,7 @@ public:
     std::string getSecondaryAttribute(int stmtNum);
 
     std::vector<Value> getReflexiveNextT(EntityName stmtEntity);
+    std::vector<Value> getReflexiveAffects(EntityName stmtEntity);
 
 private:
     Storage *storage;
