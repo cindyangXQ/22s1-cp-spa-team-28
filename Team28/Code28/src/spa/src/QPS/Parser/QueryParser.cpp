@@ -75,7 +75,8 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
     }
 
     std::string selectValue = Utils::trimSpaces(matches[1]);
-    if (!has_BOOLEAN_synonym && std::regex_search(selectValue, SELECT_BOOL_REGEX)) {
+    if (!has_BOOLEAN_synonym &&
+        std::regex_search(selectValue, SELECT_BOOL_REGEX)) {
         return SelectClause({}, SelectType::BOOLEAN);
     } else if (std::regex_search(selectValue, SELECT_TUP_REGEX)) {
         return parseSelectTuple(selectValue, syns);
