@@ -5,7 +5,7 @@ call
 5000
 2 - select stmt#, call.procName in with clause
 call c;
-Select c.stmt# with call.procName = "call"
+Select c.stmt# with c.procName = "call"
 27
 5000
 3 - 2 with clauses

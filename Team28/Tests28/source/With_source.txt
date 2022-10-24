@@ -46,4 +46,10 @@ procedure main {
 
 procedure call {
     print call;
+    if (a4 == 1) then {
+        x = x + 1;
+    } else {
+        y = y+1;
+    }
 }
+
