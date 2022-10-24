@@ -13,9 +13,9 @@ public:
     static std::vector<int> *
     parentT(StatementNode *parentNode,
             std::vector<Relationship<int, int> *> &result);
-    static std::vector<std::string>
+    static std::vector<std::string_view>
     usesP(ProcedureNode *procedure, std::vector<ProcedureNode *> &procList);
-    static std::vector<std::string>
+    static std::vector<std::string_view>
     modifiesP(ProcedureNode *procedure, std::vector<ProcedureNode *> &procList);
 
     static bool compareStmtList(const std::vector<StatementNode *> &list1,
@@ -23,6 +23,6 @@ public:
     static bool compareProcList(std::vector<ProcedureNode *> &list1,
                                 std::vector<ProcedureNode *> &list2);
 
-    static ProcedureNode *findProc(std::string procName,
+    static ProcedureNode *findProc(std::string_view procName,
                                    std::vector<ProcedureNode *> &procList);
 };

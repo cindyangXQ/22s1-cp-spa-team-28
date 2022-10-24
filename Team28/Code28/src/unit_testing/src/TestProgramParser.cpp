@@ -238,19 +238,19 @@ TEST_CASE("Test getAllCalls") {
         "procedure c { print y; }"
         "procedure d { print x; }";
 
-    std::vector<std::string> expecteda{"b", "c", "d"};
-    std::vector<std::string> expectedb{"c", "d"};
-    std::vector<std::string> expectedc{};
-    std::vector<std::string> expectedd{};
+    std::vector<std::string_view> expecteda{"b", "c", "d"};
+    std::vector<std::string_view> expectedb{"c", "d"};
+    std::vector<std::string_view> expectedc{};
+    std::vector<std::string_view> expectedd{};
 
     std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
     ProgramNode *program = ProgramParser(0, tokens).parse();
 
     std::vector<ProcedureNode *> procList = program->getProcList();
-    std::vector<std::string> resulta = procList[0]->getAllCalls();
-    std::vector<std::string> resultb = procList[1]->getAllCalls();
-    std::vector<std::string> resultc = procList[2]->getAllCalls();
-    std::vector<std::string> resultd = procList[3]->getAllCalls();
+    std::vector<std::string_view> resulta = procList[0]->getAllCalls();
+    std::vector<std::string_view> resultb = procList[1]->getAllCalls();
+    std::vector<std::string_view> resultc = procList[2]->getAllCalls();
+    std::vector<std::string_view> resultd = procList[3]->getAllCalls();
 
     REQUIRE(expecteda == resulta);
     REQUIRE(expectedb == resultb);

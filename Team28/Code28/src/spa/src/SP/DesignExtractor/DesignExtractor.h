@@ -65,13 +65,13 @@ public:
 
 class StatementExtractor : public EntityExtractor<Statement> {
     std::vector<Assignment *> assign;
-    std::vector<Relationship<int, std::string> *> call;
+    std::vector<Relationship<int, std::string_view> *> call;
 
 public:
     StatementExtractor(ProgramNode *program, PopulateFacade *storage);
     std::vector<Statement *> extract();
     std::vector<Assignment *> extractAssignments() { return assign; };
-    std::vector<Relationship<int, std::string> *> extractCalls() {
+    std::vector<Relationship<int, std::string_view> *> extractCalls() {
         return call;
     };
     void populate();
@@ -128,46 +128,50 @@ public:
     std::vector<Relationship<int, int> *> extract();
 };
 
-class UsesSExtractor : public RelationExtractor<int, std::string> {
-    std::vector<Relationship<int, std::string> *> ifCondVars;
-    std::vector<Relationship<int, std::string> *> whileCondVars;
+class UsesSExtractor : public RelationExtractor<int, std::string_view> {
+    std::vector<Relationship<int, std::string_view> *> ifCondVars;
+    std::vector<Relationship<int, std::string_view> *> whileCondVars;
 
 public:
     UsesSExtractor(ProgramNode *program, PopulateFacade *storage);
-    std::vector<Relationship<int, std::string> *> extract();
-    void conVar(std::vector<Relationship<int, std::string> *> &ifResult,
-                std::vector<Relationship<int, std::string> *> &whileResult);
+    std::vector<Relationship<int, std::string_view> *> extract();
+    void conVar(std::vector<Relationship<int, std::string_view> *> &ifResult,
+           std::vector<Relationship<int, std::string_view> *> &whileResult);
     void populate();
 };
 
-class UsesPExtractor : public RelationExtractor<std::string, std::string> {
+class UsesPExtractor
+    : public RelationExtractor<std::string_view, std::string_view> {
 public:
     UsesPExtractor(ProgramNode *program, PopulateFacade *storage);
-    std::vector<Relationship<std::string, std::string> *> extract();
+    std::vector<Relationship<std::string_view, std::string_view> *> extract();
 };
 
-class ModSExtractor : public RelationExtractor<int, std::string> {
+class ModSExtractor : public RelationExtractor<int, std::string_view> {
 public:
     ModSExtractor(ProgramNode *program, PopulateFacade *storage);
-    std::vector<Relationship<int, std::string> *> extract();
+    std::vector<Relationship<int, std::string_view> *> extract();
 };
 
-class ModPExtractor : public RelationExtractor<std::string, std::string> {
+class ModPExtractor
+    : public RelationExtractor<std::string_view, std::string_view> {
 public:
     ModPExtractor(ProgramNode *program, PopulateFacade *storage);
-    std::vector<Relationship<std::string, std::string> *> extract();
+    std::vector<Relationship<std::string_view, std::string_view> *> extract();
 };
 
-class CallsExtractor : public RelationExtractor<std::string, std::string> {
+class CallsExtractor
+    : public RelationExtractor<std::string_view, std::string_view> {
 public:
     CallsExtractor(ProgramNode *program, PopulateFacade *storage);
-    std::vector<Relationship<std::string, std::string> *> extract();
+    std::vector<Relationship<std::string_view, std::string_view> *> extract();
 };
 
-class CallsExtrT : public RelationExtractor<std::string, std::string> {
+class CallsExtrT
+    : public RelationExtractor<std::string_view, std::string_view> {
 public:
     CallsExtrT(ProgramNode *program, PopulateFacade *storage);
-    std::vector<Relationship<std::string, std::string> *> extract();
+    std::vector<Relationship<std::string_view, std::string_view> *> extract();
 };
 
 class BranchInExtr : public RelationExtractor<int, int> {

@@ -68,12 +68,12 @@ VariableExtractor::VariableExtractor(ProgramNode *program,
     : EntityExtractor(program, storage, Designation::VAR){};
 
 std::vector<Variable *> VariableExtractor::extract() {
-    std::vector<std::string> preresult;
+    std::vector<std::string_view> preresult;
     std::vector<Variable *> result;
 
-    DesignExtractor::extractUtil<std::string>(
+    DesignExtractor::extractUtil<std::string_view>(
         preresult, program,
-        [](StatementNode *stmt, std::vector<std::string> &res) -> void {
+        [](StatementNode *stmt, std::vector<std::string_view> &res) -> void {
             stmt->getVariablesInto(res);
         });
 
@@ -93,12 +93,12 @@ ConstantExtractor::ConstantExtractor(ProgramNode *program,
     : EntityExtractor(program, storage, Designation::CONST){};
 
 std::vector<Constant *> ConstantExtractor::extract() {
-    std::vector<std::string> preresult;
+    std::vector<std::string_view> preresult;
     std::vector<Constant *> result;
 
-    DesignExtractor::extractUtil<std::string>(
+    DesignExtractor::extractUtil<std::string_view>(
         preresult, program,
-        [](StatementNode *stmt, std::vector<std::string> &res) -> void {
+        [](StatementNode *stmt, std::vector<std::string_view> &res) -> void {
             stmt->getConstantsInto(res);
         });
 
@@ -177,13 +177,13 @@ std::vector<Relationship<int, int> *> ParentExtrT::extract() {
 UsesSExtractor::UsesSExtractor(ProgramNode *program, PopulateFacade *storage)
     : RelationExtractor(program, storage, Designation::USE_S){};
 
-std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
-    std::vector<Relationship<int, std::string> *> result;
+std::vector<Relationship<int, std::string_view> *> UsesSExtractor::extract() {
+    std::vector<Relationship<int, std::string_view> *> result;
 
-    DesignExtractor::extractUtil<Relationship<int, std::string> *>(
+    DesignExtractor::extractUtil<Relationship<int, std::string_view> *>(
         result, program,
         [](StatementNode *stmt,
-           std::vector<Relationship<int, std::string> *> &res) -> void {
+           std::vector<Relationship<int, std::string_view> *> &res) -> void {
             stmt->getUsesInto(res);
         });
 
@@ -191,8 +191,8 @@ std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
 }
 
 void UsesSExtractor::conVar(
-    std::vector<Relationship<int, std::string> *> &ifResult,
-    std::vector<Relationship<int, std::string> *> &whileResult) {
+    std::vector<Relationship<int, std::string_view> *> &ifResult,
+    std::vector<Relationship<int, std::string_view> *> &whileResult) {
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
@@ -205,16 +205,18 @@ void UsesSExtractor::conVar(
 UsesPExtractor::UsesPExtractor(ProgramNode *program, PopulateFacade *storage)
     : RelationExtractor(program, storage, Designation::USE_P){};
 
-std::vector<Relationship<std::string, std::string> *>
+std::vector<Relationship<std::string_view, std::string_view> *>
 UsesPExtractor::extract() {
-    std::vector<Relationship<std::string, std::string> *> result;
+    std::vector<Relationship<std::string_view, std::string_view> *> result;
 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
-        std::string procName = procList[i]->getName();
-        std::vector<std::string> used = SPUtils::usesP(procList[i], procList);
+        std::string_view procName = procList[i]->getName();
+        std::vector<std::string_view> used =
+            SPUtils::usesP(procList[i], procList);
         for (size_t j = 0; j < used.size(); j++) {
-            result.push_back(new Relationship<std::string, std::string>(
+            result.push_back(
+                new Relationship<std::string_view, std::string_view>(
                 RelationshipReference::USES, procName, used.at(j)));
         }
     }
@@ -225,13 +227,13 @@ UsesPExtractor::extract() {
 ModSExtractor::ModSExtractor(ProgramNode *program, PopulateFacade *storage)
     : RelationExtractor(program, storage, Designation::MOD_S){};
 
-std::vector<Relationship<int, std::string> *> ModSExtractor::extract() {
-    std::vector<Relationship<int, std::string> *> result;
+std::vector<Relationship<int, std::string_view> *> ModSExtractor::extract() {
+    std::vector<Relationship<int, std::string_view> *> result;
 
-    DesignExtractor::extractUtil<Relationship<int, std::string> *>(
+    DesignExtractor::extractUtil<Relationship<int, std::string_view> *>(
         result, program,
         [](StatementNode *stmt,
-           std::vector<Relationship<int, std::string> *> &res) -> void {
+           std::vector<Relationship<int, std::string_view> *> &res) -> void {
             stmt->getModsInto(res);
         });
 
@@ -241,16 +243,18 @@ std::vector<Relationship<int, std::string> *> ModSExtractor::extract() {
 ModPExtractor::ModPExtractor(ProgramNode *program, PopulateFacade *storage)
     : RelationExtractor(program, storage, Designation::MOD_P){};
 
-std::vector<Relationship<std::string, std::string> *> ModPExtractor::extract() {
-    std::vector<Relationship<std::string, std::string> *> result;
+std::vector<Relationship<std::string_view, std::string_view> *>
+ModPExtractor::extract() {
+    std::vector<Relationship<std::string_view, std::string_view> *> result;
 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
-        std::string procName = procList[i]->getName();
-        std::vector<std::string> modified =
+        std::string_view procName = procList[i]->getName();
+        std::vector<std::string_view> modified =
             SPUtils::modifiesP(procList[i], procList);
         for (size_t j = 0; j < modified.size(); j++) {
-            result.push_back(new Relationship<std::string, std::string>(
+            result.push_back(
+                new Relationship<std::string_view, std::string_view>(
                 RelationshipReference::MODIFIES, procName, modified.at(j)));
         }
     }
@@ -261,17 +265,18 @@ std::vector<Relationship<std::string, std::string> *> ModPExtractor::extract() {
 CallsExtractor::CallsExtractor(ProgramNode *program, PopulateFacade *storage)
     : RelationExtractor(program, storage, Designation::CALL){};
 
-std::vector<Relationship<std::string, std::string> *>
+std::vector<Relationship<std::string_view, std::string_view> *>
 CallsExtractor::extract() {
-    std::vector<Relationship<std::string, std::string> *> result;
+    std::vector<Relationship<std::string_view, std::string_view> *> result;
 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
-        std::string name = procList.at(i)->getName();
-        std::vector<std::string> calls = procList.at(i)->getAllCalls();
+        std::string_view name = procList.at(i)->getName();
+        std::vector<std::string_view> calls = procList.at(i)->getAllCalls();
 
         for (size_t j = 0; j < calls.size(); j++) {
-            result.push_back(new Relationship<std::string, std::string>(
+            result.push_back(
+                new Relationship<std::string_view, std::string_view>(
                 RelationshipReference::CALLS, name, calls.at(j)));
         }
     }
@@ -282,25 +287,26 @@ CallsExtractor::extract() {
 CallsExtrT::CallsExtrT(ProgramNode *program, PopulateFacade *storage)
     : RelationExtractor(program, storage, Designation::CALL_T){};
 
-std::vector<Relationship<std::string, std::string> *> CallsExtrT::extract() {
-    std::vector<Relationship<std::string, std::string> *> result;
+std::vector<Relationship<std::string_view, std::string_view> *>
+CallsExtrT::extract() {
+    std::vector<Relationship<std::string_view, std::string_view> *> result;
 
     std::vector<ProcedureNode *> procList = this->program->getProcList();
-    std::map<std::string, std::vector<std::string>> procCallsMap;
+    std::map<std::string_view, std::vector<std::string_view>> procCallsMap;
 
     for (size_t i = 0; i < procList.size(); i++) {
         procCallsMap[procList[i]->getName()] = procList[i]->getAllCalls();
     }
 
     for (size_t i = 0; i < procList.size(); i++) {
-        std::string procName = procList.at(i)->getName();
-        std::vector<std::string> curr, visited;
+        std::string_view procName = procList.at(i)->getName();
+        std::vector<std::string_view> curr, visited;
         curr.push_back(procName);
 
         while (curr.size() != 0) {
-            std::vector<std::string> next;
+            std::vector<std::string_view> next;
             for (size_t j = 0; j < curr.size(); j++) {
-                std::vector<std::string> calls = procCallsMap[curr.at(j)];
+                std::vector<std::string_view> calls = procCallsMap[curr.at(j)];
 
                 for (size_t k = 0; k < calls.size(); k++) {
                     if (find(begin(visited), end(visited), calls.at(k)) !=
@@ -309,7 +315,8 @@ std::vector<Relationship<std::string, std::string> *> CallsExtrT::extract() {
                     }
                     visited.push_back(calls.at(k));
                     next.push_back(calls.at(k));
-                    result.push_back(new Relationship<std::string, std::string>(
+                    result.push_back(
+                        new Relationship<std::string_view, std::string_view>(
                         RelationshipReference::CALLS_T, procName, calls.at(k)));
                 }
             }
@@ -391,19 +398,23 @@ void StatementExtractor::populate() {
     std::vector<Assignment *> assignments = this->extractAssignments();
     this->storage->store<Assignment>(&assignments, Designation::ASSIGN);
 
-    std::vector<Relationship<int, std::string> *> calls = this->extractCalls();
-    this->storage->store<Relationship<int, std::string>>(
+    std::vector<Relationship<int, std::string_view> *> calls =
+        this->extractCalls();
+    this->storage->store<Relationship<int, std::string_view>>(
         &calls, Designation::PROC_NAME);
 }
 
 void UsesSExtractor::populate() {
-    std::vector<Relationship<int, std::string> *> usesS = this->extract();
-    this->storage->store<Relationship<int, std::string>>(&usesS,
+    std::vector<Relationship<int, std::string_view> *> usesS = this->extract();
+    this->storage->store<Relationship<int, std::string_view>>(
+        &usesS,
                                                          Designation::USE_S);
 
     this->conVar(ifCondVars, whileCondVars);
-    this->storage->store<Relationship<int, std::string>>(&ifCondVars,
+    this->storage->store<Relationship<int, std::string_view>>(
+        &ifCondVars,
                                                          Designation::IF_C);
-    this->storage->store<Relationship<int, std::string>>(&whileCondVars,
+    this->storage->store<Relationship<int, std::string_view>>(
+        &whileCondVars,
                                                          Designation::WHILE_C);
 }

@@ -34,20 +34,21 @@ public:
 };
 
 class ProcedureNode : public EntityNode {
-    std::string procName;
+    std::string_view procName;
     std::vector<StatementNode *> stmtList;
-    std::vector<std::string> allCalls;
+    std::vector<std::string_view> allCalls;
 
 public:
-    ProcedureNode(std::string procName, std::vector<StatementNode *> stmtList);
+    ProcedureNode(std::string_view procName,
+                  std::vector<StatementNode *> stmtList);
     void cleanup();
     bool equals(ProcedureNode *other);
-    std::string getName();
+    std::string_view getName();
     std::vector<StatementNode *> getStmtList();
     int getStartLine();
     int getEndline();
-    std::vector<std::string> getAllCalls() { return allCalls; }
-    void setAllCalls(std::vector<std::string> allCalls) {
+    std::vector<std::string_view> getAllCalls() { return allCalls; }
+    void setAllCalls(std::vector<std::string_view> allCalls) {
         this->allCalls = allCalls;
     }
 };
@@ -66,40 +67,40 @@ public:
     virtual bool isWhile() { return false; }
     virtual bool isIf() { return false; }
     virtual bool equals(StatementNode *other) { return false; };
-    virtual std::string getVariable() { return ""; };
+    virtual std::string_view getVariable() { return ""; };
     virtual std::vector<StatementNode *> getStmtList() {
         return std::vector<StatementNode *>();
     };
     int getLineNumber() { return this->line; };
     virtual int getEndLine() { return this->line; }
-    virtual std::vector<std::string> getAllCalls() {
-        return std::vector<std::string>{};
+    virtual std::vector<std::string_view> getAllCalls() {
+        return std::vector<std::string_view>{};
     }
 
-    virtual void getVariablesInto(std::vector<std::string> &result){};
-    virtual void getConstantsInto(std::vector<std::string> &result){};
+    virtual void getVariablesInto(std::vector<std::string_view> &result){};
+    virtual void getConstantsInto(std::vector<std::string_view> &result){};
     virtual void
     getStatementsInto(std::vector<Statement *> &result,
                       std::vector<Assignment *> &assign,
-                      std::vector<Relationship<int, std::string> *> &call) {
+        std::vector<Relationship<int, std::string_view> *> &call) {
         result.push_back(new Statement(line, StatementType::NONE));
     }
     virtual void
     getFollowsInto(std::vector<Relationship<int, int> *> &result){};
     virtual void
     getFollowsTInto(std::vector<Relationship<int, int> *> &result){};
-    virtual std::vector<std::string> *
-    getUsesInto(std::vector<Relationship<int, std::string> *> &result);
-    virtual void getUsesPInto(std::vector<std::string> &result,
+    virtual std::vector<std::string_view> *
+    getUsesInto(std::vector<Relationship<int, std::string_view> *> &result);
+    virtual void getUsesPInto(std::vector<std::string_view> &result,
                               std::vector<ProcedureNode *> &procList){};
-    virtual std::vector<std::string> *
-    getModsInto(std::vector<Relationship<int, std::string> *> &result);
-    virtual void getModifiesPInto(std::vector<std::string> &result,
+    virtual std::vector<std::string_view> *
+    getModsInto(std::vector<Relationship<int, std::string_view> *> &result);
+    virtual void getModifiesPInto(std::vector<std::string_view> &result,
                                   std::vector<ProcedureNode *> &procList){};
 
-    virtual void
-    getConVar(std::vector<Relationship<int, std::string> *> &ifResult,
-              std::vector<Relationship<int, std::string> *> &whileResult){};
+    virtual void getConVar(
+        std::vector<Relationship<int, std::string_view> *> &ifResult,
+        std::vector<Relationship<int, std::string_view> *> &whileResult){};
     virtual void
     getBranchInInto(std::vector<Relationship<int, int> *> &result){};
     virtual void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
@@ -116,15 +117,15 @@ public:
 
     bool isRead() { return true; };
     bool equals(StatementNode *other);
-    std::string getVariable();
+    std::string_view getVariable();
 
-    void getVariablesInto(std::vector<std::string> &result);
+    void getVariablesInto(std::vector<std::string_view> &result);
     void getStatementsInto(std::vector<Statement *> &result,
                            std::vector<Assignment *> &assign,
-                           std::vector<Relationship<int, std::string> *> &call);
-    std::vector<std::string> *
-    getModsInto(std::vector<Relationship<int, std::string> *> &result);
-    void getModifiesPInto(std::vector<std::string> &result,
+                      std::vector<Relationship<int, std::string_view> *> &call);
+    std::vector<std::string_view> *
+    getModsInto(std::vector<Relationship<int, std::string_view> *> &result);
+    void getModifiesPInto(std::vector<std::string_view> &result,
                           std::vector<ProcedureNode *> &procList);
 };
 
@@ -138,15 +139,15 @@ public:
 
     bool isPrint() { return true; };
     bool equals(StatementNode *other);
-    std::string getVariable();
+    std::string_view getVariable();
 
-    void getVariablesInto(std::vector<std::string> &result);
+    void getVariablesInto(std::vector<std::string_view> &result);
     void getStatementsInto(std::vector<Statement *> &result,
                            std::vector<Assignment *> &assign,
-                           std::vector<Relationship<int, std::string> *> &call);
-    std::vector<std::string> *
-    getUsesInto(std::vector<Relationship<int, std::string> *> &result);
-    void getUsesPInto(std::vector<std::string> &result,
+                      std::vector<Relationship<int, std::string_view> *> &call);
+    std::vector<std::string_view> *
+    getUsesInto(std::vector<Relationship<int, std::string_view> *> &result);
+    void getUsesPInto(std::vector<std::string_view> &result,
                       std::vector<ProcedureNode *> &procList);
 };
 
@@ -160,17 +161,17 @@ public:
 
     bool isCall() { return true; };
     bool equals(StatementNode *other);
-    std::string getVariable();
+    std::string_view getVariable();
 
     void getStatementsInto(std::vector<Statement *> &result,
                            std::vector<Assignment *> &assign,
-                           std::vector<Relationship<int, std::string> *> &call);
-    void getUsesPInto(std::vector<std::string> &result,
+                      std::vector<Relationship<int, std::string_view> *> &call);
+    void getUsesPInto(std::vector<std::string_view> &result,
                       std::vector<ProcedureNode *> &procList);
-    void getModifiesPInto(std::vector<std::string> &result,
+    void getModifiesPInto(std::vector < std::string_view> & result,
                           std::vector<ProcedureNode *> &procList);
-    std::vector<std::string> getAllCalls() {
-        return std::vector<std::string>{this->getVariable()};
+    std::vector<std::string_view> getAllCalls() {
+        return std::vector<std::string_view>{this->getVariable()};
     }
 };
 
@@ -185,28 +186,28 @@ public:
 
     bool isAssign() { return true; };
     bool equals(StatementNode *other);
-    std::string getVariable();
-    std::string getExpressionString();
+    std::string_view getVariable();
+    std::string_view getExpressionString();
 
-    void getVariablesInto(std::vector<std::string> &result);
-    void getConstantsInto(std::vector<std::string> &result);
+    void getVariablesInto(std::vector<std::string_view> &result);
+    void getConstantsInto(std::vector<std::string_view> &result);
     void getStatementsInto(std::vector<Statement *> &result,
                            std::vector<Assignment *> &assign,
-                           std::vector<Relationship<int, std::string> *> &call);
-    std::vector<std::string> *
-    getUsesInto(std::vector<Relationship<int, std::string> *> &result);
-    void getUsesPInto(std::vector<std::string> &result,
+                      std::vector<Relationship<int, std::string_view> *> &call);
+    std::vector<std::string_view> *
+    getUsesInto(std::vector<Relationship<int, std::string_view> *> &result);
+    void getUsesPInto(std::vector<std::string_view> &result,
                       std::vector<ProcedureNode *> &procList);
-    std::vector<std::string> *
-    getModsInto(std::vector<Relationship<int, std::string> *> &result);
-    void getModifiesPInto(std::vector<std::string> &result,
+    std::vector<std::string_view> *
+    getModsInto(std::vector<Relationship<int, std::string_view> *> &result);
+    void getModifiesPInto(std::vector<std::string_view> &result,
                           std::vector<ProcedureNode *> &procList);
 };
 
 class WhileStatementNode : public StatementNode {
     std::vector<StatementNode *> stmtList;
     ExpressionNode *cond;
-    std::vector<std::string> allCalls;
+    std::vector<std::string_view> allCalls;
 
 public:
     WhileStatementNode(const std::vector<StatementNode *> &stmtList,
@@ -216,30 +217,30 @@ public:
     bool isWhile() { return true; };
     bool equals(StatementNode *other);
     int getEndLine();
-    std::vector<std::string> getAllCalls() { return this->allCalls; }
-    void setAllCalls(std::vector<std::string> allCalls) {
+    std::vector<std::string_view> getAllCalls() { return this->allCalls; }
+    void setAllCalls(std::vector<std::string_view> allCalls) {
         this->allCalls = allCalls;
     }
     std::vector<StatementNode *> getStmtList() { return this->stmtList; };
 
-    void getVariablesInto(std::vector<std::string> &result);
-    void getConstantsInto(std::vector<std::string> &result);
+    void getVariablesInto(std::vector<std::string_view> &result);
+    void getConstantsInto(std::vector<std::string_view> &result);
     void getStatementsInto(std::vector<Statement *> &result,
                            std::vector<Assignment *> &assign,
-                           std::vector<Relationship<int, std::string> *> &call);
+                      std::vector<Relationship<int, std::string_view> *> &call);
     void getFollowsInto(std::vector<Relationship<int, int> *> &result);
     void getFollowsTInto(std::vector<Relationship<int, int> *> &result);
-    std::vector<std::string> *
-    getUsesInto(std::vector<Relationship<int, std::string> *> &result);
-    void getUsesPInto(std::vector<std::string> &result,
+    std::vector<std::string_view> *
+    getUsesInto(std::vector<Relationship<int, std::string_view> *> &result);
+    void getUsesPInto(std::vector<std::string_view> &result,
                       std::vector<ProcedureNode *> &procList);
-    std::vector<std::string> *
-    getModsInto(std::vector<Relationship<int, std::string> *> &result);
-    void getModifiesPInto(std::vector<std::string> &result,
+    std::vector<std::string_view> *
+    getModsInto(std::vector<Relationship<int, std::string_view> *> &result);
+    void getModifiesPInto(std::vector<std::string_view> &result,
                           std::vector<ProcedureNode *> &procList);
 
-    void getConVar(std::vector<Relationship<int, std::string> *> &ifResult,
-                   std::vector<Relationship<int, std::string> *> &whileResult);
+    void getConVar(std::vector<Relationship<int, std::string_view> *> &ifResult,
+              std::vector<Relationship<int, std::string_view> *> &whileResult);
     void getBranchInInto(std::vector<Relationship<int, int> *> &result);
     void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
                           int nextLine);
@@ -249,7 +250,7 @@ class IfStatementNode : public StatementNode {
     ExpressionNode *cond;
     std::vector<StatementNode *> ifBlock;
     std::vector<StatementNode *> elseBlock;
-    std::vector<std::string> allCalls;
+    std::vector<std::string_view> allCalls;
 
 public:
     IfStatementNode(std::vector<StatementNode *> &ifBlock,
@@ -260,29 +261,29 @@ public:
     bool equals(StatementNode *other);
     int getEndLine();
     std::vector<StatementNode *> getStmtList();
-    std::vector<std::string> getAllCalls() { return allCalls; }
-    void setAllCalls(std::vector<std::string> allCalls) {
+    std::vector<std::string_view> getAllCalls() { return allCalls; }
+    void setAllCalls(std::vector<std::string_view> allCalls) {
         this->allCalls = allCalls;
     }
 
-    void getVariablesInto(std::vector<std::string> &result);
-    void getConstantsInto(std::vector<std::string> &result);
+    void getVariablesInto(std::vector<std::string_view> &result);
+    void getConstantsInto(std::vector<std::string_view> &result);
     void getStatementsInto(std::vector<Statement *> &result,
                            std::vector<Assignment *> &assign,
-                           std::vector<Relationship<int, std::string> *> &call);
+                      std::vector<Relationship<int, std::string_view> *> &call);
     void getFollowsInto(std::vector<Relationship<int, int> *> &result);
     void getFollowsTInto(std::vector<Relationship<int, int> *> &result);
-    std::vector<std::string> *
-    getUsesInto(std::vector<Relationship<int, std::string> *> &result);
-    void getUsesPInto(std::vector<std::string> &result,
+    std::vector<std::string_view> *
+    getUsesInto(std::vector<Relationship<int, std::string_view> *> &result);
+    void getUsesPInto(std::vector<std::string_view> &result,
                       std::vector<ProcedureNode *> &procList);
-    std::vector<std::string> *
-    getModsInto(std::vector<Relationship<int, std::string> *> &result);
-    void getModifiesPInto(std::vector<std::string> &result,
+    std::vector<std::string_view> *
+    getModsInto(std::vector<Relationship<int, std::string_view> *> &result);
+    void getModifiesPInto(std::vector<std::string_view> &result,
                           std::vector<ProcedureNode *> &procList);
 
-    void getConVar(std::vector<Relationship<int, std::string> *> &ifResult,
-                   std::vector<Relationship<int, std::string> *> &whileResult);
+    void getConVar(std::vector<Relationship<int, std::string_view> *> &ifResult,
+                   std::vector<Relationship<int, std::string_view> *> &whileResult);
     void getBranchInInto(std::vector<Relationship<int, int> *> &result);
     void getBranchOutInto(std::vector<Relationship<int, int> *> &result,
                           int nextLine);
@@ -301,10 +302,10 @@ public:
 
     bool equals(ExpressionNode *other);
     Token *getToken() { return this->token; }
-    std::string toString();
+    std::string_view toString();
 
-    void getVariablesInto(std::vector<std::string> &result);
-    void getConstantsInto(std::vector<std::string> &result);
+    void getVariablesInto(std::vector<std::string_view> &result);
+    void getConstantsInto(std::vector<std::string_view> &result);
 
     void setLeft(ExpressionNode *left) { this->left = left; }
     void setRight(ExpressionNode *right) { this->right = right; }
@@ -315,7 +316,7 @@ public:
 
 class VariableNode : public Token, public EntityNode {
 public:
-    VariableNode(std::string s);
+    VariableNode(std::string_view s);
     VariableNode();
 
     bool isName() { return true; }
@@ -326,7 +327,7 @@ public:
 
 class ConstantNode : public Token, public EntityNode {
 public:
-    ConstantNode(std::string s);
+    ConstantNode(std::string_view s);
     bool isConstant() { return true; }
     bool equals(Token *other) {
         return other->isConstant() && other->getValue() == this->value;

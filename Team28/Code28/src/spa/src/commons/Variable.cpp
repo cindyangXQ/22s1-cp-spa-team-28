@@ -1,3 +1,3 @@
 #include "Variable.h"
 
-Variable::Variable(std::string name) : Entity(name){};
+Variable::Variable(std::string_view name) : Entity(name.data()){};

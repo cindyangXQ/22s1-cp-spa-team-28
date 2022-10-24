@@ -33,9 +33,9 @@ ProgramNode *ProgramParser::parse() {
     std::vector<ProcedureNode *> procList;
     int line = 1;
 
-    std::vector<std::string> procNames;
+    std::vector<std::string_view> procNames;
 
-    std::map<std::string, std::vector<std::string>> procCallsMap;
+    std::map<std::string_view, std::vector<std::string_view>> procCallsMap;
 
     while (offset < tokenList.size()) {
         ProcedureParser *parser = new ProcedureParser(offset, tokenList, line);
@@ -60,7 +60,7 @@ ProgramNode *ProgramParser::parse() {
     }
 
     for (size_t i = 0; i < procNames.size(); i++) {
-        std::vector<std::string> path;
+        std::vector<std::string_view> path;
 
         // Detect cyclic/recursive call
         checkCall(procNames[i], path, procCallsMap);
@@ -78,15 +78,15 @@ ProgramNode *ProgramParser::parse() {
 }
 
 void ProgramParser::checkCall(
-    std::string proc, std::vector<std::string> path,
-    std::map<std::string, std::vector<std::string>> &callmap) {
+    std::string_view proc, std::vector<std::string_view> path,
+    std::map<std::string_view, std::vector<std::string_view>> &callmap) {
     if (find(begin(path), end(path), proc) != end(path)) {
         throw ParseError("cyclic calling is not allowed");
     }
 
     path.push_back(proc);
 
-    std::vector<std::string> calls = callmap[proc];
+    std::vector<std::string_view> calls = callmap[proc];
     for (size_t i = 0; i < calls.size(); i++) {
         checkCall(calls[i], path, callmap);
     }
@@ -97,7 +97,7 @@ ProcedureNode *ProcedureParser::parse() {
     std::vector<Token *> tokenList = this->tokens;
 
     std::vector<StatementNode *> stmtList;
-    std::vector<std::string> allCalls;
+    std::vector<std::string_view> allCalls;
 
     Token *firstToken = tokenList.at(offset++);
     Token *secondToken = tokenList.at(offset++);
@@ -110,7 +110,7 @@ ProcedureNode *ProcedureParser::parse() {
             StatementNode *temp = parser.parse();
             stmtList.push_back(temp);
 
-            std::vector<std::string> stmCalls = temp->getAllCalls();
+            std::vector<std::string_view> stmCalls = temp->getAllCalls();
             for (size_t i = 0; i < stmCalls.size(); i++) {
                 if (stmCalls[i] == secondToken->getValue()) {
                     throw ParseError("recursive call is not allowed");
@@ -246,7 +246,7 @@ AssignStatementNode *AssignStmParser::parse() {
 }
 
 WhileStatementNode *WhileStmParser::parse() {
-    std::vector<std::string> allCalls;
+    std::vector<std::string_view> allCalls;
     Token *firstToken = tokens.at(offset++);
     Token *secondToken = tokens.at(offset++);
     ExpressionNode *cond;
@@ -284,7 +284,7 @@ WhileStatementNode *WhileStmParser::parse() {
                 throw ParseError("while statement wrong syntax");
             }
 
-            std::vector<std::string> stmCalls = temp->getAllCalls();
+            std::vector<std::string_view> stmCalls = temp->getAllCalls();
             for (size_t i = 0; i < stmCalls.size(); i++) {
                 allCalls.push_back(stmCalls[i]);
             }
@@ -303,7 +303,7 @@ WhileStatementNode *WhileStmParser::parse() {
 }
 
 IfStatementNode *IfStmParser::parse() {
-    std::vector<std::string> allCalls;
+    std::vector<std::string_view> allCalls;
 
     Token *firstToken = tokens.at(offset++);
     Token *secondToken = tokens.at(offset++);
@@ -341,7 +341,7 @@ IfStatementNode *IfStmParser::parse() {
             if (offset >= tokens.size()) {
                 throw ParseError("if statement wrong syntax");
             }
-            std::vector<std::string> stmCalls = temp->getAllCalls();
+            std::vector<std::string_view> stmCalls = temp->getAllCalls();
             for (size_t i = 0; i < stmCalls.size(); i++) {
                 allCalls.push_back(stmCalls[i]);
             }
@@ -364,7 +364,7 @@ IfStatementNode *IfStmParser::parse() {
         if (offset >= tokens.size()) {
             throw ParseError("while statement wrong syntax");
         }
-        std::vector<std::string> stmCalls = temp->getAllCalls();
+        std::vector<std::string_view> stmCalls = temp->getAllCalls();
         for (size_t i = 0; i < stmCalls.size(); i++) {
             allCalls.push_back(stmCalls[i]);
         }

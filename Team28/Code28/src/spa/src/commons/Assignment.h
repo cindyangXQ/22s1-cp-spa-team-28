@@ -12,16 +12,16 @@ public:
     /*
      * Explicit constructor for Assignment.
      */
-    explicit Assignment(int lineNo, std::string variable,
-                        std::string expression);
+    explicit Assignment(int lineNo, std::string_view variable,
+                        std::string_view expression);
 
-    std::string toString();
+    std::string_view toString();
     int getLineNo();
-    std::string getVariable();
-    std::string getExpression();
+    std::string_view getVariable();
+    std::string_view getExpression();
 
 private:
     int lineNo;
-    std::string variable;
-    std::string expression;
+    std::string_view variable;
+    std::string_view expression;
 };

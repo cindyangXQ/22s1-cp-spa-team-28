@@ -5,7 +5,7 @@ Token::Token() {}
 
 Token::Token(std::string s) { this->value = s; }
 
-std::string Token::getValue() { return this->value; }
+std::string_view Token::getValue() { return this->value; }
 
 bool Token::equals(std::string other) {
     if (value.compare(other) == 0) {

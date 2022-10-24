@@ -17,8 +17,8 @@ public:
 };
 
 class ProgramParser : public Parser {
-    void checkCall(std::string proc, std::vector<std::string> path,
-                   std::map<std::string, std::vector<std::string>> &callmap);
+    void checkCall(std::string_view proc, std::vector<std::string_view> path,
+        std::map<std::string_view, std::vector<std::string_view>> &callmap);
 
 public:
     ProgramParser(int offset, std::vector<Token *> tokens)

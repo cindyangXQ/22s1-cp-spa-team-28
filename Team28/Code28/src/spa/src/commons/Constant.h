@@ -9,5 +9,5 @@
  */
 class Constant : public Entity {
 public:
-    explicit Constant(std::string name);
+    explicit Constant(std::string_view name);
 };

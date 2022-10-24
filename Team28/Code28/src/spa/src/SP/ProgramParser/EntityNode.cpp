@@ -31,7 +31,7 @@ void ProgramNode::cleanup() {
 }
 
 // Procedure
-ProcedureNode::ProcedureNode(std::string procName,
+ProcedureNode::ProcedureNode(std::string_view procName,
                              std::vector<StatementNode *> stmtList) {
     this->procName = procName;
     this->stmtList = stmtList;
@@ -46,7 +46,7 @@ bool ProcedureNode::equals(ProcedureNode *other) {
     return SPUtils::compareStmtList(statements, others);
 }
 
-std::string ProcedureNode::getName() { return this->procName; }
+std::string_view ProcedureNode::getName() { return this->procName; }
 
 std::vector<StatementNode *> ProcedureNode::getStmtList() {
     return this->stmtList;
@@ -65,14 +65,14 @@ void ProcedureNode::cleanup() {
 }
 
 // Statement
-std::vector<std::string> *StatementNode::getUsesInto(
-    std::vector<Relationship<int, std::string> *> &result) {
-    return new std::vector<std::string>();
+std::vector<std::string_view> *StatementNode::getUsesInto(
+    std::vector<Relationship<int, std::string_view> *> &result) {
+    return new std::vector<std::string_view>();
 }
 
-std::vector<std::string> *StatementNode::getModsInto(
-    std::vector<Relationship<int, std::string> *> &result) {
-    return new std::vector<std::string>();
+std::vector<std::string_view> *StatementNode::getModsInto(
+    std::vector<Relationship<int, std::string_view> *> &result) {
+    return new std::vector<std::string_view>();
 }
 
 // Statement - equals
@@ -128,33 +128,37 @@ ReadStatementNode::ReadStatementNode(VariableNode *VariableNode, int line) {
     this->line = line;
 }
 
-std::string ReadStatementNode::getVariable() { return this->var->getValue(); }
+std::string_view ReadStatementNode::getVariable() {
+    return this->var->getValue();
+}
 
-void ReadStatementNode::getVariablesInto(std::vector<std::string> &result) {
+void ReadStatementNode::getVariablesInto(
+    std::vector<std::string_view> &result) {
     result.push_back(this->getVariable());
 }
 
 void ReadStatementNode::getStatementsInto(
     std::vector<Statement *> &result, std::vector<Assignment *> &assign,
-    std::vector<Relationship<int, std::string> *> &call) {
+    std::vector<Relationship<int, std::string_view> *> &call) {
     result.push_back(new Statement(line, StatementType::READ));
 }
 
-std::vector<std::string> *ReadStatementNode::getModsInto(
-    std::vector<Relationship<int, std::string> *> &result) {
-    Relationship<int, std::string> *mdfdVar =
-        new Relationship<int, std::string>(RelationshipReference::MODIFIES,
+std::vector<std::string_view> *ReadStatementNode::getModsInto(
+    std::vector<Relationship<int, std::string_view> *> &result) {
+    Relationship<int, std::string_view> *mdfdVar =
+        new Relationship<int, std::string_view>(RelationshipReference::MODIFIES,
                                            this->getLineNumber(),
                                            this->getVariable());
     result.push_back(mdfdVar);
 
-    std::vector<std::string> *mdfd = new std::vector<std::string>();
+    std::vector<std::string_view> *mdfd = new std::vector<std::string_view>();
     mdfd->push_back(this->getVariable());
     return mdfd;
 }
 
 void ReadStatementNode::getModifiesPInto(
-    std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
+    std::vector<std::string_view> &result,
+    std::vector<ProcedureNode *> &procList) {
     result.push_back(this->getVariable());
 }
 
@@ -169,31 +173,35 @@ PrintStatementNode::PrintStatementNode(VariableNode *VariableNode, int line) {
     this->line = line;
 }
 
-std::string PrintStatementNode::getVariable() { return this->var->getValue(); }
+std::string_view PrintStatementNode::getVariable() {
+    return this->var->getValue();
+}
 
-void PrintStatementNode::getVariablesInto(std::vector<std::string> &result) {
+void PrintStatementNode::getVariablesInto(
+    std::vector<std::string_view> &result) {
     result.push_back(this->getVariable());
 }
 
 void PrintStatementNode::getStatementsInto(
     std::vector<Statement *> &result, std::vector<Assignment *> &assign,
-    std::vector<Relationship<int, std::string> *> &call) {
+    std::vector<Relationship<int, std::string_view> *> &call) {
     result.push_back(new Statement(line, StatementType::PRINT));
 }
 
-std::vector<std::string> *PrintStatementNode::getUsesInto(
-    std::vector<Relationship<int, std::string> *> &result) {
-    std::string variable = this->getVariable();
-    Relationship<int, std::string> *temp = new Relationship<int, std::string>(
+std::vector<std::string_view> *PrintStatementNode::getUsesInto(
+    std::vector<Relationship<int, std::string_view> *> &result) {
+    std::string_view variable = this->getVariable();
+    Relationship<int, std::string_view> *temp =
+        new Relationship<int, std::string_view>(
         RelationshipReference::USES, this->getLineNumber(), variable);
     result.push_back(temp);
 
-    std::vector<std::string> *used = new std::vector<std::string>();
+    std::vector<std::string_view> *used = new std::vector<std::string_view>();
     used->push_back(variable);
     return used;
 }
 
-void PrintStatementNode::getUsesPInto(std::vector<std::string> &result,
+void PrintStatementNode::getUsesPInto(std::vector<std::string_view> &result,
                                       std::vector<ProcedureNode *> &procList) {
     result.push_back(this->getVariable());
 }
@@ -209,29 +217,33 @@ CallStatementNode::CallStatementNode(VariableNode *VariableNode, int line) {
     this->line = line;
 }
 
-std::string CallStatementNode::getVariable() { return this->var->getValue(); }
+std::string_view CallStatementNode::getVariable() {
+    return this->var->getValue();
+}
 
 void CallStatementNode::getStatementsInto(
     std::vector<Statement *> &result, std::vector<Assignment *> &assign,
-    std::vector<Relationship<int, std::string> *> &call) {
+    std::vector<Relationship<int, std::string_view> *> &call) {
     result.push_back(new Statement(line, StatementType::CALL));
-    call.push_back(new Relationship<int, std::string>(
+    call.push_back(new Relationship<int, std::string_view>(
         RelationshipReference::USES, line, getVariable()));
 }
 
-void CallStatementNode::getUsesPInto(std::vector<std::string> &result,
+void CallStatementNode::getUsesPInto(std::vector<std::string_view> &result,
                                      std::vector<ProcedureNode *> &procList) {
     ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
-    std::vector<std::string> temp = SPUtils::usesP(procedure, procList);
+    std::vector<std::string_view> temp = SPUtils::usesP(procedure, procList);
     for (size_t i = 0; i < temp.size(); i++) {
         result.push_back(temp[i]);
     }
 }
 
 void CallStatementNode::getModifiesPInto(
-    std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
+    std::vector<std::string_view> &result,
+    std::vector<ProcedureNode *> &procList) {
     ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
-    std::vector<std::string> temp = SPUtils::modifiesP(procedure, procList);
+    std::vector<std::string_view> temp =
+        SPUtils::modifiesP(procedure, procList);
     for (size_t i = 0; i < temp.size(); i++) {
         result.push_back(temp.at(i));
     }
@@ -250,39 +262,43 @@ AssignStatementNode::AssignStatementNode(VariableNode *VariableNode,
     this->line = line;
 }
 
-std::string AssignStatementNode::getVariable() { return this->var->getValue(); }
+std::string_view AssignStatementNode::getVariable() {
+    return this->var->getValue();
+}
 
-std::string AssignStatementNode::getExpressionString() {
+std::string_view AssignStatementNode::getExpressionString() {
     return this->expr->toString();
 }
 
-void AssignStatementNode::getVariablesInto(std::vector<std::string> &result) {
+void AssignStatementNode::getVariablesInto(
+    std::vector<std::string_view> &result) {
     result.push_back(this->getVariable());
     this->expr->getVariablesInto(result);
 }
 
-void AssignStatementNode::getConstantsInto(std::vector<std::string> &result) {
+void AssignStatementNode::getConstantsInto(
+    std::vector<std::string_view> &result) {
     this->expr->getConstantsInto(result);
 }
 
 void AssignStatementNode::getStatementsInto(
     std::vector<Statement *> &result, std::vector<Assignment *> &assign,
-    std::vector<Relationship<int, std::string> *> &call) {
+    std::vector<Relationship<int, std::string_view> *> &call) {
     result.push_back(new Statement(line, StatementType::ASSIGN));
     assign.push_back(
         new Assignment(line, getVariable(), getExpressionString()));
 }
 
-std::vector<std::string> *AssignStatementNode::getUsesInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+std::vector<std::string_view> *AssignStatementNode::getUsesInto(
+    std::vector<Relationship<int, std::string_view> *> &result) {
     int lineNo = this->getLineNumber();
-    std::vector<std::string> *used = new std::vector<std::string>();
+    std::vector<std::string_view> *used = new std::vector<std::string_view>();
 
-    std::vector<std::string> variables;
+    std::vector<std::string_view> variables;
     this->expr->getVariablesInto(variables);
     for (size_t i = 0; i < variables.size(); i++) {
-        Relationship<int, std::string> *variable =
-            new Relationship<int, std::string>(RelationshipReference::USES,
+        Relationship<int, std::string_view> *variable =
+            new Relationship<int, std::string_view>(RelationshipReference::USES,
                                                lineNo, variables[i]);
         result.push_back(variable);
         used->push_back(variables[i]);
@@ -291,26 +307,27 @@ std::vector<std::string> *AssignStatementNode::getUsesInto(
     return used;
 }
 
-void AssignStatementNode::getUsesPInto(std::vector<std::string> &result,
+void AssignStatementNode::getUsesPInto(std::vector<std::string_view> &result,
                                        std::vector<ProcedureNode *> &procList) {
     this->expr->getVariablesInto(result);
 }
 
-std::vector<std::string> *AssignStatementNode::getModsInto(
-    std::vector<Relationship<int, std::string> *> &result) {
-    Relationship<int, std::string> *mdfdVar =
-        new Relationship<int, std::string>(RelationshipReference::MODIFIES,
+std::vector<std::string_view> *AssignStatementNode::getModsInto(
+    std::vector<Relationship<int, std::string_view> *> &result) {
+    Relationship<int, std::string_view> *mdfdVar =
+        new Relationship<int, std::string_view>(RelationshipReference::MODIFIES,
                                            this->getLineNumber(),
                                            this->getVariable());
     result.push_back(mdfdVar);
 
-    std::vector<std::string> *mdfd = new std::vector<std::string>();
+    std::vector<std::string_view> *mdfd = new std::vector<std::string_view>();
     mdfd->push_back(this->getVariable());
     return mdfd;
 }
 
 void AssignStatementNode::getModifiesPInto(
-    std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
+    std::vector<std::string_view> &result,
+    std::vector<ProcedureNode *> &procList) {
     result.push_back(this->getVariable());
 }
 
@@ -333,14 +350,16 @@ int WhileStatementNode::getEndLine() {
     return this->stmtList.back()->getEndLine();
 }
 
-void WhileStatementNode::getVariablesInto(std::vector<std::string> &result) {
+void WhileStatementNode::getVariablesInto(
+    std::vector<std::string_view> &result) {
     cond->getVariablesInto(result);
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList.at(i)->getVariablesInto(result);
     }
 }
 
-void WhileStatementNode::getConstantsInto(std::vector<std::string> &result) {
+void WhileStatementNode::getConstantsInto(
+    std::vector<std::string_view> &result) {
     cond->getConstantsInto(result);
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList.at(i)->getConstantsInto(result);
@@ -349,7 +368,7 @@ void WhileStatementNode::getConstantsInto(std::vector<std::string> &result) {
 
 void WhileStatementNode::getStatementsInto(
     std::vector<Statement *> &result, std::vector<Assignment *> &assign,
-    std::vector<Relationship<int, std::string> *> &call) {
+    std::vector<Relationship<int, std::string_view> *> &call) {
     result.push_back(new Statement(line, StatementType::WHILE));
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList.at(i)->getStatementsInto(result, assign, call);
@@ -366,16 +385,17 @@ void WhileStatementNode::getFollowsTInto(
     SPUtils::followsT(this->getStmtList(), result);
 }
 
-std::vector<std::string> *WhileStatementNode::getUsesInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+std::vector<std::string_view> *WhileStatementNode::getUsesInto(
+    std::vector<Relationship<int, std::string_view> *> &result) {
     int lineNo = this->getLineNumber();
-    std::vector<std::string> *descendants = new std::vector<std::string>();
+    std::vector<std::string_view> *descendants =
+        new std::vector<std::string_view>();
 
-    std::vector<std::string> condVars;
+    std::vector<std::string_view> condVars;
     this->cond->getVariablesInto(condVars);
     for (size_t i = 0; i < condVars.size(); i++) {
-        Relationship<int, std::string> *condVar =
-            new Relationship<int, std::string>(RelationshipReference::USES,
+        Relationship<int, std::string_view> *condVar =
+            new Relationship<int, std::string_view>(RelationshipReference::USES,
                                                lineNo, condVars[i]);
         result.push_back(condVar);
         descendants->push_back(condVars[i]);
@@ -383,10 +403,11 @@ std::vector<std::string> *WhileStatementNode::getUsesInto(
 
     std::vector<StatementNode *> stmts = this->getStmtList();
     for (size_t i = 0; i < stmts.size(); i++) {
-        std::vector<std::string> *usedVars = stmts[i]->getUsesInto(result);
+        std::vector<std::string_view> *usedVars = stmts[i]->getUsesInto(result);
         for (size_t j = 0; j < usedVars->size(); j++) {
-            Relationship<int, std::string> *usedVar =
-                new Relationship<int, std::string>(RelationshipReference::USES,
+            Relationship<int, std::string_view> *usedVar =
+                new Relationship<int, std::string_view>(
+                    RelationshipReference::USES,
                                                    lineNo, usedVars->at(j));
             result.push_back(usedVar);
             descendants->push_back(usedVars->at(j));
@@ -396,7 +417,7 @@ std::vector<std::string> *WhileStatementNode::getUsesInto(
     return descendants;
 }
 
-void WhileStatementNode::getUsesPInto(std::vector<std::string> &result,
+void WhileStatementNode::getUsesPInto(std::vector<std::string_view> &result,
                                       std::vector<ProcedureNode *> &procList) {
     this->cond->getVariablesInto(result);
 
@@ -406,17 +427,18 @@ void WhileStatementNode::getUsesPInto(std::vector<std::string> &result,
     }
 }
 
-std::vector<std::string> *WhileStatementNode::getModsInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+std::vector<std::string_view> *WhileStatementNode::getModsInto(
+    std::vector<Relationship<int, std::string_view> *> &result) {
     int lineNo = this->getLineNumber();
 
-    std::vector<std::string> *descendants = new std::vector<std::string>();
+    std::vector<std::string_view> *descendants =
+        new std::vector<std::string_view>();
     std::vector<StatementNode *> stmts = this->getStmtList();
     for (size_t i = 0; i < stmts.size(); i++) {
-        std::vector<std::string> *mdfdVars = stmts[i]->getModsInto(result);
+        std::vector<std::string_view> *mdfdVars = stmts[i]->getModsInto(result);
         for (size_t j = 0; j < mdfdVars->size(); j++) {
-            Relationship<int, std::string> *mdfdVar =
-                new Relationship<int, std::string>(
+            Relationship<int, std::string_view> *mdfdVar =
+                new Relationship<int, std::string_view>(
                     RelationshipReference::MODIFIES, lineNo, mdfdVars->at(j));
             result.push_back(mdfdVar);
             descendants->push_back(mdfdVars->at(j));
@@ -427,7 +449,8 @@ std::vector<std::string> *WhileStatementNode::getModsInto(
 }
 
 void WhileStatementNode::getModifiesPInto(
-    std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
+    std::vector<std::string_view> &result,
+    std::vector<ProcedureNode *> &procList) {
     std::vector<StatementNode *> stmtList = this->getStmtList();
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getModifiesPInto(result, procList);
@@ -435,13 +458,13 @@ void WhileStatementNode::getModifiesPInto(
 }
 
 void WhileStatementNode::getConVar(
-    std::vector<Relationship<int, std::string> *> &ifResult,
-    std::vector<Relationship<int, std::string> *> &whileResult) {
-    std::vector<std::string> condVars;
+    std::vector<Relationship<int, std::string_view> *> &ifResult,
+    std::vector<Relationship<int, std::string_view> *> &whileResult) {
+    std::vector<std::string_view> condVars;
     cond->getVariablesInto(condVars);
     int lineNo = this->getLineNumber();
     for (size_t i = 0; i < condVars.size(); i++) {
-        whileResult.push_back(new Relationship<int, std::string>(
+        whileResult.push_back(new Relationship<int, std::string_view>(
             RelationshipReference::USES, lineNo, condVars[i]));
     }
 
@@ -512,7 +535,7 @@ std::vector<StatementNode *> IfStatementNode::getStmtList() {
     return stmtList;
 }
 
-void IfStatementNode::getVariablesInto(std::vector<std::string> &result) {
+void IfStatementNode::getVariablesInto(std::vector<std::string_view> &result) {
     std::vector<StatementNode *> stmtList = this->getStmtList();
 
     cond->getVariablesInto(result);
@@ -521,7 +544,7 @@ void IfStatementNode::getVariablesInto(std::vector<std::string> &result) {
     }
 }
 
-void IfStatementNode::getConstantsInto(std::vector<std::string> &result) {
+void IfStatementNode::getConstantsInto(std::vector<std::string_view> &result) {
     std::vector<StatementNode *> stmtList = this->getStmtList();
 
     cond->getConstantsInto(result);
@@ -532,7 +555,7 @@ void IfStatementNode::getConstantsInto(std::vector<std::string> &result) {
 
 void IfStatementNode::getStatementsInto(
     std::vector<Statement *> &result, std::vector<Assignment *> &assign,
-    std::vector<Relationship<int, std::string> *> &call) {
+    std::vector<Relationship<int, std::string_view> *> &call) {
     result.push_back(new Statement(line, StatementType::IF));
     std::vector<StatementNode *> stmtList = this->getStmtList();
     for (size_t i = 0; i < stmtList.size(); i++) {
@@ -552,16 +575,17 @@ void IfStatementNode::getFollowsTInto(
     SPUtils::followsT(this->elseBlock, result);
 }
 
-std::vector<std::string> *IfStatementNode::getUsesInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+std::vector<std::string_view> *IfStatementNode::getUsesInto(
+    std::vector<Relationship<int, std::string_view> *> &result) {
     int lineNo = this->getLineNumber();
-    std::vector<std::string> *descendants = new std::vector<std::string>();
+    std::vector<std::string_view> *descendants =
+        new std::vector<std::string_view>();
 
-    std::vector<std::string> condVars;
+    std::vector<std::string_view> condVars;
     this->cond->getVariablesInto(condVars);
     for (size_t i = 0; i < condVars.size(); i++) {
-        Relationship<int, std::string> *condVar =
-            new Relationship<int, std::string>(RelationshipReference::USES,
+        Relationship<int, std::string_view> *condVar =
+            new Relationship<int, std::string_view>(RelationshipReference::USES,
                                                lineNo, condVars[i]);
         result.push_back(condVar);
         descendants->push_back(condVars[i]);
@@ -569,10 +593,11 @@ std::vector<std::string> *IfStatementNode::getUsesInto(
 
     std::vector<StatementNode *> stmts = this->getStmtList();
     for (size_t i = 0; i < stmts.size(); i++) {
-        std::vector<std::string> *usedVars = stmts[i]->getUsesInto(result);
+        std::vector<std::string_view> *usedVars = stmts[i]->getUsesInto(result);
         for (size_t j = 0; j < usedVars->size(); j++) {
-            Relationship<int, std::string> *usedVar =
-                new Relationship<int, std::string>(RelationshipReference::USES,
+            Relationship<int, std::string_view> *usedVar =
+                new Relationship<int, std::string_view>(
+                    RelationshipReference::USES,
                                                    lineNo, usedVars->at(j));
             result.push_back(usedVar);
             descendants->push_back(usedVars->at(j));
@@ -582,7 +607,7 @@ std::vector<std::string> *IfStatementNode::getUsesInto(
     return descendants;
 }
 
-void IfStatementNode::getUsesPInto(std::vector<std::string> &result,
+void IfStatementNode::getUsesPInto(std::vector<std::string_view> &result,
                                    std::vector<ProcedureNode *> &procList) {
     this->cond->getVariablesInto(result);
 
@@ -592,17 +617,18 @@ void IfStatementNode::getUsesPInto(std::vector<std::string> &result,
     }
 }
 
-std::vector<std::string> *IfStatementNode::getModsInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+std::vector<std::string_view> *IfStatementNode::getModsInto(
+    std::vector<Relationship<int, std::string_view> *> &result) {
     int lineNo = this->getLineNumber();
 
-    std::vector<std::string> *descendants = new std::vector<std::string>();
+    std::vector<std::string_view> *descendants =
+        new std::vector<std::string_view>();
     std::vector<StatementNode *> stmts = this->getStmtList();
     for (size_t i = 0; i < stmts.size(); i++) {
-        std::vector<std::string> *mdfdVars = stmts[i]->getModsInto(result);
+        std::vector<std::string_view> *mdfdVars = stmts[i]->getModsInto(result);
         for (size_t j = 0; j < mdfdVars->size(); j++) {
-            Relationship<int, std::string> *mdfdVar =
-                new Relationship<int, std::string>(
+            Relationship<int, std::string_view> *mdfdVar =
+                new Relationship<int, std::string_view>(
                     RelationshipReference::MODIFIES, lineNo, mdfdVars->at(j));
             result.push_back(mdfdVar);
             descendants->push_back(mdfdVars->at(j));
@@ -612,7 +638,7 @@ std::vector<std::string> *IfStatementNode::getModsInto(
     return descendants;
 }
 
-void IfStatementNode::getModifiesPInto(std::vector<std::string> &result,
+void IfStatementNode::getModifiesPInto(std::vector<std::string_view> &result,
                                        std::vector<ProcedureNode *> &procList) {
     std::vector<StatementNode *> stmtList = this->getStmtList();
     for (size_t i = 0; i < stmtList.size(); i++) {
@@ -621,13 +647,13 @@ void IfStatementNode::getModifiesPInto(std::vector<std::string> &result,
 }
 
 void IfStatementNode::getConVar(
-    std::vector<Relationship<int, std::string> *> &ifResult,
-    std::vector<Relationship<int, std::string> *> &whileResult) {
-    std::vector<std::string> condVars;
+    std::vector<Relationship<int, std::string_view> *> &ifResult,
+    std::vector<Relationship<int, std::string_view> *> &whileResult) {
+    std::vector<std::string_view> condVars;
     cond->getVariablesInto(condVars);
     int lineNo = this->getLineNumber();
     for (size_t i = 0; i < condVars.size(); i++) {
-        ifResult.push_back(new Relationship<int, std::string>(
+        ifResult.push_back(new Relationship<int, std::string_view>(
             RelationshipReference::USES, lineNo, condVars[i]));
     }
 
@@ -702,7 +728,7 @@ ExpressionNode::ExpressionNode(Token *token) {
     this->right = nullptr;
 }
 
-void ExpressionNode::getVariablesInto(std::vector<std::string> &result) {
+void ExpressionNode::getVariablesInto(std::vector<std::string_view> &result) {
     if (this->token->isName()) {
         result.push_back(this->token->getValue());
     } else if (this->token->isConstant()) {
@@ -714,7 +740,7 @@ void ExpressionNode::getVariablesInto(std::vector<std::string> &result) {
     }
 }
 
-void ExpressionNode::getConstantsInto(std::vector<std::string> &result) {
+void ExpressionNode::getConstantsInto(std::vector<std::string_view> &result) {
     if (this->token->isConstant()) {
         result.push_back(this->token->getValue());
     } else if (this->token->isName()) {
@@ -745,7 +771,7 @@ bool ExpressionNode::equals(ExpressionNode *other) {
     }
 }
 
-std::string ExpressionNode::toString() {
+std::string_view ExpressionNode::toString() {
     std::string result = "(";
 
     if (this->left != nullptr) {
@@ -771,9 +797,9 @@ void ExpressionNode::cleanup() {
 }
 
 // Constant
-ConstantNode ::ConstantNode(std::string s) { this->value = s; }
+ConstantNode ::ConstantNode(std::string_view s) { this->value = s; }
 
 // Variable
-VariableNode ::VariableNode(std::string s) { this->value = s; }
+VariableNode ::VariableNode(std::string_view s) { this->value = s; }
 
 VariableNode ::VariableNode() {}

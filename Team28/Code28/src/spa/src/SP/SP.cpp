@@ -44,5 +44,5 @@ std::string SP::convertExpression(std::string input) {
     if (parser.getOffset() != tokens.size()) {
         throw "expression syntax error";
     }
-    return expr->toString();
+    return expr->toString().data();
 }

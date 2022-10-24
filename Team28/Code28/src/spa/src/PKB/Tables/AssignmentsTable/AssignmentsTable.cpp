@@ -13,7 +13,7 @@ void AssignmentsTable::store(TableValue *assignment) {
 std::vector<std::string> AssignmentsTable::getAllAsString() {
     std::vector<std::string> result = {};
     for (Assignment assign : this->allAssignments) {
-        result.push_back(assign.toString());
+        result.push_back(assign.toString().data());
     }
     return result;
 };
@@ -144,7 +144,7 @@ AssignmentsTable::getAssignAndVar(std::string expression) {
             intermediateResult.insert(std::make_pair(
                 Value(ValueType::STMT_NUM,
                       std::to_string(assignment.getLineNo())),
-                Value(ValueType::VAR_NAME, assignment.getVariable())));
+                Value(ValueType::VAR_NAME, assignment.getVariable().data())));
         }
     }
     std::vector<std::pair<Value, Value>> result =
@@ -164,7 +164,7 @@ AssignmentsTable::getAssignAndVarExact(std::string expression) {
             intermediateResult.insert(std::make_pair(
                 Value(ValueType::STMT_NUM,
                       std::to_string(assignment.getLineNo())),
-                Value(ValueType::VAR_NAME, assignment.getVariable())));
+                Value(ValueType::VAR_NAME, assignment.getVariable().data())));
         }
     }
     std::vector<std::pair<Value, Value>> result =

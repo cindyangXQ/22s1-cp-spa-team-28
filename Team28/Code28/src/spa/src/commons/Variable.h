@@ -10,5 +10,5 @@
  */
 class Variable : public Entity {
 public:
-    explicit Variable(std::string name);
+    explicit Variable(std::string_view name);
 };

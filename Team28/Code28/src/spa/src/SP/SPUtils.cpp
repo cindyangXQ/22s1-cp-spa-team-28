@@ -72,10 +72,10 @@ SPUtils::parentT(StatementNode *parentNode,
     return descendants;
 }
 
-std::vector<std::string>
+std::vector<std::string_view>
 SPUtils::usesP(ProcedureNode *procedure,
                std::vector<ProcedureNode *> &procList) {
-    std::vector<std::string> result;
+    std::vector<std::string_view> result;
     std::vector<StatementNode *> stmtList = procedure->getStmtList();
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getUsesPInto(result, procList);
@@ -83,10 +83,10 @@ SPUtils::usesP(ProcedureNode *procedure,
     return result;
 }
 
-std::vector<std::string>
+std::vector<std::string_view>
 SPUtils::modifiesP(ProcedureNode *procedure,
                    std::vector<ProcedureNode *> &procList) {
-    std::vector<std::string> result;
+    std::vector<std::string_view> result;
     std::vector<StatementNode *> stmtList = procedure->getStmtList();
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getModifiesPInto(result, procList);
@@ -120,7 +120,7 @@ bool SPUtils::compareProcList(std::vector<ProcedureNode *> &list1,
     return true;
 }
 
-ProcedureNode *SPUtils::findProc(std::string procName,
+ProcedureNode *SPUtils::findProc(std::string_view procName,
                                  std::vector<ProcedureNode *> &procList) {
     for (int i = 0; i < procList.size(); i++) {
         if (procList[i]->getName() == procName) {

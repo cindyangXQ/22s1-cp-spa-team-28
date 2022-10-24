@@ -9,7 +9,7 @@
  */
 class Procedure : public Entity {
 public:
-    explicit Procedure(std::string name, int startStmt);
+    explicit Procedure(std::string_view name, int startStmt);
 
     int getStmtNum();
 

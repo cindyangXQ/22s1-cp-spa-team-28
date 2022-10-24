@@ -10,7 +10,7 @@ public:
     Token(std::string s);
     bool equals(std::string other);
     virtual bool equals(Token *other) { return false; }
-    std::string getValue();
+    std::string_view getValue();
     virtual bool isName() { return false; };
     virtual bool isKeyword() { return false; };
     virtual bool isConstant() { return false; };
