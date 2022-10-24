@@ -2,13 +2,13 @@
 
 QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
     std::vector<ClauseResult> clauseResultList;
-    std::unordered_map<std::type_index, std::vector<QueryClause *>> clauses =
-        solvableQ->getQueryClause();
+    std::vector<QueryClause *> clauses = solvableQ->getQueryClause();
     SelectClause selectClause = solvableQ->getSelectClause();
 
-    evaluateClause<SuchThatClause>(clauses, &clauseResultList);
-    evaluateClause<PatternClause>(clauses, &clauseResultList);
-    evaluateClause<WithClause>(clauses, &clauseResultList);
+    for (int i = 0; i < clauses.size(); i++) {
+        ClauseResult result = clauses[i]->evaluate(queryFacade);
+        clauseResultList.push_back(result);
+    }
 
     return QueryResult(selectClause, clauseResultList);
 }

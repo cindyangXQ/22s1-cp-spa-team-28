@@ -1,5 +1,35 @@
 #include "QueryParser.h"
 
+template <typename QueryClass> bool QueryParser::isClause(std::string *clause) {
+    return std::regex_search(*clause,
+                             IS_CLAUSE_MAP.at(typeid(QueryClass)));
+};
+
+template <typename QueryClass>
+void QueryParser::parse(std::string *queryString, std::vector<Synonym> syns,
+                        std::vector<QueryClause *> *clauses) {
+    while (std::regex_search(
+        *queryString, IS_CLAUSE_AND_MAP.at(typeid(QueryClass)))) {
+        std::smatch matches;
+        std::regex_match(*queryString, matches,
+                         WHOLE_CLAUSE_MAP.at(typeid(QueryClass)));
+        std::string extractedClause = matches[1];
+        std::regex_match(extractedClause, matches,
+                         ARG_CLAUSE_MAP.at(typeid(QueryClass)));
+        if (matches.size() !=
+            REGEX_CHECK_MAP.at(typeid(QueryClass))) {
+            throw SyntaxError("Invalid clause syntax");
+        }
+        QueryClause *queryClause = new QueryClass;
+        queryClause->parse(matches, syns);
+        if (!queryClause->validate()) {
+            throw SemanticError("Invalid clause semantic");
+        }
+        clauses->push_back(queryClause);
+        *queryString = Utils::removeString(*queryString, extractedClause);
+    }
+}
+
 SolvableQuery QueryParser::parse(std::string query) {
     if (query.back() == CLAUSE_SEPARATOR) {
         throw SyntaxError("Semicolon at the end not allowed");
@@ -8,7 +38,7 @@ SolvableQuery QueryParser::parse(std::string query) {
         Utils::splitString(query, CLAUSE_SEPARATOR);
     Declaration decl;
     SelectClause selectClause;
-    std::unordered_map<std::type_index, std::vector<QueryClause *>> queryCls;
+    std::vector<QueryClause *> queryCls;
 
     if (clauses.size() >= MIN_CLAUSE_NUM) {
         decl = QueryParser::parseDeclaration(clauses);
@@ -103,7 +133,7 @@ QueryParser::parseSynonyms(std::vector<std::string> tokens) {
     if (!ENTITY_MAP.count(tokens[0])) {
         throw SyntaxError("Invalid design entity name");
     } else {
-        entity = ENTITY_MAP.find(tokens[0])->second;
+        entity = ENTITY_MAP.at(tokens[0]);
     }
     std::vector<Synonym> syns;
     for (int i = 1; i < tokens.size(); i++) {

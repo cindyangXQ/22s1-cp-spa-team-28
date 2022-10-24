@@ -19,13 +19,13 @@ bool SuchThatClause::validate() {
     bool isLeftValid;
     bool isRightValid;
     std::unordered_set<EntityName> validLeftArg =
-        RELATIONSHIP_LEFT_ARG_MAP.find(relationship)->second;
+        RELATIONSHIP_LEFT_ARG_MAP.at(relationship);
     std::unordered_set<EntityName> validRightArg =
-        RELATIONSHIP_RIGHT_ARG_MAP.find(relationship)->second;
+        RELATIONSHIP_RIGHT_ARG_MAP.at(relationship);
     std::unordered_set<ReferenceType> validLeftRef =
-        RELATIONSHIP_LEFT_REF_MAP.find(relationship)->second;
+        RELATIONSHIP_LEFT_REF_MAP.at(relationship);
     std::unordered_set<ReferenceType> validRightRef =
-        RELATIONSHIP_RIGHT_REF_MAP.find(relationship)->second;
+        RELATIONSHIP_RIGHT_REF_MAP.at(relationship);
 
     if (refLeft.isASynonym()) {
         isLeftValid = validLeftArg.count(refLeft.getEntityName());
@@ -41,14 +41,27 @@ bool SuchThatClause::validate() {
 }
 
 ClauseResult SuchThatClause::evaluate(QueryFacade *queryFacade) {
-    return ClauseResult(true);
+    if (relationship == RelationshipReference::EMPTY) {
+        return ClauseResult(false);
+    } else {
+        if (!refLeft.isASynonym() && !refRight.isASynonym()) {
+            return handleNoSynonym(queryFacade);
+        } else if (refLeft.isASynonym() && !refRight.isASynonym()) {
+            return handleLeftSynonym(queryFacade);
+        } else if (!refLeft.isASynonym() && refRight.isASynonym()) {
+            return handleRightSynonym(queryFacade);
+        } else if (refLeft.isASynonym() && refRight.isASynonym()) {
+            return handleBothSynonym(queryFacade);
+        } else {
+            return ClauseResult(true);
+        }
+    }
 }
 
 ClauseResult SuchThatClause::handleNoSynonym(QueryFacade *queryFacade) {
     // the boolean argument is isEmpty, if validate returns true,
     // isEmpty should be false.
-    bool isTrue = queryFacade->validate(relationship, refLeft,
-                                        refRight);
+    bool isTrue = queryFacade->validate(relationship, refLeft, refRight);
     bool isEmpty = !isTrue;
     return ClauseResult(isEmpty);
 }
@@ -79,8 +92,7 @@ ClauseResult SuchThatClause::handleBothSynonym(QueryFacade *queryFacade) {
     if (relationship == RelationshipReference::NEXT_T &&
         refLeft.getSynonymName() == refRight.getSynonymName()) {
         // TODO: clean up this if block
-        ClauseResult clauseResult =
-            ClauseResult({refLeft, refRight});
+        ClauseResult clauseResult = ClauseResult({refLeft, refRight});
 
         std::vector<Value> result =
             queryFacade->getReflexiveNextT(refLeft.getEntityName());

@@ -46,15 +46,22 @@ bool PatternClause::validate() {
 }
 
 ClauseResult PatternClause::evaluate(QueryFacade *queryFacade) {
-    return ClauseResult(true);
+    if (syn.getEntityName() == EntityName::ASSIGN) {
+        return handleAssign(queryFacade);
+    } else if (syn.getEntityName() == EntityName::WHILE) {
+        return handleWhile(queryFacade);
+    } else if (syn.getEntityName() == EntityName::IF) {
+        return handleIf(queryFacade);
+    } else {
+        return ClauseResult(true);
+    }
 }
 
 ClauseResult PatternClause::handleAssign(QueryFacade *queryFacade) {
     if (entRef.isASynonym()) {
         ClauseResult clauseResult =
             ClauseResult(std::vector{Reference(syn), entRef});
-        AssignExpression expr =
-            AssignExpression(expression, isExact);
+        AssignExpression expr = AssignExpression(expression, isExact);
         std::vector<std::pair<Value, Value>> result =
             queryFacade->getAssignAndVar(expr);
         for (int i = 0; i < result.size(); i++) {
@@ -63,10 +70,8 @@ ClauseResult PatternClause::handleAssign(QueryFacade *queryFacade) {
         }
         return clauseResult;
     } else {
-        ClauseResult clauseResult =
-            ClauseResult(std::vector{Reference(syn)});
-        AssignExpression expr =
-            AssignExpression(expression, isExact);
+        ClauseResult clauseResult = ClauseResult(std::vector{Reference(syn)});
+        AssignExpression expr = AssignExpression(expression, isExact);
         std::vector<Value> result =
             queryFacade->getAssign(entRef.getValueString(), expr);
         for (int i = 0; i < result.size(); i++) {
@@ -88,8 +93,7 @@ ClauseResult PatternClause::handleWhile(QueryFacade *queryFacade) {
         }
         return clauseResult;
     } else {
-        ClauseResult clauseResult =
-            ClauseResult(std::vector{Reference(syn)});
+        ClauseResult clauseResult = ClauseResult(std::vector{Reference(syn)});
         std::vector<Value> result =
             queryFacade->getCond(Designation::WHILE_C, entRef.getValueString());
         for (int i = 0; i < result.size(); i++) {
@@ -111,8 +115,7 @@ ClauseResult PatternClause::handleIf(QueryFacade *queryFacade) {
         }
         return clauseResult;
     } else {
-        ClauseResult clauseResult =
-            ClauseResult(std::vector{Reference(syn)});
+        ClauseResult clauseResult = ClauseResult(std::vector{Reference(syn)});
         std::vector<Value> result =
             queryFacade->getCond(Designation::IF_C, entRef.getValueString());
         for (int i = 0; i < result.size(); i++) {

@@ -147,12 +147,12 @@ const std::unordered_set<RelationshipReference> noSameSynonym = {
 class SuchThatClause : public QueryClause {
 public:
     SuchThatClause() : relationship(RelationshipReference::EMPTY){};
-    void parse(std::smatch matches, std::vector<Synonym> syns);
-    bool validate();
-    ClauseResult evaluate(QueryFacade *queryFacade);
     RelationshipReference getRelationship();
     Reference getRefLeft();
     Reference getRefRight();
+    void parse(std::smatch matches, std::vector<Synonym> syns);
+    bool validate();
+    ClauseResult evaluate(QueryFacade *queryFacade);
 
 private:
     RelationshipReference relationship;

@@ -21,7 +21,7 @@ Reference::Reference(Synonym syn, EntityAttribute attr) {
     this->type = ReferenceType::ATTR_REF;
     this->syn = syn;
     std::unordered_set<EntityAttribute> validAttr =
-        entityAttributeMap.find(syn.getEntityName())->second;
+        entityAttributeMap.at(syn.getEntityName());
     if (validAttr.count(attr)) {
         this->attr = attr;
     } else {
@@ -54,7 +54,7 @@ bool Reference::isWildcard() {
 
 bool Reference::isSecondaryAttribute() {
     if (SECONDARY_ATTRIBUTE_MAP.count(getEntityName())) {
-        return SECONDARY_ATTRIBUTE_MAP.find(getEntityName())->second == attr;
+        return SECONDARY_ATTRIBUTE_MAP.at(getEntityName()) == attr;
     }
     return false;
 }
@@ -102,7 +102,7 @@ Reference Reference::getReference(std::string input,
         if (!ENTITY_ATTR_MAP.count(matches[2])) {
             throw SyntaxError("Invalid attribute name");
         }
-        EntityAttribute attr = ENTITY_ATTR_MAP.find(matches[2])->second;
+        EntityAttribute attr = ENTITY_ATTR_MAP.at(matches[2]);
         return Reference(synonym, attr);
     }
     throw SyntaxError("Invalid reference format");

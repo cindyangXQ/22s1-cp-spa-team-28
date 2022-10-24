@@ -34,7 +34,16 @@ bool WithClause::validate() {
 }
 
 ClauseResult WithClause::evaluate(QueryFacade *queryFacade) {
-    return ClauseResult(true);
+    if (refLeft.getRefType() != ReferenceType::ATTR_REF &&
+        refRight.getRefType() != ReferenceType::ATTR_REF) {
+        return ClauseResult(refLeft.getValueString() !=
+                            refRight.getValueString());
+    } else if (refLeft.getRefType() == ReferenceType::ATTR_REF &&
+               refLeft.getRefType() == ReferenceType::ATTR_REF) {
+        return handleBothSynonyms(queryFacade);
+    } else {
+        return handleOneSynonym(queryFacade);
+    }
 }
 
 ClauseResult WithClause::handleBothSynonyms(QueryFacade *queryFacade) {
