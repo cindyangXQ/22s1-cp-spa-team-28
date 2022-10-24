@@ -1,0 +1,145 @@
+1 - with clauses with procedure.procName
+procedure p; 
+Select p with p.procName = "call"
+call
+5000
+2 - select stmt#, call.procName in with clause
+call c;
+Select c.stmt# with call.procName = "call"
+27
+5000
+3 - 2 with clauses
+procedure p; call c;
+Select <p.procName, c> with c.procName = "call" with p.procName = "main"
+main, 27
+5000
+3 - 2 with clauses connect by and
+procedure p; call c;
+Select <p.procName, c> with c.procName = "call" and p.procName = "main"
+main, 27
+5000
+4 - 2 with clauses one not exist select tuple
+procedure p; call c;
+Select <p.procName, c.stmt#> with c.procName = "main" and p.procName = "main"
+
+5000
+5 - 2 with clauses one not exist select procedure
+procedure p; call c;
+Select p.procName with p.procName = "call" and c.procName = "main"
+
+5000
+6 - selected synonym not in with clause
+procedure p; call c;
+Select p.procName with c.procName = "call"
+call, main
+5000
+7 - invalid query: select procName of statement
+read r;
+Select r.procName
+SemanticError
+5000
+8 - invalid query: constraint procName of variable and constant in with clause
+constant c; variable v;
+Select c with c.procName = "main" and v.procName = "call"
+SemanticError
+5000
+9 - variable.varName in with clause
+variable v;
+Select v with v.varName = "a18"
+a18
+5000
+10 - print/read.varName in with and select clause
+print p; read r;
+Select <p.varName, r.stmt#> with r.varName =read 
+constant read, a7 read, a17 read, a21 read, a27 read, a28 read, call read
+5000
+11 - invalid query: assignment.varName
+assign a;
+Select a with a.stmt# = 12 with a.varName = "a1"
+SemanticError
+5000
+12 - invalid query: print/call varName in select clause
+print p; call c;
+Select <p.varName, c.varName>
+SemanticError
+5000
+13 - invalid query: procedure varName in select clause; no such procedure exist
+procedure p;
+Select p.varName such that Calls*(p, "main")
+SemanticError
+5000
+14 - invalid query: call.varName
+constant c;
+Select c with constant.varName = 1
+SemanticError
+5000
+15 - constant.value in with clause (1 such that, 1 with)
+constant c; assign a;
+Select a.stmt# such that Uses(a, c) with c.value = 5
+13, 14
+5000
+16 - Select constant.value (1 pattern, 1 with, 1 such that)
+constant c; variable v; assign a;
+Select c.value pattern a(v, _) with v.varName = "a10" such that Uses(a, c)
+5, 10, 11
+5000
+17 - different order (1 with, 1 pattern, 1 such that)
+constant c; variable v; assign a;
+Select c.value with v.varName = "a10" pattern a(v, _) such that Uses(a, c)
+5, 10, 11
+5000
+18 - different order (1 pattern, 1 such that, 1 with)
+constant c; variable v; assign a;
+Select c.value pattern a(v, _) such that Uses(a, c) with v.varName = "a10"
+5, 10, 11
+5000
+19 - invalid query: variable.value
+variable v;
+Select variable.value
+SemanticError
+5000
+20 - invalid query: procedure.value in with clause
+procedure p;
+Select p with p.value = "main"
+SemanticError
+5000
+21 - statement.stmt# in with clause, 3 with clauses
+print p; read r; call c;
+Select <p, r> with c.procName = "call" with p.varName = "constant" and r.stmt# = 1
+4 1
+5000
+22 - 3 with clauses, 1 not exists
+print p; read r; call c;
+Select <p, r> with c.procName = "call" with p.varName = "constant" and r.stmt# = 2
+
+5000
+23 - 1 with, 2 such that
+if ifs; while w; stmt s;
+Select <w,s.stmt#> such that Uses(s, a26) with ifs.stmt# = 15 such that Parents*(ifs, w) 
+21 21, 22 21, 23 21, 21 22, 22 22, 23 22
+5000
+24 - 2 with, 1 such that
+if ifs; print p;
+Select p.stmt# with p.varname = "a17"  such that Parents(ifs, p) with ifs.stmt# = 17
+18
+5000
+25 - 1 with, 1 pattern
+while w; variable v;
+Select w.stmt# pattern w(v, _) with v.varname = "a24"
+22
+5000
+26 - 1 with 2 pattern
+if ifs; while w; assign a;
+Select <w.stmt#, ifs.stmt#> pattern w(v, _) and ifs(v, _, _) with v.varName = "a4" 
+8 29
+5000
+27 - attribute with extra space
+print p; read r; call c;
+Select <p,r> with c.procName = "call		" with p.varName = "       constant " and r.stmt# = 1
+4 1
+5000
+28 - with in wrong clause
+assign a; variable v;
+Select a such that pattern a(v, _) and variable.varName = "a2"
+SemanticError
+5000

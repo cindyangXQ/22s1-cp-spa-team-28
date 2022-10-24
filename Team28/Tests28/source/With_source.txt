@@ -1,0 +1,49 @@
+procedure main {
+    read = print + 44;
+    constant = variable - constant;
+    procedure = procedure + 1;
+    print constant;
+    read read;
+
+    if (a1 > a2) then {
+        a10 = a2;
+    } else {
+        while (a4 < a5) {
+            a6 = 0;
+            read a6;
+            print a7;
+        }
+    }
+
+    while (a8 < constant) {
+        a9 = a6 * a7 + a4 / a5 - a4 * a3 + 5;
+        a10 = 5 + 10 + 11;
+    }
+
+    if (a11 < a12) then {
+        if (a13 < a14) then {
+            if (a15 > a16) then {
+                print a17;
+                a18 = a19 + a20;
+                print a21;
+            } else {
+                while (a22 > a23) {
+                    while (a24 < a25) {
+                        read a26;
+                        print a27;
+                    }
+                }
+            }
+        } else {
+            print a28;
+        }
+    }
+    else {
+        read a29;
+    }
+    call call;
+}
+
+procedure call {
+    print call;
+}
