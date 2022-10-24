@@ -118,3 +118,10 @@ StatementsTable::getAllValues(EntityName entity) {
 }
 
 int StatementsTable::getTableSize() { return this->tableSize; }
+
+std::unordered_set<int>
+StatementsTable::getStatementsSetByType(StatementType type) {
+    std::vector<int> statements = this->getStatementsByType(type);
+    std::unordered_set<int> statementsSet(statements.begin(), statements.end());
+    return statementsSet;
+};

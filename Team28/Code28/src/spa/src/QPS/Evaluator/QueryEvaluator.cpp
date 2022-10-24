@@ -4,6 +4,7 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
     std::vector<ClauseResult> clauseResultList;
     std::vector<SuchThatClause> suchThatCls = solvableQ->getSuchThatCls();
     std::vector<PatternClause> patternCls = solvableQ->getPatternCls();
+    std::vector<WithClause> withCls = solvableQ->getWithCls();
     SelectClause selectClause = solvableQ->getSelectClause();
 
     for (size_t i = 0; i < suchThatCls.size(); i++) {
@@ -14,6 +15,10 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
     for (size_t i = 0; i < patternCls.size(); i++) {
         ClauseResult patternResult = patternEvaluator.evaluate(&patternCls[i]);
         clauseResultList.push_back(patternResult);
+    }
+    for (size_t i = 0; i < withCls.size(); i++) {
+        ClauseResult withResult = withEvaluator.evaluate(&withCls[i]);
+        clauseResultList.push_back(withResult);
     }
     return QueryResult(selectClause, clauseResultList);
 }

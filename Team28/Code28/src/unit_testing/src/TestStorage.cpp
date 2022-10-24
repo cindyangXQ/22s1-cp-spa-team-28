@@ -299,6 +299,68 @@ TEST_CASE("Storage stores and retrieves AffectsT correctly") {
     REQUIRE(affectsT->retrieveRight(2).size() == 1);
 }
 
+TEST_CASE("getRsTable works correctly") {
+    Storage *storage = new Storage();
+
+    // Test valid combos
+    Solvable *table = storage->getRsTable(RelationshipReference::MODIFIES,
+                                          ReferenceType::STMT_REF);
+    REQUIRE(typeid(*table) == typeid(ModifiesSTable));
+    table = storage->getRsTable(RelationshipReference::MODIFIES,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(ModifiesPTable));
+    table = storage->getRsTable(RelationshipReference::USES,
+                                ReferenceType::STMT_REF);
+    REQUIRE(typeid(*table) == typeid(UsesSTable));
+    table = storage->getRsTable(RelationshipReference::USES,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(UsesPTable));
+    table = storage->getRsTable(RelationshipReference::FOLLOWS,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(FollowsTable));
+    table = storage->getRsTable(RelationshipReference::FOLLOWS_T,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(FollowsTTable));
+    table = storage->getRsTable(RelationshipReference::PARENT,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(ParentTable));
+    table = storage->getRsTable(RelationshipReference::PARENT_T,
+                                ReferenceType::STMT_REF);
+    REQUIRE(typeid(*table) == typeid(ParentTTable));
+    table = storage->getRsTable(RelationshipReference::CALLS,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(CallsTable));
+    table = storage->getRsTable(RelationshipReference::CALLS_T,
+                                ReferenceType::ATTR_REF);
+    REQUIRE(typeid(*table) == typeid(CallsTTable));
+    table = storage->getRsTable(RelationshipReference::NEXT,
+                                ReferenceType::WILDCARD);
+    REQUIRE(typeid(*table) == typeid(NextTable));
+    table = storage->getRsTable(RelationshipReference::NEXT_T,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(NextTTable));
+    table = storage->getRsTable(RelationshipReference::AFFECTS,
+                                ReferenceType::ENT_REF);
+    REQUIRE(typeid(*table) == typeid(AffectsTable));
+    table = storage->getRsTable(RelationshipReference::AFFECTS_T,
+                                ReferenceType::WILDCARD);
+    REQUIRE(typeid(*table) == typeid(AffectsTTable));
+    // Test invalid combos, should return nullptr
+    table = storage->getRsTable(RelationshipReference::MODIFIES,
+                                ReferenceType::WILDCARD);
+    REQUIRE(!table);
+    table = storage->getRsTable(RelationshipReference::USES,
+                                ReferenceType::ATTR_REF);
+    REQUIRE(!table);
+    // TODO: Handle case where EMPTY is passed in/ Remove EMPTY? Exception
+    // because EMPTY is never added
+    /*
+    table = storage->getRsTable(RelationshipReference::EMPTY,
+                                ReferenceType::ATTR_REF);
+    REQUIRE(!table);
+    */
+}
+
 TEST_CASE("getControlVarTable works correctly") {
     Storage *storage = new Storage();
     std::type_index ifControl =
@@ -312,4 +374,129 @@ TEST_CASE("getControlVarTable works correctly") {
     REQUIRE(ifControl == typeid(IfControlVarTable));
     REQUIRE(whileControl == typeid(WhileControlVarTable));
     REQUIRE(invalid == nullptr);
+}
+
+TEST_CASE("getDesignationTable works correctly") {
+    Storage *storage = new Storage();
+
+    Table *table = storage->getDesignationTable(Designation::STMT);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table = storage->getDesignationTable(Designation::ASSIGN);
+    REQUIRE(typeid(*table) == typeid(AssignmentsTable));
+    table = storage->getDesignationTable(Designation::VAR);
+    REQUIRE(typeid(*table) == typeid(VariablesTable));
+    table = storage->getDesignationTable(Designation::CONST);
+    REQUIRE(typeid(*table) == typeid(ConstantsTable));
+    table = storage->getDesignationTable(Designation::PROC);
+    REQUIRE(typeid(*table) == typeid(ProceduresTable));
+    table = storage->getDesignationTable(Designation::FOLLOWS);
+    REQUIRE(typeid(*table) == typeid(FollowsTable));
+    table = storage->getDesignationTable(Designation::FOLLOWS_T);
+    REQUIRE(typeid(*table) == typeid(FollowsTTable));
+    table = storage->getDesignationTable(Designation::PARENT);
+    REQUIRE(typeid(*table) == typeid(ParentTable));
+    table = storage->getDesignationTable(Designation::PARENT_T);
+    REQUIRE(typeid(*table) == typeid(ParentTTable));
+    table = storage->getDesignationTable(Designation::MOD_S);
+    REQUIRE(typeid(*table) == typeid(ModifiesSTable));
+    table = storage->getDesignationTable(Designation::MOD_P);
+    REQUIRE(typeid(*table) == typeid(ModifiesPTable));
+    table = storage->getDesignationTable(Designation::USE_S);
+    REQUIRE(typeid(*table) == typeid(UsesSTable));
+    table = storage->getDesignationTable(Designation::USE_P);
+    REQUIRE(typeid(*table) == typeid(UsesPTable));
+    table = storage->getDesignationTable(Designation::CALL);
+    REQUIRE(typeid(*table) == typeid(CallsTable));
+    table = storage->getDesignationTable(Designation::CALL_T);
+    REQUIRE(typeid(*table) == typeid(CallsTTable));
+    table = storage->getDesignationTable(Designation::B_IN);
+    REQUIRE(typeid(*table) == typeid(BranchInTable));
+    table = storage->getDesignationTable(Designation::B_OUT);
+    REQUIRE(typeid(*table) == typeid(BranchOutTable));
+    table = storage->getDesignationTable(Designation::IF_C);
+    REQUIRE(typeid(*table) == typeid(IfControlVarTable));
+    table = storage->getDesignationTable(Designation::WHILE_C);
+    REQUIRE(typeid(*table) == typeid(WhileControlVarTable));
+    table = storage->getDesignationTable(Designation::PROC_NAME);
+    REQUIRE(typeid(*table) == typeid(CallProcTable));
+}
+
+TEST_CASE("getModifiesTables works correctly") {
+    Storage *storage = new Storage();
+
+    std::vector<Solvable *> modifies = storage->getModifiesTables();
+    std::vector<std::type_index> indexes = {};
+    std::vector<std::type_index> expected = {typeid(ModifiesSTable),
+                                             typeid(ModifiesPTable)};
+
+    for (Solvable *table : modifies) {
+        std::type_index index = typeid(*table);
+        indexes.push_back(index);
+    }
+
+    std::sort(indexes.begin(), indexes.end());
+    std::sort(expected.begin(), expected.end());
+    REQUIRE(indexes == expected);
+}
+
+TEST_CASE("getUsesTables works correctly") {
+    Storage *storage = new Storage();
+
+    std::vector<Solvable *> uses = storage->getUsesTables();
+    std::vector<std::type_index> indexes = {};
+    std::vector<std::type_index> expected = {typeid(UsesSTable),
+                                             typeid(UsesPTable)};
+
+    for (Solvable *table : uses) {
+        std::type_index index = typeid(*table);
+        indexes.push_back(index);
+    }
+
+    std::sort(indexes.begin(), indexes.end());
+    std::sort(expected.begin(), expected.end());
+    REQUIRE(indexes == expected);
+}
+
+TEST_CASE("getAttributesTables works correctly") {
+    Storage *storage = new Storage();
+
+    Table *table =
+        storage->getAttributesTable(EntityName::STMT, EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table =
+        storage->getAttributesTable(EntityName::READ, EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table = storage->getAttributesTable(EntityName::PRINT,
+                                        EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table =
+        storage->getAttributesTable(EntityName::CALL, EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table = storage->getAttributesTable(EntityName::WHILE,
+                                        EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table =
+        storage->getAttributesTable(EntityName::IF, EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table = storage->getAttributesTable(EntityName::ASSIGN,
+                                        EntityAttribute::STMT_NO);
+    REQUIRE(typeid(*table) == typeid(StatementsTable));
+    table = storage->getAttributesTable(EntityName::CONSTANT,
+                                        EntityAttribute::VALUE);
+    REQUIRE(typeid(*table) == typeid(ConstantsTable));
+    table = storage->getAttributesTable(EntityName::PROCEDURE,
+                                        EntityAttribute::PROC_NAME);
+    REQUIRE(typeid(*table) == typeid(ProceduresTable));
+    table = storage->getAttributesTable(EntityName::CALL,
+                                        EntityAttribute::PROC_NAME);
+    REQUIRE(typeid(*table) == typeid(CallProcTable));
+    table = storage->getAttributesTable(EntityName::VARIABLE,
+                                        EntityAttribute::VAR_NAME);
+    REQUIRE(typeid(*table) == typeid(VariablesTable));
+    table = storage->getAttributesTable(EntityName::READ,
+                                        EntityAttribute::VAR_NAME);
+    REQUIRE(typeid(*table) == typeid(ModifiesSTable));
+    table = storage->getAttributesTable(EntityName::PRINT,
+                                        EntityAttribute::VAR_NAME);
+    REQUIRE(typeid(*table) == typeid(UsesSTable));
 }

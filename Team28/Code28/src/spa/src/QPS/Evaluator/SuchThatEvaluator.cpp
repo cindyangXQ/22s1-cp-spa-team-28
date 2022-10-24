@@ -73,6 +73,19 @@ ClauseResult SuchThatEvaluator::handleBothSynonym(RelationshipReference relRef,
         return clauseResult;
     }
 
+    if (relRef == RelationshipReference::AFFECTS &&
+        left.getSynonymName() == right.getSynonymName()) {
+        // TODO: clean up this if block
+        ClauseResult clauseResult = ClauseResult({left, right});
+
+        std::vector<Value> result =
+            queryFacade->getReflexiveAffects(left.getEntityName());
+        for (int i = 0; i < result.size(); i++) {
+            clauseResult.insert(Tuple({result[i], result[i]}));
+        }
+        return clauseResult;
+    }
+
     if (left.getEntityName() == right.getEntityName() &&
         left.getSynonymName() == right.getSynonymName()) {
         return ClauseResult(noSameSynonym.count(relRef));
