@@ -1,0 +1,22 @@
+1 - Affects with no synonym return True, consecutive stmts in same level
+Select BOOLEAN such that Affects(29, 30)
+True
+5000
+2 - Affects with no synonym return False, consecutive stmts in same level
+Select BOOLEAN such that Affects(4, 5)
+False
+5000
+3 - simple Affects with no synonym return False, in different nested level
+Select BOOLEAN such that Affects(1, 7)
+False
+5000
+4 - simple Affects with no synonym return True, in different nested level
+Select BOOLEAN such that Affects(2, 7)
+True
+5000
+5 - in while loop
+Select BOOLEAN such that Affects(4, 4)
+6 - Affects with no synonym, if in while loop
+Select BOOLEAN such that Affects(15, 17) and Affects(4, 7)
+True
+5000

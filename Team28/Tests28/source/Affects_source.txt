@@ -1,0 +1,30 @@
+procedure main { a1 = a2 + 1;
+    a1 = a2 * a3;
+    while (a2 < a3) {
+        a2 = a2 * 5;
+        a1 = a22 + a23;    }
+    if (a17 > a2) then {
+        a3 = a1 + a2;
+        call foo; } else {
+        call bar;
+        a2 = 2*x + a3;}
+    while (a21 < a21) { 
+        while (a17 == a22) {
+            a4 = a3 + a2 + a1;
+            if (a21 > a23) then { 
+                a3 = a4 + a5;
+                print a4; } else {
+                 a5 = a6 + 4 * a3;}
+            a8 = a2 * 7;}
+        a6 = 8;}
+    call foo;}
+procedure foo {    if (a11 < a12) then {
+        if (a2 == a13) then {
+            a6 = a8 + 9 * a1; } else {
+            print a20;}
+        a1 = a1 + 1;}else {
+        read a20;
+        call bar;}
+    a9 = a6 * a2;}
+procedure bar {    a2 = a5 + a3 + a2;
+    a22 = a2 * a4;}
