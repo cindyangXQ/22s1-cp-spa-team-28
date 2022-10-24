@@ -180,12 +180,13 @@ UsesSExtractor::UsesSExtractor(ProgramNode *program, PopulateFacade *storage)
 std::vector<Relationship<int, std::string> *> UsesSExtractor::extract() {
     std::vector<Relationship<int, std::string> *> result;
 
-    DesignExtractor::extractUtil<Relationship<int, std::string> *>(
-        result, program,
-        [](StatementNode *stmt,
-           std::vector<Relationship<int, std::string> *> &res) -> void {
-            stmt->getUsesInto(res);
-        });
+    std::vector<ProcedureNode *> procList = this->program->getProcList();
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
+        for (StatementNode *stmt : stmtList) {
+            stmt->getUsesInto(result, procList);
+        }
+    }
 
     return result;
 }
@@ -228,12 +229,14 @@ ModSExtractor::ModSExtractor(ProgramNode *program, PopulateFacade *storage)
 std::vector<Relationship<int, std::string> *> ModSExtractor::extract() {
     std::vector<Relationship<int, std::string> *> result;
 
-    DesignExtractor::extractUtil<Relationship<int, std::string> *>(
-        result, program,
-        [](StatementNode *stmt,
-           std::vector<Relationship<int, std::string> *> &res) -> void {
-            stmt->getModsInto(res);
-        });
+
+    std::vector<ProcedureNode *> procList = this->program->getProcList();
+    for (size_t i = 0; i < procList.size(); i++) {
+        std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();
+        for (StatementNode *stmt : stmtList) {
+            stmt->getModsInto(result, procList);
+        }
+    }
 
     return result;
 }
@@ -363,10 +366,10 @@ void DesignExtractor::extractAll() {
     FollowsExtrT(this->program, this->storage).populate();
     ParentExtractor(this->program, this->storage).populate();
     ParentExtrT(this->program, this->storage).populate();
-    UsesSExtractor(this->program, this->storage).populate();
     UsesPExtractor(this->program, this->storage).populate();
-    ModSExtractor(this->program, this->storage).populate();
     ModPExtractor(this->program, this->storage).populate();
+    UsesSExtractor(this->program, this->storage).populate();
+    ModSExtractor(this->program, this->storage).populate();
     CallsExtractor(this->program, this->storage).populate();
     CallsExtrT(this->program, this->storage).populate();
     BranchInExtr(this->program, this->storage).populate();
