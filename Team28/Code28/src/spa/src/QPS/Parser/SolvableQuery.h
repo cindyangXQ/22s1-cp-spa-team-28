@@ -1,10 +1,8 @@
 #pragma once
 
 #include "../Clause/Declaration.h"
-#include "../Clause/PatternClause.h"
+#include "../Clause/QueryClause.h"
 #include "../Clause/SelectClause.h"
-#include "../Clause/SuchThatClause.h"
-#include "../Clause/WithClause.h"
 #include <iostream>
 
 /*
@@ -12,21 +10,17 @@
  */
 class SolvableQuery {
 public:
+    ~SolvableQuery();
     SolvableQuery(Declaration decl, SelectClause selectClause,
-                  std::vector<SuchThatClause> suchThatCls,
-                  std::vector<PatternClause> patternCls,
-                  std::vector<WithClause> withCls);
+                  std::vector<QueryClause *> clauses)
+        : decl(decl), selectClause(selectClause), clauses(clauses){};
 
     Declaration getDecl();
     SelectClause getSelectClause();
-    std::vector<SuchThatClause> getSuchThatCls();
-    std::vector<PatternClause> getPatternCls();
-    std::vector<WithClause> getWithCls();
+    std::vector<QueryClause *> getQueryClause();
 
 private:
     Declaration decl;
     SelectClause selectClause;
-    std::vector<SuchThatClause> suchThatCls;
-    std::vector<PatternClause> patternCls;
-    std::vector<WithClause> withCls;
+    std::vector<QueryClause *> clauses;
 };

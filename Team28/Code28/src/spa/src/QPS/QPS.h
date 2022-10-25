@@ -3,11 +3,7 @@
 #include <list>
 
 #include "../PKB/Facades/QueryFacade.h"
-#include "Evaluator/ClauseResult.h"
-#include "Evaluator/PatternEvaluator.h"
 #include "Evaluator/QueryEvaluator.h"
-#include "Evaluator/QueryResult.h"
-#include "Evaluator/SuchThatEvaluator.h"
 #include "Parser/QueryParser.h"
 #include "Parser/SolvableQuery.h"
 
@@ -18,7 +14,7 @@
  */
 class QPS {
 public:
-    QPS(QueryFacade *Facade) : evaluator(QueryEvaluator(Facade)){};
+    QPS(QueryFacade *facade) : evaluator(QueryEvaluator(facade)){};
 
     void evaluate(std::string query, std::list<std::string> &results);
 

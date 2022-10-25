@@ -1,9 +1,5 @@
 #include "PKB/Facades/QueryFacade.h"
-#include "QPS/Evaluator/ClauseResult.h"
-#include "QPS/Evaluator/PatternEvaluator.h"
 #include "QPS/Evaluator/QueryEvaluator.h"
-#include "QPS/Evaluator/QueryResult.h"
-#include "QPS/Evaluator/SuchThatEvaluator.h"
 #include "QPS/Parser/QueryParser.h"
 #include "QPS/Parser/SolvableQuery.h"
 

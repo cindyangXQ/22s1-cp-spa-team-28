@@ -21,6 +21,21 @@ enum class RelationshipReference {
     EMPTY
 };
 
+// map string to relationship enum
+const std::unordered_map<std::string, RelationshipReference> RELATIONSHIP_MAP =
+    {{"Follows", RelationshipReference::FOLLOWS},
+     {"Follows*", RelationshipReference::FOLLOWS_T},
+     {"Parent", RelationshipReference::PARENT},
+     {"Parent*", RelationshipReference::PARENT_T},
+     {"Uses", RelationshipReference::USES},
+     {"Modifies", RelationshipReference::MODIFIES},
+     {"Calls", RelationshipReference::CALLS},
+     {"Calls*", RelationshipReference::CALLS_T},
+     {"Next", RelationshipReference::NEXT},
+     {"Next*", RelationshipReference::NEXT_T},
+     {"Affects", RelationshipReference::AFFECTS},
+     {"Affects*", RelationshipReference::AFFECTS_T}};
+
 /*
  * A class encapsulating Relationships in SIMPLE.
  */
