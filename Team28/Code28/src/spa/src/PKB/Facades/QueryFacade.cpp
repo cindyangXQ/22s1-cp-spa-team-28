@@ -247,34 +247,13 @@ bool QueryFacade::isWildcardedModifies(ReferenceType leftRef,
 }
 
 // TODO: clean up this method
-std::vector<Value> QueryFacade::getReflexiveNextT(EntityName stmtEntity) {
+std::vector<Value> QueryFacade::solveReflexive(RelationshipReference rsRef,
+                                               EntityName stmtEntity) {
     if (stmtRefSet.count(stmtEntity) != 1) {
         return std::vector<Value>();
     }
-    StatementType stmtType = Statement::getStmtTypeFromEntityName(stmtEntity);
-    StatementsTable *statements = this->storage->getTable<StatementsTable>();
-    std::vector<int> possibleValues = statements->getStatementsByType(stmtType);
-    std::unordered_set<int> setOfPossibleValues(possibleValues.begin(),
-                                                possibleValues.end());
-    NextTTable *nextT = this->storage->getTable<NextTTable>();
-    std::vector<Value> result;
 
-    for (auto const &[key, val] : nextT->getLeftMap()) {
-        if (setOfPossibleValues.count(key) > 0) {
-            if (val.count(key) > 0) {
-                result.push_back(Value(ValueType::STMT_NUM, toString(key)));
-            }
-        }
-    }
-    return result;
-};
-
-std::vector<Value> QueryFacade::getReflexiveAffects(EntityName stmtEntity) {
-    if (stmtRefSet.count(stmtEntity) != 1) {
-        return std::vector<Value>();
-    }
-    StatementsTable *statements = this->storage->getTable<StatementsTable>();
-    AffectsTable *affects = this->storage->getTable<AffectsTable>();
-    return affects->solveBothReflexive(stmtEntity,
-                                       this->storage->getStorageView());
+    Reflexive *reflexive = this->storage->getReflexiveTable(rsRef);
+    return reflexive->solveBothReflexive(stmtEntity,
+                                         this->storage->getStorageView());
 };

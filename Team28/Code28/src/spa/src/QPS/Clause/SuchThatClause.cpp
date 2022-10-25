@@ -94,8 +94,8 @@ ClauseResult SuchThatClause::handleBothSynonym(QueryFacade *queryFacade) {
         // TODO: clean up this if block
         ClauseResult clauseResult = ClauseResult({refLeft, refRight});
 
-        std::vector<Value> result =
-            queryFacade->getReflexiveNextT(refLeft.getEntityName());
+        std::vector<Value> result = queryFacade->solveReflexive(
+            RelationshipReference::NEXT_T, refLeft.getEntityName());
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(Tuple({result[i], result[i]}));
         }
@@ -107,8 +107,8 @@ ClauseResult SuchThatClause::handleBothSynonym(QueryFacade *queryFacade) {
         // TODO: clean up this if block
         ClauseResult clauseResult = ClauseResult({refLeft, refRight});
 
-        std::vector<Value> result =
-            queryFacade->getReflexiveAffects(refLeft.getEntityName());
+        std::vector<Value> result = queryFacade->solveReflexive(
+            RelationshipReference::AFFECTS, refLeft.getEntityName());
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(Tuple({result[i], result[i]}));
         }

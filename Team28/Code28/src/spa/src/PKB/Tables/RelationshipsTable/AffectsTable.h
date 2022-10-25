@@ -1,11 +1,13 @@
 #pragma once
 
+#include "../Reflexive.h"
+#include "NextTTable.h"
 #include "StmtToStmtRelationshipsTable.h"
 #include "StmtToVarRelationshipsTable.h"
 
 enum class Status { TRUE, FALSE, UNKNOWN };
 
-class AffectsTable : public StmtToStmtRelationshipsTable {
+class AffectsTable : public StmtToStmtRelationshipsTable, public Reflexive {
 public:
     void initAffects(StorageView *storage);
 
