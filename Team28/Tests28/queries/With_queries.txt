@@ -75,7 +75,7 @@ SemanticError
 5000
 15 - constant.value
 constant c;
-Select c.value;
+Select c.value
 44, 1, 5, 10, 11, 0
 5000
 16 - Select constant.value (1 pattern, 1 with, 1 such that)
