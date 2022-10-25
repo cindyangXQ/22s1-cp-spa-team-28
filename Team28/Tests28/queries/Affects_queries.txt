@@ -56,7 +56,7 @@ TRUE
 12 - Affects with synonym, all statements that affected by 2
 stmt s;
 Select s such that Affects(2, s)
-5, 7, 13, 23, 26
+7, 13, 23, 26
 5000
 13 - Affects with synonym, statements that affected by 1 (not exists)
 stmt s;
@@ -66,17 +66,17 @@ Select s such that Affects(1, s)
 14 - Affects with one synonym, statements that may affect 13
 stmt s;
 Select s such that Affects(s, 13)
-2, 5, 26, 25, 30, 15
+2, 5, 26, 25, 30, 15, 10, 7
 5000
 15 - Affects with one synonym, assignment that affected by 2
 assign s;
 Select s such that Affects(2, s)
-5, 7, 13, 23, 26
+7, 13, 23, 26
 5000
 16 - Affects with one synonym, assignment that may affect 13
 assign s;
 Select s such that Affects(s, 13)
-2, 5, 26, 25, 30, 15
+2, 5, 26, 25, 30, 15, 10, 7
 5000
 17 - Affects with one synonym, statement affects by itself
 stmt s;
