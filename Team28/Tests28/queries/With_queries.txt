@@ -68,9 +68,9 @@ procedure p;
 Select p.varName such that Calls*(p, "main")
 SemanticError
 5000
-14 - invalid query: call.varName
+14 - invalid query: constant.varName
 constant c;
-Select c with constant.varName = 1
+Select c with c.varName = 1
 SemanticError
 5000
 15 - constant.value
