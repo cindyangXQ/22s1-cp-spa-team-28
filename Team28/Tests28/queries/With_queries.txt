@@ -56,7 +56,7 @@ constant read, a7 read, a17 read, a21 read, a27 read, a28 read, call read
 11 - invalid query: assignment.varName
 assign a;
 Select a with a.stmt# = 12 with a.varName = "a1"
-SemanticError
+SyntaxError
 5000
 12 - invalid query: print/call varName in select clause
 print p; call c;
