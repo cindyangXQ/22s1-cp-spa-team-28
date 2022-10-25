@@ -39,8 +39,10 @@ const std::unordered_map<RelationshipReference, std::unordered_set<EntityName>>
          {EntityName::STMT, EntityName::READ, EntityName::PRINT,
           EntityName::CALL, EntityName::WHILE, EntityName::IF,
           EntityName::ASSIGN}},
-        {RelationshipReference::AFFECTS, {EntityName::ASSIGN, EntityName::STMT}},
-        {RelationshipReference::AFFECTS_T, {EntityName::ASSIGN, EntityName::STMT}}};
+        {RelationshipReference::AFFECTS,
+         {EntityName::ASSIGN, EntityName::STMT}},
+        {RelationshipReference::AFFECTS_T,
+         {EntityName::ASSIGN, EntityName::STMT}}};
 
 // map relationship type to valid right arguments
 const std::unordered_map<RelationshipReference, std::unordered_set<EntityName>>
@@ -73,8 +75,10 @@ const std::unordered_map<RelationshipReference, std::unordered_set<EntityName>>
          {EntityName::STMT, EntityName::READ, EntityName::PRINT,
           EntityName::CALL, EntityName::WHILE, EntityName::IF,
           EntityName::ASSIGN}},
-        {RelationshipReference::AFFECTS, {EntityName::ASSIGN, EntityName::STMT}},
-        {RelationshipReference::AFFECTS_T, {EntityName::ASSIGN, EntityName::STMT}}};
+        {RelationshipReference::AFFECTS,
+         {EntityName::ASSIGN, EntityName::STMT}},
+        {RelationshipReference::AFFECTS_T,
+         {EntityName::ASSIGN, EntityName::STMT}}};
 
 // map relationship type to valid left reference
 const std::unordered_map<RelationshipReference,
