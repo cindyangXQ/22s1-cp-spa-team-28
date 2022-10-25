@@ -93,6 +93,20 @@ TEST_CASE("QueryParser can parse boolean select clause") {
     REQUIRE_THROWS(QueryParser::parseSelectClause(&misspelled2, syns));
 }
 
+TEST_CASE("QueryParser can parse select boolean when boolean is declared as "
+    "synonym") {
+    std::vector<Synonym> syns{Synonym(EntityName::VARIABLE, "v"),
+                              Synonym(EntityName::ASSIGN, "a"),
+                              Synonym(EntityName::STMT, "BOOLEAN")};
+    std::string select_boolean = "Select BOOLEAN";
+    SelectClause selectClause = QueryParser::parseSelectClause(&select_boolean, syns);
+    REQUIRE(selectClause.getSelectType() == SelectType::SINGLE);
+    REQUIRE(selectClause.getRefs().size() == 1);
+    Synonym selectedSynonym = selectClause.getRefs()[0].getSynonym();
+    REQUIRE(selectedSynonym.getEntityName() == EntityName::STMT);
+    REQUIRE(selectedSynonym.getName() == "BOOLEAN");
+}
+
 TEST_CASE("QueryParser can parse tuple select clause") {
     std::vector<Synonym> syns{
         Synonym(EntityName::VARIABLE, "v"), Synonym(EntityName::ASSIGN, "a"),

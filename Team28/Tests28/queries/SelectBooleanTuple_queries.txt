@@ -38,3 +38,8 @@ assign a; variable v; stmt s;
 Select <a, v, v, a> such that Modifies(a,v)
 1 read read 1,13 a9 a9 13,14 a10 a10 14,19 a18 a18 19,2 constant constant 2,3 procedure procedure 3,7 a3 a3 7,9 a6 a6 9
 5000
+9 - Select synonym whose name is BOOLEAN
+assign BOOLEAN;
+Select BOOLEAN such that Modifies(BOOLEAN, "read")
+1
+5000

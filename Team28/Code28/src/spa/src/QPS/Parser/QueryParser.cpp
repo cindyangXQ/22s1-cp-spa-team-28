@@ -67,8 +67,16 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
         throw SyntaxError("Invalid select clause syntax");
     }
 
+    bool has_BOOLEAN_synonym = false;
+    for (int i = 0; i < syns.size(); i++) {
+        if (syns[i].getName() == "BOOLEAN") {
+            has_BOOLEAN_synonym = true;
+        }
+    }
+
     std::string selectValue = Utils::trimSpaces(matches[1]);
-    if (std::regex_search(selectValue, SELECT_BOOL_REGEX)) {
+    if (!has_BOOLEAN_synonym &&
+        std::regex_search(selectValue, SELECT_BOOL_REGEX)) {
         return SelectClause({}, SelectType::BOOLEAN);
     } else if (std::regex_search(selectValue, SELECT_TUP_REGEX)) {
         return parseSelectTuple(selectValue, syns);
