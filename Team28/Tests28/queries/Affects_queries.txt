@@ -4,7 +4,7 @@ Select BOOLEAN such that Affects(30, 31)
 TRUE
 5000
 2 - Affects with no synonym return False, consecutive stmts in same level
-
+ 
 Select BOOLEAN such that Affects(4, 5)
 FALSE
 5000
