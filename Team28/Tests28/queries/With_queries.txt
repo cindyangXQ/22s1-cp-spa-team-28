@@ -22,7 +22,7 @@ main, 27
 procedure p; call c;
 Select <p.procName, c.stmt#> with c.procName = "main" and p.procName = "main"
 
-5000
+5000F
 5 - 2 with clauses one not exist select procedure
 procedure p; call c;
 Select p.procName with p.procName = "call" and c.procName = "main"
@@ -50,13 +50,13 @@ a18
 5000
 10 - print/read.varName in with and select clUause
 print p; read r;
-Select <p.varName, r.stmt#> with r.varName =read 
+Select <p.varName, r.stmt#> with r.varName = "read" 
 constant read, a7 read, a17 read, a21 read, a27 read, a28 read, call read
 5000
 11 - invalid query: assignment.varName
 assign a;
 Select a with a.stmt# = 12 with a.varName = "a1"
-SyntaxError
+SemanticError
 5000
 12 - invalid query: print/call varName in select clause
 print p; call c;
@@ -104,7 +104,7 @@ Select p with p.value = "main"
 SemanticError
 5000
 21 - statement.stmt# in with clause, 3 with clauses
-print p; read r; call c;
+print p; assign r; call c;
 Select <p, r> with c.procName = "call" with p.varName = "constant" and r.stmt# = 1
 4 1
 5000
@@ -115,12 +115,12 @@ Select <p, r> with c.procName = "call" with p.varName = "constant" and r.stmt# =
 5000
 23 - 1 with, 2 such that
 if ifs; while w; stmt s;
-Select <w,s.stmt#> such that Uses(s, "a26"") with ifs.stmt# = 15 such that Parents*(ifs, w) 
-21 21, 22 21, 23 21, 21 22, 22 22, 23 22
+Select <w,s.stmt#> such that Uses(s, "print") with ifs.stmt# = 15 such that Parent*(ifs, w) 
+21 1, 22 1, 23 1
 5000
 24 - 2 with, 1 such that
 if ifs; print p;
-Select p.stmt# with p.varName = "a17"  such that Parents(ifs, p) with ifs.stmt# = 17
+Select p.stmt# with p.varName = "a17"  such that Parent(ifs, p) with ifs.stmt# = 17
 18
 5000
 25 - 1 with, 1 pattern
@@ -129,7 +129,7 @@ Select w.stmt# pattern w(v, _) with v.varName = "a24"
 22
 5000
 26 - 1 with 2 pattern
-if ifs; while w; assign a;
+if ifs; while w; variable v;
 Select <w.stmt#, ifs.stmt#> pattern w(v, _) and ifs(v, _, _) with v.varName = "a4" 
 8 29
 5000
