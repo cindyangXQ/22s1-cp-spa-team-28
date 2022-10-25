@@ -89,13 +89,13 @@ ClauseResult SuchThatClause::handleRightSynonym(QueryFacade *queryFacade) {
 }
 
 ClauseResult SuchThatClause::handleBothSynonym(QueryFacade *queryFacade) {
-    if (relationship == RelationshipReference::NEXT_T &&
+    if (relationship == RelationshipReference::AFFECTS &&
         refLeft.getSynonymName() == refRight.getSynonymName()) {
         // TODO: clean up this if block
         ClauseResult clauseResult = ClauseResult({refLeft, refRight});
 
         std::vector<Value> result =
-            queryFacade->getReflexiveNextT(refLeft.getEntityName());
+            queryFacade->getReflexiveAffects(refLeft.getEntityName());
         for (int i = 0; i < result.size(); i++) {
             clauseResult.insert(Tuple({result[i], result[i]}));
         }

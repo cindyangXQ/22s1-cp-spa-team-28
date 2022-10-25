@@ -113,7 +113,7 @@ const std::regex SELECT_BOOL_REGEX("\\s*BOOLEAN\\s*");
 const std::regex SUCH_THAT_REGEX(
     "(^\\s*such\\s+that\\s+|^\\s*and\\s+)"
     "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Calls|Calls\\*|Next|"
-    "Next\\*|Affect|Affect\\*)\\s*" // relRef
+    "Next\\*|Affects|Affects\\*)\\s*" // relRef
     "\\(\\s*"
     "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef |
                                                                     // stmtRef
@@ -126,7 +126,7 @@ const std::regex SUCH_THAT_REGEX(
 const std::regex SUCH_THAT_CL_REGEX(
     "(^\\s*(such\\s+that\\s+|^\\s*and\\s+)"
     "(Follows|Follows\\*|Parent|Parent\\*|Uses|Modifies|Calls|Calls\\*|Next|"
-    "Next\\*|Affect|Affect\\*)\\s*" // relRef
+    "Next\\*|Affects|Affects\\*)\\s*" // relRef
     "\\(\\s*"
     "([a-zA-z\\d]+|_|0|[1-9]\\d*|\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\")" // entRef |
                                                                     // stmtRef

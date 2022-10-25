@@ -1,23 +1,21 @@
 #include "QueryParser.h"
 
 template <typename QueryClass> bool QueryParser::isClause(std::string *clause) {
-    return std::regex_search(*clause,
-                             IS_CLAUSE_MAP.at(typeid(QueryClass)));
+    return std::regex_search(*clause, IS_CLAUSE_MAP.at(typeid(QueryClass)));
 };
 
 template <typename QueryClass>
 void QueryParser::parse(std::string *queryString, std::vector<Synonym> syns,
                         std::vector<QueryClause *> *clauses) {
-    while (std::regex_search(
-        *queryString, IS_CLAUSE_AND_MAP.at(typeid(QueryClass)))) {
+    while (std::regex_search(*queryString,
+                             IS_CLAUSE_AND_MAP.at(typeid(QueryClass)))) {
         std::smatch matches;
         std::regex_match(*queryString, matches,
                          WHOLE_CLAUSE_MAP.at(typeid(QueryClass)));
         std::string extractedClause = matches[1];
         std::regex_match(extractedClause, matches,
                          ARG_CLAUSE_MAP.at(typeid(QueryClass)));
-        if (matches.size() !=
-            REGEX_CHECK_MAP.at(typeid(QueryClass))) {
+        if (matches.size() != REGEX_CHECK_MAP.at(typeid(QueryClass))) {
             throw SyntaxError("Invalid clause syntax");
         }
         QueryClause *queryClause = new QueryClass;
@@ -92,8 +90,16 @@ SelectClause QueryParser::parseSelectClause(std::string *clause,
         throw SyntaxError("Invalid select clause syntax");
     }
 
+    bool has_BOOLEAN_synonym = false;
+    for (int i = 0; i < syns.size(); i++) {
+        if (syns[i].getName() == "BOOLEAN") {
+            has_BOOLEAN_synonym = true;
+        }
+    }
+
     std::string selectValue = Utils::trimSpaces(matches[1]);
-    if (std::regex_search(selectValue, SELECT_BOOL_REGEX)) {
+    if (!has_BOOLEAN_synonym &&
+        std::regex_search(selectValue, SELECT_BOOL_REGEX)) {
         return SelectClause({}, SelectType::BOOLEAN);
     } else if (std::regex_search(selectValue, SELECT_TUP_REGEX)) {
         return parseSelectTuple(selectValue, syns);

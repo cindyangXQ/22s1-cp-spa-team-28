@@ -11,6 +11,7 @@ void SPA::parse(std::string filename) { this->sp.parse(filename); }
 void SPA::preprocess() {
     this->pkb.populateNext();
     this->pkb.populateNextT();
+    this->pkb.initAffects();
 }
 
 void SPA::evaluateQuery(std::string query, std::list<std::string> &results) {

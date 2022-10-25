@@ -20,3 +20,8 @@ void PKB::populateNext() {
 
 // TODO: add a flag to only do work if populateNext has been executed
 void PKB::populateNextT() { this->cfg->populateNextT(); }
+
+void PKB::initAffects() {
+    AffectsTable *affectsTable = this->storage->getTable<AffectsTable>();
+    affectsTable->initAffects(this->storage->getStorageView());
+}
