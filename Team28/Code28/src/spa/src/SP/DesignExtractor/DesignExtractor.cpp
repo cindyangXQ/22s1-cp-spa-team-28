@@ -229,7 +229,6 @@ ModSExtractor::ModSExtractor(ProgramNode *program, PopulateFacade *storage)
 std::vector<Relationship<int, std::string> *> ModSExtractor::extract() {
     std::vector<Relationship<int, std::string> *> result;
 
-
     std::vector<ProcedureNode *> procList = this->program->getProcList();
     for (size_t i = 0; i < procList.size(); i++) {
         std::vector<StatementNode *> stmtList = procList.at(i)->getStmtList();

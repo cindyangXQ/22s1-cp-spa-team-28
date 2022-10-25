@@ -90,7 +90,6 @@ void ProcedureNode::setMod(std::vector<std::string> modified) {
     calculatedMod = true;
 }
 
-
 // Statement
 std::vector<std::string> *StatementNode::getUsesInto(
     std::vector<Relationship<int, std::string> *> &result,
@@ -443,7 +442,8 @@ std::vector<std::string> *WhileStatementNode::getUsesInto(
 
     std::vector<StatementNode *> stmts = this->getStmtList();
     for (size_t i = 0; i < stmts.size(); i++) {
-        std::vector<std::string> *usedVars = stmts[i]->getUsesInto(result, procList);
+        std::vector<std::string> *usedVars =
+            stmts[i]->getUsesInto(result, procList);
         for (size_t j = 0; j < usedVars->size(); j++) {
             Relationship<int, std::string> *usedVar =
                 new Relationship<int, std::string>(RelationshipReference::USES,
@@ -664,7 +664,8 @@ std::vector<std::string> *IfStatementNode::getModsInto(
     std::vector<std::string> *descendants = new std::vector<std::string>();
     std::vector<StatementNode *> stmts = this->getStmtList();
     for (size_t i = 0; i < stmts.size(); i++) {
-        std::vector<std::string> *mdfdVars = stmts[i]->getModsInto(result, procList);
+        std::vector<std::string> *mdfdVars =
+            stmts[i]->getModsInto(result, procList);
         for (size_t j = 0; j < mdfdVars->size(); j++) {
             Relationship<int, std::string> *mdfdVar =
                 new Relationship<int, std::string>(
