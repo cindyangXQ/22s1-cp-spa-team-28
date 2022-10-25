@@ -22,9 +22,13 @@ procedure foo {    if (a11 < a12) then {
         if (a2 == a13) then {
             a6 = a8 + 9 * a1; } else {
             print a20;}
+            a2 = a20 /6;
         a1 = a1 + 1;}else {
         read a20;
         call bar;}
     a9 = a6 * a2;}
 procedure bar {    a2 = a5 + a3 + a2;
-    a22 = a2 * a4;}
+    a22 = a2 * a4;
+    a17 = a22;
+    read a17;
+    a18 = a17 + 1;}

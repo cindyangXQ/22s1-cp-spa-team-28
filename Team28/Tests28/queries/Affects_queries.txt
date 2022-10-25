@@ -1,22 +1,108 @@
 1 - Affects with no synonym return True, consecutive stmts in same level
-Select BOOLEAN such that Affects(29, 30)
-True
+Select BOOLEAN such that Affects(30, 31)
+TRUE
 5000
 2 - Affects with no synonym return False, consecutive stmts in same level
 Select BOOLEAN such that Affects(4, 5)
-False
+FALSE
 5000
 3 - simple Affects with no synonym return False, in different nested level
 Select BOOLEAN such that Affects(1, 7)
-False
+FALSE
 5000
 4 - simple Affects with no synonym return True, in different nested level
 Select BOOLEAN such that Affects(2, 7)
-True
+TRUE
 5000
 5 - in while loop
 Select BOOLEAN such that Affects(4, 4)
-6 - Affects with no synonym, if in while loop
+TRUE
+5000
+6 - Affects with no synonym, if in while loop (2 affects)
 Select BOOLEAN such that Affects(15, 17) and Affects(4, 7)
-True
+TRUE
+5000
+7 - Affects no synonym, in if stmt (one in if clause, one in else clause)
+Select BOOLEAN such that Affects(7, 10)
+FALSE
+5000
+8 - Affects no synonym, different nested level in while container
+Select BOOLEAN such that Affects(13, 15)
+TRUE
+5000
+9 - Affects no synonym, in while container, stmt2 < stmt1
+Select BOOLEAN such that Affects(17, 15)
+TRUE
+5000
+10 - Affects no synonym, call stmt in between
+Select BOOLEAN such that Affects(4, 13)
+FALSE
+5000
+11 - Affects no synonym, in different procedure
+Select BOOLEAN such that Affects(19, 29)
+TRUE
+5000
+12 - Affects with synonym, all statements that affected by 2
+stmt s;
+Select s such that Affects(2, s)
+5, 7, 13, 23, 26
+5000
+13 - Affects with synonym, statements that affected by 1 (not exists)
+stmt s;
+Select s such that Affects(1, s)
+
+5000
+14 - Affects with one synonym, statements that may affect 13
+stmt s;
+Select s suth that Affeects(s, 13)
+2, 5, 26, 25, 30, 15
+5000
+15 - Affects with one synonym, assignment that affected by 2
+assign s;
+Select s such that Affects(2, s)
+5, 7, 13, 23, 26
+5000
+16 - Affects with one synonym, assignment that may affect 13
+assign s;
+Select s suth that Affeects(s, 13)
+2, 5, 26, 25, 30, 15
+5000
+17 - Affects with one synonym, statement affects by itself
+stmt s;
+Select s such that Affects(s, s)
+4, 30
+5000
+18 - Affects with one synonym, statement that affect satement 5(not exists)
+stmt s;
+Select s such that Affects(s, 5)
+
+5000
+19 - Affects with no synonym, read statement in between
+Select BOOLEAN such that Affects(32, 34)
+FALSE
+5000
+20 - Affects with two synonyms (2 Affects)
+stmt s1, s2;
+Select s2 such that Affects(s1, s1) and Affects(s1, s2)
+7, 30, 13, 18, 29, 4
+5000
+21 - Affects with two synonyms (2 Affects)
+stmt s1, s2;
+Select s2 such that Affects(s1, s1) and Affects(s2, s1)
+4, 25, 10, 30, 17, 7, 15
+5000
+22 - 2 Affects clauses
+stmt s1, s2;
+Select s2 such that Affects(s1, 17) and Affects(s2, s1)
+18, 2, 5, 26
+5000
+22 - 2 Affects clauses
+stmt s1, s2;
+Select s2 such that Affects(s1, 17) and Affects(s1, s2)
+17, 29
+5000
+23 - 2 Affects clauses
+stmt s1, s2;
+Select s2 sucht that Affects(13, s1) and Affects(s1, s2)
+17, 30, 32
 5000
