@@ -2,26 +2,20 @@
 
 #include "../../commons/Entity.h"
 #include "../../commons/Relationship.h"
+#include "../Clause/PatternClause.h"
+#include "../Clause/SelectClause.h"
+#include "../Clause/SuchThatClause.h"
+#include "../Clause/WithClause.h"
 #include <regex>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 
-typedef std::unordered_map<std::string, EntityName> EntityMap;
-typedef std::unordered_map<std::string, EntityAttribute> EntityAttrMap;
-typedef std::unordered_map<std::string, RelationshipReference> RelationshipMap;
-typedef std::unordered_map<RelationshipReference,
-                           std::unordered_set<EntityName>>
-    RelationshipArgMap;
-typedef std::unordered_map<RelationshipReference,
-                           std::unordered_set<ReferenceType>>
-    RelationshipRefMap;
-
 /*
  * Lookup tables to map unprocessed strings to their respective enum values
  */
 // map string to design entity enum
-const EntityMap ENTITY_MAP = {
+const std::unordered_map<std::string, EntityName> ENTITY_MAP = {
     {"stmt", EntityName::STMT},         {"read", EntityName::READ},
     {"print", EntityName::PRINT},       {"call", EntityName::CALL},
     {"while", EntityName::WHILE},       {"if", EntityName::IF},
@@ -29,139 +23,11 @@ const EntityMap ENTITY_MAP = {
     {"constant", EntityName::CONSTANT}, {"procedure", EntityName::PROCEDURE}};
 
 // map string to entity attribute enum
-const EntityAttrMap ENTITY_ATTR_MAP = {{"procName", EntityAttribute::PROC_NAME},
-                                       {"varName", EntityAttribute::VAR_NAME},
-                                       {"value", EntityAttribute::VALUE},
-                                       {"stmt#", EntityAttribute::STMT_NO}};
-
-// map string to relationship enum
-const RelationshipMap RELATIONSHIP_MAP = {
-    {"Follows", RelationshipReference::FOLLOWS},
-    {"Follows*", RelationshipReference::FOLLOWS_T},
-    {"Parent", RelationshipReference::PARENT},
-    {"Parent*", RelationshipReference::PARENT_T},
-    {"Uses", RelationshipReference::USES},
-    {"Modifies", RelationshipReference::MODIFIES},
-    {"Calls", RelationshipReference::CALLS},
-    {"Calls*", RelationshipReference::CALLS_T},
-    {"Next", RelationshipReference::NEXT},
-    {"Next*", RelationshipReference::NEXT_T},
-    {"Affects", RelationshipReference::AFFECTS},
-    {"Affects*", RelationshipReference::AFFECTS_T}};
-
-// map relationship type to valid left arguments
-const RelationshipArgMap RELATIONSHIP_LEFT_ARG_MAP = {
-    {RelationshipReference::FOLLOWS,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::FOLLOWS_T,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::PARENT,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::PARENT_T,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::USES,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN,
-      EntityName::PROCEDURE}},
-    {RelationshipReference::MODIFIES,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN,
-      EntityName::PROCEDURE}},
-    {RelationshipReference::CALLS, {EntityName::PROCEDURE}},
-    {RelationshipReference::CALLS_T, {EntityName::PROCEDURE}},
-    {RelationshipReference::NEXT,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::NEXT_T,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::AFFECTS, {EntityName::ASSIGN, EntityName::STMT}},
-    {RelationshipReference::AFFECTS_T, {EntityName::ASSIGN, EntityName::STMT}}};
-
-// map relationship type to valid right arguments
-const RelationshipArgMap RELATIONSHIP_RIGHT_ARG_MAP = {
-    {RelationshipReference::FOLLOWS,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::FOLLOWS_T,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::PARENT,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::PARENT_T,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::USES, {EntityName::VARIABLE}},
-    {RelationshipReference::MODIFIES, {EntityName::VARIABLE}},
-    {RelationshipReference::CALLS, {EntityName::PROCEDURE}},
-    {RelationshipReference::CALLS_T, {EntityName::PROCEDURE}},
-    {RelationshipReference::NEXT,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::NEXT_T,
-     {EntityName::STMT, EntityName::READ, EntityName::PRINT, EntityName::CALL,
-      EntityName::WHILE, EntityName::IF, EntityName::ASSIGN}},
-    {RelationshipReference::AFFECTS, {EntityName::ASSIGN, EntityName::STMT}},
-    {RelationshipReference::AFFECTS_T, {EntityName::ASSIGN, EntityName::STMT}}};
-
-// map relationship type to valid left reference
-const RelationshipRefMap RELATIONSHIP_LEFT_REF_MAP = {
-    {RelationshipReference::FOLLOWS,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::FOLLOWS_T,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::PARENT,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::PARENT_T,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::USES,
-     {ReferenceType::STMT_REF, ReferenceType::ENT_REF}},
-    {RelationshipReference::MODIFIES,
-     {ReferenceType::STMT_REF, ReferenceType::ENT_REF}},
-    {RelationshipReference::CALLS,
-     {ReferenceType::ENT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::CALLS_T,
-     {ReferenceType::ENT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::NEXT,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::NEXT_T,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::AFFECTS,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::AFFECTS_T,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}}};
-
-// map relationship type to valid left reference
-const RelationshipRefMap RELATIONSHIP_RIGHT_REF_MAP = {
-    {RelationshipReference::FOLLOWS,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::FOLLOWS_T,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::PARENT,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::PARENT_T,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::USES,
-     {ReferenceType::ENT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::MODIFIES,
-     {ReferenceType::ENT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::CALLS,
-     {ReferenceType::ENT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::CALLS_T,
-     {ReferenceType::ENT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::NEXT,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::NEXT_T,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::AFFECTS,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}},
-    {RelationshipReference::AFFECTS_T,
-     {ReferenceType::STMT_REF, ReferenceType::WILDCARD}}};
+const std::unordered_map<std::string, EntityAttribute> ENTITY_ATTR_MAP = {
+    {"procName", EntityAttribute::PROC_NAME},
+    {"varName", EntityAttribute::VAR_NAME},
+    {"value", EntityAttribute::VALUE},
+    {"stmt#", EntityAttribute::STMT_NO}};
 
 /*
  * Regex expressions for primitive types
@@ -296,9 +162,6 @@ const std::regex PATTERN_CL_REGEX(
     "(\\s*,\\s*_)*"
     "\\s*\\)).*?");
 
-const std::unordered_set<EntityName> PATTERN_ENTITY_MAP = {
-    EntityName::ASSIGN, EntityName::IF, EntityName::WHILE};
-
 // with-cl : 'with' attrCond
 // attrCond : attrCompare ( 'and' attrCompare )*
 // attrCompare : ref '=' ref
@@ -317,3 +180,26 @@ const std::regex WITH_CL_REGEX("(^\\s*(with\\s+|^\\s*and\\s+)" // with or and
                                "\\s*=\\s*"                     // '='
                                "(.*?))\\s*"                    // ref
 );
+
+const std::unordered_map<std::type_index, std::regex> IS_CLAUSE_MAP = {
+    {typeid(SelectClause), IS_SELECT},
+    {typeid(SuchThatClause), IS_SUCH_THAT},
+    {typeid(PatternClause), IS_PATTERN},
+    {typeid(WithClause), IS_WITH}};
+
+const std::unordered_map<std::type_index, std::regex> IS_CLAUSE_AND_MAP = {
+    {typeid(SuchThatClause), IS_SUCH_THAT_AND},
+    {typeid(PatternClause), IS_PATTERN_AND},
+    {typeid(WithClause), IS_WITH_AND}};
+
+const std::unordered_map<std::type_index, std::regex> WHOLE_CLAUSE_MAP = {
+    {typeid(SelectClause), SELECT_CL_REGEX},
+    {typeid(SuchThatClause), SUCH_THAT_CL_REGEX},
+    {typeid(PatternClause), PATTERN_CL_REGEX},
+    {typeid(WithClause), WITH_CL_REGEX}};
+
+const std::unordered_map<std::type_index, std::regex> ARG_CLAUSE_MAP = {
+    {typeid(SelectClause), SELECT_REGEX},
+    {typeid(SuchThatClause), SUCH_THAT_REGEX},
+    {typeid(PatternClause), PATTERN_REGEX},
+    {typeid(WithClause), WITH_REGEX}};

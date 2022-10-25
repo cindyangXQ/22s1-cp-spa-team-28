@@ -1,35 +1,33 @@
 #pragma once
 
-#include "../../commons/Reference.h"
-#include "../../commons/Synonym.h"
+#include "../../SP/SP.h"
+#include "../Utils.h"
+#include "QueryClause.h"
 
-enum class PatternType { ASSIGN, WHILE, IF };
+const std::unordered_set<EntityName> PATTERN_ENTITY_MAP = {
+    EntityName::ASSIGN, EntityName::IF, EntityName::WHILE};
 typedef std::string Expression;
-const std::unordered_map<EntityName, PatternType> entityToPatternTypeMap = {
-    {EntityName::ASSIGN, PatternType::ASSIGN},
-    {EntityName::WHILE, PatternType::WHILE},
-    {EntityName::IF, PatternType::IF},
-};
 
 /*
  * Class encapsulating the logic of the pattern clause.
  */
-class PatternClause {
+class PatternClause : public QueryClause {
 public:
     PatternClause(){};
-    PatternClause(Synonym syn, Reference entRef, Expression expression,
-                  bool isExact);
-
     Synonym getSyn();
-    PatternType getPatternType();
     Reference getEntRef();
     Expression getExpression();
     bool getIsExact();
+    void parse(std::smatch matches, std::vector<Synonym> syns);
+    bool validate();
+    ClauseResult evaluate(QueryFacade *queryFacade);
 
 private:
     Synonym syn;
-    PatternType patternType;
     Reference entRef;
     Expression expression;
     bool isExact;
+    ClauseResult handleAssign(QueryFacade *queryFacade);
+    ClauseResult handleIf(QueryFacade *queryFacade);
+    ClauseResult handleWhile(QueryFacade *queryFacade);
 };

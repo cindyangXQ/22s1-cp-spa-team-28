@@ -1,27 +1,22 @@
 #pragma once
 
 #include "../../PKB/Facades/QueryFacade.h"
+#include "../Clause/PatternClause.h"
+#include "../Clause/SelectClause.h"
+#include "../Clause/SuchThatClause.h"
+#include "../Clause/WithClause.h"
 #include "../Parser/SolvableQuery.h"
 #include "../Utils.h"
-#include "PatternEvaluator.h"
 #include "QueryResult.h"
-#include "SuchThatEvaluator.h"
-#include "WithClauseEvaluator.h"
 #include <string>
 
 class QueryEvaluator {
 private:
     QueryFacade *queryFacade;
-    SuchThatEvaluator suchThatEvaluator;
-    PatternEvaluator patternEvaluator;
-    WithClauseEvaluator withEvaluator;
 
 public:
     explicit QueryEvaluator(QueryFacade *queryFacade)
-        : queryFacade(queryFacade),
-          suchThatEvaluator(SuchThatEvaluator(queryFacade)),
-          patternEvaluator(PatternEvaluator(queryFacade)),
-          withEvaluator(WithClauseEvaluator(queryFacade)){};
+        : queryFacade(queryFacade){};
 
     /*
      * Evaluate a query after it is parsed.

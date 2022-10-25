@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../QPS/Error/SyntaxError.h"
 #include "Synonym.h"
 #include "Value.h"
 
@@ -25,6 +26,8 @@ public:
     Value getValue();
     ValueType getValueType();
     std::string getValueString();
+
+    static Reference getReference(std::string input, std::vector<Synonym> syns);
 
 private:
     bool isSynonym;
