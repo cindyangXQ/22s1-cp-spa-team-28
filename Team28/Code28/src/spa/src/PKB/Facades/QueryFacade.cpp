@@ -246,7 +246,6 @@ bool QueryFacade::isWildcardedModifies(ReferenceType leftRef,
            relType == RelationshipReference::MODIFIES;
 }
 
-// TODO: clean up this method
 std::vector<Value> QueryFacade::solveReflexive(RelationshipReference rsRef,
                                                EntityName stmtEntity) {
     if (stmtRefSet.count(stmtEntity) != 1) {
