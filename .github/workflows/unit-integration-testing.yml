@@ -1,4 +1,4 @@
-name: CI for Cmake Project - Windows
+name: Run Unit and Integration tests
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
       - name: Build Project, run unit and integration tests
         shell: bash
         run: |
-          cd Team00/Code00
+          cd Team28/Code28
           mkdir build
           cd build
           cmake -A Win32 ..
