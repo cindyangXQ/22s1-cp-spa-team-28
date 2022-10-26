@@ -6,6 +6,7 @@ Storage::Storage() {
     initRsTablesMap();
     initStorageView();
     initAttributesTableMap();
+    initReflexiveTablesMap();
 };
 
 void Storage::initDesignEntitiesTable() {
@@ -78,6 +79,13 @@ void Storage::initStorageView() {
     this->storageView->setTable<UsesSTable>(this->getTable<UsesSTable>());
 };
 
+void Storage::initReflexiveTablesMap() {
+    this->reflexiveTables[RelationshipReference::NEXT_T] =
+        this->getTable<NextTTable>();
+    this->reflexiveTables[RelationshipReference::AFFECTS] =
+        this->getTable<AffectsTable>();
+}
+
 Solvable *Storage::getRsTable(RelationshipReference rsRef,
                               ReferenceType leftType) {
     if (rsRef == RelationshipReference::MODIFIES) {
@@ -88,6 +96,10 @@ Solvable *Storage::getRsTable(RelationshipReference rsRef,
     }
     return this->rsTables.at(rsRef);
 };
+
+Reflexive *Storage::getReflexiveTable(RelationshipReference rsRef) {
+    return this->reflexiveTables.at(rsRef);
+}
 
 UsesControlVarTable *Storage::getControlVarTable(Designation designType) {
     if (designType == Designation::IF_C) {

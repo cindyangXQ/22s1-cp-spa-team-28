@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Reflexive.h"
 #include "../Solvable.h"
 #include "RelationshipsTable.h"
 
@@ -38,7 +39,6 @@ class ParentTTable : public StmtToStmtRelationshipsTable {};
 class FollowsTable : public StmtToStmtRelationshipsTable {};
 class FollowsTTable : public StmtToStmtRelationshipsTable {};
 class NextTable : public StmtToStmtRelationshipsTable {};
-class NextTTable : public StmtToStmtRelationshipsTable {};
 class BranchInTable : public StmtToStmtRelationshipsTable {};
 class BranchOutTable : public StmtToStmtRelationshipsTable {};
 class AffectsTTable : public StmtToStmtRelationshipsTable {};
