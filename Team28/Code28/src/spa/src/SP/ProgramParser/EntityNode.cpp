@@ -64,14 +64,42 @@ void ProcedureNode::cleanup() {
     delete this;
 }
 
+std::vector<std::string>
+ProcedureNode::getUse(std::vector<ProcedureNode *> &procList) {
+    if (calculatedUse) {
+        return procUsed;
+    } else {
+        return SPUtils::usesP(this, procList);
+    }
+}
+void ProcedureNode::setUse(std::vector<std::string> used) {
+    procUsed = used;
+    calculatedUse = true;
+}
+
+std::vector<std::string>
+ProcedureNode::getMod(std::vector<ProcedureNode *> &procList) {
+    if (calculatedMod) {
+        return procModified;
+    } else {
+        return SPUtils::modifiesP(this, procList);
+    }
+}
+void ProcedureNode::setMod(std::vector<std::string> modified) {
+    procModified = modified;
+    calculatedMod = true;
+}
+
 // Statement
 std::vector<std::string> *StatementNode::getUsesInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
     return new std::vector<std::string>();
 }
 
 std::vector<std::string> *StatementNode::getModsInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
     return new std::vector<std::string>();
 }
 
@@ -141,7 +169,8 @@ void ReadStatementNode::getStatementsInto(
 }
 
 std::vector<std::string> *ReadStatementNode::getModsInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
     Relationship<int, std::string> *mdfdVar =
         new Relationship<int, std::string>(RelationshipReference::MODIFIES,
                                            this->getLineNumber(),
@@ -182,7 +211,8 @@ void PrintStatementNode::getStatementsInto(
 }
 
 std::vector<std::string> *PrintStatementNode::getUsesInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
     std::string variable = this->getVariable();
     Relationship<int, std::string> *temp = new Relationship<int, std::string>(
         RelationshipReference::USES, this->getLineNumber(), variable);
@@ -219,19 +249,45 @@ void CallStatementNode::getStatementsInto(
         RelationshipReference::USES, line, getVariable()));
 }
 
+std::vector<std::string> *CallStatementNode::getUsesInto(
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
+    ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
+    std::vector<std::string> used = procedure->getUse(procList);
+    for (size_t i = 0; i < used.size(); i++) {
+        result.push_back(new Relationship<int, std::string>(
+            RelationshipReference::USES, this->getLineNumber(), used[i]));
+    }
+
+    return &used;
+}
+
 void CallStatementNode::getUsesPInto(std::vector<std::string> &result,
                                      std::vector<ProcedureNode *> &procList) {
     ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
-    std::vector<std::string> temp = SPUtils::usesP(procedure, procList);
+    std::vector<std::string> temp = procedure->getUse(procList);
     for (size_t i = 0; i < temp.size(); i++) {
         result.push_back(temp[i]);
     }
 }
 
+std::vector<std::string> *CallStatementNode::getModsInto(
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
+    ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
+    std::vector<std::string> modified = procedure->getMod(procList);
+    for (size_t i = 0; i < modified.size(); i++) {
+        result.push_back(new Relationship<int, std::string>(
+            RelationshipReference::USES, this->getLineNumber(), modified[i]));
+    }
+
+    return &modified;
+}
+
 void CallStatementNode::getModifiesPInto(
     std::vector<std::string> &result, std::vector<ProcedureNode *> &procList) {
     ProcedureNode *procedure = SPUtils::findProc(this->getVariable(), procList);
-    std::vector<std::string> temp = SPUtils::modifiesP(procedure, procList);
+    std::vector<std::string> temp = procedure->getMod(procList);
     for (size_t i = 0; i < temp.size(); i++) {
         result.push_back(temp.at(i));
     }
@@ -274,7 +330,8 @@ void AssignStatementNode::getStatementsInto(
 }
 
 std::vector<std::string> *AssignStatementNode::getUsesInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
     int lineNo = this->getLineNumber();
     std::vector<std::string> *used = new std::vector<std::string>();
 
@@ -297,7 +354,8 @@ void AssignStatementNode::getUsesPInto(std::vector<std::string> &result,
 }
 
 std::vector<std::string> *AssignStatementNode::getModsInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
     Relationship<int, std::string> *mdfdVar =
         new Relationship<int, std::string>(RelationshipReference::MODIFIES,
                                            this->getLineNumber(),
@@ -367,7 +425,8 @@ void WhileStatementNode::getFollowsTInto(
 }
 
 std::vector<std::string> *WhileStatementNode::getUsesInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
     int lineNo = this->getLineNumber();
     std::vector<std::string> *descendants = new std::vector<std::string>();
 
@@ -383,7 +442,8 @@ std::vector<std::string> *WhileStatementNode::getUsesInto(
 
     std::vector<StatementNode *> stmts = this->getStmtList();
     for (size_t i = 0; i < stmts.size(); i++) {
-        std::vector<std::string> *usedVars = stmts[i]->getUsesInto(result);
+        std::vector<std::string> *usedVars =
+            stmts[i]->getUsesInto(result, procList);
         for (size_t j = 0; j < usedVars->size(); j++) {
             Relationship<int, std::string> *usedVar =
                 new Relationship<int, std::string>(RelationshipReference::USES,
@@ -407,13 +467,15 @@ void WhileStatementNode::getUsesPInto(std::vector<std::string> &result,
 }
 
 std::vector<std::string> *WhileStatementNode::getModsInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
     int lineNo = this->getLineNumber();
 
     std::vector<std::string> *descendants = new std::vector<std::string>();
     std::vector<StatementNode *> stmts = this->getStmtList();
     for (size_t i = 0; i < stmts.size(); i++) {
-        std::vector<std::string> *mdfdVars = stmts[i]->getModsInto(result);
+        std::vector<std::string> *mdfdVars =
+            stmts[i]->getModsInto(result, procList);
         for (size_t j = 0; j < mdfdVars->size(); j++) {
             Relationship<int, std::string> *mdfdVar =
                 new Relationship<int, std::string>(
@@ -553,7 +615,8 @@ void IfStatementNode::getFollowsTInto(
 }
 
 std::vector<std::string> *IfStatementNode::getUsesInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
     int lineNo = this->getLineNumber();
     std::vector<std::string> *descendants = new std::vector<std::string>();
 
@@ -569,7 +632,8 @@ std::vector<std::string> *IfStatementNode::getUsesInto(
 
     std::vector<StatementNode *> stmts = this->getStmtList();
     for (size_t i = 0; i < stmts.size(); i++) {
-        std::vector<std::string> *usedVars = stmts[i]->getUsesInto(result);
+        std::vector<std::string> *usedVars =
+            stmts[i]->getUsesInto(result, procList);
         for (size_t j = 0; j < usedVars->size(); j++) {
             Relationship<int, std::string> *usedVar =
                 new Relationship<int, std::string>(RelationshipReference::USES,
@@ -593,13 +657,15 @@ void IfStatementNode::getUsesPInto(std::vector<std::string> &result,
 }
 
 std::vector<std::string> *IfStatementNode::getModsInto(
-    std::vector<Relationship<int, std::string> *> &result) {
+    std::vector<Relationship<int, std::string> *> &result,
+    std::vector<ProcedureNode *> &procList) {
     int lineNo = this->getLineNumber();
 
     std::vector<std::string> *descendants = new std::vector<std::string>();
     std::vector<StatementNode *> stmts = this->getStmtList();
     for (size_t i = 0; i < stmts.size(); i++) {
-        std::vector<std::string> *mdfdVars = stmts[i]->getModsInto(result);
+        std::vector<std::string> *mdfdVars =
+            stmts[i]->getModsInto(result, procList);
         for (size_t j = 0; j < mdfdVars->size(); j++) {
             Relationship<int, std::string> *mdfdVar =
                 new Relationship<int, std::string>(
