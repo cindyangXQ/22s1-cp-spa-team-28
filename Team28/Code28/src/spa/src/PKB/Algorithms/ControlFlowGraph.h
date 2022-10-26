@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Storage/StorageView.h"
+#include "../Tables/RelationshipsTable/NextTTable.h"
 #include "../Tables/RelationshipsTable/StmtToStmtRelationshipsTable.h"
 #include "../Tables/Table.h"
 

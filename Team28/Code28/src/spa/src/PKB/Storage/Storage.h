@@ -48,9 +48,14 @@ public:
     };
 
     /*
-     * Retrieves a table by the provided RelationshipReference.
+     * Retrieves a Solvable by the provided RelationshipReference.
      */
     Solvable *getRsTable(RelationshipReference rsRef, ReferenceType leftType);
+
+    /*
+     * Retrieves a Reflexive by the provided RelationshipReference.
+     */
+    Reflexive *getReflexiveTable(RelationshipReference rsRef);
 
     /*
      * Retrieves a table by the provided Designation.
@@ -93,6 +98,11 @@ private:
      * PopulateFacade/QueryFacade to use.
      */
     std::map<Designation, Table *> designTables;
+    /*
+     * Mapping of Designation to Reflexive tables to support polymorphism of
+     * reflexive solves.
+     */
+    std::map<RelationshipReference, Reflexive *> reflexiveTables;
     StorageView *storageView;
 
     /*
@@ -134,4 +144,5 @@ private:
     void initRsTablesMap();
     void initStorageView();
     void initAttributesTableMap();
+    void initReflexiveTablesMap();
 };
