@@ -51,7 +51,7 @@ a18
 10 - print/read.varName in with and select clUause
 print p; read r;
 Select <p.varName, r.stmt#> with r.varName = "read" 
-constant read, a7 read, a17 read, a21 read, a27 read, a28 read, call read
+a17 5,a21 5,a27 5,a28 5,a7 5,call 5,constant 5
 5000
 11 - invalid query: assignment.varName
 assign a;
