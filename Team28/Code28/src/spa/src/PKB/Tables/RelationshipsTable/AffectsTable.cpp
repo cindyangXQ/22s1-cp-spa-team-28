@@ -65,6 +65,7 @@ bool AffectsTable::validate(Reference leftRef, Reference rightRef) {
     if (!areAssignments(left, right)) {
         return false;
     }
+    getMatrix();
     return checkAffects(left, right);
 };
 
@@ -98,6 +99,7 @@ std::vector<Value> AffectsTable::solveRight(Reference leftRef,
     }
     std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
                                                    intermediateResult.end());
+    getMatrix();
     return result;
 }
 
@@ -131,6 +133,7 @@ std::vector<Value> AffectsTable::solveLeft(Reference rightRef,
     }
     std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
                                                    intermediateResult.end());
+    getMatrix();
     return result;
 };
 
@@ -150,6 +153,7 @@ AffectsTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
             }
         }
     }
+    getMatrix();
     return result;
 }
 
@@ -165,6 +169,7 @@ std::vector<Value> AffectsTable::solveBothReflexive(EntityName synonym,
             result.push_back(stmtValue);
         }
     }
+    getMatrix();
     return result;
 }
 
@@ -212,6 +217,8 @@ void AffectsTable::calculateAffects(int left, int right) {
         if (i == right || nextT->retrieveLeft(i).count(right) > 0) {
             if (calculateAffectsHelper(i, right, commonVariables, visited)) {
                 this->matrix[std::make_pair(left, right)] = Status::TRUE;
+                // TODO: Store affects relationship?? To iterate through in
+                // affects*, not sure
                 return;
             } else {
                 this->matrix[std::make_pair(left, right)] = Status::FALSE;
@@ -277,3 +284,15 @@ AffectsTable::getRemainingVariables(std::vector<std::string> *variables,
     }
     return remainingV;
 };
+
+std::map<std::pair<int, int>, Status> AffectsTable::getMatrix() {
+    std::cout << "Printing matrix:" << std::endl;
+    for (const auto &p : this->matrix) {
+        std::string status = p.second == Status::TRUE    ? "true"
+                             : p.second == Status::FALSE ? "false"
+                                                         : "unknown";
+        std::cout << "(" << p.first.first << "," << p.first.second << ") "
+                  << status << std::endl;
+    }
+    return this->matrix;
+}

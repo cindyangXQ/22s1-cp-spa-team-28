@@ -77,6 +77,7 @@ void Storage::initStorageView() {
     this->storageView->setTable<ModifiesSTable>(
         this->getTable<ModifiesSTable>());
     this->storageView->setTable<UsesSTable>(this->getTable<UsesSTable>());
+    this->storageView->setTable<AffectsTable>(this->getTable<AffectsTable>());
 };
 
 void Storage::initReflexiveTablesMap() {

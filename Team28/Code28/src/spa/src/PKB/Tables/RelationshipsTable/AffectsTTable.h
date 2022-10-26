@@ -1,15 +1,12 @@
 #pragma once
 
 #include "../Reflexive.h"
-#include "NextTTable.h"
+#include "AffectsTable.h"
 #include "StmtToStmtRelationshipsTable.h"
-#include "StmtToVarRelationshipsTable.h"
 
-enum class Status { TRUE, FALSE, UNKNOWN };
-
-class AffectsTable : public StmtToStmtRelationshipsTable, public Reflexive {
+class AffectsTTable : public StmtToStmtRelationshipsTable, public Reflexive {
 public:
-    void initAffects(StorageView *storage);
+    void initAffectsT(StorageView *storage);
 
     /*
      * Returns true if the relationship holds between leftReference and
@@ -43,31 +40,8 @@ public:
     std::vector<Value> solveBothReflexive(EntityName synonym,
                                           StorageView *storage);
 
-    std::map<std::pair<int, int>, Status> getMatrix();
-
 private:
-    std::unordered_set<int> assignments;
-    std::unordered_set<int> modifiableStatements;
-    NextTable *next;
-    NextTTable *nextT;
-    ModifiesSTable *modifiesS;
-    UsesSTable *usesS;
-    int totalLines;
+    AffectsTable *affects;
     std::map<std::pair<int, int>, Status> matrix;
-
-    bool checkAffects(int left, int right);
-    void calculateAffects(int left, int right);
-    bool calculateAffectsHelper(int current, int goal,
-                                std::vector<std::string> commonVariables,
-                                std::map<int, int> visited);
-
-    bool isAssignment(int stmt);
-    bool areAssignments(int left, int right);
-    bool isModifiableStmt(int stmt);
-    bool isAssignmentEntity(EntityName entity);
-
-    std::vector<std::string> getCommonVariables(int left, int right);
-
-    std::vector<std::string>
-    getRemainingVariables(std::vector<std::string> *variables, int stmt);
+    int totalLines;
 };
