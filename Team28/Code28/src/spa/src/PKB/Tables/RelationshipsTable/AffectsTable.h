@@ -43,7 +43,7 @@ public:
     std::vector<Value> solveBothReflexive(EntityName synonym,
                                           StorageView *storage);
 
-    std::map<std::pair<int, int>, Status> getMatrix();
+    std::map<std::pair<int, int>, bool> eagerGetMatrix();
 
 private:
     std::unordered_set<int> assignments;

@@ -24,4 +24,7 @@ void PKB::populateNextT() { this->cfg->populateNextT(); }
 void PKB::initAffects() {
     AffectsTable *affectsTable = this->storage->getTable<AffectsTable>();
     affectsTable->initAffects(this->storage->getStorageView());
+    AffectsTTable *affectsTTable = this->storage->getTable<AffectsTTable>();
+    affectsTTable->initAffectsT(this->storage->getStorageView());
+    affectsTTable->populateAffectsT();
 }
