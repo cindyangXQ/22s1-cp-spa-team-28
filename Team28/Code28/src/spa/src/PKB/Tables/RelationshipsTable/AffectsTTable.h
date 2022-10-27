@@ -42,6 +42,6 @@ public:
 
 private:
     AffectsTable *affects;
-    std::map<std::pair<int, int>, Status> matrix;
+    std::unordered_set<int> assignments;
     int totalLines;
 };
