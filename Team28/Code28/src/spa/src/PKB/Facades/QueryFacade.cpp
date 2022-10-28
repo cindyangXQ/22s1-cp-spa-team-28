@@ -182,7 +182,6 @@ std::string QueryFacade::getSecondaryAttribute(int stmtNum) {
         // Check calls r/s first since call stmts can use and modify as well.
         return callProc->retrieveSingleRight(stmtNum);
     }
-    return callProc->retrieveSingleRight(stmtNum);
 
     UsesSTable *usesS = this->storage->getTable<UsesSTable>();
     if (usesS->isLeftValueExist(stmtNum)) {
