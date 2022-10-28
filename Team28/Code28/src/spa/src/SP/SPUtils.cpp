@@ -80,6 +80,7 @@ SPUtils::usesP(ProcedureNode *procedure,
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getUsesPInto(result, procList);
     }
+    procedure->setUse(result);
     return result;
 }
 
@@ -91,6 +92,7 @@ SPUtils::modifiesP(ProcedureNode *procedure,
     for (size_t i = 0; i < stmtList.size(); i++) {
         stmtList[i]->getModifiesPInto(result, procList);
     }
+    procedure->setMod(result);
     return result;
 }
 

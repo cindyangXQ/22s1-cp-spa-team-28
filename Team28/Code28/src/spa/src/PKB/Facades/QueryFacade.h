@@ -102,8 +102,11 @@ public:
      */
     std::string getSecondaryAttribute(int stmtNum);
 
-    std::vector<Value> getReflexiveNextT(EntityName stmtEntity);
-    std::vector<Value> getReflexiveAffects(EntityName stmtEntity);
+    /*
+     * Returns all possible values that solves a reflexive relationship.
+     */
+    std::vector<Value> solveReflexive(RelationshipReference rsRef,
+                                      EntityName stmtEntity);
 
 private:
     Storage *storage;

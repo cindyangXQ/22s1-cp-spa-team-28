@@ -168,18 +168,32 @@ const std::regex PATTERN_CL_REGEX(
 // ref : '"' IDENT '"'" | INTEGER | attrRef | synonym
 // attrRef : synonym '.' attrName
 // For arguments extraction
-const std::regex WITH_REGEX("^\\s*(with\\s+|^\\s*and\\s+)" // with or and
-                            "(.*?)"                        // ref
-                            "\\s*=\\s*"                    // '='
-                            "(.*?)\\s*"                    // ref
-);
+const std::regex
+    WITH_REGEX("^\\s*(with\\s+|^\\s*and\\s+)" // with or and
+               "(\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"|0|[1-9]\\d*|"
+               "[a-zA-Z][a-zA-Z0-9]*\\s*\\.\\s*procName|[a-zA-Z][a-zA-Z0-9]*"
+               "\\s*\\.\\s*varName|[a-zA-Z][a-zA-Z0-9]*\\s*\\.\\s*value|[a-zA-"
+               "Z][a-zA-Z0-9]*\\s*\\.\\s*stmt#)" // ref
+               "\\s*=\\s*"                       // =
+               "(\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"|0|[1-9]\\d*|"
+               "[a-zA-Z][a-zA-Z0-9]*\\s*\\.\\s*procName|[a-zA-Z][a-zA-Z0-9]*"
+               "\\s*\\.\\s*varName|[a-zA-Z][a-zA-Z0-9]*\\s*\\.\\s*value|[a-zA-"
+               "Z][a-zA-Z0-9]*\\s*\\.\\s*stmt#)\\s*" // ref
+    );
 
 // For clause extraction
-const std::regex WITH_CL_REGEX("(^\\s*(with\\s+|^\\s*and\\s+)" // with or and
-                               "(.*?)"                         // ref
-                               "\\s*=\\s*"                     // '='
-                               "(.*?))\\s*"                    // ref
-);
+const std::regex
+    WITH_CL_REGEX("(^\\s*(with\\s+|^\\s*and\\s+)" // with or and
+                  "(\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"|0|[1-9]\\d*|"
+                  "[a-zA-Z][a-zA-Z0-9]*\\s*\\.\\s*procName|[a-zA-Z][a-zA-Z0-9]*"
+                  "\\s*\\.\\s*varName|[a-zA-Z][a-zA-Z0-9]*\\s*\\.\\s*value|[a-"
+                  "zA-Z][a-zA-Z0-9]*\\s*\\.\\s*stmt#)" // ref
+                  "\\s*=\\s*"                          // =
+                  "(\"\\s*[a-zA-Z][a-zA-Z0-9]*\\s*\"|0|[1-9]\\d*|"
+                  "[a-zA-Z][a-zA-Z0-9]*\\s*\\.\\s*procName|[a-zA-Z][a-zA-Z0-9]*"
+                  "\\s*\\.\\s*varName|[a-zA-Z][a-zA-Z0-9]*\\s*\\.\\s*value|[a-"
+                  "zA-Z][a-zA-Z0-9]*\\s*\\.\\s*stmt#)).*?" // ref
+    );
 
 const std::unordered_map<std::type_index, std::regex> IS_CLAUSE_MAP = {
     {typeid(SelectClause), IS_SELECT},

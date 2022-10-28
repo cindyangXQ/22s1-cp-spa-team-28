@@ -176,18 +176,26 @@ std::string QueryFacade::getSecondaryAttribute(int stmtNum) {
     if (!statements->hasSecondaryAttribute(stmtNum)) {
         throw std::invalid_argument(STMT_NO_SECONDARY_ATTRIBUTE);
     }
+
+    CallProcTable *callProc = this->storage->getTable<CallProcTable>();
+    if (callProc->isLeftValueExist(stmtNum)) {
+        // Check calls r/s first since call stmts can use and modify as well.
+        return callProc->retrieveSingleRight(stmtNum);
+    }
+
     UsesSTable *usesS = this->storage->getTable<UsesSTable>();
     if (usesS->isLeftValueExist(stmtNum)) {
+        // Print only
         return usesS->retrieveSingleRight(stmtNum);
     }
 
     ModifiesSTable *modifiesS = this->storage->getTable<ModifiesSTable>();
     if (modifiesS->isLeftValueExist(stmtNum)) {
+        // Read only
         return modifiesS->retrieveSingleRight(stmtNum);
     }
 
-    CallProcTable *callProc = this->storage->getTable<CallProcTable>();
-    return callProc->retrieveSingleRight(stmtNum);
+    return "";
 };
 
 std::vector<Value> QueryFacade::solveOneAttribute(Reference ref, Value value) {
@@ -246,35 +254,13 @@ bool QueryFacade::isWildcardedModifies(ReferenceType leftRef,
            relType == RelationshipReference::MODIFIES;
 }
 
-// TODO: clean up this method
-std::vector<Value> QueryFacade::getReflexiveNextT(EntityName stmtEntity) {
+std::vector<Value> QueryFacade::solveReflexive(RelationshipReference rsRef,
+                                               EntityName stmtEntity) {
     if (stmtRefSet.count(stmtEntity) != 1) {
         return std::vector<Value>();
     }
-    StatementType stmtType = Statement::getStmtTypeFromEntityName(stmtEntity);
-    StatementsTable *statements = this->storage->getTable<StatementsTable>();
-    std::vector<int> possibleValues = statements->getStatementsByType(stmtType);
-    std::unordered_set<int> setOfPossibleValues(possibleValues.begin(),
-                                                possibleValues.end());
-    NextTTable *nextT = this->storage->getTable<NextTTable>();
-    std::vector<Value> result;
 
-    for (auto const &[key, val] : nextT->getLeftMap()) {
-        if (setOfPossibleValues.count(key) > 0) {
-            if (val.count(key) > 0) {
-                result.push_back(Value(ValueType::STMT_NUM, toString(key)));
-            }
-        }
-    }
-    return result;
-};
-
-std::vector<Value> QueryFacade::getReflexiveAffects(EntityName stmtEntity) {
-    if (stmtRefSet.count(stmtEntity) != 1) {
-        return std::vector<Value>();
-    }
-    StatementsTable *statements = this->storage->getTable<StatementsTable>();
-    AffectsTable *affects = this->storage->getTable<AffectsTable>();
-    return affects->solveBothReflexive(stmtEntity,
-                                       this->storage->getStorageView());
+    Reflexive *reflexive = this->storage->getReflexiveTable(rsRef);
+    return reflexive->solveBothReflexive(stmtEntity,
+                                         this->storage->getStorageView());
 };

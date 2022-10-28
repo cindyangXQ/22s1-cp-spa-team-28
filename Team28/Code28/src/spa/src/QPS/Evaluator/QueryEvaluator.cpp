@@ -158,7 +158,8 @@ QueryEvaluator::handleNoTables(QueryResult *queryResult) {
 }
 
 bool QueryEvaluator::isAlternativeAttribute(Reference ref) {
-    return (ref.getEntityName() == EntityName::PRINT &&
+    return ref.getRefType() == ReferenceType::ATTR_REF &&
+           (ref.getEntityName() == EntityName::PRINT &&
                 ref.getAttr() == EntityAttribute::VAR_NAME ||
             ref.getEntityName() == EntityName::READ &&
                 ref.getAttr() == EntityAttribute::VAR_NAME ||
