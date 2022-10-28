@@ -291,5 +291,10 @@ std::map<std::pair<int, int>, bool> AffectsTable::eagerGetMatrix() {
         std::pair curr = p.first;
         result[curr] = status;
     }
+    std::cout << "Computing original eager..." << std::endl;
+    for (const auto &p : result) {
+        std::cout << "(" << p.first.first << "," << p.first.second << ") "
+                  << p.second << std::endl;
+    }
     return result;
 }
