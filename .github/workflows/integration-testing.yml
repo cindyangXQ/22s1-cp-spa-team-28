@@ -1,4 +1,4 @@
-name: Run Unit and Integration tests
+name: Run Integration tests
 
 on:
   push:
@@ -26,17 +26,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Build Project, run unit and integration tests
+      - name: Build Project, Integration tests
         shell: bash
         run: |
           cd Team28/Code28
           mkdir build
           cd build
           cmake -A Win32 ..
-          cmake --build . --target unit_testing --config Release
           cmake --build . --target integration_testing --config Release
-          cmake --build . --target autotester --config Release
-          cd src/unit_testing/Release
-          ./unit_testing
-          cd ../../integration_testing/Release
+          cd src/integration_testing/Release
           ./integration_testing
