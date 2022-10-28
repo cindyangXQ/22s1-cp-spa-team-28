@@ -53,6 +53,8 @@ private:
      * Helper method for computing Affects* from Affects.
      */
     std::map<std::pair<int, int>, bool> computeClosure();
+    // TODO: Abstract these common methods into a common utils file, duplicated
+    // form AffectsTable
     bool isAssignment(int stmt);
     bool areAssignments(int left, int right);
     bool isAssignmentEntity(EntityName entity);
