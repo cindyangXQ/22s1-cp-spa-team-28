@@ -95,9 +95,13 @@ public:
 
     /*
      * Retrieves the only Right from the given Left.
-     * Throws an exceptionn if Left is mapped to multiple Rights.
+     * Throws an exception if Left is mapped to multiple Rights or if Left does
+     * not exist.
      */
     Right retrieveSingleRight(Left left) {
+        if (this->retrieveLeft(left).size() == 0) {
+            throw std::invalid_argument(LEFT_DOES_NOT_EXIST);
+        }
         if (this->retrieveLeft(left).size() != 1) {
             throw std::invalid_argument(MORE_THAN_ONE_RIGHT);
         }
@@ -301,6 +305,8 @@ protected:
     }
 
 private:
+    const std::string LEFT_DOES_NOT_EXIST =
+        "The given Left does not have any mapped values";
     const std::string MORE_THAN_ONE_RIGHT =
         "There exists more than 1 Right value mapped to given Left";
 };
