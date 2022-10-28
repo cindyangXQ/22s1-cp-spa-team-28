@@ -176,18 +176,26 @@ std::string QueryFacade::getSecondaryAttribute(int stmtNum) {
     if (!statements->hasSecondaryAttribute(stmtNum)) {
         throw std::invalid_argument(STMT_NO_SECONDARY_ATTRIBUTE);
     }
+
+    CallProcTable *callProc = this->storage->getTable<CallProcTable>();
+    if (callProc->isLeftValueExist(stmtNum)) {
+        // Check calls r/s first since call stmts can use and modify as well.
+        return callProc->retrieveSingleRight(stmtNum);
+    }
+
     UsesSTable *usesS = this->storage->getTable<UsesSTable>();
     if (usesS->isLeftValueExist(stmtNum)) {
+        // Print only
         return usesS->retrieveSingleRight(stmtNum);
     }
 
     ModifiesSTable *modifiesS = this->storage->getTable<ModifiesSTable>();
     if (modifiesS->isLeftValueExist(stmtNum)) {
+        // Read only
         return modifiesS->retrieveSingleRight(stmtNum);
     }
 
-    CallProcTable *callProc = this->storage->getTable<CallProcTable>();
-    return callProc->retrieveSingleRight(stmtNum);
+    return "";
 };
 
 std::vector<Value> QueryFacade::solveOneAttribute(Reference ref, Value value) {
