@@ -88,13 +88,28 @@ ClauseTable::handleCommonHeadersJoin(ClauseTable table1, ClauseTable table2,
     ClauseTable result = ClauseTable::ConstructTable(table1, table2);
     std::vector<int> table1Indices = table1.getIndices(commonHeaders);
     std::vector<int> table2Indices = table2.getIndices(commonHeaders);
+
+    std::unordered_map<std::string, std::unordered_set<int>> tuple_to_rows;
     for (int i = 0; i < table1.size(); i++) {
-        for (int j = 0; j < table2.size(); j++) {
-            Tuple t1 = table1.rows[i];
-            Tuple t2 = table2.rows[j];
-            std::vector<Tuple> subTuple1 = t1.splitTuple(table1Indices);
-            std::vector<Tuple> subTuple2 = t2.splitTuple(table2Indices);
-            if (subTuple1[0].equal(subTuple2[0])) {
+        Tuple t1 = table1.rows[i];
+        std::vector<Tuple> subTuple1 = t1.splitTuple(table1Indices);
+        std::string key = subTuple1[0].to_string();
+        if (tuple_to_rows.find(key) == tuple_to_rows.end()) {
+            tuple_to_rows.insert({key, {i}});
+        } else {
+            tuple_to_rows.at(key).insert(i);
+        }
+    }
+    for (int j = 0; j < table2.size(); j++) {
+        Tuple t2 = table2.rows[j];
+        std::vector<Tuple> subTuple2 = t2.splitTuple(table2Indices);
+        std::string key = subTuple2[0].to_string();
+        if (tuple_to_rows.find(key) != tuple_to_rows.end()) {
+            std::unordered_set<int> table1_rows = tuple_to_rows.at(key);
+            for (auto iter = table1_rows.begin(); iter != table1_rows.end();
+                 iter++) {
+                Tuple t1 = table1.rows[(*iter)];
+                std::vector<Tuple> subTuple1 = t1.splitTuple(table1Indices);
                 result.insert(Tuple::combineSubTuples(std::vector<Tuple>{
                     subTuple1[0], subTuple1[1], subTuple2[1]}));
             }

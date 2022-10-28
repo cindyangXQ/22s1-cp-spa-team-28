@@ -25,6 +25,8 @@ public:
 
     std::vector<Value> getValues();
 
+    std::string to_string();
+
 private:
     std::vector<Value> values;
 };
