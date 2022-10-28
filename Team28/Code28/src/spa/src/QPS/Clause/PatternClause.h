@@ -14,16 +14,19 @@ typedef std::string Expression;
 class PatternClause : public QueryClause {
 public:
     PatternClause(){};
-    Synonym getSyn();
+    Reference getStmtRef();
     Reference getEntRef();
     Expression getExpression();
     bool getIsExact();
     void parse(std::smatch matches, std::vector<Synonym> syns);
     bool validate();
     ClauseResult evaluate(QueryFacade *queryFacade);
+    void replaceFirstReference(Reference *newRef);
+    void replaceSecondReference(Reference *newRef);
+    std::vector<Synonym> getSynonymsUsed();
 
 private:
-    Synonym syn;
+    Reference stmtRef;
     Reference entRef;
     Expression expression;
     bool isExact;

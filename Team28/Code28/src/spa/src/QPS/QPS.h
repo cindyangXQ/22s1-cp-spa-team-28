@@ -3,9 +3,9 @@
 #include <list>
 
 #include "../PKB/Facades/QueryFacade.h"
+#include "Optimizer/QueryOptimizer.h"
 #include "Evaluator/QueryEvaluator.h"
 #include "Parser/QueryParser.h"
-#include "Parser/SolvableQuery.h"
 
 /*
  * A wrapper class for QPS

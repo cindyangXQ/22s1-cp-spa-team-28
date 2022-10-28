@@ -37,6 +37,7 @@ SolvableQuery QueryParser::parse(std::string query) {
     Declaration decl;
     SelectClause selectClause;
     std::vector<QueryClause *> queryCls;
+    std::vector<QueryClause *> withCls;
 
     if (clauses.size() >= MIN_CLAUSE_NUM) {
         decl = QueryParser::parseDeclaration(clauses);
@@ -51,12 +52,12 @@ SolvableQuery QueryParser::parse(std::string query) {
         } else if (isClause<PatternClause>(&mainClause)) {
             parse<PatternClause>(&mainClause, decl.getSyns(), &queryCls);
         } else if (isClause<WithClause>(&mainClause)) {
-            parse<WithClause>(&mainClause, decl.getSyns(), &queryCls);
+            parse<WithClause>(&mainClause, decl.getSyns(), &withCls);
         } else {
             throw SyntaxError("Unrecognized clause syntax");
         }
     }
-    return SolvableQuery(decl, selectClause, queryCls);
+    return SolvableQuery(decl, selectClause, queryCls, withCls);
 }
 
 Declaration QueryParser::parseDeclaration(std::vector<std::string> clauses) {

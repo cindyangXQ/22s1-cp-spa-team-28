@@ -129,3 +129,22 @@ ClauseResult SuchThatClause::handleBothSynonym(QueryFacade *queryFacade) {
     }
     return clauseResult;
 }
+
+void SuchThatClause::replaceFirstReference(Reference *newRef) {
+    this->refLeft = *newRef;
+}
+
+void SuchThatClause::replaceSecondReference(Reference *newRef) {
+    this->refRight = *newRef;
+}
+
+std::vector<Synonym> SuchThatClause::getSynonymsUsed() {
+    std::vector<Synonym> syns;
+    if (refLeft.isASynonym()) {
+        syns.push_back(refLeft.getSynonym());
+    }
+    if (refRight.isASynonym()) {
+        syns.push_back(refRight.getSynonym());
+    }
+    return syns;
+}

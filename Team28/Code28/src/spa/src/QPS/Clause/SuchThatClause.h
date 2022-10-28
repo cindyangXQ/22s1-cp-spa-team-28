@@ -157,6 +157,9 @@ public:
     void parse(std::smatch matches, std::vector<Synonym> syns);
     bool validate();
     ClauseResult evaluate(QueryFacade *queryFacade);
+    void replaceFirstReference(Reference *newRef);
+    void replaceSecondReference(Reference *newRef);
+    std::vector<Synonym> getSynonymsUsed();
 
 private:
     RelationshipReference relationship;

@@ -3,6 +3,7 @@
 void QPS::evaluate(std::string query, std::list<std::string> &results) {
     try {
         SolvableQuery solvableQ = QueryParser::parse(query);
+        QueryOptimizer::optimize(&solvableQ);
         QueryResult queryResult = evaluator.evaluate(&solvableQ);
         std::vector<std::string> result =
             evaluator.interpretQueryResult(&queryResult);

@@ -3,11 +3,22 @@
 QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
     std::vector<ClauseResult> clauseResultList;
     std::vector<QueryClause *> clauses = solvableQ->getQueryClause();
+    std::vector<std::vector<QueryClause *>> clauseGroups =
+        solvableQ->getClauseGroup();
     SelectClause selectClause = solvableQ->getSelectClause();
 
-    for (int i = 0; i < clauses.size(); i++) {
-        ClauseResult result = clauses[i]->evaluate(queryFacade);
-        clauseResultList.push_back(result);
+    if (clauseGroups.size() > 0) {
+        for (std::vector<QueryClause *> group : clauseGroups) {
+            for (QueryClause *clause : group) {
+                ClauseResult result = clause->evaluate(queryFacade);
+                clauseResultList.push_back(result);
+            }
+        }
+    } else {
+        for (QueryClause *clause : clauses) {
+            ClauseResult result = clause->evaluate(queryFacade);
+            clauseResultList.push_back(result);
+        }
     }
 
     return QueryResult(selectClause, clauseResultList);

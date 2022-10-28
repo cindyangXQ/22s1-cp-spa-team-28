@@ -10,10 +10,13 @@
  */
 class Synonym {
 public:
-    Synonym();
+    Synonym(){};
     Synonym(EntityName entity, std::string name);
     std::string getName();
     EntityName getEntityName();
+    bool operator==(const Synonym &other) const {
+        return this->entity == other.entity && this->name == other.name;
+    };
 
     static Synonym getSynonym(std::string input, std::vector<Synonym> syns);
     static bool isDuplicateSynonymName(std::vector<Synonym> syns);
