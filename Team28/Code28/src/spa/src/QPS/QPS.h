@@ -3,8 +3,8 @@
 #include <list>
 
 #include "../PKB/Facades/QueryFacade.h"
-#include "Optimizer/QueryOptimizer.h"
 #include "Evaluator/QueryEvaluator.h"
+#include "Optimizer/QueryOptimizer.h"
 #include "Parser/QueryParser.h"
 
 /*

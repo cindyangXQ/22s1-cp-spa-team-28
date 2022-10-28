@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Parser/SolvableQuery.h"
 #include "../Clause/WithClause.h"
+#include "../Parser/SolvableQuery.h"
 
 class WithOptimizer {
 public:

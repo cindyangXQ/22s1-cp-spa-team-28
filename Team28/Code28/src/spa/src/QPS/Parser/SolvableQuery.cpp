@@ -19,6 +19,7 @@ std::vector<QueryClause *> SolvableQuery::getWithClause() {
 std::vector<std::vector<QueryClause *>> SolvableQuery::getClauseGroup() {
     return this->clauseGroups;
 }
-void SolvableQuery::setClauseGroup(std::vector<std::vector<QueryClause *>> *clauseGroups) {
+void SolvableQuery::setClauseGroup(
+    std::vector<std::vector<QueryClause *>> *clauseGroups) {
     this->clauseGroups = *clauseGroups;
 }

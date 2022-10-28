@@ -1,7 +1,7 @@
 #pragma once
 
-#include "WithOptimizer.h"
 #include "GroupOptimizer.h"
+#include "WithOptimizer.h"
 
 class QueryOptimizer {
 public:
