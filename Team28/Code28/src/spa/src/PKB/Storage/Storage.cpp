@@ -85,6 +85,8 @@ void Storage::initReflexiveTablesMap() {
         this->getTable<NextTTable>();
     this->reflexiveTables[RelationshipReference::AFFECTS] =
         this->getTable<AffectsTable>();
+    this->reflexiveTables[RelationshipReference::AFFECTS_T] =
+        this->getTable<AffectsTTable>();
 }
 
 Solvable *Storage::getRsTable(RelationshipReference rsRef,
