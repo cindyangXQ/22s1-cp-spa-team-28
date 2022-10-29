@@ -41,7 +41,7 @@ jobs:
           python-version: 3.8
       - name: Run Python script
         run: |
-          python run-autotester-windows.py
+          python .\run-autotester-windows.py
       - name: Archive System Test Results
         uses: actions/upload-artifact@v2
         with:
