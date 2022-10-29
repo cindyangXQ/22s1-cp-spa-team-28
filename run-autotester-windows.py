@@ -6,6 +6,8 @@ import sys
 import os
 
 def autotest(source_path):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    print(dir_path)
     cmd = "Team28\\Code28\\out\\build\\x64-Debug\\src\\autotester\\autotester.exe Team28\\Tests28\\source\\{}_source.txt Team28\\Tests28\\queries\\{}_queries.txt Team28\\Tests28\\out_{}.xml".format(
         source_path, source_path, source_path
     )
