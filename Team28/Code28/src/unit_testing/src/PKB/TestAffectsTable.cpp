@@ -196,16 +196,26 @@ TEST_CASE("AffectsTable: validate works correctly") {
     AffectsTable *affects = pair.first;
     StorageView *storage = pair.second;
 
-    REQUIRE(affects->validate(Reference("2"), Reference("6")));
-    REQUIRE(affects->validate(Reference("4"), Reference("8")));
-    REQUIRE(affects->validate(Reference("4"), Reference("10")));
-    REQUIRE(affects->validate(Reference("6"), Reference("6")));
     REQUIRE(affects->validate(Reference("1"), Reference("4")));
     REQUIRE(affects->validate(Reference("1"), Reference("8")));
     REQUIRE(affects->validate(Reference("1"), Reference("10")));
     REQUIRE(affects->validate(Reference("1"), Reference("12")));
+    REQUIRE(affects->validate(Reference("2"), Reference("6")));
     REQUIRE(affects->validate(Reference("2"), Reference("10")));
+    REQUIRE(affects->validate(Reference("4"), Reference("4")));
+    REQUIRE(affects->validate(Reference("4"), Reference("8")));
+    REQUIRE(affects->validate(Reference("4"), Reference("10")));
+    REQUIRE(affects->validate(Reference("4"), Reference("12")));
+    REQUIRE(affects->validate(Reference("6"), Reference("6")));
+    REQUIRE(affects->validate(Reference("6"), Reference("10")));
+    REQUIRE(affects->validate(Reference("8"), Reference("10")));
+    REQUIRE(affects->validate(Reference("8"), Reference("12")));
     REQUIRE(affects->validate(Reference("9"), Reference("10")));
+    REQUIRE(affects->validate(Reference("10"), Reference("11")));
+    REQUIRE(affects->validate(Reference("10"), Reference("12")));
+    REQUIRE(affects->validate(Reference("11"), Reference("12")));
+    REQUIRE(affects->validate(Reference("13"), Reference("14")));
+
     REQUIRE(affects->validate(Reference("_"), Reference("_")));
     REQUIRE(affects->validate(Reference("2"), Reference("_")));
     REQUIRE(affects->validate(Reference("_"), Reference("10")));

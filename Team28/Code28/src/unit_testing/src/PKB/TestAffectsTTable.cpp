@@ -200,16 +200,36 @@ TEST_CASE("AffectsTTable: validate works correctly") {
     AffectsTTable *affects = pair.first;
     StorageView *storage = pair.second;
 
-    REQUIRE(affects->validate(Reference("2"), Reference("6")));
-    REQUIRE(affects->validate(Reference("4"), Reference("8")));
-    REQUIRE(affects->validate(Reference("4"), Reference("10")));
-    REQUIRE(affects->validate(Reference("6"), Reference("6")));
+    // Affects
     REQUIRE(affects->validate(Reference("1"), Reference("4")));
     REQUIRE(affects->validate(Reference("1"), Reference("8")));
     REQUIRE(affects->validate(Reference("1"), Reference("10")));
     REQUIRE(affects->validate(Reference("1"), Reference("12")));
+    REQUIRE(affects->validate(Reference("2"), Reference("6")));
     REQUIRE(affects->validate(Reference("2"), Reference("10")));
+    REQUIRE(affects->validate(Reference("4"), Reference("4")));
+    REQUIRE(affects->validate(Reference("4"), Reference("8")));
+    REQUIRE(affects->validate(Reference("4"), Reference("10")));
+    REQUIRE(affects->validate(Reference("4"), Reference("12")));
+    REQUIRE(affects->validate(Reference("6"), Reference("6")));
+    REQUIRE(affects->validate(Reference("6"), Reference("10")));
+    REQUIRE(affects->validate(Reference("8"), Reference("10")));
+    REQUIRE(affects->validate(Reference("8"), Reference("12")));
     REQUIRE(affects->validate(Reference("9"), Reference("10")));
+    REQUIRE(affects->validate(Reference("10"), Reference("11")));
+    REQUIRE(affects->validate(Reference("10"), Reference("12")));
+    REQUIRE(affects->validate(Reference("11"), Reference("12")));
+    REQUIRE(affects->validate(Reference("13"), Reference("14")));
+    // Affects*
+    REQUIRE(affects->validate(Reference("2"), Reference("11")));
+    REQUIRE(affects->validate(Reference("2"), Reference("12")));
+    REQUIRE(affects->validate(Reference("4"), Reference("11")));
+    REQUIRE(affects->validate(Reference("6"), Reference("11")));
+    REQUIRE(affects->validate(Reference("6"), Reference("12")));
+    REQUIRE(affects->validate(Reference("8"), Reference("11")));
+    REQUIRE(affects->validate(Reference("9"), Reference("11")));
+    REQUIRE(affects->validate(Reference("9"), Reference("12")));
+
     REQUIRE(affects->validate(Reference("_"), Reference("_")));
     REQUIRE(affects->validate(Reference("2"), Reference("_")));
     REQUIRE(affects->validate(Reference("_"), Reference("10")));
@@ -226,12 +246,13 @@ TEST_CASE("AffectsTTable: solveRight works correctly") {
     Reference leftRef = Reference("1");
     EntityName rightSynonym = EntityName::STMT;
 
-    // Affects(1, s)
+    // Affects*(1, s)
     std::vector<Value> output =
         affects->solveRight(leftRef, rightSynonym, storage);
     std::vector<Value> expectedResult = {
         Value(ValueType::STMT_NUM, "4"), Value(ValueType::STMT_NUM, "8"),
-        Value(ValueType::STMT_NUM, "10"), Value(ValueType::STMT_NUM, "12")};
+        Value(ValueType::STMT_NUM, "10"), Value(ValueType::STMT_NUM, "11"),
+        Value(ValueType::STMT_NUM, "12")};
     std::sort(output.begin(), output.end());
     std::sort(expectedResult.begin(), expectedResult.end());
 
@@ -239,7 +260,7 @@ TEST_CASE("AffectsTTable: solveRight works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // Affects(1, a)
+    // Affects*(1, a)
     rightSynonym = EntityName::ASSIGN;
     output = affects->solveRight(leftRef, rightSynonym, storage);
     std::sort(output.begin(), output.end());
@@ -248,7 +269,7 @@ TEST_CASE("AffectsTTable: solveRight works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // Affects(_, a)
+    // Affects*(_, a)
     leftRef = Reference("_");
     rightSynonym = EntityName::ASSIGN;
     output = affects->solveRight(leftRef, rightSynonym, storage);
@@ -297,7 +318,7 @@ TEST_CASE("AffectsTTable: solveLeft works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // Affects(a, 10)
+    // Affects*(a, 10)
     leftSynonym = EntityName::ASSIGN;
     output = affects->solveLeft(rightRef, leftSynonym, storage);
     std::sort(output.begin(), output.end());
@@ -306,7 +327,7 @@ TEST_CASE("AffectsTTable: solveLeft works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // Affects(a, _)
+    // Affects*(a, _)
     leftSynonym = EntityName::ASSIGN;
     rightRef = Reference("_");
     output = affects->solveLeft(rightRef, leftSynonym, storage);
@@ -322,7 +343,7 @@ TEST_CASE("AffectsTTable: solveLeft works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // Affects(p, 10), empty
+    // Affects*(p, 10), empty
     leftSynonym = EntityName::PROCEDURE;
     output = affects->solveLeft(rightRef, leftSynonym, storage);
     expectedResult = {};
@@ -384,6 +405,24 @@ TEST_CASE("AffectsTTable:solveBoth works correctly") {
                        Value(ValueType::STMT_NUM, "4")),
         std::make_pair(Value(ValueType::STMT_NUM, "4"),
                        Value(ValueType::STMT_NUM, "12")),
+        std::make_pair(Value(ValueType::STMT_NUM, "1"),
+                       Value(ValueType::STMT_NUM, "11")),
+        std::make_pair(Value(ValueType::STMT_NUM, "2"),
+                       Value(ValueType::STMT_NUM, "11")),
+        std::make_pair(Value(ValueType::STMT_NUM, "2"),
+                       Value(ValueType::STMT_NUM, "12")),
+        std::make_pair(Value(ValueType::STMT_NUM, "4"),
+                       Value(ValueType::STMT_NUM, "11")),
+        std::make_pair(Value(ValueType::STMT_NUM, "6"),
+                       Value(ValueType::STMT_NUM, "11")),
+        std::make_pair(Value(ValueType::STMT_NUM, "6"),
+                       Value(ValueType::STMT_NUM, "12")),
+        std::make_pair(Value(ValueType::STMT_NUM, "8"),
+                       Value(ValueType::STMT_NUM, "11")),
+        std::make_pair(Value(ValueType::STMT_NUM, "9"),
+                       Value(ValueType::STMT_NUM, "11")),
+        std::make_pair(Value(ValueType::STMT_NUM, "9"),
+                       Value(ValueType::STMT_NUM, "12")),
     };
     std::sort(output.begin(), output.end());
     std::sort(expectedResult.begin(), expectedResult.end());
@@ -391,7 +430,7 @@ TEST_CASE("AffectsTTable:solveBoth works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // Affects(a1, a2), equiv. to Affects(s1, s2)
+    // Affects*(a1, a2), equiv. to Affects*(s1, s2)
     leftSynonym = EntityName::ASSIGN;
     rightSynonym = EntityName::ASSIGN;
     output = affects->solveBoth(leftSynonym, rightSynonym, storage);
@@ -401,7 +440,7 @@ TEST_CASE("AffectsTTable:solveBoth works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // Affects(a1, p), empty
+    // Affects*(a1, p), empty
     leftSynonym = EntityName::ASSIGN;
     rightSynonym = EntityName::PROCEDURE;
     output = affects->solveBoth(leftSynonym, rightSynonym, storage);
@@ -412,7 +451,7 @@ TEST_CASE("AffectsTTable:solveBoth works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // Affects(p1, p2), empty
+    // Affects*(p1, p2), empty
     leftSynonym = EntityName::PROCEDURE;
     rightSynonym = EntityName::PROCEDURE;
     output = affects->solveBoth(leftSynonym, rightSynonym, storage);
@@ -432,7 +471,7 @@ TEST_CASE("AffectsTTable: solveBothReflexive works correctly") {
 
     EntityName synonym = EntityName::STMT;
 
-    // Affects(s, s)
+    // Affects*(s, s)
     std::vector<Value> output = affects->solveBothReflexive(synonym, storage);
     std::vector<Value> expectedResult = {Value(ValueType::STMT_NUM, "4"),
                                          Value(ValueType::STMT_NUM, "6")};
@@ -442,7 +481,7 @@ TEST_CASE("AffectsTTable: solveBothReflexive works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // Affects(a, a)
+    // Affects*(a, a), equiv. to Affects*(s, s)
     synonym = EntityName::ASSIGN;
     output = affects->solveBothReflexive(synonym, storage);
     std::sort(output.begin(), output.end());
@@ -451,7 +490,7 @@ TEST_CASE("AffectsTTable: solveBothReflexive works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // Affects(p, p), empty
+    // Affects*(p, p), empty
     synonym = EntityName::PROCEDURE;
     output = affects->solveBothReflexive(synonym, storage);
     expectedResult = {};

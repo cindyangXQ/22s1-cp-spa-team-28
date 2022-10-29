@@ -42,11 +42,6 @@ std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
     for (std::pair pair : validPos) {
         final[pair] = intermediate[pair];
     }
-    std::cout << "Computing Affects* closure..." << std::endl;
-    for (const auto &p : final) {
-        std::cout << "(" << p.first.first << "," << p.first.second << ") "
-                  << p.second << std::endl;
-    }
     return final;
 }
 
