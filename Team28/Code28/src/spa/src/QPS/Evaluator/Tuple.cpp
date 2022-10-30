@@ -51,3 +51,11 @@ bool Tuple::equal(Tuple rhs) {
 Value Tuple::getValue(int index) { return this->values[(size_t)index]; }
 
 std::vector<Value> Tuple::getValues() { return this->values; }
+
+std::string Tuple::to_string() {
+    std::string s = "";
+    for (int i = 0; i < values.size(); i++) {
+        s += " " + values[i].getValue();
+    }
+    return s;
+}

@@ -277,3 +277,19 @@ AffectsTable::getRemainingVariables(std::vector<std::string> *variables,
     }
     return remainingV;
 };
+
+std::map<std::pair<int, int>, bool> AffectsTable::eagerGetMatrix() {
+    std::map<std::pair<int, int>, bool> result = {};
+    for (const auto &p : this->matrix) {
+        if (p.second == Status::UNKNOWN) {
+            std::pair curr = p.first;
+            calculateAffects(curr.first, curr.second);
+        }
+    }
+    for (const auto &p : this->matrix) {
+        bool status = p.second == Status::TRUE ? true : false;
+        std::pair curr = p.first;
+        result[curr] = status;
+    }
+    return result;
+}
