@@ -1,4 +1,4 @@
-# Python script to run all Autotester tests.
+# Python script to run all Autotester tests, modified for CI run.
 # To add new Autotester tests, add a source code file {name}_source.txt to Tests28/source
 # and a query file {name}_queries.txt to Tests28/queries
 
@@ -6,7 +6,7 @@ import sys
 import os
 
 def autotest(source_path):
-    cmd = ".\\Team28\\Code28\\out\\build\\x64-Debug\\src\\autotester\\autotester.exe .\\Team28\\Tests28\\source\\{}_source.txt .\\Team28\\Tests28\\queries\\{}_queries.txt .\\Team28\\Tests28\\out_{}.xml".format(
+    cmd = ".\\Team28\\Code28\\build\\src\\autotester\\Release\\autotester.exe .\\Team28\\Tests28\\source\\{}_source.txt .\\Team28\\Tests28\\queries\\{}_queries.txt .\\Team28\\Tests28\\out_{}.xml".format(
         source_path, source_path, source_path
     )
     os.system(cmd)
