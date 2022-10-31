@@ -130,11 +130,24 @@ void PatternClause::replaceSecondReference(Reference *newRef) {
     this->entRef = *newRef;
 }
 
-std::vector<Synonym> PatternClause::getSynonymsUsed() {
-    std::vector<Synonym> syns;
-    syns.push_back(stmtRef.getSynonym());
+std::unordered_set<std::string> PatternClause::getSynonymsUsed() {
+    return this->synsUsed;
+}
+
+void PatternClause::populateSynsUsed() {
+    synsUsed.insert(stmtRef.getSynonymName());
     if (entRef.isASynonym()) {
-        syns.push_back(entRef.getSynonym());
+        synsUsed.insert(entRef.getSynonymName());
     }
-    return syns;
+}
+
+double PatternClause::getOptimizeScore() {
+    double baseScore = 1.0;
+    double synScore = 1.0;
+    if (this->synsUsed.size() == 0) {
+        synScore = 0.01;
+    } else if (this->synsUsed.size() == 1) {
+        synScore = 0.5;
+    }
+    return baseScore * synScore;
 }

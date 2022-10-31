@@ -82,13 +82,26 @@ void WithClause::replaceSecondReference(Reference *newRef) {
     this->refRight = *newRef;
 }
 
-std::vector<Synonym> WithClause::getSynonymsUsed() {
-    std::vector<Synonym> syns;
+std::unordered_set<std::string> WithClause::getSynonymsUsed() {
+    return this->synsUsed;
+}
+
+void WithClause::populateSynsUsed() {
     if (refLeft.getRefType() == ReferenceType::ATTR_REF) {
-        syns.push_back(refLeft.getSynonym());
+        synsUsed.insert(refLeft.getSynonymName());
     }
     if (refLeft.getRefType() == ReferenceType::ATTR_REF) {
-        syns.push_back(refRight.getSynonym());
+        synsUsed.insert(refRight.getSynonymName());
     }
-    return syns;
+}
+
+double WithClause::getOptimizeScore() {
+    double baseScore = 0.25;
+    double synScore = 1.0;
+    if (this->synsUsed.size() == 0) {
+        synScore = 0.01;
+    } else if (this->synsUsed.size() == 1) {
+        synScore = 0.5;
+    }
+    return baseScore * synScore;
 }

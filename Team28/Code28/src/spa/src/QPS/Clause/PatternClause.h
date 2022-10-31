@@ -23,13 +23,16 @@ public:
     ClauseResult evaluate(QueryFacade *queryFacade);
     void replaceFirstReference(Reference *newRef);
     void replaceSecondReference(Reference *newRef);
-    std::vector<Synonym> getSynonymsUsed();
+    std::unordered_set<std::string> getSynonymsUsed();
+    double getOptimizeScore();
 
 private:
     Reference stmtRef;
     Reference entRef;
     Expression expression;
     bool isExact;
+    std::unordered_set<std::string> synsUsed;
+    void populateSynsUsed();
     ClauseResult handleAssign(QueryFacade *queryFacade);
     ClauseResult handleIf(QueryFacade *queryFacade);
     ClauseResult handleWhile(QueryFacade *queryFacade);

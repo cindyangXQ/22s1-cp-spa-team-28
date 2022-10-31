@@ -159,12 +159,15 @@ public:
     ClauseResult evaluate(QueryFacade *queryFacade);
     void replaceFirstReference(Reference *newRef);
     void replaceSecondReference(Reference *newRef);
-    std::vector<Synonym> getSynonymsUsed();
+    std::unordered_set<std::string> getSynonymsUsed();
+    double getOptimizeScore();
 
 private:
     RelationshipReference relationship;
     Reference refLeft;
     Reference refRight;
+    std::unordered_set<std::string> synsUsed;
+    void populateSynsUsed();
     ClauseResult handleNoSynonym(QueryFacade *queryFacade);
     ClauseResult handleLeftSynonym(QueryFacade *queryFacade);
     ClauseResult handleRightSynonym(QueryFacade *queryFacade);

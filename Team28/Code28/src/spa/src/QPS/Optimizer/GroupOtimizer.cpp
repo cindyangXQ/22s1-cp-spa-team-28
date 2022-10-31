@@ -8,24 +8,24 @@ void GroupOptimizer::optimize(SolvableQuery *solvableQ) {
     UFDS ufds(clauses.size());
 
     std::unordered_set<int> clausesWithoutSyn;
-    std::unordered_map<int, std::vector<Synonym>> clauseIdxToSynUsedMap;
+    std::unordered_map<int, std::unordered_set<std::string>> clauseIdxToSynUsedMap;
     std::unordered_map<std::string, std::vector<int>> synToClauseIdxMap;
 
     for (int i = 0; i < clauses.size(); i++) {
         QueryClause *clause = clauses[i];
-        std::vector<Synonym> synsUsed = clause->getSynonymsUsed();
+        std::unordered_set<std::string> synsUsed = clause->getSynonymsUsed();
         clauseIdxToSynUsedMap[i] = synsUsed;
 
         if (synsUsed.size() == 0) {
             clausesWithoutSyn.insert(i);
             continue;
         }
-        for (Synonym syn : synsUsed) {
-            if (synToClauseIdxMap.count(syn.getName())) {
-                int groupClauseMember = synToClauseIdxMap.at(syn.getName())[0];
+        for (std::string syn : synsUsed) {
+            if (synToClauseIdxMap.count(syn)) {
+                int groupClauseMember = synToClauseIdxMap.at(syn)[0];
                 ufds.unionSet(groupClauseMember, i);
             }
-            synToClauseIdxMap[syn.getName()].push_back(i);
+            synToClauseIdxMap[syn].push_back(i);
         }
     }
 

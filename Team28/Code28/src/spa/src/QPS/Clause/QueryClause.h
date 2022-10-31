@@ -12,5 +12,6 @@ public:
     virtual ClauseResult evaluate(QueryFacade *queryFacade) = 0;
     virtual void replaceFirstReference(Reference *newRef) = 0;
     virtual void replaceSecondReference(Reference *newRef) = 0;
-    virtual std::vector<Synonym> getSynonymsUsed() = 0;
+    virtual std::unordered_set<std::string> getSynonymsUsed() = 0;
+    virtual double getOptimizeScore() = 0;
 };
