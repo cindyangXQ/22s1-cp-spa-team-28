@@ -123,8 +123,43 @@ stmt s1, s2;
 Select <s1,s2> such that Affects(s1, s2)
 2 7,2 13,4 4,4 7,5 7,5 13,7 13,7 17,10 13,10 18,13 15,15 13,15 17,17 15,19 17,23 29,25 29,30 31,31 32
 5000
-25 - All Affects* r/s
+26 - All Affects* r/s
 stmt s1, s2;
 Select <s1,s2> such that Affects*(s1, s2)
 2 7,2 13,4 4,4 7,5 7,5 13,7 13,7 17,10 13,10 18,13 15,15 13,15 17,17 15,19 17,23 29,25 29,30 31,31 32,2 15,2 17,4 13,4 15,4 17,5 15,5 17,7 15,10 15,10 17,13 17,15 15,17 13,17 17,13 13,19 13,19 15,30 32
+5000
+27 - Affects* with no synonym
+
+Select BOOLEAN such that Affects*(2, 7)
+TRUE
+5000
+28 - Affects* with no synonym
+
+Select BOOLEAN such that Affects*(1, 13)
+FALSE
+5000
+29 - Affects* with 1 synonym (first para)
+stmt s1;
+Select s1 such that Affects*(17, s1)
+15, 13, 17
+5000
+30 - Affects* with 1 synonym (second para)
+stmt s1;
+Select s1 such that Affects*(s1, 17)
+7, 15, 19, 2, 4, 5, 10, 13, 17
+5000
+31 - Affects* with 2 synonyms
+stmt s1, s2;
+Select s1 such that Affects*(s1, s1)
+13, 4, 17, 15
+5000
+32 - 2 Affects*, statement that affect and be affected by a same statement
+stmt s1, s2;
+Select <s1, s2> such that Affects*(s1, s2) and Affects*(s2, s1)
+13 13,13 15,13 17,15 13,15 15,17 13,17 15,17 17,4 4, 15 17
+5000
+33 - Meaningless query, with call synonym
+call c;
+Select c such that Affects(2, c)
+
 5000
