@@ -1,0 +1,163 @@
+procedure proc1 {
+                        read wnsiwdfbidbc;
+                read             hehehaha;
+    read joke;
+    read cs3203                 ;
+         call            proc2;             
+    wnsiwdfbidbc = longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf + c - d;
+    if (wnsiwdfbidbc < hehehaha + joke * cs3203) then {
+        a = hehehaha + joke * cs3203;
+        while(a > longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf - c / d) {
+            call proc3;
+            wnsiwdfbidbc = a * longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf / c;
+            if (wnsiwdfbidbc + hehehaha <= joke * cs3203) then {
+                a = wnsiwdfbidbc - hehehaha / joke;
+                cs3203 = d;
+                call proc4;
+            } else {
+                wnsiwdfbidbc = a + a * a;
+                c = joke;
+            }
+            call proc5;
+            a = cs3203 * cs3203 + cs3203;
+        }
+        wnsiwdfbidbc = d / d - d;
+    } else {
+        call proc6;
+        a = wnsiwdfbidbc - wnsiwdfbidbc / wnsiwdfbidbc;
+        while(a - longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf >= c / d) {
+            hehehaha = a + c - d;
+            if (wnsiwdfbidbc + hehehaha * joke == cs3203) then {
+                call proc7;
+                longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf = wnsiwdfbidbc + joke * cs3203;
+                hehehaha = longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf;
+            } else {
+                hehehaha = a * longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf / d;
+                call proc2;
+                a = wnsiwdfbidbc;
+            }
+            longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf = wnsiwdfbidbc - hehehaha / cs3203;
+        }
+        call proc3;
+        hehehaha = c + c * c;
+    }
+    longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf = joke * joke + joke;
+    print a;
+    call proc4;
+    print longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf;
+    print c;
+    print d;
+}
+
+procedure proc2 {
+    read a;
+    read longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf;
+    read c;
+    call proc5;
+    read d;
+    hehehaha = longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf / longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf - longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf;
+    while (a - longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf / c != d) {
+        longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf = hehehaha - hehehaha / hehehaha;
+        call proc6;
+        if (wnsiwdfbidbc + hehehaha < joke) then {
+            joke = a + longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf - d;
+            while (a > longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf - c) {
+                c = wnsiwdfbidbc + hehehaha * cs3203;
+                call proc7;
+                d = hehehaha - joke;
+            }
+            joke = a * c / d;
+        } else {
+            call proc3;
+            c = wnsiwdfbidbc - joke / cs3203;
+            while (wnsiwdfbidbc <= hehehaha * cs3203) {
+                            joke =              longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf + longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf * longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf;
+                cs3203 = a % c;
+                call proc4;
+            }
+            c = hehehaha * hehehaha + hehehaha;
+        }
+        joke = c / c - c;
+        call proc5;
+    }
+    c = joke - joke *        joke;
+    print wnsiwdfbidbc;
+    print hehehaha;
+    call proc6;
+    print joke;
+    print cs3203;
+}
+
+procedure proc3 {
+    cs3203 = a + longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf - c;
+    if (a / c >= d) then {
+        d = wnsiwdfbidbc + hehehaha * joke;
+        while(wnsiwdfbidbc + joke == cs3203 ) {
+            call proc7;
+            cs3203 = longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf + c / d;
+            d = wnsiwdfbidbc + joke;
+        }
+        d = hehehaha - joke / cs3203;
+        call proc4;
+    } else {
+        cs3203 = a + a * a;
+        while(a != longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf - d) {
+            d = wnsiwdfbidbc * wnsiwdfbidbc + wnsiwdfbidbc;
+            call proc5;
+            cs3203 = longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf * c;
+        }
+        cs3203 = d / d - d;
+    }
+    call proc6;
+    d = cs3203 - cs3203 / cs3203;
+}
+
+procedure proc4 {
+    wnsiwdfbidbc = longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf + c;
+    while (a != longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf - d) {
+        a = hehehaha * joke;
+        if (c / longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf < d) then {
+            wnsiwdfbidbc = longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf - d;
+            call proc7;
+            d = wnsiwdfbidbc / hehehaha;
+        } else {
+            a = hehehaha / cs3203;
+            cs3203 = a - longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf;
+            call proc5;
+        }
+        wnsiwdfbidbc = c * d;
+    }
+    a = joke + cs3203;
+    call proc6;
+}
+
+procedure proc5 {
+    hehehaha = a / c;
+    call proc7;
+    while(cs3203 != wnsiwdfbidbc + hehehaha * joke) {
+        longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf = wnsiwdfbidbc - joke;
+        c = hehehaha * v;
+    }
+    call proc6;
+    hehehaha = a + d;
+}
+
+procedure proc6 {
+    call proc7;
+    longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf = wnsiwdfbidbc * cs3203;
+    if ( d == a - longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf / c) then {
+        hehehaha = c - d;
+        joke = longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf + d;
+        call proc7;
+    } else {
+        longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf = joke / cs3203; 
+        c = wnsiwdfbidbc - cs3203;
+    }
+    call proc7;
+    joke = a * longgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggegvdvsdsdfvfdggebfggdgffddf;
+}
+
+procedure proc7 {
+    c = wnsiwdfbidbc + hehehaha;
+    joke = a / d;
+}
