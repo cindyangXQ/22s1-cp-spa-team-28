@@ -6,6 +6,7 @@
 #include "StmtToVarRelationshipsTable.h"
 
 enum class Status { TRUE, FALSE, UNKNOWN };
+enum class Position { LEFT, RIGHT };
 
 class AffectsTable : public StmtToStmtRelationshipsTable, public Reflexive {
 public:
@@ -55,6 +56,14 @@ private:
     std::map<std::pair<int, int>, Status> matrix;
 
     bool checkAffects(int left, int right);
+    bool verifySingleWildcard(int stmt, Position stmtPos);
+    bool verifyDoubleWildcards();
+    int chooseStmt(int left, int right, Position pos);
+    void solveSingleWildcard(std::unordered_set<Value> *intermediateResult,
+                             Position stmtPos);
+    void solveHelper(int stmt, std::unordered_set<Value> *intermediateResult,
+                     Position stmtPos);
+
     /*
      * Updates the matrix based on all possible Affects from stmt.
      */
@@ -73,9 +82,4 @@ private:
     bool isAssignment(int stmt);
     bool areAssignments(int left, int right);
     bool isAssignmentEntity(EntityName entity);
-
-    std::vector<std::string> getCommonVariables(int left, int right);
-
-    std::vector<std::string>
-    getRemainingVariables(std::vector<std::string> *variables, int stmt);
 };
