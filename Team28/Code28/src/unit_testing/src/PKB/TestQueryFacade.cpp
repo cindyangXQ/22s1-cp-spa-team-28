@@ -26,6 +26,8 @@ QueryFacade InitAffectsStorage::createSimple() {
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
         Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
+    Relationship<int, std::string> modS2 =
+        Relationship(RelationshipReference::MODIFIES, 2, std::string("x"));
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
@@ -33,6 +35,7 @@ QueryFacade InitAffectsStorage::createSimple() {
     nextT->store(&nextTRs);
     usesS->store(&usesS2);
     modS->store(&modS1);
+    modS->store(&modS2);
     statements->store(&s1);
     statements->store(&s2);
     affects->initAffects(storage->getStorageView());
