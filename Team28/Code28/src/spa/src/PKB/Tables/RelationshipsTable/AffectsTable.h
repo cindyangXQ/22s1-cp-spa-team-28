@@ -49,7 +49,6 @@ private:
     std::unordered_set<int> assignments;
     std::unordered_set<int> modifiableStatements;
     NextTable *next;
-    NextTTable *nextT;
     ModifiesSTable *modifiesS;
     UsesSTable *usesS;
     int totalLines;

@@ -2,7 +2,6 @@
 
 void AffectsTable::initAffects(StorageView *storage) {
     this->next = storage->getTable<NextTable>();
-    this->nextT = storage->getTable<NextTTable>();
     this->modifiesS = storage->getTable<ModifiesSTable>();
     this->usesS = storage->getTable<UsesSTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
