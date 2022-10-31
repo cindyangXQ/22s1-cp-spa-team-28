@@ -168,6 +168,10 @@ std::vector<Value> AffectsTable::solveBothReflexive(EntityName synonym,
     return result;
 }
 
+bool AffectsTable::isAffects(int s2, std::string v) {
+    return isAssignment(s2) && this->usesS->isRelationshipExist(s2, v);
+};
+
 bool AffectsTable::isAssignment(int stmt) {
     return this->assignments.count(stmt) > 0;
 };
@@ -175,6 +179,11 @@ bool AffectsTable::isAssignment(int stmt) {
 bool AffectsTable::areAssignments(int left, int right) {
     return (this->assignments.count(left) > 0) &&
            (this->assignments.count(right) > 0);
+};
+
+bool AffectsTable::isModified(int stmt, std::string v) {
+    return isModifiableStmt(stmt) &&
+           this->modifiesS->isRelationshipExist(stmt, v);
 };
 
 bool AffectsTable::isModifiableStmt(int stmt) {
@@ -188,67 +197,48 @@ bool AffectsTable::isAssignmentEntity(EntityName entity) {
 bool AffectsTable::checkAffects(int left, int right) {
     std::pair<int, int> curr = std::make_pair(left, right);
     if (this->matrix[curr] == Status::UNKNOWN) {
-        calculateAffects(left, right);
+        calculateAffects(left);
     }
 
     return this->matrix[curr] == Status::TRUE;
 };
 
-void AffectsTable::calculateAffects(int left, int right) {
-    if (nextT->retrieveLeft(left).count(right) == 0) {
-        // no path from left to right
-        this->matrix[std::make_pair(left, right)] = Status::FALSE;
-        return;
-    }
-    std::vector<std::string> commonVariables = getCommonVariables(left, right);
-    if (commonVariables.size() == 0) {
-        // no common variable
-        this->matrix[std::make_pair(left, right)] = Status::FALSE;
-        return;
-    }
+void AffectsTable::calculateAffects(int stmt) {
+    // assumption: an assign stmt only modifies 1 variable
+    std::string modifiedVariable = this->modifiesS->retrieveSingleRight(stmt);
+
     std::map<int, int> visited;
-    visited[left] = 1;
-    for (int i : next->retrieveLeft(left)) {
-        if (i == right || nextT->retrieveLeft(i).count(right) > 0) {
-            if (calculateAffectsHelper(i, right, commonVariables, visited)) {
-                this->matrix[std::make_pair(left, right)] = Status::TRUE;
-                return;
-            } else {
-                this->matrix[std::make_pair(left, right)] = Status::FALSE;
-            }
+    visited[stmt] = 1;
+    for (int i : next->retrieveLeft(stmt)) {
+        calculateAffectsHelper(stmt, i, modifiedVariable, visited);
+    }
+    for (int assign : assignments) {
+        std::pair<int, int> pair = std::make_pair(stmt, assign);
+        if (this->matrix[pair] != Status::TRUE) {
+            this->matrix[pair] = Status::FALSE;
         }
     }
 };
 
-bool AffectsTable::calculateAffectsHelper(
-    int current, int goal, std::vector<std::string> commonVariables,
-    std::map<int, int> visited) {
-    if (current == goal) {
-        return true;
+void AffectsTable::calculateAffectsHelper(int start, int current,
+                                          std::string modifiedVariable,
+                                          std::map<int, int> visited) {
+    if (isAffects(current, modifiedVariable)) {
+        this->matrix[std::make_pair(start, current)] = Status::TRUE;
     }
+
     visited[current] += 1;
     if (visited[current] > 2) {
-        return false;
+        return;
     }
-    std::vector<std::string> remainingVariables;
-    if (isModifiableStmt(current)) {
-        remainingVariables = getRemainingVariables(&commonVariables, current);
-        if (remainingVariables.size() == 0) {
-            return false;
-        }
-    } else {
-        remainingVariables = commonVariables;
+
+    if (isModified(current, modifiedVariable)) {
+        return;
     }
 
     for (int i : next->retrieveLeft(current)) {
-        if (nextT->retrieveLeft(i).count(goal) > 0 || i == goal) {
-            if (calculateAffectsHelper(i, goal, commonVariables, visited)) {
-                return true;
-            }
-        }
+        calculateAffectsHelper(start, i, modifiedVariable, visited);
     }
-
-    return false;
 };
 
 std::vector<std::string> AffectsTable::getCommonVariables(int left, int right) {
@@ -283,7 +273,7 @@ std::map<std::pair<int, int>, bool> AffectsTable::eagerGetMatrix() {
     for (const auto &p : this->matrix) {
         if (p.second == Status::UNKNOWN) {
             std::pair curr = p.first;
-            calculateAffects(curr.first, curr.second);
+            calculateAffects(curr.first);
         }
     }
     for (const auto &p : this->matrix) {

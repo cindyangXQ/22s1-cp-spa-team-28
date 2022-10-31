@@ -56,14 +56,23 @@ private:
     std::map<std::pair<int, int>, Status> matrix;
 
     bool checkAffects(int left, int right);
-    void calculateAffects(int left, int right);
-    bool calculateAffectsHelper(int current, int goal,
-                                std::vector<std::string> commonVariables,
+    /*
+     * Updates the matrix based on all possible Affects from stmt.
+     */
+    void calculateAffects(int stmt);
+    /*
+     * Runs DFS through the CFG to find Affects(start, curr).
+     */
+    void calculateAffectsHelper(int start, int current,
+                                std::string modifiedVariable,
                                 std::map<int, int> visited);
+
+    bool isAffects(int s2, std::string v);
+    bool isModifiableStmt(int stmt);
+    bool isModified(int stmt, std::string v);
 
     bool isAssignment(int stmt);
     bool areAssignments(int left, int right);
-    bool isModifiableStmt(int stmt);
     bool isAssignmentEntity(EntityName entity);
 
     std::vector<std::string> getCommonVariables(int left, int right);
