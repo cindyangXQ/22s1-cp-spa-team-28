@@ -6,6 +6,7 @@
 #include "StmtToVarRelationshipsTable.h"
 
 enum class Status { TRUE, FALSE, UNKNOWN };
+enum class Position { LEFT, RIGHT };
 
 class AffectsTable : public StmtToStmtRelationshipsTable, public Reflexive {
 public:
@@ -49,25 +50,36 @@ private:
     std::unordered_set<int> assignments;
     std::unordered_set<int> modifiableStatements;
     NextTable *next;
-    NextTTable *nextT;
     ModifiesSTable *modifiesS;
     UsesSTable *usesS;
     int totalLines;
     std::map<std::pair<int, int>, Status> matrix;
 
     bool checkAffects(int left, int right);
-    void calculateAffects(int left, int right);
-    bool calculateAffectsHelper(int current, int goal,
-                                std::vector<std::string> commonVariables,
+    bool verifySingleWildcard(int stmt, Position stmtPos);
+    bool verifyDoubleWildcards();
+    int chooseStmt(int left, int right, Position pos);
+    void solveSingleWildcard(std::unordered_set<Value> *intermediateResult,
+                             Position stmtPos);
+    void solveHelper(int stmt, std::unordered_set<Value> *intermediateResult,
+                     Position stmtPos);
+
+    /*
+     * Updates the matrix based on all possible Affects from stmt.
+     */
+    void calculateAffects(int stmt);
+    /*
+     * Runs DFS through the CFG to find Affects(start, curr).
+     */
+    void calculateAffectsHelper(int start, int current,
+                                std::string modifiedVariable,
                                 std::map<int, int> visited);
+
+    bool isAffects(int s2, std::string v);
+    bool isModifiableStmt(int stmt);
+    bool isModified(int stmt, std::string v);
 
     bool isAssignment(int stmt);
     bool areAssignments(int left, int right);
-    bool isModifiableStmt(int stmt);
     bool isAssignmentEntity(EntityName entity);
-
-    std::vector<std::string> getCommonVariables(int left, int right);
-
-    std::vector<std::string>
-    getRemainingVariables(std::vector<std::string> *variables, int stmt);
 };

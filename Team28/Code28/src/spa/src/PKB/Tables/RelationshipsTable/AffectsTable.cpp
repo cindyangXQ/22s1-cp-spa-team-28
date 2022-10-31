@@ -2,7 +2,6 @@
 
 void AffectsTable::initAffects(StorageView *storage) {
     this->next = storage->getTable<NextTable>();
-    this->nextT = storage->getTable<NextTTable>();
     this->modifiesS = storage->getTable<ModifiesSTable>();
     this->usesS = storage->getTable<UsesSTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
@@ -27,38 +26,15 @@ void AffectsTable::initAffects(StorageView *storage) {
 
 bool AffectsTable::validate(Reference leftRef, Reference rightRef) {
     if (leftRef.isWildcard() && rightRef.isWildcard()) {
-        for (int left : this->assignments) {
-            for (int right : this->assignments) {
-                if (checkAffects(left, right)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return verifyDoubleWildcards();
     }
     if (leftRef.isWildcard()) {
         int right = convertToType<int>(rightRef.getValueString());
-        if (!isAssignment(right)) {
-            return false;
-        }
-        for (int left : this->assignments) {
-            if (checkAffects(left, right)) {
-                return true;
-            }
-        }
-        return false;
+        return verifySingleWildcard(right, Position::RIGHT);
     }
     if (rightRef.isWildcard()) {
         int left = convertToType<int>(leftRef.getValueString());
-        if (!isAssignment(left)) {
-            return false;
-        }
-        for (int right : this->assignments) {
-            if (checkAffects(left, right)) {
-                return true;
-            }
-        }
-        return false;
+        return verifySingleWildcard(left, Position::LEFT);
     }
     int left = convertToType<int>(leftRef.getValueString());
     int right = convertToType<int>(rightRef.getValueString());
@@ -76,25 +52,13 @@ std::vector<Value> AffectsTable::solveRight(Reference leftRef,
     }
     std::unordered_set<Value> intermediateResult;
     if (leftRef.isWildcard()) {
-        for (int left : this->assignments) {
-            for (int right : this->assignments) {
-                if (checkAffects(left, right)) {
-                    intermediateResult.insert(
-                        Value(ValueType::STMT_NUM, toString(right)));
-                }
-            }
-        }
+        solveSingleWildcard(&intermediateResult, Position::RIGHT);
     } else {
         int left = convertToType<int>(leftRef.getValueString());
         if (!isAssignment(left)) {
             return std::vector<Value>();
         }
-        for (int right : this->assignments) {
-            if (checkAffects(left, right)) {
-                intermediateResult.insert(
-                    Value(ValueType::STMT_NUM, toString(right)));
-            }
-        }
+        solveHelper(left, &intermediateResult, Position::LEFT);
     }
     std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
                                                    intermediateResult.end());
@@ -109,25 +73,13 @@ std::vector<Value> AffectsTable::solveLeft(Reference rightRef,
     }
     std::unordered_set<Value> intermediateResult;
     if (rightRef.isWildcard()) {
-        for (int left : this->assignments) {
-            for (int right : this->assignments) {
-                if (checkAffects(left, right)) {
-                    intermediateResult.insert(
-                        Value(ValueType::STMT_NUM, toString(left)));
-                }
-            }
-        }
+        solveSingleWildcard(&intermediateResult, Position::LEFT);
     } else {
         int right = convertToType<int>(rightRef.getValueString());
         if (!isAssignment(right)) {
             return std::vector<Value>();
         }
-        for (int left : this->assignments) {
-            if (checkAffects(left, right)) {
-                intermediateResult.insert(
-                    Value(ValueType::STMT_NUM, toString(left)));
-            }
-        }
+        solveHelper(right, &intermediateResult, Position::RIGHT);
     }
     std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
                                                    intermediateResult.end());
@@ -168,6 +120,14 @@ std::vector<Value> AffectsTable::solveBothReflexive(EntityName synonym,
     return result;
 }
 
+int AffectsTable::chooseStmt(int left, int right, Position pos) {
+    return pos == Position::LEFT ? left : right;
+};
+
+bool AffectsTable::isAffects(int s2, std::string v) {
+    return isAssignment(s2) && this->usesS->isRelationshipExist(s2, v);
+};
+
 bool AffectsTable::isAssignment(int stmt) {
     return this->assignments.count(stmt) > 0;
 };
@@ -175,6 +135,11 @@ bool AffectsTable::isAssignment(int stmt) {
 bool AffectsTable::areAssignments(int left, int right) {
     return (this->assignments.count(left) > 0) &&
            (this->assignments.count(right) > 0);
+};
+
+bool AffectsTable::isModified(int stmt, std::string v) {
+    return isModifiableStmt(stmt) &&
+           this->modifiesS->isRelationshipExist(stmt, v);
 };
 
 bool AffectsTable::isModifiableStmt(int stmt) {
@@ -185,97 +150,106 @@ bool AffectsTable::isAssignmentEntity(EntityName entity) {
     return (entity == EntityName::ASSIGN) || (entity == EntityName::STMT);
 };
 
+bool AffectsTable::verifySingleWildcard(int stmt, Position stmtPos) {
+    if (!isAssignment(stmt)) {
+        return false;
+    }
+    auto check = [&](const int &other) -> bool {
+        return stmtPos == Position::LEFT ? checkAffects(stmt, other)
+                                         : checkAffects(other, stmt);
+    };
+    for (int other : this->assignments) {
+        if (check(other)) {
+            return true;
+        }
+    }
+    return false;
+};
+
+bool AffectsTable::verifyDoubleWildcards() {
+    for (int left : this->assignments) {
+        for (int right : this->assignments) {
+            if (checkAffects(left, right)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+void AffectsTable::solveSingleWildcard(
+    std::unordered_set<Value> *intermediateResult, Position stmtPos) {
+    for (int left : this->assignments) {
+        for (int right : this->assignments) {
+            if (checkAffects(left, right)) {
+                intermediateResult->insert(
+                    Value(ValueType::STMT_NUM,
+                          toString(chooseStmt(left, right, stmtPos))));
+            }
+        }
+    }
+};
+
+void AffectsTable::solveHelper(int stmt,
+                               std::unordered_set<Value> *intermediateResult,
+                               Position stmtPos) {
+    auto check = [&](const int &other) -> bool {
+        return stmtPos == Position::LEFT ? checkAffects(stmt, other)
+                                         : checkAffects(other, stmt);
+    };
+    for (int other : this->assignments) {
+        if (check(other)) {
+            intermediateResult->insert(
+                Value(ValueType::STMT_NUM, toString(other)));
+        }
+    }
+};
+
 bool AffectsTable::checkAffects(int left, int right) {
     std::pair<int, int> curr = std::make_pair(left, right);
     if (this->matrix[curr] == Status::UNKNOWN) {
-        calculateAffects(left, right);
+        calculateAffects(left);
     }
 
     return this->matrix[curr] == Status::TRUE;
 };
 
-void AffectsTable::calculateAffects(int left, int right) {
-    if (nextT->retrieveLeft(left).count(right) == 0) {
-        // no path from left to right
-        this->matrix[std::make_pair(left, right)] = Status::FALSE;
-        return;
-    }
-    std::vector<std::string> commonVariables = getCommonVariables(left, right);
-    if (commonVariables.size() == 0) {
-        // no common variable
-        this->matrix[std::make_pair(left, right)] = Status::FALSE;
-        return;
-    }
+void AffectsTable::calculateAffects(int stmt) {
+    // assumption: an assign stmt only modifies 1 variable
+    std::string modifiedVariable = this->modifiesS->retrieveSingleRight(stmt);
+
     std::map<int, int> visited;
-    visited[left] = 1;
-    for (int i : next->retrieveLeft(left)) {
-        if (i == right || nextT->retrieveLeft(i).count(right) > 0) {
-            if (calculateAffectsHelper(i, right, commonVariables, visited)) {
-                this->matrix[std::make_pair(left, right)] = Status::TRUE;
-                return;
-            } else {
-                this->matrix[std::make_pair(left, right)] = Status::FALSE;
-            }
+    visited[stmt] = 1;
+    for (int i : next->retrieveLeft(stmt)) {
+        calculateAffectsHelper(stmt, i, modifiedVariable, visited);
+    }
+    for (int assign : assignments) {
+        std::pair<int, int> pair = std::make_pair(stmt, assign);
+        if (this->matrix[pair] != Status::TRUE) {
+            this->matrix[pair] = Status::FALSE;
         }
     }
 };
 
-bool AffectsTable::calculateAffectsHelper(
-    int current, int goal, std::vector<std::string> commonVariables,
-    std::map<int, int> visited) {
-    if (current == goal) {
-        return true;
+void AffectsTable::calculateAffectsHelper(int start, int current,
+                                          std::string modifiedVariable,
+                                          std::map<int, int> visited) {
+    if (isAffects(current, modifiedVariable)) {
+        this->matrix[std::make_pair(start, current)] = Status::TRUE;
     }
+
     visited[current] += 1;
     if (visited[current] > 2) {
-        return false;
+        return;
     }
-    std::vector<std::string> remainingVariables;
-    if (isModifiableStmt(current)) {
-        remainingVariables = getRemainingVariables(&commonVariables, current);
-        if (remainingVariables.size() == 0) {
-            return false;
-        }
-    } else {
-        remainingVariables = commonVariables;
+
+    if (isModified(current, modifiedVariable)) {
+        return;
     }
 
     for (int i : next->retrieveLeft(current)) {
-        if (nextT->retrieveLeft(i).count(goal) > 0 || i == goal) {
-            if (calculateAffectsHelper(i, goal, commonVariables, visited)) {
-                return true;
-            }
-        }
+        calculateAffectsHelper(start, i, modifiedVariable, visited);
     }
-
-    return false;
-};
-
-std::vector<std::string> AffectsTable::getCommonVariables(int left, int right) {
-    std::unordered_set<std::string> modifiedV =
-        this->modifiesS->retrieveLeft(left);
-    std::unordered_set<std::string> usedV = this->usesS->retrieveLeft(right);
-    std::vector<std::string> commonV;
-    for (std::string variable : modifiedV) {
-        if (usedV.count(variable) > 0) {
-            commonV.push_back(variable);
-        }
-    }
-    return commonV;
-};
-
-std::vector<std::string>
-AffectsTable::getRemainingVariables(std::vector<std::string> *variables,
-                                    int stmt) {
-    std::unordered_set<std::string> modifiedV =
-        this->modifiesS->retrieveLeft(stmt);
-    std::vector<std::string> remainingV;
-    for (std::string variable : *variables) {
-        if (modifiedV.count(variable) == 0) {
-            remainingV.push_back(variable);
-        }
-    }
-    return remainingV;
 };
 
 std::map<std::pair<int, int>, bool> AffectsTable::eagerGetMatrix() {
@@ -283,7 +257,7 @@ std::map<std::pair<int, int>, bool> AffectsTable::eagerGetMatrix() {
     for (const auto &p : this->matrix) {
         if (p.second == Status::UNKNOWN) {
             std::pair curr = p.first;
-            calculateAffects(curr.first, curr.second);
+            calculateAffects(curr.first);
         }
     }
     for (const auto &p : this->matrix) {

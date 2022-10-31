@@ -93,6 +93,10 @@ public:
         return this->retrieveLeft(left).size() != 0;
     }
 
+    bool isRelationshipExist(Left left, Right right) {
+        return this->retrieveLeft(left).count(right) > 0;
+    }
+
     /*
      * Retrieves the only Right from the given Left.
      * Throws an exception if Left is mapped to multiple Rights or if Left does
