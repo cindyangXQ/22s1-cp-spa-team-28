@@ -10,7 +10,7 @@ procedure banana {
 }
 
 procedure cat {
-    y = x + 6 * catCat;
+    catCat = x + 6 * catCat;
     if (x == 7) then {
         call dog;
     }
@@ -27,7 +27,7 @@ procedure cat {
 
 procedure dog {
     x = x% 14;
-    d = dogDog - 15;
+    dogDog = dogDog - 15;
     call giraffe;
 }
 
@@ -43,13 +43,13 @@ procedure elf {
 
 
 procedure fly {
-    a = flyFly + d * 22;
+    sky = flyFly + d * 22;
 }
 
 procedure giraffe {
-    b = gir + affe / 23;
+    grape = gir + affe / 23;
 }
 
 procedure horse {
-    x = 24 * z+( a+b+c ) / horSE;
+    donkey = 24 * z+( a+b+c ) / horSE;
 }

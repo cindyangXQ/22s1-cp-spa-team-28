@@ -58,4 +58,63 @@ variable v;
 Select v such that Uses (18, v)
 flyFly, d, y, x, z, a, b, c, horSE
 5000
-
+13 - normal statement
+variable v; 
+Select v such that Modifies (6, v)
+catCat
+5000
+14 - call statement one proc
+variable v; 
+Select v such that Modifies (21, v)
+donkey
+5000
+15 - call statement one proc nested one
+variable v; 
+Select v such that Modifies (8, v)
+x, dogDog, grape
+5000
+16 - call statement one proc nested three
+variable v; 
+Select v such that Modifies (10, v)
+sky, grape, donkey
+5000
+17 - modified by procedure never called
+stmt s; 
+Select s such that Modifies (s, "appleApple")
+3
+5000
+18 - modified by procedure called once
+stmt s; 
+Select s such that Modifies (s, "catCat")
+5, 6
+5000
+19 - modified by procedure called nested once
+stmt s; 
+Select s such that Modifies (s, "dogDog")
+15, 8, 5, 7
+5000
+20 - modified by many procedures
+stmt s;
+Select s such that Modifies (s, "x")
+1, 2, 4, 11, 14, 5, 7, 8, 9
+5000
+21 - call nested in if
+variable v;
+Select v such that Modifies (9, v)
+x, sky, grape, donkey
+5000
+22 - call nested in if
+variable v;
+Select v such that Modifies (7, v)
+x, sky, grape, donkey, dogDog
+5000
+23 - call nested in while
+variable v;
+Select v such that Modifies (19, v)
+sky
+5000
+24 - call nested in while
+variable v;
+Select v such that Modifies (18, v)
+sky, donkey
+5000
