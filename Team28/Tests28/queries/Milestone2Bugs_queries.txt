@@ -1,0 +1,61 @@
+1 - normal statement
+variable v; 
+Select v such that Uses (6, v)
+x, catCat
+5000
+2 - call statement one proc
+variable v; 
+Select v such that Uses (21, v)
+a, b, c, z, horSE
+5000
+3 - call statement one proc nested one
+variable v; 
+Select v such that Uses (8, v)
+x, dogDog, gir, affe
+5000
+4 - call statement one proc nested three
+variable v; 
+Select v such that Uses (10, v)
+x, y, z, a, b, c, d, flyFly, gir, affe, horSE
+5000
+5 - used by procedure never called
+stmt s; 
+Select s such that Uses (s, "appleApple")
+3
+5000
+6 - used by procedure called once
+stmt s; 
+Select s such that Uses (s, "catCat")
+5, 6
+5000
+7 - used by procedure called nested once
+stmt s; 
+Select s such that Uses (s, "dogDog")
+15, 8, 5, 7
+5000
+8 - used by many procedures
+stmt s;
+Select s such that Uses (s, "x")
+2, 6, 7, 9, 11, 14, 18, 5, 8, 10
+5000
+9 - call nested in if
+variable v;
+Select v such that Uses (9, v)
+x, y, z, a, b, c, d, flyFly, gir, affe, horSE
+5000
+10 - call nested in if
+variable v;
+Select v such that Uses (7, v)
+x, y, z, a, b, c, d, dogDog, flyFly, gir, affe, horSE
+5000
+11 - call nested in while
+variable v;
+Select v such that Uses (19, v)
+flyFly, d, y
+5000
+12 - call nested in while
+variable v;
+Select v such that Uses (18, v)
+flyFly, d, y, x, z, a, b, c, horSE
+5000
+
