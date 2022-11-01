@@ -29,8 +29,9 @@ public:
     std::vector<std::string> interpretQueryResult(QueryResult *queryResult);
 
 private:
-    void checkAllClauseResult(std::vector<ClauseResult> clauseResultList,
-                              bool *isAnyTableEmpty, bool *haveTableToJoin);
+    void checkAllClauseResult(
+        std::vector<std::vector<ClauseResult>> clauseResultList,
+        bool *isAnyTableEmpty, bool *haveTableToJoin);
     std::vector<std::string> extractReferenceFromTable(Reference selectedRef,
                                                        ClauseTable result);
     std::vector<std::string>
@@ -38,7 +39,8 @@ private:
                            ClauseTable result);
     std::vector<std::string> getAll(Reference select);
     std::vector<std::string> handleNoTables(QueryResult *queryResult);
-    ClauseTable joinAllClauseTables(std::vector<ClauseResult> clauseResultList);
+    ClauseTable joinAllClauseTables(
+        std::vector<std::vector<ClauseResult>> clauseResultList);
     std::string getAttributeValue(Reference ref, std::string synonymValue);
     bool isAlternativeAttribute(Reference ref);
 };

@@ -1,7 +1,7 @@
 #include "QueryEvaluator.h"
 
 QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
-    std::vector<ClauseResult> clauseResultList;
+    std::vector<std::vector<ClauseResult>> clauseResultList;
     std::vector<QueryClause *> clauses = solvableQ->getQueryClause();
     std::vector<std::vector<QueryClause *>> clauseGroups =
         solvableQ->getClauseGroup();
@@ -9,16 +9,20 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
 
     if (clauseGroups.size() > 0) {
         for (std::vector<QueryClause *> group : clauseGroups) {
+            std::vector<ClauseResult> groupResult;
             for (QueryClause *clause : group) {
                 ClauseResult result = clause->evaluate(queryFacade);
-                clauseResultList.push_back(result);
+                groupResult.push_back(result);
             }
+            clauseResultList.push_back(groupResult);
         }
     } else {
+        std::vector<ClauseResult> groupResult;
         for (QueryClause *clause : clauses) {
             ClauseResult result = clause->evaluate(queryFacade);
-            clauseResultList.push_back(result);
+            groupResult.push_back(result);
         }
+        clauseResultList.push_back(groupResult);
     }
 
     return QueryResult(selectClause, clauseResultList);
@@ -26,7 +30,7 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
 
 std::vector<std::string>
 QueryEvaluator::interpretQueryResult(QueryResult *queryResult) {
-    std::vector<ClauseResult> clauseResultList =
+    std::vector<std::vector<ClauseResult>> clauseResultList =
         queryResult->getClauseResultList();
     SelectClause selectClause = queryResult->getSelectClause();
     SelectType type = selectClause.getSelectType();
@@ -119,17 +123,20 @@ QueryEvaluator::extractReferenceFromTable(Reference selectedRef,
 }
 
 void QueryEvaluator::checkAllClauseResult(
-    std::vector<ClauseResult> clauseResultList, bool *isAnyTableEmpty,
-    bool *haveTableToJoin) {
-    for (int i = 0; i < clauseResultList.size(); i++) {
-        if (clauseResultList[i].getIsEmpty()) {
-            *isAnyTableEmpty = true;
-            return;
-        }
-        ClauseTable table = clauseResultList[i].getTable();
-        std::vector<Reference> header = table.getHeader();
-        if (header.size() > 0) {
-            *haveTableToJoin = true;
+    std::vector<std::vector<ClauseResult>> clauseResultList,
+    bool *isAnyTableEmpty, bool *haveTableToJoin) {
+
+    for (std::vector<ClauseResult> group : clauseResultList) {
+        for (ClauseResult result : group) {
+            if (result.getIsEmpty()) {
+                *isAnyTableEmpty = true;
+                return;
+            }
+            ClauseTable table = result.getTable();
+            std::vector<Reference> header = table.getHeader();
+            if (header.size() > 0) {
+                *haveTableToJoin = true;
+            }
         }
     }
 }
@@ -178,13 +185,24 @@ std::string QueryEvaluator::getAttributeValue(Reference ref,
 }
 
 ClauseTable QueryEvaluator::joinAllClauseTables(
-    std::vector<ClauseResult> clauseResultList) {
-    ClauseTable result = ClauseTable();
-    for (int i = 0; i < clauseResultList.size(); i++) {
-        result =
-            ClauseTable::joinTables(result, clauseResultList[i].getTable());
+    std::vector<std::vector<ClauseResult>> clauseResultList) {
+
+    std::vector<ClauseTable> groupIntermediateTable;
+
+    for (std::vector<ClauseResult> group : clauseResultList) {
+        ClauseTable table = ClauseTable();
+        for (ClauseResult result : group) {
+            table = ClauseTable::joinTables(table, result.getTable());
+        }
+        groupIntermediateTable.push_back(table);
     }
-    return result;
+
+    ClauseTable finalResult = ClauseTable();
+    for (ClauseTable table : groupIntermediateTable) {
+        finalResult = ClauseTable::joinTables(finalResult, table);
+    }
+
+    return finalResult;
 }
 
 std::vector<std::string> QueryEvaluator::getAll(Reference select) {
