@@ -41,11 +41,10 @@ jobs:
           python-version: 3.8
       - name: Run Python script
         run: |
-          python .\run-autotester-ci.py
+          python3 .\run-autotester-ci.py
       - name: Archive System Test Results
         uses: actions/upload-artifact@v2
         with:
           name: system-test-report
           path: |
             Team28/Tests28/*.xml
-            Team28/Code28/tests/analysis.xsl
