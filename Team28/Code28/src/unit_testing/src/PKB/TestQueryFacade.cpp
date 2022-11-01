@@ -11,6 +11,7 @@ QueryFacade InitAffectsStorage::createSimple() {
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     AffectsTable *affects = storage->getTable<AffectsTable>();
+    AffectsTTable *affectsT = storage->getTable<AffectsTTable>();
     NextTable *next = storage->getTable<NextTable>();
     NextTTable *nextT = storage->getTable<NextTTable>();
     UsesSTable *usesS = storage->getTable<UsesSTable>();
@@ -25,6 +26,8 @@ QueryFacade InitAffectsStorage::createSimple() {
         Relationship(RelationshipReference::USES, 2, std::string("x"));
     Relationship<int, std::string> modS1 =
         Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
+    Relationship<int, std::string> modS2 =
+        Relationship(RelationshipReference::MODIFIES, 2, std::string("x"));
     Statement s1 = Statement(1, StatementType::ASSIGN);
     Statement s2 = Statement(2, StatementType::ASSIGN);
 
@@ -32,9 +35,12 @@ QueryFacade InitAffectsStorage::createSimple() {
     nextT->store(&nextTRs);
     usesS->store(&usesS2);
     modS->store(&modS1);
+    modS->store(&modS2);
     statements->store(&s1);
     statements->store(&s2);
     affects->initAffects(storage->getStorageView());
+    affectsT->initAffectsT(storage->getStorageView());
+    affectsT->populateAffectsT();
 
     return facade;
 }
@@ -1130,6 +1136,144 @@ TEST_CASE("Affects: solveBoth for Affects(1,2) works correctly") {
     rightEntityName = EntityName::ASSIGN;
     expectedResult = {};
     output = facade.solveBoth(RelationshipReference::AFFECTS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("AffectsT: Validate for Affects*(1,2) works correctly") {
+    QueryFacade facade = InitAffectsStorage::createSimple();
+
+    Reference leftRef = Reference("1");
+    Reference rightRef = Reference("2");
+    Reference wildcardRef = Reference("_");
+
+    REQUIRE(
+        facade.validate(RelationshipReference::AFFECTS_T, leftRef, rightRef));
+    REQUIRE(facade.validate(RelationshipReference::AFFECTS_T, wildcardRef,
+                            rightRef));
+    REQUIRE(facade.validate(RelationshipReference::AFFECTS_T, leftRef,
+                            wildcardRef));
+    REQUIRE(facade.validate(RelationshipReference::AFFECTS_T, wildcardRef,
+                            wildcardRef));
+}
+
+TEST_CASE("AffectsT: solveRight for Affects*(1,2) works correctly") {
+    QueryFacade facade = InitAffectsStorage::createSimple();
+
+    Reference leftRef;
+    EntityName rightEntityName;
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // SolveRight(Affects*, 1, Assign) for Affects*(1,2) returns
+    // {'2'}
+    leftRef = Reference("1");
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {Value(ValueType::STMT_NUM, "2")};
+    output = facade.solveRight(RelationshipReference::AFFECTS_T, leftRef,
+                               rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveRight(Affects*, _, Assign) for Affects*(1,2) returns {'2'}
+    leftRef = Reference("_");
+    rightEntityName = EntityName::ASSIGN;
+    output = facade.solveRight(RelationshipReference::AFFECTS_T, leftRef,
+                               rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveRight(Affects*, 3, Assign) for Affects*(1,2) returns {}
+    leftRef = Reference("3");
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveRight(RelationshipReference::AFFECTS_T, leftRef,
+                               rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("AffectsT: solveLeft for Affects*(1,2) works correctly") {
+    QueryFacade facade = InitAffectsStorage::createSimple();
+
+    Reference rightRef;
+    EntityName leftEntityName;
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // SolveLeft(Affects*, Assign, 2) for Affects*(1,2) returns
+    // {'1'}
+    rightRef = Reference("2");
+    leftEntityName = EntityName::ASSIGN;
+    expectedResult = {Value(ValueType::STMT_NUM, "1")};
+    output = facade.solveLeft(RelationshipReference::AFFECTS_T, rightRef,
+                              leftEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Affects*, Assign, _) for Affects*(1,2) returns {'1'}
+    rightRef = Reference("_");
+    leftEntityName = EntityName::ASSIGN;
+    output = facade.solveLeft(RelationshipReference::AFFECTS_T, rightRef,
+                              leftEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Affects*, Assign, 3) for Affects*(1,2) returns {}
+    rightRef = Reference("3");
+    leftEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveLeft(RelationshipReference::AFFECTS_T, rightRef,
+                              leftEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("AffectsT: solveBoth for Affects*(1,2) works correctly") {
+    QueryFacade facade = InitAffectsStorage::createSimple();
+
+    Value value1 = Value(ValueType::STMT_NUM, "1");
+    Value value2 = Value(ValueType::STMT_NUM, "2");
+
+    EntityName leftEntityName;
+    EntityName rightEntityName;
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // SolveBoth(Affects*, Assign, Assign) for Affects*(1,2) returns
+    // {('1','2')}
+    leftEntityName = EntityName::ASSIGN;
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {std::make_pair(value1, value2)};
+    output = facade.solveBoth(RelationshipReference::AFFECTS_T, leftEntityName,
+                              rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveBoth(Affects*, Assign, Print) for Affects*(1,2) returns {}
+    leftEntityName = EntityName::ASSIGN;
+    rightEntityName = EntityName::PRINT;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::AFFECTS_T, leftEntityName,
+                              rightEntityName);
+    REQUIRE(output.size() == expectedResult.size());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveBoth(Affects*, Procedure, Assign) for Affects*(1,2) returns {}
+    leftEntityName = EntityName::PROCEDURE;
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::AFFECTS_T, leftEntityName,
                               rightEntityName);
     REQUIRE(output.size() == expectedResult.size());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),

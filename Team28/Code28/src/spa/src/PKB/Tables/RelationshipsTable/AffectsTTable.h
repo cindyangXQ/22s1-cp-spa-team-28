@@ -1,16 +1,17 @@
 #pragma once
 
 #include "../Reflexive.h"
-#include "NextTTable.h"
+#include "AffectsTable.h"
 #include "StmtToStmtRelationshipsTable.h"
-#include "StmtToVarRelationshipsTable.h"
 
-enum class Status { TRUE, FALSE, UNKNOWN };
-enum class Position { LEFT, RIGHT };
-
-class AffectsTable : public StmtToStmtRelationshipsTable, public Reflexive {
+class AffectsTTable : public StmtToStmtRelationshipsTable, public Reflexive {
 public:
-    void initAffects(StorageView *storage);
+    void initAffectsT(StorageView *storage);
+
+    /*
+     * Populate AffectsTTable.
+     */
+    void populateAffectsT();
 
     /*
      * Returns true if the relationship holds between leftReference and
@@ -44,41 +45,16 @@ public:
     std::vector<Value> solveBothReflexive(EntityName synonym,
                                           StorageView *storage);
 
-    std::map<std::pair<int, int>, bool> eagerGetMatrix();
-
 private:
+    std::map<std::pair<int, int>, bool> matrix;
     std::unordered_set<int> assignments;
-    std::unordered_set<int> modifiableStatements;
-    NextTable *next;
-    ModifiesSTable *modifiesS;
-    UsesSTable *usesS;
     int totalLines;
-    std::map<std::pair<int, int>, Status> matrix;
-
-    bool checkAffects(int left, int right);
-    bool verifySingleWildcard(int stmt, Position stmtPos);
-    bool verifyDoubleWildcards();
-    int chooseStmt(int left, int right, Position pos);
-    void solveSingleWildcard(std::unordered_set<Value> *intermediateResult,
-                             Position stmtPos);
-    void solveHelper(int stmt, std::unordered_set<Value> *intermediateResult,
-                     Position stmtPos);
-
     /*
-     * Updates the matrix based on all possible Affects from stmt.
+     * Helper method for computing Affects* from Affects.
      */
-    void calculateAffects(int stmt);
-    /*
-     * Runs DFS through the CFG to find Affects(start, curr).
-     */
-    void calculateAffectsHelper(int start, int current,
-                                std::string modifiedVariable,
-                                std::map<int, int> visited);
-
-    bool isAffects(int s2, std::string v);
-    bool isModifiableStmt(int stmt);
-    bool isModified(int stmt, std::string v);
-
+    std::map<std::pair<int, int>, bool> computeClosure();
+    // TODO: Abstract these common methods into a common utils file, duplicated
+    // form AffectsTable
     bool isAssignment(int stmt);
     bool areAssignments(int left, int right);
     bool isAssignmentEntity(EntityName entity);

@@ -89,28 +89,17 @@ ClauseResult SuchThatClause::handleRightSynonym(QueryFacade *queryFacade) {
 }
 
 ClauseResult SuchThatClause::handleBothSynonym(QueryFacade *queryFacade) {
-    if (relationship == RelationshipReference::NEXT_T &&
+    if ((relationship == RelationshipReference::AFFECTS_T ||
+         relationship == RelationshipReference::AFFECTS ||
+         relationship == RelationshipReference::NEXT_T) &&
         refLeft.getSynonymName() == refRight.getSynonymName()) {
         // TODO: clean up this if block
-        ClauseResult clauseResult = ClauseResult({refLeft, refRight});
+        ClauseResult clauseResult = ClauseResult({refLeft});
 
-        std::vector<Value> result = queryFacade->solveReflexive(
-            RelationshipReference::NEXT_T, refLeft.getEntityName());
+        std::vector<Value> result =
+            queryFacade->solveReflexive(relationship, refLeft.getEntityName());
         for (int i = 0; i < result.size(); i++) {
-            clauseResult.insert(Tuple({result[i], result[i]}));
-        }
-        return clauseResult;
-    }
-
-    if (relationship == RelationshipReference::AFFECTS &&
-        refLeft.getSynonymName() == refRight.getSynonymName()) {
-        // TODO: clean up this if block
-        ClauseResult clauseResult = ClauseResult({refLeft, refRight});
-
-        std::vector<Value> result = queryFacade->solveReflexive(
-            RelationshipReference::AFFECTS, refLeft.getEntityName());
-        for (int i = 0; i < result.size(); i++) {
-            clauseResult.insert(Tuple({result[i], result[i]}));
+            clauseResult.insert(Tuple({result[i]}));
         }
         return clauseResult;
     }

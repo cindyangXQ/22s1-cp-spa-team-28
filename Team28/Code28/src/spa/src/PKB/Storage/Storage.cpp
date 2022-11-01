@@ -73,10 +73,10 @@ void Storage::initStorageView() {
     this->storageView->setTable<BranchOutTable>(
         this->getTable<BranchOutTable>());
     this->storageView->setTable<NextTable>(this->getTable<NextTable>());
-    this->storageView->setTable<NextTTable>(this->getTable<NextTTable>());
     this->storageView->setTable<ModifiesSTable>(
         this->getTable<ModifiesSTable>());
     this->storageView->setTable<UsesSTable>(this->getTable<UsesSTable>());
+    this->storageView->setTable<AffectsTable>(this->getTable<AffectsTable>());
 };
 
 void Storage::initReflexiveTablesMap() {
@@ -84,6 +84,8 @@ void Storage::initReflexiveTablesMap() {
         this->getTable<NextTTable>();
     this->reflexiveTables[RelationshipReference::AFFECTS] =
         this->getTable<AffectsTable>();
+    this->reflexiveTables[RelationshipReference::AFFECTS_T] =
+        this->getTable<AffectsTTable>();
 }
 
 Solvable *Storage::getRsTable(RelationshipReference rsRef,
