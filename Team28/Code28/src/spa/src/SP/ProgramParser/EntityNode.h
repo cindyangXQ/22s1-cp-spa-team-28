@@ -179,12 +179,12 @@ public:
     void getStatementsInto(std::vector<Statement *> &result,
                            std::vector<Assignment *> &assign,
                            std::vector<Relationship<int, std::string> *> &call);
-    std::vector<std::string> 
+    std::vector<std::string>
     getUsesInto(std::vector<Relationship<int, std::string> *> &result,
                 std::vector<ProcedureNode *> &procList);
     void getUsesPInto(std::vector<std::string> &result,
                       std::vector<ProcedureNode *> &procList);
-    std::vector<std::string> 
+    std::vector<std::string>
     getModsInto(std::vector<Relationship<int, std::string> *> &result,
                 std::vector<ProcedureNode *> &procList);
     void getModifiesPInto(std::vector<std::string> &result,
@@ -213,12 +213,12 @@ public:
     void getStatementsInto(std::vector<Statement *> &result,
                            std::vector<Assignment *> &assign,
                            std::vector<Relationship<int, std::string> *> &call);
-    std::vector<std::string> 
+    std::vector<std::string>
     getUsesInto(std::vector<Relationship<int, std::string> *> &result,
                 std::vector<ProcedureNode *> &procList);
     void getUsesPInto(std::vector<std::string> &result,
                       std::vector<ProcedureNode *> &procList);
-    std::vector<std::string> 
+    std::vector<std::string>
     getModsInto(std::vector<Relationship<int, std::string> *> &result,
                 std::vector<ProcedureNode *> &procList);
     void getModifiesPInto(std::vector<std::string> &result,
@@ -296,12 +296,12 @@ public:
                            std::vector<Relationship<int, std::string> *> &call);
     void getFollowsInto(std::vector<Relationship<int, int> *> &result);
     void getFollowsTInto(std::vector<Relationship<int, int> *> &result);
-    std::vector<std::string> 
+    std::vector<std::string>
     getUsesInto(std::vector<Relationship<int, std::string> *> &result,
                 std::vector<ProcedureNode *> &procList);
     void getUsesPInto(std::vector<std::string> &result,
                       std::vector<ProcedureNode *> &procList);
-    std::vector<std::string> 
+    std::vector<std::string>
     getModsInto(std::vector<Relationship<int, std::string> *> &result,
                 std::vector<ProcedureNode *> &procList);
     void getModifiesPInto(std::vector<std::string> &result,
