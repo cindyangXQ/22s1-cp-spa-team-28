@@ -8,7 +8,8 @@ void GroupOptimizer::optimize(SolvableQuery *solvableQ) {
     UFDS ufds(clauses.size());
 
     std::unordered_set<int> clausesWithoutSyn;
-    std::unordered_map<int, std::unordered_set<std::string>> clauseIdxToSynUsedMap;
+    std::unordered_map<int, std::unordered_set<std::string>>
+        clauseIdxToSynUsedMap;
     std::unordered_map<std::string, std::vector<int>> synToClauseIdxMap;
 
     for (int i = 0; i < clauses.size(); i++) {
