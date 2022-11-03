@@ -80,6 +80,21 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
     return table->validate(leftRef, rightRef);
 }
 
+bool QueryFacade::validate(int stmtNo, std::string varName,
+                           AssignExpression expr) {
+    AssignmentsTable *table = this->storage->getTable<AssignmentsTable>();
+    return table->validate(stmtNo, varName, expr);
+}
+
+bool QueryFacade::validate(Designation desType, int stmtNo,
+                           std::string varName) {
+    if (condPatternSet.count(desType) == 0) {
+        return false;
+    }
+    UsesControlVarTable *conds = this->storage->getControlVarTable(desType);
+    conds->validate(stmtNo, varName);
+}
+
 std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
                                            Reference leftRef,
                                            EntityName rightSynonym) {
