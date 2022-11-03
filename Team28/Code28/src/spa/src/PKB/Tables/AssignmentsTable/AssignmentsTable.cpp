@@ -201,12 +201,12 @@ bool AssignmentsTable::validate(int stmtNo, std::string varName,
         return true;
     }
     bool isExprMatch;
+    std::string exprToSearch = assignment->getExpression();
     if (expr.isExactExpression()) {
-        isExprMatch = assignment->getExpression() == expr.getExpression();
+        isExprMatch = exprToSearch == expr.getExpression();
     } else {
         std::string exprToFind = expr.getExpression();
-        isExprMatch =
-            assignment->getExpression().find(exprToFind) != std::string::npos;
+        isExprMatch = exprToSearch.find(exprToFind) != std::string::npos;
     }
     return isExprMatch;
 }
@@ -226,8 +226,9 @@ std::vector<Value> AssignmentsTable::getVar(int stmtNo, AssignExpression expr) {
                 Value(ValueType::VAR_NAME, assignment->getVariable()));
         }
     } else {
+        std::string exprToSearch = assignment->getExpression();
         std::string exprToFind = expr.getExpression();
-        if (assignment->getExpression().find(exprToFind) != std::string::npos) {
+        if (exprToSearch.find(exprToFind) != std::string::npos) {
             result.push_back(
                 Value(ValueType::VAR_NAME, assignment->getVariable()));
         }
