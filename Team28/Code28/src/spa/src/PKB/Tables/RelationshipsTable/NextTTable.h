@@ -44,7 +44,6 @@ private:
     NextTable *next;
 
     int totalLines;
-    std::map<std::pair<int, int>, bool> *visited;
     std::map<std::pair<int, int>, bool> matrix;
     std::map<int, bool> isDFSComputed;
 
