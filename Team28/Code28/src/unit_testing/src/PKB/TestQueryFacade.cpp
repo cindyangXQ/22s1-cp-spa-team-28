@@ -2124,3 +2124,193 @@ TEST_CASE("solveBothAttribute returns correct results -- Entities") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("pattern-assign validate works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    AssignmentsTable *assignmentsTable = storage->getTable<AssignmentsTable>();
+
+    std::string expr1 = "((1)+(2))";
+    Assignment assignment1 = Assignment(1, std::string("x1"), expr1);
+    assignmentsTable->store(&assignment1);
+
+    std::string expr2 = "((1)+(3))";
+    Assignment assignment2 = Assignment(2, std::string("x2"), expr2);
+    assignmentsTable->store(&assignment2);
+
+    // Positive testing
+    AssignExpression assignExpr1Exact = AssignExpression(expr1, true);
+    AssignExpression assignExpr1Partial = AssignExpression("(1)", false);
+    AssignExpression assignExpr2Exact = AssignExpression(expr2, true);
+    AssignExpression assignExpr2Partial = AssignExpression("(3)", false);
+    AssignExpression wildcard = AssignExpression("_", false);
+
+    REQUIRE(facade.validate(1, "x1", assignExpr1Exact));
+    REQUIRE(facade.validate(1, "x1", assignExpr1Partial));
+    REQUIRE(facade.validate(2, "x2", assignExpr2Exact));
+    REQUIRE(facade.validate(2, "x2", assignExpr2Partial));
+    REQUIRE(facade.validate(1, "x1", wildcard));
+    REQUIRE(facade.validate(2, "x2", wildcard));
+
+    // Wrong stmtNo
+    REQUIRE(!facade.validate(2, "x1", assignExpr1Exact));
+    REQUIRE(!facade.validate(1, "x2", assignExpr2Partial));
+
+    // Wrong var
+    REQUIRE(!facade.validate(1, "nomatchbigsad", assignExpr1Exact));
+    REQUIRE(!facade.validate(1, "nomatchbigsad", assignExpr2Partial));
+
+    // Wrong expr
+    AssignExpression wrongExact = AssignExpression("(999)", true);
+    AssignExpression wrongPartial = AssignExpression("(999)", false);
+    REQUIRE(!facade.validate(1, "x1", wrongExact));
+    REQUIRE(!facade.validate(2, "x2", wrongPartial));
+}
+
+TEST_CASE("pattern-if/while validate works correctly") {
+    // TODO: SOME WEIRD BEHAVIOUR HELPPPPP
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    WhileControlVarTable *wTable = storage->getTable<WhileControlVarTable>();
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 1, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 2, std::string("z"));
+    wTable->store(&test1);
+    wTable->store(&test2);
+    wTable->store(&test3);
+
+    // Positive testing
+    REQUIRE(facade.validate(Designation::WHILE_C, 1, "x"));
+    REQUIRE(facade.validate(Designation::WHILE_C, 1, "y"));
+    REQUIRE(facade.validate(Designation::WHILE_C, 2, "z"));
+
+    // Wrong stmtNo
+    REQUIRE(!facade.validate(Designation::WHILE_C, 2, "x"));
+    REQUIRE(!facade.validate(Designation::WHILE_C, 1, "z"));
+
+    // Wrong var
+    REQUIRE(!facade.validate(Designation::WHILE_C, 1, "z"));
+    REQUIRE(!facade.validate(Designation::WHILE_C, 2, "x"));
+    REQUIRE(!facade.validate(Designation::WHILE_C, 1, "missingNo"));
+
+    // Read from wrong table
+    REQUIRE(!facade.validate(Designation::IF_C, 1, "x"));
+}
+
+TEST_CASE("pattern-if/while validate (incorrect designation) returns nothing") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    WhileControlVarTable *wTable = storage->getTable<WhileControlVarTable>();
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 1, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 2, std::string("z"));
+    wTable->store(&test1);
+    wTable->store(&test2);
+    wTable->store(&test3);
+
+    REQUIRE(!facade.validate(Designation::AFFECTS, 1, "x"));
+    REQUIRE(!facade.validate(Designation::B_IN, 1, "x"));
+    REQUIRE(!facade.validate(Designation::CALL_T, 1, "x"));
+}
+
+TEST_CASE("pattern-assign getVar works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    AssignmentsTable *assignmentsTable = storage->getTable<AssignmentsTable>();
+
+    std::string expr1 = "((1)+(2))";
+    Assignment assignment1 = Assignment(1, std::string("x1"), expr1);
+    assignmentsTable->store(&assignment1);
+
+    std::string expr2 = "((1)+(3))";
+    Assignment assignment2 = Assignment(2, std::string("x2"), expr2);
+    assignmentsTable->store(&assignment2);
+
+    // Positive testing
+    AssignExpression assignExpr1Exact = AssignExpression(expr1, true);
+    AssignExpression assignExpr1Partial = AssignExpression("(1)", false);
+    AssignExpression assignExpr2Exact = AssignExpression(expr2, true);
+    AssignExpression assignExpr2Partial = AssignExpression("(3)", false);
+    AssignExpression wildcard = AssignExpression("_", false);
+
+    std::vector<Value> expectedResult = {Value(ValueType::VAR_NAME, "x1")};
+    std::vector<Value> output = facade.getVar(1, assignExpr1Exact);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    output = facade.getVar(1, assignExpr1Partial);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    output = facade.getVar(1, wildcard);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {Value(ValueType::VAR_NAME, "x2")};
+    output = facade.getVar(2, assignExpr2Exact);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    output = facade.getVar(2, assignExpr2Partial);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    output = facade.getVar(2, wildcard);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Wrong stmtNo
+    expectedResult = {};
+    output = facade.getVar(2, assignExpr1Exact);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    output = facade.getVar(1, assignExpr2Partial);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Wrong expr
+    AssignExpression wrongExact = AssignExpression("(999)", true);
+    AssignExpression wrongPartial = AssignExpression("(999)", false);
+    output = facade.getVar(1, wrongExact);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    output = facade.getVar(2, wrongPartial);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("pattern if-while getVar works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    WhileControlVarTable *wTable = storage->getTable<WhileControlVarTable>();
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 1, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 2, std::string("z"));
+    wTable->store(&test1);
+    wTable->store(&test2);
+    wTable->store(&test3);
+
+    // Positive testing
+    std::vector<Value> expectedResult = {Value(ValueType::VAR_NAME, "x"),
+                                         Value(ValueType::VAR_NAME, "y")};
+    std::vector<Value> output = facade.getVar(Designation::WHILE_C, 1);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {Value(ValueType::VAR_NAME, "z")};
+    output = facade.getVar(Designation::WHILE_C, 2);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Wrong stmtNo
+    expectedResult = {};
+    output = facade.getVar(Designation::WHILE_C, 93489453);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}

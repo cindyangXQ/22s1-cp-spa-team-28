@@ -162,3 +162,62 @@ TEST_CASE(
     REQUIRE(wTable.getMatchingValue("x", EntityName::STMT).size() == 0);
     REQUIRE(wTable.getAllValues(EntityName::STMT).size() == 0);
 }
+
+TEST_CASE("UsesControlVarTable: validate works correctly") {
+    WhileControlVarTable wTable;
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 1, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 2, std::string("z"));
+    wTable.store(&test1);
+    wTable.store(&test2);
+    wTable.store(&test3);
+
+    // Positive testing
+    REQUIRE(wTable.validate(1, "x"));
+    REQUIRE(wTable.validate(1, "y"));
+    REQUIRE(wTable.validate(2, "z"));
+
+    // Wrong stmtNo
+    REQUIRE(!wTable.validate(2, "x"));
+    REQUIRE(!wTable.validate(1, "z"));
+
+    // Wrong var
+    REQUIRE(!wTable.validate(1, "z"));
+    REQUIRE(!wTable.validate(2, "x"));
+    REQUIRE(!wTable.validate(1, "missingNo"));
+}
+
+TEST_CASE("UsesControlVarTable: getVar works correctly") {
+    WhileControlVarTable wTable;
+
+    Relationship<int, std::string> test1 =
+        Relationship(RelationshipReference::USES, 1, std::string("x"));
+    Relationship<int, std::string> test2 =
+        Relationship(RelationshipReference::USES, 1, std::string("y"));
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 2, std::string("z"));
+    wTable.store(&test1);
+    wTable.store(&test2);
+    wTable.store(&test3);
+
+    // Positive testing
+    std::vector<Value> expectedResult = {Value(ValueType::VAR_NAME, "x"),
+                                         Value(ValueType::VAR_NAME, "y")};
+    std::vector<Value> output = wTable.getVar(1);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {Value(ValueType::VAR_NAME, "z")};
+    output = wTable.getVar(2);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Wrong stmtNo
+    expectedResult = {};
+    output = wTable.getVar(93489453);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}

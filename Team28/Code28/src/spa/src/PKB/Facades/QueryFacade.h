@@ -34,8 +34,20 @@ public:
                   Reference rightRef);
 
     /*
-     * Returns all possible values that the right synonym can take on based on
-     * the provided relationship type.
+     * Returns a boolean indicating if pattern-assign at given stmtNo holds.
+     */
+    bool validate(int stmtNo, std::string varName, AssignExpression expr);
+
+    /*
+     * Returns a boolean indicating if pattern-if/while at given stmtNo contains
+     * varName.
+     * NOTE: desType == IF_C || desType == WHILE_C
+     */
+    bool validate(Designation desType, int stmtNo, std::string varName);
+
+    /*
+     * Returns all possible values that the right synonym can take on based
+     * on the provided relationship type.
      */
     std::vector<Value> solveRight(RelationshipReference relType,
                                   Reference leftRef, EntityName rightSynonym);
@@ -107,6 +119,17 @@ public:
      */
     std::vector<Value> solveReflexive(RelationshipReference rsRef,
                                       EntityName stmtEntity);
+
+    /*
+     * Gets variable used in assign-pattern.
+     */
+    std::vector<Value> getVar(int stmtNo, AssignExpression expr);
+
+    /*
+     * Gets variable used in assign-if/while.
+     * NOTE: desType == IF_C || desType == WHILE_C
+     */
+    std::vector<Value> getVar(Designation desType, int stmtNo);
 
 private:
     Storage *storage;

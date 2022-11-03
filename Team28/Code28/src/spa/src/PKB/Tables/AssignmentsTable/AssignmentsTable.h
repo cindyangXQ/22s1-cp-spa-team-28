@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "../../../commons/AssignExpression.h"
 #include "../../../commons/Assignment.h"
 #include "../../../commons/Value.h"
 #include "../Table.h"
@@ -65,6 +66,18 @@ public:
     std::vector<std::pair<Value, Value>>
     getAssignAndVarExact(std::string expression);
 
+    /*
+     * Checks if at a given stmt no, checks if varName = expr holds.
+     * Handles both exact and partial match.
+     */
+    bool validate(int stmtNo, std::string varName, AssignExpression expr);
+
+    /*
+     * Returns the variable used at a given stmt no. Returns empty vector if no
+     * match.
+     */
+    std::vector<Value> getVar(int stmtNo, AssignExpression expr);
+
     std::vector<Value> getMatchingValue(std::string value, EntityName entity);
 
     std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
@@ -74,6 +87,7 @@ private:
     const std::string EMPTY_STRING = "";
     std::vector<Value> allLineNumbers;
     std::vector<Assignment> allAssignments;
+    std::map<int, Assignment *> lineAssignmentMap;
 
     /*
      * Return list of possible values of assignments that satisfy the given
