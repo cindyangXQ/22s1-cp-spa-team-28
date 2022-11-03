@@ -202,16 +202,3 @@ std::vector<Value> AffectsTTable::solveBothReflexive(EntityName synonym,
     }
     return result;
 }
-
-bool AffectsTTable::isAssignment(int stmt) {
-    return this->assignments.count(stmt) > 0;
-};
-
-bool AffectsTTable::areAssignments(int left, int right) {
-    return (this->assignments.count(left) > 0) &&
-           (this->assignments.count(right) > 0);
-};
-
-bool AffectsTTable::isAssignmentEntity(EntityName entity) {
-    return (entity == EntityName::ASSIGN) || (entity == EntityName::STMT);
-};

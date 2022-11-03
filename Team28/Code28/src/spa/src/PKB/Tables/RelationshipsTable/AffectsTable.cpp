@@ -14,7 +14,6 @@ void AffectsTable::initAffects(StorageView *storage) {
     this->modifiableStatements.insert(calls.begin(), calls.end());
     this->modifiableStatements.insert(this->assignments.begin(),
                                       this->assignments.end());
-    this->totalLines = statements->getTableSize();
 
     for (int i : this->assignments) {
         for (int j : this->assignments) {
@@ -128,15 +127,6 @@ bool AffectsTable::isAffects(int s2, std::string v) {
     return isAssignment(s2) && this->usesS->isRelationshipExist(s2, v);
 };
 
-bool AffectsTable::isAssignment(int stmt) {
-    return this->assignments.count(stmt) > 0;
-};
-
-bool AffectsTable::areAssignments(int left, int right) {
-    return (this->assignments.count(left) > 0) &&
-           (this->assignments.count(right) > 0);
-};
-
 bool AffectsTable::isModified(int stmt, std::string v) {
     return isModifiableStmt(stmt) &&
            this->modifiesS->isRelationshipExist(stmt, v);
@@ -144,10 +134,6 @@ bool AffectsTable::isModified(int stmt, std::string v) {
 
 bool AffectsTable::isModifiableStmt(int stmt) {
     return this->modifiableStatements.count(stmt) > 0;
-};
-
-bool AffectsTable::isAssignmentEntity(EntityName entity) {
-    return (entity == EntityName::ASSIGN) || (entity == EntityName::STMT);
 };
 
 bool AffectsTable::verifySingleWildcard(int stmt, Position stmtPos) {

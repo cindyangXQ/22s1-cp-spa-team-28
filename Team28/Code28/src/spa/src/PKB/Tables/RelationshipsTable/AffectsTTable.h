@@ -1,10 +1,9 @@
 #pragma once
 
-#include "../Reflexive.h"
+#include "AffectsBaseTable.h"
 #include "AffectsTable.h"
-#include "StmtToStmtRelationshipsTable.h"
 
-class AffectsTTable : public StmtToStmtRelationshipsTable, public Reflexive {
+class AffectsTTable : public AffectsBaseTable {
 public:
     void initAffectsT(StorageView *storage);
 
@@ -43,16 +42,10 @@ public:
 private:
     AffectsTable *affects;
     std::map<std::pair<int, int>, bool> matrix;
-    std::unordered_set<int> assignments;
     bool isComputed = false;
 
     /*
      * Helper method for computing Affects* from Affects.
      */
     std::map<std::pair<int, int>, bool> computeClosure();
-    // TODO: Abstract these common methods into a common utils file, duplicated
-    // form AffectsTable
-    bool isAssignment(int stmt);
-    bool areAssignments(int left, int right);
-    bool isAssignmentEntity(EntityName entity);
 };

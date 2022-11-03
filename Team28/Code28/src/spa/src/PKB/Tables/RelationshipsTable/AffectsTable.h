@@ -1,14 +1,12 @@
 #pragma once
 
-#include "../Reflexive.h"
-#include "NextTTable.h"
-#include "StmtToStmtRelationshipsTable.h"
+#include "AffectsBaseTable.h"
 #include "StmtToVarRelationshipsTable.h"
 
 enum class Status { TRUE, FALSE, UNKNOWN };
 enum class Position { LEFT, RIGHT };
 
-class AffectsTable : public StmtToStmtRelationshipsTable, public Reflexive {
+class AffectsTable : public AffectsBaseTable {
 public:
     void initAffects(StorageView *storage);
 
@@ -47,12 +45,10 @@ public:
     std::map<std::pair<int, int>, bool> eagerGetMatrix();
 
 private:
-    std::unordered_set<int> assignments;
     std::unordered_set<int> modifiableStatements;
     NextTable *next;
     ModifiesSTable *modifiesS;
     UsesSTable *usesS;
-    int totalLines;
     std::map<std::pair<int, int>, Status> matrix;
 
     bool checkAffects(int left, int right);
@@ -78,8 +74,4 @@ private:
     bool isAffects(int s2, std::string v);
     bool isModifiableStmt(int stmt);
     bool isModified(int stmt, std::string v);
-
-    bool isAssignment(int stmt);
-    bool areAssignments(int left, int right);
-    bool isAssignmentEntity(EntityName entity);
 };
