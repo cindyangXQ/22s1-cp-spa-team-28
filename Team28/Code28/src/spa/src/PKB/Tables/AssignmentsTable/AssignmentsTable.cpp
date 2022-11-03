@@ -193,9 +193,7 @@ bool AssignmentsTable::validate(int stmtNo, std::string varName,
     if (this->lineAssignmentMap.count(stmtNo) == 0) {
         return false;
     }
-
     Assignment *assignment = this->lineAssignmentMap.at(stmtNo);
-
     if (assignment->getVariable() != varName) {
         return false;
     }
@@ -214,10 +212,8 @@ std::vector<Value> AssignmentsTable::getVar(int stmtNo, AssignExpression expr) {
     if (this->lineAssignmentMap.count(stmtNo) == 0) {
         return std::vector<Value>();
     }
-
     Assignment *assignment = this->lineAssignmentMap.at(stmtNo);
     std::vector<Value> result = std::vector<Value>();
-
     if (expr.isExactExpression()) {
         if (assignment->getExpression() == expr.getExpression()) {
             result.push_back(
