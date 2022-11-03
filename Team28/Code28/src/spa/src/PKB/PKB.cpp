@@ -27,5 +27,4 @@ void PKB::initAffects() {
     affectsTable->initAffects(this->storage->getStorageView());
     AffectsTTable *affectsTTable = this->storage->getTable<AffectsTTable>();
     affectsTTable->initAffectsT(this->storage->getStorageView());
-    affectsTTable->populateAffectsT();
 }

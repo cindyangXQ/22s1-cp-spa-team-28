@@ -186,7 +186,6 @@ std::pair<AffectsTTable *, StorageView *> InitAffectsTTable::initCode6() {
     cfg.populateNext();
     affects->initAffects(storage->getStorageView());
     affectsT->initAffectsT(storage->getStorageView());
-    affectsT->populateAffectsT();
 
     return std::make_pair(affectsT, storage->getStorageView());
 }

@@ -40,7 +40,6 @@ QueryFacade InitAffectsStorage::createSimple() {
     statements->store(&s2);
     affects->initAffects(storage->getStorageView());
     affectsT->initAffectsT(storage->getStorageView());
-    affectsT->populateAffectsT();
 
     return facade;
 }
