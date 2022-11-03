@@ -8,6 +8,7 @@ void AssignmentsTable::store(TableValue *assignment) {
     this->allAssignments.push_back(*assign);
     this->allLineNumbers.push_back(
         Value(ValueType::STMT_NUM, std::to_string(lineNo)));
+    this->lineAssignmentMap[lineNo] = assign;
 };
 
 std::vector<std::string> AssignmentsTable::getAllAsString() {
@@ -186,3 +187,49 @@ AssignmentsTable::getAllValues(EntityName entity) {
     UNUSED(entity);
     return std::map<Value, std::vector<Value>>{};
 };
+
+bool AssignmentsTable::validate(int stmtNo, std::string varName,
+                                AssignExpression expr) {
+    if (this->lineAssignmentMap.count(stmtNo) == 0) {
+        return false;
+    }
+
+    Assignment *assignment = this->lineAssignmentMap.at(stmtNo);
+
+    if (assignment->getVariable() != varName) {
+        return false;
+    }
+    bool isExprMatch;
+    if (expr.isExactExpression()) {
+        isExprMatch = assignment->getExpression() == expr.getExpression();
+    } else {
+        std::string exprToFind = expr.getExpression();
+        isExprMatch =
+            assignment->getExpression().find(exprToFind) != std::string::npos;
+    }
+    return isExprMatch;
+}
+
+std::vector<Value> AssignmentsTable::getVar(int stmtNo, AssignExpression expr) {
+    if (this->lineAssignmentMap.count(stmtNo) == 0) {
+        return std::vector<Value>();
+    }
+
+    Assignment *assignment = this->lineAssignmentMap.at(stmtNo);
+    std::vector<Value> result = std::vector<Value>();
+
+    if (expr.isExactExpression()) {
+        if (assignment->getExpression() == expr.getExpression()) {
+            result.push_back(
+                Value(ValueType::VAR_NAME, assignment->getVariable()));
+        }
+    } else {
+        std::string exprToFind = expr.getExpression();
+        if (assignment->getExpression().find(exprToFind) != std::string::npos) {
+            result.push_back(
+                Value(ValueType::VAR_NAME, assignment->getVariable()));
+        }
+    }
+
+    return result;
+}
