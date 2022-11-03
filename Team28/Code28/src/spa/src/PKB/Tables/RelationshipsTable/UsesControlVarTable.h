@@ -30,6 +30,7 @@ public:
     /*
      * Checks if at a given stmt no, varName is used in the conditional.
      */
+    using StmtToVarRelationshipsTable::validate;
     bool validate(int stmtNo, std::string varName);
 
     /*
