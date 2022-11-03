@@ -48,7 +48,8 @@ public:
 private:
     std::map<std::pair<int, int>, bool> matrix;
     std::unordered_set<int> assignments;
-    int totalLines;
+    bool isComputed = false;
+
     /*
      * Helper method for computing Affects* from Affects.
      */

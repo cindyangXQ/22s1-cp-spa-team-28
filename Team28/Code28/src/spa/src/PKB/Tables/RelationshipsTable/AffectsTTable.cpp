@@ -4,7 +4,6 @@ void AffectsTTable::initAffectsT(StorageView *storage) {
     AffectsTable *affects = storage->getTable<AffectsTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
     this->matrix = affects->eagerGetMatrix();
-    this->totalLines = statements->getTableSize();
     this->assignments =
         statements->getStatementsSetByType(StatementType::ASSIGN);
 }
@@ -12,13 +11,16 @@ void AffectsTTable::initAffectsT(StorageView *storage) {
 void AffectsTTable::populateAffectsT() { this->matrix = computeClosure(); }
 
 std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
+    if (isComputed) {
+        return this->matrix;
+    }
     // TODO: Clean up/change method entirely
     std::vector<std::pair<int, int>> validPos;
     std::map<std::pair<int, int>, bool> intermediate;
     std::map<std::pair<int, int>, bool> final;
 
-    for (int i = 1; i <= this->totalLines; i++) {
-        for (int j = 1; j <= this->totalLines; j++) {
+    for (int i : this->assignments) {
+        for (int j : this->assignments) {
             std::pair<int, int> curr = std::make_pair(i, j);
             intermediate[curr] = false;
         }
@@ -27,9 +29,9 @@ std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
         intermediate[elem.first] = elem.second;
         validPos.push_back(elem.first);
     }
-    for (int k = 1; k <= this->totalLines; k++) {
-        for (int i = 1; i <= this->totalLines; i++) {
-            for (int j = 1; j <= this->totalLines; j++) {
+    for (int k : this->assignments) {
+        for (int i : this->assignments) {
+            for (int j : this->assignments) {
                 std::pair<int, int> curr = std::make_pair(i, j);
                 std::pair<int, int> left = std::make_pair(i, k);
                 std::pair<int, int> right = std::make_pair(k, j);
@@ -42,10 +44,15 @@ std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
     for (std::pair pair : validPos) {
         final[pair] = intermediate[pair];
     }
-    return final;
+    this->isComputed = true;
+    this->matrix = final;
+    return this->matrix;
 }
 
 bool AffectsTTable::validate(Reference leftRef, Reference rightRef) {
+    if (!isComputed) {
+        this->computeClosure();
+    }
     if (leftRef.isWildcard() && rightRef.isWildcard()) {
         for (int left : this->assignments) {
             for (int right : this->assignments) {
@@ -98,6 +105,9 @@ std::vector<Value> AffectsTTable::solveRight(Reference leftRef,
     if (!isAssignmentEntity(rightSynonym)) {
         return std::vector<Value>();
     }
+    if (!isComputed) {
+        this->computeClosure();
+    }
     std::unordered_set<Value> intermediateResult;
     if (leftRef.isWildcard()) {
         for (int left : this->assignments) {
@@ -132,6 +142,9 @@ std::vector<Value> AffectsTTable::solveLeft(Reference rightRef,
                                             StorageView *storage) {
     if (!isAssignmentEntity(leftSynonym)) {
         return std::vector<Value>();
+    }
+    if (!isComputed) {
+        this->computeClosure();
     }
     std::unordered_set<Value> intermediateResult;
     if (rightRef.isWildcard()) {
@@ -168,6 +181,9 @@ AffectsTTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
     if (!isAssignmentEntity(leftSynonym) || !isAssignmentEntity(rightSynonym)) {
         return std::vector<std::pair<Value, Value>>();
     }
+    if (!isComputed) {
+        this->computeClosure();
+    }
     std::vector<std::pair<Value, Value>> result;
     for (int left : this->assignments) {
         for (int right : this->assignments) {
@@ -186,6 +202,9 @@ std::vector<Value> AffectsTTable::solveBothReflexive(EntityName synonym,
                                                      StorageView *storage) {
     if (!isAssignmentEntity(synonym)) {
         return std::vector<Value>();
+    }
+    if (!isComputed) {
+        this->computeClosure();
     }
     std::vector<Value> result;
     for (int stmt : this->assignments) {
