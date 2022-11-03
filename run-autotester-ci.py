@@ -22,9 +22,8 @@ if __name__ == "__main__":
     for i in range(len(pathArr)):
         pathArr[i] = remove_suffix(pathArr[i], "_source.txt")
 
-    for path in pathArr:
-        try:
-            autotest(path)
-        except Exception as e:
-            print(path)
-            print(str(e))
+    try:
+        autotest("Affects_Code6")
+    except Exception as e:
+        print(path)
+        print(str(e))
