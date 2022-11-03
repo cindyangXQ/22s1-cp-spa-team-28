@@ -14,23 +14,16 @@ public:
     /*
      * Explicit constructor for ControlFlowGraph.
      */
-    ControlFlowGraph(NextTable *nextTable, NextTTable *nextTTable,
-                     StorageView *storage);
+    ControlFlowGraph(NextTable *nextTable, StorageView *storage);
 
     /*
      * Populates NextTable based on relationships currently found in Storage.
-     * NOTE: Traversal of CFG is done through DFS.
+     * Traversal of CFG is done through DFS.
      */
     void populateNext();
 
-    /*
-     * Populates NextTTable by iterating through current Next relationships.
-     */
-    void populateNextT();
-
 private:
     NextTable *next;
-    NextTTable *nextT;
     StatementsTable *statements;
     FollowsTable *follows;
     BranchInTable *branchIn;
@@ -38,8 +31,6 @@ private:
     ProceduresTable *procedures;
 
     std::map<std::pair<int, int>, bool> visited;
-
-    int totalLines;
 
     /*
      * Depth First Search of CFG based on given lineNo.

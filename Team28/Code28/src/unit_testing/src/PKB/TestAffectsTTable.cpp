@@ -17,7 +17,6 @@ std::pair<AffectsTTable *, StorageView *> InitAffectsTTable::initCode6() {
     AffectsTable *affects = storage->getTable<AffectsTable>();
     AffectsTTable *affectsT = storage->getTable<AffectsTTable>();
     NextTable *next = storage->getTable<NextTable>();
-    NextTTable *nextT = storage->getTable<NextTTable>();
     UsesSTable *usesS = storage->getTable<UsesSTable>();
     ModifiesSTable *modS = storage->getTable<ModifiesSTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
@@ -183,10 +182,8 @@ std::pair<AffectsTTable *, StorageView *> InitAffectsTTable::initCode6() {
         modS->store(modify);
     }
 
-    ControlFlowGraph cfg =
-        ControlFlowGraph(next, nextT, storage->getStorageView());
+    ControlFlowGraph cfg = ControlFlowGraph(next, storage->getStorageView());
     cfg.populateNext();
-    cfg.populateNextT();
     affects->initAffects(storage->getStorageView());
     affectsT->initAffectsT(storage->getStorageView());
     affectsT->populateAffectsT();
