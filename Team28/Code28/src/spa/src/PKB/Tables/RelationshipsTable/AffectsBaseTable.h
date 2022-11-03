@@ -3,6 +3,8 @@
 #include "../Reflexive.h"
 #include "StmtToStmtRelationshipsTable.h"
 
+enum class Position { LEFT, RIGHT };
+
 class AffectsBaseTable : public StmtToStmtRelationshipsTable, public Reflexive {
 public:
     /*
@@ -36,8 +38,8 @@ public:
      * Returns list of possible (Value, Value) that a reflexive pair of synonyms
      * can be.
      */
-    std::vector<Value> solveBothReflexive(EntityName synonym,
-                                          StorageView *storage) = 0;
+    virtual std::vector<Value> solveBothReflexive(EntityName synonym,
+                                                  StorageView *storage) = 0;
 
 protected:
     std::unordered_set<int> assignments;
@@ -45,4 +47,5 @@ protected:
     bool isAssignment(int stmt);
     bool areAssignments(int left, int right);
     bool isAssignmentEntity(EntityName entity);
+    int chooseStmt(int left, int right, Position pos);
 };

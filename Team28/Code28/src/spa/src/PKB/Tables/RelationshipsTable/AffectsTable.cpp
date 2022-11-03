@@ -119,10 +119,6 @@ std::vector<Value> AffectsTable::solveBothReflexive(EntityName synonym,
     return result;
 }
 
-int AffectsTable::chooseStmt(int left, int right, Position pos) {
-    return pos == Position::LEFT ? left : right;
-};
-
 bool AffectsTable::isAffects(int s2, std::string v) {
     return isAssignment(s2) && this->usesS->isRelationshipExist(s2, v);
 };

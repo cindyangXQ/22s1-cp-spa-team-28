@@ -48,4 +48,12 @@ private:
      * Helper method for computing Affects* from Affects.
      */
     std::map<std::pair<int, int>, bool> computeClosure();
+
+    bool verifyDoubleWildcards();
+    bool verifyLeftWildcard(int right);
+    bool verifyRightWildcard(int left);
+    void solveSingleWildcard(std::unordered_set<Value> *intermediateResult,
+                             Position pos);
+    void solveHelper(int stmt, std::unordered_set<Value> *intermediateResult,
+                     Position stmtPos);
 };

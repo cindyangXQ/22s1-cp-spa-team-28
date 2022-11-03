@@ -12,3 +12,7 @@ bool AffectsBaseTable::areAssignments(int left, int right) {
 bool AffectsBaseTable::isAssignmentEntity(EntityName entity) {
     return (entity == EntityName::ASSIGN) || (entity == EntityName::STMT);
 };
+
+int AffectsBaseTable::chooseStmt(int left, int right, Position pos) {
+    return pos == Position::LEFT ? left : right;
+};

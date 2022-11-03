@@ -40,41 +40,15 @@ bool AffectsTTable::validate(Reference leftRef, Reference rightRef) {
         this->computeClosure();
     }
     if (leftRef.isWildcard() && rightRef.isWildcard()) {
-        for (int left : this->assignments) {
-            for (int right : this->assignments) {
-                std::pair curr = std::make_pair(left, right);
-                if (this->matrix[curr]) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return verifyDoubleWildcards();
     }
     if (leftRef.isWildcard()) {
         int right = convertToType<int>(rightRef.getValueString());
-        if (!isAssignment(right)) {
-            return false;
-        }
-        for (int left : this->assignments) {
-            std::pair curr = std::make_pair(left, right);
-            if (this->matrix[curr]) {
-                return true;
-            }
-        }
-        return false;
+        return verifyLeftWildcard(right);
     }
     if (rightRef.isWildcard()) {
         int left = convertToType<int>(leftRef.getValueString());
-        if (!isAssignment(left)) {
-            return false;
-        }
-        for (int right : this->assignments) {
-            std::pair curr = std::make_pair(left, right);
-            if (this->matrix[curr]) {
-                return true;
-            }
-        }
-        return false;
+        return verifyRightWildcard(left);
     }
     int left = convertToType<int>(leftRef.getValueString());
     int right = convertToType<int>(rightRef.getValueString());
@@ -96,27 +70,13 @@ std::vector<Value> AffectsTTable::solveRight(Reference leftRef,
     }
     std::unordered_set<Value> intermediateResult;
     if (leftRef.isWildcard()) {
-        for (int left : this->assignments) {
-            for (int right : this->assignments) {
-                std::pair curr = std::make_pair(left, right);
-                if (this->matrix[curr]) {
-                    intermediateResult.insert(
-                        Value(ValueType::STMT_NUM, toString(right)));
-                }
-            }
-        }
+        solveSingleWildcard(&intermediateResult, Position::RIGHT);
     } else {
         int left = convertToType<int>(leftRef.getValueString());
         if (!isAssignment(left)) {
             return std::vector<Value>();
         }
-        for (int right : this->assignments) {
-            std::pair curr = std::make_pair(left, right);
-            if (this->matrix[curr]) {
-                intermediateResult.insert(
-                    Value(ValueType::STMT_NUM, toString(right)));
-            }
-        }
+        solveHelper(left, &intermediateResult, Position::LEFT);
     }
     std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
                                                    intermediateResult.end());
@@ -134,27 +94,13 @@ std::vector<Value> AffectsTTable::solveLeft(Reference rightRef,
     }
     std::unordered_set<Value> intermediateResult;
     if (rightRef.isWildcard()) {
-        for (int left : this->assignments) {
-            for (int right : this->assignments) {
-                std::pair curr = std::make_pair(left, right);
-                if (this->matrix[curr]) {
-                    intermediateResult.insert(
-                        Value(ValueType::STMT_NUM, toString(left)));
-                }
-            }
-        }
+        solveSingleWildcard(&intermediateResult, Position::LEFT);
     } else {
         int right = convertToType<int>(rightRef.getValueString());
         if (!isAssignment(right)) {
             return std::vector<Value>();
         }
-        for (int left : this->assignments) {
-            std::pair curr = std::make_pair(left, right);
-            if (this->matrix[curr]) {
-                intermediateResult.insert(
-                    Value(ValueType::STMT_NUM, toString(left)));
-            }
-        }
+        solveHelper(right, &intermediateResult, Position::RIGHT);
     }
     std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
                                                    intermediateResult.end());
@@ -202,3 +148,73 @@ std::vector<Value> AffectsTTable::solveBothReflexive(EntityName synonym,
     }
     return result;
 }
+
+bool AffectsTTable::verifyDoubleWildcards() {
+    for (int left : this->assignments) {
+        for (int right : this->assignments) {
+            std::pair curr = std::make_pair(left, right);
+            if (this->matrix[curr]) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+bool AffectsTTable::verifyLeftWildcard(int right) {
+    if (!isAssignment(right)) {
+        return false;
+    }
+
+    for (int left : this->assignments) {
+        std::pair curr = std::make_pair(left, right);
+        if (this->matrix[curr]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool AffectsTTable::verifyRightWildcard(int left) {
+    if (!isAssignment(left)) {
+        return false;
+    }
+    for (int right : this->assignments) {
+        std::pair curr = std::make_pair(left, right);
+        if (this->matrix[curr]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void AffectsTTable::solveSingleWildcard(
+    std::unordered_set<Value> *intermediateResult, Position stmtPos) {
+    for (int left : this->assignments) {
+        for (int right : this->assignments) {
+            std::pair curr = std::make_pair(left, right);
+            if (this->matrix[curr]) {
+                intermediateResult->insert(
+                    Value(ValueType::STMT_NUM,
+                          toString(chooseStmt(left, right, stmtPos))));
+            }
+        }
+    }
+};
+
+void AffectsTTable::solveHelper(int stmt,
+                                std::unordered_set<Value> *intermediateResult,
+                                Position stmtPos) {
+    auto check = [&](const int &other) -> bool {
+        std::pair<int, int> curr = stmtPos == Position::LEFT
+                                       ? std::make_pair(stmt, other)
+                                       : std::make_pair(other, stmt);
+        return this->matrix[curr];
+    };
+    for (int other : this->assignments) {
+        if (check(other)) {
+            intermediateResult->insert(
+                Value(ValueType::STMT_NUM, toString(other)));
+        }
+    }
+};

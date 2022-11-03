@@ -4,7 +4,6 @@
 #include "StmtToVarRelationshipsTable.h"
 
 enum class Status { TRUE, FALSE, UNKNOWN };
-enum class Position { LEFT, RIGHT };
 
 class AffectsTable : public AffectsBaseTable {
 public:
@@ -54,7 +53,6 @@ private:
     bool checkAffects(int left, int right);
     bool verifySingleWildcard(int stmt, Position stmtPos);
     bool verifyDoubleWildcards();
-    int chooseStmt(int left, int right, Position pos);
     void solveSingleWildcard(std::unordered_set<Value> *intermediateResult,
                              Position stmtPos);
     void solveHelper(int stmt, std::unordered_set<Value> *intermediateResult,
