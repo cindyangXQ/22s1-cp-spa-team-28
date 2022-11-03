@@ -23,4 +23,8 @@ if __name__ == "__main__":
         pathArr[i] = remove_suffix(pathArr[i], "_source.txt")
 
     for path in pathArr:
-        autotest(path)
+        try:
+            autotest(path)
+        except Exception as e:
+            print(path)
+            print(str(e))
