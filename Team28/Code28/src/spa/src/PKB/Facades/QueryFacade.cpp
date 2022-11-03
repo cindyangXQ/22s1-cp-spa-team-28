@@ -92,7 +92,7 @@ bool QueryFacade::validate(Designation desType, int stmtNo,
         return false;
     }
     UsesControlVarTable *conds = this->storage->getControlVarTable(desType);
-    conds->validate(stmtNo, varName);
+    return conds->validate(stmtNo, varName);
 }
 
 std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
@@ -279,3 +279,16 @@ std::vector<Value> QueryFacade::solveReflexive(RelationshipReference rsRef,
     return reflexive->solveBothReflexive(stmtEntity,
                                          this->storage->getStorageView());
 };
+
+std::vector<Value> QueryFacade::getVar(int stmtNo, AssignExpression expr) {
+    AssignmentsTable *table = this->storage->getTable<AssignmentsTable>();
+    return table->getVar(stmtNo, expr);
+}
+
+std::vector<Value> QueryFacade::getVar(Designation desType, int stmtNo) {
+    if (condPatternSet.count(desType) == 0) {
+        return std::vector<Value>();
+    }
+    UsesControlVarTable *conds = this->storage->getControlVarTable(desType);
+    return conds->getVar(stmtNo);
+}

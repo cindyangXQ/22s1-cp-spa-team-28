@@ -120,6 +120,17 @@ public:
     std::vector<Value> solveReflexive(RelationshipReference rsRef,
                                       EntityName stmtEntity);
 
+    /*
+     * Gets variable used in assign-pattern.
+     */
+    std::vector<Value> getVar(int stmtNo, AssignExpression expr);
+
+    /*
+     * Gets variable used in assign-if/while.
+     * NOTE: desType == IF_C || desType == WHILE_C
+     */
+    std::vector<Value> getVar(Designation desType, int stmtNo);
+
 private:
     Storage *storage;
     const std::string STMT_NO_SECONDARY_ATTRIBUTE =
