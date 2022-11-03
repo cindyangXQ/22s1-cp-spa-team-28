@@ -38,8 +38,7 @@ public:
                                                    StorageView *storage);
 
     /*
-     * Returns list of possible (Value, Value) that a reflexive pair of synonyms
-     * can be.
+     * Returns list of possible values that has a reflexive relationship.
      */
     std::vector<Value> solveBothReflexive(EntityName synonym,
                                           StorageView *storage);
