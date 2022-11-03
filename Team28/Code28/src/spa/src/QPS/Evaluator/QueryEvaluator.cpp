@@ -2,23 +2,13 @@
 
 QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
     std::vector<std::vector<ClauseResult>> clauseResultList;
-    std::vector<QueryClause *> clauses = solvableQ->getQueryClause();
     std::vector<std::vector<QueryClause *>> clauseGroups =
         solvableQ->getClauseGroup();
     SelectClause selectClause = solvableQ->getSelectClause();
 
-    if (clauseGroups.size() > 0) {
-        for (std::vector<QueryClause *> group : clauseGroups) {
-            std::vector<ClauseResult> groupResult;
-            for (QueryClause *clause : group) {
-                ClauseResult result = clause->evaluate(queryFacade);
-                groupResult.push_back(result);
-            }
-            clauseResultList.push_back(groupResult);
-        }
-    } else {
+    for (std::vector<QueryClause *> group : clauseGroups) {
         std::vector<ClauseResult> groupResult;
-        for (QueryClause *clause : clauses) {
+        for (QueryClause *clause : group) {
             ClauseResult result = clause->evaluate(queryFacade);
             groupResult.push_back(result);
         }
