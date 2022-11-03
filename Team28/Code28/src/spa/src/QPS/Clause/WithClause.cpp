@@ -10,6 +10,7 @@ void WithClause::parse(std::smatch matches, std::vector<Synonym> syns) {
         refRight.getRefType() == ReferenceType::WILDCARD) {
         throw SyntaxError("With clause arguments cannot be wildcards");
     }
+    this->populateSynsUsed();
 }
 
 bool WithClause::validate() {
@@ -72,14 +73,6 @@ ClauseResult WithClause::handleOneSynonym(QueryFacade *queryFacade) {
         clauseResult.insert(Tuple({result[i]}));
     }
     return clauseResult;
-}
-
-void WithClause::replaceFirstReference(Reference *newRef) {
-    this->refLeft = *newRef;
-}
-
-void WithClause::replaceSecondReference(Reference *newRef) {
-    this->refRight = *newRef;
 }
 
 std::unordered_set<std::string> WithClause::getSynonymsUsed() {

@@ -10,6 +10,7 @@ void PatternClause::parse(std::smatch matches, std::vector<Synonym> syns) {
     this->entRef = Reference::getReference(matches[3], syns);
     Expression expr = Utils::trimSpaces(matches[5]);
     this->isExact = expr.find('_') == std::string::npos;
+    this->populateSynsUsed();
 
     if (expr.find('_') != std::string::npos && expr != "_") {
         // Remove _ at the start and end
@@ -120,14 +121,6 @@ ClauseResult PatternClause::handleIf(QueryFacade *queryFacade) {
         }
         return clauseResult;
     }
-}
-
-void PatternClause::replaceFirstReference(Reference *newRef) {
-    this->stmtRef = *newRef;
-}
-
-void PatternClause::replaceSecondReference(Reference *newRef) {
-    this->entRef = *newRef;
 }
 
 std::unordered_set<std::string> PatternClause::getSynonymsUsed() {

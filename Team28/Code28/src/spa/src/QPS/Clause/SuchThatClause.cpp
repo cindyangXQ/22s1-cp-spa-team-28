@@ -10,6 +10,7 @@ void SuchThatClause::parse(std::smatch matches, std::vector<Synonym> syns) {
     this->relationship = RELATIONSHIP_MAP.at(matches[2]);
     this->refLeft = Reference::getReference(matches[3], syns);
     this->refRight = Reference::getReference(matches[4], syns);
+    this->populateSynsUsed();
 }
 
 bool SuchThatClause::validate() {
@@ -117,14 +118,6 @@ ClauseResult SuchThatClause::handleBothSynonym(QueryFacade *queryFacade) {
         clauseResult.insert(Tuple({result[i].first, result[i].second}));
     }
     return clauseResult;
-}
-
-void SuchThatClause::replaceFirstReference(Reference *newRef) {
-    this->refLeft = *newRef;
-}
-
-void SuchThatClause::replaceSecondReference(Reference *newRef) {
-    this->refRight = *newRef;
 }
 
 std::unordered_set<std::string> SuchThatClause::getSynonymsUsed() {

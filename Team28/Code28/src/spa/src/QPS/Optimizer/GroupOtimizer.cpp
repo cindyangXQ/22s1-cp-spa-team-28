@@ -6,7 +6,6 @@ void GroupOptimizer::optimize(SolvableQuery *solvableQ) {
     clauses.insert(std::end(clauses), std::begin(withCls), std::end(withCls));
 
     UFDS ufds(clauses.size());
-
     std::unordered_set<int> clausesWithoutSyn;
     std::unordered_map<int, std::unordered_set<std::string>>
         clauseIdxToSynUsedMap;
@@ -15,12 +14,11 @@ void GroupOptimizer::optimize(SolvableQuery *solvableQ) {
     for (int i = 0; i < clauses.size(); i++) {
         QueryClause *clause = clauses[i];
         std::unordered_set<std::string> synsUsed = clause->getSynonymsUsed();
-        clauseIdxToSynUsedMap[i] = synsUsed;
-
         if (synsUsed.size() == 0) {
             clausesWithoutSyn.insert(i);
             continue;
         }
+        clauseIdxToSynUsedMap[i] = synsUsed;
         for (std::string syn : synsUsed) {
             if (synToClauseIdxMap.count(syn)) {
                 int groupClauseMember = synToClauseIdxMap.at(syn)[0];
@@ -30,10 +28,8 @@ void GroupOptimizer::optimize(SolvableQuery *solvableQ) {
         }
     }
 
-    int groupCount = ufds.numDisjointSets();
     std::vector<std::vector<QueryClause *>> clauseGroups(
-        groupCount + 1, std::vector<QueryClause *>());
-
+        ufds.numDisjointSets(), std::vector<QueryClause *>());
     std::vector<int> groupMapping(clauses.size(), -1);
     int curGroup = 0;
 

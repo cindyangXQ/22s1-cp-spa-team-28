@@ -13,8 +13,6 @@ public:
     void parse(std::smatch matches, std::vector<Synonym> syns);
     bool validate();
     ClauseResult evaluate(QueryFacade *queryFacade);
-    void replaceFirstReference(Reference *newRef);
-    void replaceSecondReference(Reference *newRef);
     std::unordered_set<std::string> getSynonymsUsed();
     double getOptimizeScore();
 
