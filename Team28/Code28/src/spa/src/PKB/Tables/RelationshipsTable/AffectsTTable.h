@@ -9,11 +9,6 @@ public:
     void initAffectsT(StorageView *storage);
 
     /*
-     * Populate AffectsTTable.
-     */
-    void populateAffectsT();
-
-    /*
      * Returns true if the relationship holds between leftReference and
      * rightReference.
      */
@@ -46,6 +41,7 @@ public:
                                           StorageView *storage);
 
 private:
+    AffectsTable *affects;
     std::map<std::pair<int, int>, bool> matrix;
     std::unordered_set<int> assignments;
     bool isComputed = false;

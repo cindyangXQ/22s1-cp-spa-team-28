@@ -1,33 +1,25 @@
 #include "AffectsTTable.h"
 
 void AffectsTTable::initAffectsT(StorageView *storage) {
-    AffectsTable *affects = storage->getTable<AffectsTable>();
+    this->affects = storage->getTable<AffectsTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
-    this->matrix = affects->eagerGetMatrix();
     this->assignments =
         statements->getStatementsSetByType(StatementType::ASSIGN);
 }
-
-void AffectsTTable::populateAffectsT() { this->matrix = computeClosure(); }
 
 std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
     if (isComputed) {
         return this->matrix;
     }
     // TODO: Clean up/change method entirely
-    std::vector<std::pair<int, int>> validPos;
-    std::map<std::pair<int, int>, bool> intermediate;
-    std::map<std::pair<int, int>, bool> final;
-
     for (int i : this->assignments) {
         for (int j : this->assignments) {
             std::pair<int, int> curr = std::make_pair(i, j);
-            intermediate[curr] = false;
+            this->matrix[curr] = false;
         }
     }
-    for (const auto &elem : this->matrix) {
-        intermediate[elem.first] = elem.second;
-        validPos.push_back(elem.first);
+    for (const auto &elem : this->affects->eagerGetMatrix()) {
+        this->matrix[elem.first] = elem.second;
     }
     for (int k : this->assignments) {
         for (int i : this->assignments) {
@@ -35,17 +27,11 @@ std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
                 std::pair<int, int> curr = std::make_pair(i, j);
                 std::pair<int, int> left = std::make_pair(i, k);
                 std::pair<int, int> right = std::make_pair(k, j);
-                intermediate[curr] =
-                    intermediate[curr] ||
-                    (intermediate[left] && intermediate[right]);
+                matrix[curr] = matrix[curr] || (matrix[left] && matrix[right]);
             }
         }
     }
-    for (std::pair pair : validPos) {
-        final[pair] = intermediate[pair];
-    }
     this->isComputed = true;
-    this->matrix = final;
     return this->matrix;
 }
 
