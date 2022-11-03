@@ -2143,10 +2143,14 @@ TEST_CASE("pattern-assign validate works correctly") {
     AssignExpression assignExpr1Partial = AssignExpression("(1)", false);
     AssignExpression assignExpr2Exact = AssignExpression(expr2, true);
     AssignExpression assignExpr2Partial = AssignExpression("(3)", false);
+    AssignExpression wildcard = AssignExpression("_", false);
+
     REQUIRE(facade.validate(1, "x1", assignExpr1Exact));
     REQUIRE(facade.validate(1, "x1", assignExpr1Partial));
     REQUIRE(facade.validate(2, "x2", assignExpr2Exact));
     REQUIRE(facade.validate(2, "x2", assignExpr2Partial));
+    REQUIRE(facade.validate(1, "x1", wildcard));
+    REQUIRE(facade.validate(2, "x2", wildcard));
 
     // Wrong stmtNo
     REQUIRE(!facade.validate(2, "x1", assignExpr1Exact));
@@ -2235,6 +2239,7 @@ TEST_CASE("pattern-assign getVar works correctly") {
     AssignExpression assignExpr1Partial = AssignExpression("(1)", false);
     AssignExpression assignExpr2Exact = AssignExpression(expr2, true);
     AssignExpression assignExpr2Partial = AssignExpression("(3)", false);
+    AssignExpression wildcard = AssignExpression("_", false);
 
     std::vector<Value> expectedResult = {Value(ValueType::VAR_NAME, "x1")};
     std::vector<Value> output = facade.getVar(1, assignExpr1Exact);
@@ -2243,12 +2248,17 @@ TEST_CASE("pattern-assign getVar works correctly") {
     output = facade.getVar(1, assignExpr1Partial);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
-
+    output = facade.getVar(1, wildcard);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
     expectedResult = {Value(ValueType::VAR_NAME, "x2")};
     output = facade.getVar(2, assignExpr2Exact);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
     output = facade.getVar(2, assignExpr2Partial);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    output = facade.getVar(2, wildcard);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 

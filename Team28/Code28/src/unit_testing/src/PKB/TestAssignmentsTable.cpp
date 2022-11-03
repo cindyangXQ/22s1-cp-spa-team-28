@@ -69,10 +69,13 @@ TEST_CASE("AssignmentsTable: validate works correctly") {
     AssignExpression assignExpr1Partial = AssignExpression("(1)", false);
     AssignExpression assignExpr2Exact = AssignExpression(expr2, true);
     AssignExpression assignExpr2Partial = AssignExpression("(3)", false);
+    AssignExpression wildcard = AssignExpression("_", false);
     REQUIRE(assignmentsTable.validate(1, "x1", assignExpr1Exact));
     REQUIRE(assignmentsTable.validate(1, "x1", assignExpr1Partial));
     REQUIRE(assignmentsTable.validate(2, "x2", assignExpr2Exact));
     REQUIRE(assignmentsTable.validate(2, "x2", assignExpr2Partial));
+    REQUIRE(assignmentsTable.validate(1, "x1", wildcard));
+    REQUIRE(assignmentsTable.validate(2, "x2", wildcard));
 
     // Wrong stmtNo
     REQUIRE(!assignmentsTable.validate(2, "x1", assignExpr1Exact));
@@ -105,6 +108,7 @@ TEST_CASE("AssignmentsTable: getVar works correctly") {
     AssignExpression assignExpr1Partial = AssignExpression("(1)", false);
     AssignExpression assignExpr2Exact = AssignExpression(expr2, true);
     AssignExpression assignExpr2Partial = AssignExpression("(3)", false);
+    AssignExpression wildcard = AssignExpression("_", false);
 
     std::vector<Value> expectedResult = {Value(ValueType::VAR_NAME, "x1")};
     std::vector<Value> output = assignmentsTable.getVar(1, assignExpr1Exact);
@@ -113,12 +117,17 @@ TEST_CASE("AssignmentsTable: getVar works correctly") {
     output = assignmentsTable.getVar(1, assignExpr1Partial);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
-
+    output = assignmentsTable.getVar(1, wildcard);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
     expectedResult = {Value(ValueType::VAR_NAME, "x2")};
     output = assignmentsTable.getVar(2, assignExpr2Exact);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
     output = assignmentsTable.getVar(2, assignExpr2Partial);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    output = assignmentsTable.getVar(2, wildcard);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 

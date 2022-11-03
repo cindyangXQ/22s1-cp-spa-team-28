@@ -197,6 +197,9 @@ bool AssignmentsTable::validate(int stmtNo, std::string varName,
     if (assignment->getVariable() != varName) {
         return false;
     }
+    if (expr.getExpression() == WILDCARD_SYMBOL) {
+        return true;
+    }
     bool isExprMatch;
     if (expr.isExactExpression()) {
         isExprMatch = assignment->getExpression() == expr.getExpression();
@@ -214,6 +217,9 @@ std::vector<Value> AssignmentsTable::getVar(int stmtNo, AssignExpression expr) {
     }
     Assignment *assignment = this->lineAssignmentMap.at(stmtNo);
     std::vector<Value> result = std::vector<Value>();
+    if (expr.getExpression() == WILDCARD_SYMBOL) {
+        result.push_back(Value(ValueType::VAR_NAME, assignment->getVariable()));
+    }
     if (expr.isExactExpression()) {
         if (assignment->getExpression() == expr.getExpression()) {
             result.push_back(
