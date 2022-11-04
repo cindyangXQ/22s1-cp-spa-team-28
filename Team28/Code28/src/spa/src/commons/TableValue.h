@@ -28,6 +28,8 @@ enum class Designation {
     IF_C,
     WHILE_C,
     PROC_NAME,
+    NEXT,
+    NEXT_T,
     AFFECTS,
     AFFECTS_T
 };
@@ -39,3 +41,9 @@ const DESIGNATION_TYPE_SET namedEntitiesSet = {
 
 const DESIGNATION_TYPE_SET condPatternSet = {Designation::IF_C,
                                              Designation::WHILE_C};
+
+const DESIGNATION_TYPE_SET nonPrecomputedSet = {
+    Designation::NEXT_T,
+    Designation::AFFECTS,
+    Designation::AFFECTS_T,
+};

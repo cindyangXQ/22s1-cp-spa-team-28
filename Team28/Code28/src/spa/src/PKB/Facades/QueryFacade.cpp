@@ -2,6 +2,11 @@
 
 #include "QueryFacade.h"
 
+int QueryFacade::getTableSize(Designation desType) {
+    Table *table = this->storage->getDesignationTable(desType);
+    return table->getTableSize();
+};
+
 bool QueryFacade::validateWildcard(Reference leftRef, Reference rightRef,
                                    Solvable *sTable, Solvable *pTable) {
     return sTable->validate(leftRef, rightRef) ||
@@ -78,6 +83,21 @@ bool QueryFacade::validate(RelationshipReference relType, Reference leftRef,
 
     Solvable *table = this->storage->getRsTable(relType, leftRefType);
     return table->validate(leftRef, rightRef);
+}
+
+bool QueryFacade::validate(int stmtNo, std::string varName,
+                           AssignExpression expr) {
+    AssignmentsTable *table = this->storage->getTable<AssignmentsTable>();
+    return table->validate(stmtNo, varName, expr);
+}
+
+bool QueryFacade::validate(Designation desType, int stmtNo,
+                           std::string varName) {
+    if (condPatternSet.count(desType) == 0) {
+        return false;
+    }
+    UsesControlVarTable *conds = this->storage->getControlVarTable(desType);
+    return conds->validate(stmtNo, varName);
 }
 
 std::vector<Value> QueryFacade::solveRight(RelationshipReference relType,
@@ -264,3 +284,16 @@ std::vector<Value> QueryFacade::solveReflexive(RelationshipReference rsRef,
     return reflexive->solveBothReflexive(stmtEntity,
                                          this->storage->getStorageView());
 };
+
+std::vector<Value> QueryFacade::getVar(int stmtNo, AssignExpression expr) {
+    AssignmentsTable *table = this->storage->getTable<AssignmentsTable>();
+    return table->getVar(stmtNo, expr);
+}
+
+std::vector<Value> QueryFacade::getVar(Designation desType, int stmtNo) {
+    if (condPatternSet.count(desType) == 0) {
+        return std::vector<Value>();
+    }
+    UsesControlVarTable *conds = this->storage->getControlVarTable(desType);
+    return conds->getVar(stmtNo);
+}

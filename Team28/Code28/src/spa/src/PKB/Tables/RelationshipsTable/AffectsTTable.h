@@ -1,17 +1,11 @@
 #pragma once
 
-#include "../Reflexive.h"
+#include "AffectsBaseTable.h"
 #include "AffectsTable.h"
-#include "StmtToStmtRelationshipsTable.h"
 
-class AffectsTTable : public StmtToStmtRelationshipsTable, public Reflexive {
+class AffectsTTable : public AffectsBaseTable {
 public:
     void initAffectsT(StorageView *storage);
-
-    /*
-     * Populate AffectsTTable.
-     */
-    void populateAffectsT();
 
     /*
      * Returns true if the relationship holds between leftReference and
@@ -39,23 +33,26 @@ public:
                                                    StorageView *storage);
 
     /*
-     * Returns list of possible (Value, Value) that a reflexive pair of synonyms
-     * can be.
+     * Returns list of possible values that has a reflexive relationship.
      */
     std::vector<Value> solveBothReflexive(EntityName synonym,
                                           StorageView *storage);
 
 private:
+    AffectsTable *affects;
     std::map<std::pair<int, int>, bool> matrix;
-    std::unordered_set<int> assignments;
-    int totalLines;
+    bool isComputed = false;
+
     /*
      * Helper method for computing Affects* from Affects.
      */
     std::map<std::pair<int, int>, bool> computeClosure();
-    // TODO: Abstract these common methods into a common utils file, duplicated
-    // form AffectsTable
-    bool isAssignment(int stmt);
-    bool areAssignments(int left, int right);
-    bool isAssignmentEntity(EntityName entity);
+
+    bool verifyDoubleWildcards();
+    bool verifyLeftWildcard(int right);
+    bool verifyRightWildcard(int left);
+    void solveSingleWildcard(std::unordered_set<Value> *intermediateResult,
+                             Position pos);
+    void solveHelper(int stmt, std::unordered_set<Value> *intermediateResult,
+                     Position stmtPos);
 };

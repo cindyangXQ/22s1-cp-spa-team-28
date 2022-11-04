@@ -10,7 +10,7 @@ void SPA::parse(std::string filename) { this->sp.parse(filename); }
 
 void SPA::preprocess() {
     this->pkb.populateNext();
-    this->pkb.populateNextT();
+    this->pkb.initNextT();
     this->pkb.initAffects();
 }
 

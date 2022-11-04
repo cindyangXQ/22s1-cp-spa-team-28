@@ -1,0 +1,55 @@
+procedure apple {
+    x = 1;
+    x = x + 2;
+    appleApple = 3 + appleApple;
+}
+
+procedure banana {
+    x = y + 4;
+    call cat;
+}
+
+procedure cat {
+    catCat = x + 6 * catCat;
+    if (x == 7) then {
+        call dog;
+    }
+    else {
+        if(y == 9) then {
+            call elf;
+            x = x + 11;
+        } else {
+            call fly;
+        }
+    }
+    call giraffe;
+}
+
+procedure dog {
+    x = x% 14;
+    dogDog = dogDog - 15;
+    call giraffe;
+}
+
+procedure elf {
+    call giraffe;
+    while (x < 18){
+        while (y == 19) {
+            call fly;
+        }
+        call horse;
+    }
+}
+
+
+procedure fly {
+    sky = flyFly + d * 22;
+}
+
+procedure giraffe {
+    grape = gir + affe / 23;
+}
+
+procedure horse {
+    donkey = 24 * z+( a+b+c ) / horSE;
+}

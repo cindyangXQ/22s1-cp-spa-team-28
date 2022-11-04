@@ -27,6 +27,17 @@ public:
      */
     std::vector<std::pair<Value, Value>> getStmtAndVar();
 
+    /*
+     * Checks if at a given stmt no, varName is used in the conditional.
+     */
+    using StmtToVarRelationshipsTable::validate;
+    bool validate(int stmtNo, std::string varName);
+
+    /*
+     * Returns all variables used in the conditional at a given stmt no.
+     */
+    std::vector<Value> getVar(int stmtNo);
+
     std::vector<Value> getMatchingValue(std::string value, EntityName entity);
     std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
 

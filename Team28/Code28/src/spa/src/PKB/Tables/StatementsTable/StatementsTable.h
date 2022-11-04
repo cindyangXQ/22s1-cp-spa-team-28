@@ -19,6 +19,8 @@ public:
      */
     void store(TableValue *statement);
 
+    int getTableSize();
+
     /*
      * Returns string form of all statements.
      */
@@ -56,12 +58,6 @@ public:
      * or Read, which have a secondary attribute (varName/procName).
      */
     bool hasSecondaryAttribute(const int &index);
-
-    /*
-     * Get table size.
-     * TODO check if this can be removed. Only used for Next* currently.
-     */
-    int getTableSize();
 
     std::vector<Value> getMatchingValue(std::string value, EntityName entity);
 

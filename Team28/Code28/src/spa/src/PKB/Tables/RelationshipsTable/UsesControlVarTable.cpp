@@ -59,3 +59,23 @@ UsesControlVarTable::getAllValues(EntityName entity) {
     UNUSED(entity);
     return std::map<Value, std::vector<Value>>{};
 };
+
+bool UsesControlVarTable::validate(int stmtNo, std::string varName) {
+    if (this->leftToRightsMap.count(stmtNo) == 0) {
+        return false;
+    }
+    std::unordered_set<std::string> vars = this->leftToRightsMap.at(stmtNo);
+    return vars.count(varName) != 0;
+}
+
+std::vector<Value> UsesControlVarTable::getVar(int stmtNo) {
+    if (this->leftToRightsMap.count(stmtNo) == 0) {
+        return std::vector<Value>();
+    }
+    std::unordered_set<std::string> vars = this->leftToRightsMap.at(stmtNo);
+    std::vector<Value> result = {};
+    for (std::string var : vars) {
+        result.push_back(Value(ValueType::VAR_NAME, var));
+    }
+    return result;
+}

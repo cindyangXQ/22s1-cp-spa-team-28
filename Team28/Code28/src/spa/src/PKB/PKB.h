@@ -26,10 +26,7 @@ public:
      */
     void populateNext();
 
-    /*
-     * Populates the NextTTable based on existing relationships.
-     */
-    void populateNextT();
+    void initNextT();
 
     void initAffects();
 
