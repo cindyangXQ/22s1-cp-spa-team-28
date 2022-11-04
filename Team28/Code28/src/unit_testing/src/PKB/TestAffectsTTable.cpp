@@ -185,7 +185,9 @@ std::pair<AffectsTTable *, StorageView *> InitAffectsTTable::initCode6() {
     ControlFlowGraph cfg = ControlFlowGraph(next, storage->getStorageView());
     cfg.populateNext();
     affects->initAffects(storage->getStorageView());
+    affects->resetCache();
     affectsT->initAffectsT(storage->getStorageView());
+    affectsT->resetCache();
 
     return std::make_pair(affectsT, storage->getStorageView());
 }

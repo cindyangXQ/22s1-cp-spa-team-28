@@ -16,7 +16,6 @@ void PKB::populateNext() {
     this->cfg = cfg;
 }
 
-// TODO: add a flag to only do work if populateNext has been executed
 void PKB::initNextT() {
     NextTTable *nextTTable = this->storage->getTable<NextTTable>();
     nextTTable->initNextT(this->storage->getStorageView());
@@ -28,3 +27,5 @@ void PKB::initAffects() {
     AffectsTTable *affectsTTable = this->storage->getTable<AffectsTTable>();
     affectsTTable->initAffectsT(this->storage->getStorageView());
 }
+
+void PKB::resetCache() { this->queryFacade->resetCache(); };

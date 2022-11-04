@@ -9,6 +9,8 @@ class AffectsTable : public AffectsBaseTable {
 public:
     void initAffects(StorageView *storage);
 
+    void resetCache();
+
     /*
      * Returns true if the relationship holds between leftReference and
      * rightReference.
@@ -49,6 +51,7 @@ private:
     UsesSTable *usesS;
     std::map<std::pair<int, int>, Status> matrix;
 
+    void initMatrix();
     bool checkAffects(int left, int right);
     bool verifySingleWildcard(int stmt, Position stmtPos);
     bool verifyDoubleWildcards();

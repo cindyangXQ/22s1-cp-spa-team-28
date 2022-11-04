@@ -7,6 +7,8 @@ class AffectsTTable : public AffectsBaseTable {
 public:
     void initAffectsT(StorageView *storage);
 
+    void resetCache();
+
     /*
      * Returns true if the relationship holds between leftReference and
      * rightReference.
