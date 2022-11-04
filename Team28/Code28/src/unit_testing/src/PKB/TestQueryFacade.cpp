@@ -2313,3 +2313,96 @@ TEST_CASE("pattern if-while getVar works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("QueryFacade getTableSize works as expected") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    AssignmentsTable *assigns = storage->getTable<AssignmentsTable>();
+    ProceduresTable *procs = storage->getTable<ProceduresTable>();
+    VariablesTable *vars = storage->getTable<VariablesTable>();
+    ConstantsTable *consts = storage->getTable<ConstantsTable>();
+    ParentTable *parent = storage->getTable<ParentTable>();
+    ParentTTable *parentT = storage->getTable<ParentTTable>();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
+    FollowsTTable *followsT = storage->getTable<FollowsTTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
+    ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
+    UsesPTable *usesP = storage->getTable<UsesPTable>();
+    CallsTable *calls = storage->getTable<CallsTable>();
+    CallsTTable *callsT = storage->getTable<CallsTTable>();
+    BranchInTable *branchIn = storage->getTable<BranchInTable>();
+    BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
+    IfControlVarTable *ifs = storage->getTable<IfControlVarTable>();
+    WhileControlVarTable *whiles = storage->getTable<WhileControlVarTable>();
+    CallProcTable *callProc = storage->getTable<CallProcTable>();
+    NextTable *next = storage->getTable<NextTable>();
+    NextTTable *nextT = storage->getTable<NextTTable>();
+    AffectsTable *affects = storage->getTable<AffectsTable>();
+    AffectsTTable *affectsT = storage->getTable<AffectsTTable>();
+
+    // Store design entities
+    Statement stmt = Statement(1, StatementType::ASSIGN);
+    Assignment assignment = Assignment(1, std::string("x"), std::string("(x)"));
+    Procedure proc = Procedure("main", 1);
+    Variable var = Variable("x");
+    Constant con = Constant("1");
+    statements->store(&stmt);
+    assigns->store(&assignment);
+    procs->store(&proc);
+    vars->store(&var);
+    consts->store(&con);
+
+    // Store relationships
+    Relationship<int, int> int2intRs =
+        Relationship(RelationshipReference::EMPTY, 1, 2);
+    Relationship<int, std::string> int2strRs =
+        Relationship(RelationshipReference::EMPTY, 1, std::string("y"));
+    Relationship<std::string, std::string> str2strRs = Relationship(
+        RelationshipReference::EMPTY, std::string("x"), std::string("z"));
+
+    parent->store(&int2intRs);
+    parentT->store(&int2intRs);
+    follows->store(&int2intRs);
+    followsT->store(&int2intRs);
+    branchIn->store(&int2intRs);
+    branchOut->store(&int2intRs);
+    next->store(&int2intRs);
+
+    modifiesS->store(&int2strRs);
+    usesS->store(&int2strRs);
+    ifs->store(&int2strRs);
+    whiles->store(&int2strRs);
+    callProc->store(&int2strRs);
+
+    usesP->store(&str2strRs);
+    modifiesP->store(&str2strRs);
+    calls->store(&str2strRs);
+    callsT->store(&str2strRs);
+
+    REQUIRE(statements->getTableSize() == 1);
+    REQUIRE(assigns->getTableSize() == 1);
+    REQUIRE(procs->getTableSize() == 1);
+    REQUIRE(vars->getTableSize() == 1);
+    REQUIRE(consts->getTableSize() == 1);
+    REQUIRE(parent->getTableSize() == 1);
+    REQUIRE(parentT->getTableSize() == 1);
+    REQUIRE(follows->getTableSize() == 1);
+    REQUIRE(followsT->getTableSize() == 1);
+    REQUIRE(modifiesS->getTableSize() == 1);
+    REQUIRE(modifiesP->getTableSize() == 1);
+    REQUIRE(usesS->getTableSize() == 1);
+    REQUIRE(usesP->getTableSize() == 1);
+    REQUIRE(calls->getTableSize() == 1);
+    REQUIRE(callsT->getTableSize() == 1);
+    REQUIRE(branchIn->getTableSize() == 1);
+    REQUIRE(branchOut->getTableSize() == 1);
+    REQUIRE(ifs->getTableSize() == 1);
+    REQUIRE(whiles->getTableSize() == 1);
+    REQUIRE(callProc->getTableSize() == 1);
+    REQUIRE(next->getTableSize() == 1);
+    REQUIRE(nextT->getTableSize() == INT_MAX);
+    REQUIRE(affects->getTableSize() == INT_MAX);
+    REQUIRE(affectsT->getTableSize() == INT_MAX);
+}

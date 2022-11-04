@@ -40,6 +40,8 @@ public:
     std::vector<Value> solveBothReflexive(EntityName stmtEntity,
                                           StorageView *storage);
 
+    int getTableSize();
+
 private:
     NextTable *next;
 

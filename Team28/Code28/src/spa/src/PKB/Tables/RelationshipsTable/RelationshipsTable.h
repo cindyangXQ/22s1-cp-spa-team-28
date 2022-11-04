@@ -29,7 +29,7 @@ public:
         this->tableSize++;
     }
 
-    int getTableSize() { return this->tableSize; }
+    virtual int getTableSize() { return this->tableSize; }
 
     /*
      * Returns string form of all relationships.

@@ -2,6 +2,11 @@
 
 #include "QueryFacade.h"
 
+int QueryFacade::getTableSize(Designation desType) {
+    Table *table = this->storage->getDesignationTable(desType);
+    return table->getTableSize();
+};
+
 bool QueryFacade::validateWildcard(Reference leftRef, Reference rightRef,
                                    Solvable *sTable, Solvable *pTable) {
     return sTable->validate(leftRef, rightRef) ||

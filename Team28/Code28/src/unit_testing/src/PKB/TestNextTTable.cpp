@@ -197,4 +197,10 @@ TEST_CASE("CFG Traverses Correctly (NextT) - 1 procedure") {
     REQUIRE(nextTTable->validate(Reference("11"), Reference("12")));
 }
 
+TEST_CASE("NextTTable: getTableSize works correctly") {
+    NextTTable nextTTable;
+
+    REQUIRE(nextTTable.getTableSize() == INT_MAX);
+}
+
 // TODO Add unit tests for the remaining solve methods

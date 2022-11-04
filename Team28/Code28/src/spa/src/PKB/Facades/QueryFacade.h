@@ -15,6 +15,11 @@ public:
     explicit QueryFacade(Storage *storage);
 
     /*
+     * Returns the number of entries stored for a particular Designation.
+     */
+    int getTableSize(Designation desType);
+
+    /*
      * Returns all statements inside the source program that correspond to a
      * given StatementType.
      */

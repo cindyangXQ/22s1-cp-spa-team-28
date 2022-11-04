@@ -41,6 +41,8 @@ public:
     virtual std::vector<Value> solveBothReflexive(EntityName synonym,
                                                   StorageView *storage) = 0;
 
+    int getTableSize();
+
 protected:
     std::unordered_set<int> assignments;
 
