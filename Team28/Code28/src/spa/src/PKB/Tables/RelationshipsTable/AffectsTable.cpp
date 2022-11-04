@@ -14,9 +14,10 @@ void AffectsTable::initAffects(StorageView *storage) {
     this->modifiableStatements.insert(calls.begin(), calls.end());
     this->modifiableStatements.insert(this->assignments.begin(),
                                       this->assignments.end());
+    initMatrix();
 }
 
-void AffectsTable::resetCache() {
+void AffectsTable::initMatrix() {
     for (int i : this->assignments) {
         for (int j : this->assignments) {
             std::pair<int, int> curr = std::make_pair(i, j);
@@ -25,7 +26,16 @@ void AffectsTable::resetCache() {
     }
 };
 
+void AffectsTable::resetCache() {
+    if (!shouldTableReset()) {
+        return;
+    }
+    initMatrix();
+    markTableResetted();
+};
+
 bool AffectsTable::validate(Reference leftRef, Reference rightRef) {
+    markForReset();
     if (leftRef.isWildcard() && rightRef.isWildcard()) {
         return verifyDoubleWildcards();
     }
@@ -51,6 +61,7 @@ std::vector<Value> AffectsTable::solveRight(Reference leftRef,
     if (!isAssignmentEntity(rightSynonym)) {
         return std::vector<Value>();
     }
+    markForReset();
     std::unordered_set<Value> intermediateResult;
     if (leftRef.isWildcard()) {
         solveSingleWildcard(&intermediateResult, Position::RIGHT);
@@ -72,6 +83,7 @@ std::vector<Value> AffectsTable::solveLeft(Reference rightRef,
     if (!isAssignmentEntity(leftSynonym)) {
         return std::vector<Value>();
     }
+    markForReset();
     std::unordered_set<Value> intermediateResult;
     if (rightRef.isWildcard()) {
         solveSingleWildcard(&intermediateResult, Position::LEFT);
@@ -93,6 +105,7 @@ AffectsTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
     if (!isAssignmentEntity(leftSynonym) || !isAssignmentEntity(rightSynonym)) {
         return std::vector<std::pair<Value, Value>>();
     }
+    markForReset();
     std::vector<std::pair<Value, Value>> result;
     for (int left : this->assignments) {
         for (int right : this->assignments) {
@@ -111,6 +124,7 @@ std::vector<Value> AffectsTable::solveBothReflexive(EntityName synonym,
     if (!isAssignmentEntity(synonym)) {
         return std::vector<Value>();
     }
+    markForReset();
     std::vector<Value> result;
     for (int stmt : this->assignments) {
         if (checkAffects(stmt, stmt)) {

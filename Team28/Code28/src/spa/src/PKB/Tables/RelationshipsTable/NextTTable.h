@@ -2,10 +2,13 @@
 
 #include "../../../commons/Value.h"
 #include "../../Storage/StorageView.h"
+#include "../Cache.h"
 #include "../Reflexive.h"
 #include "StmtToStmtRelationshipsTable.h"
 
-class NextTTable : public StmtToStmtRelationshipsTable, public Reflexive {
+class NextTTable : public StmtToStmtRelationshipsTable,
+                   public Reflexive,
+                   public Cache {
 public:
     void initNextT(StorageView *storage);
 
@@ -51,6 +54,7 @@ private:
     std::map<std::pair<int, int>, bool> matrix;
     std::map<int, bool> isDFSComputed;
 
+    void initMatrix();
     void DFSUtil(int s, int v);
     bool checkNextT(int left, int right);
     bool verifyDoubleWildcards();

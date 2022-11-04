@@ -1,11 +1,14 @@
 #pragma once
 
+#include "../Cache.h"
 #include "../Reflexive.h"
 #include "StmtToStmtRelationshipsTable.h"
 
 enum class Position { LEFT, RIGHT };
 
-class AffectsBaseTable : public StmtToStmtRelationshipsTable, public Reflexive {
+class AffectsBaseTable : public StmtToStmtRelationshipsTable,
+                         public Reflexive,
+                         public Cache {
 public:
     /*
      * Returns true if the relationship holds between leftReference and

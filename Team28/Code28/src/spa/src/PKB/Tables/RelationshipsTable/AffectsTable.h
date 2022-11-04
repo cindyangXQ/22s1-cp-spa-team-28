@@ -51,6 +51,7 @@ private:
     UsesSTable *usesS;
     std::map<std::pair<int, int>, Status> matrix;
 
+    void initMatrix();
     bool checkAffects(int left, int right);
     bool verifySingleWildcard(int stmt, Position stmtPos);
     bool verifyDoubleWildcards();

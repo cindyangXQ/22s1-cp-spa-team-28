@@ -8,8 +8,12 @@ void AffectsTTable::initAffectsT(StorageView *storage) {
 }
 
 void AffectsTTable::resetCache() {
+    if (!shouldTableReset()) {
+        return;
+    }
     this->matrix.clear();
     this->isComputed = false;
+    markTableResetted();
 }
 
 std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
@@ -37,6 +41,7 @@ std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
         }
     }
     this->isComputed = true;
+    markForReset();
     return this->matrix;
 }
 
