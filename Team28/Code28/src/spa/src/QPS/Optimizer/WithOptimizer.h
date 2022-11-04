@@ -11,6 +11,6 @@ private:
     static bool
     performReplacement(Reference synRef, Reference valRef,
                        std::vector<QueryClause *> *clauses,
-                       std::vector<QueryClause *> *withClauses,
+                       std::vector<QueryClause *> *withClauses, int i,
                        std::unordered_set<std::string> selectedSynName);
 };
