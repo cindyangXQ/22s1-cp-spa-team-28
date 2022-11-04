@@ -23,6 +23,7 @@ public:
     ClauseResult evaluate(QueryFacade *queryFacade);
     std::unordered_set<std::string> getSynonymsUsed();
     double getOptimizeScore();
+    bool replace(Reference synRef, Reference valRef);
 
 private:
     Reference stmtRef;

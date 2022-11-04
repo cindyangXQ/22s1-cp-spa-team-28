@@ -6,4 +6,11 @@
 class WithOptimizer {
 public:
     static void optimize(SolvableQuery *solvableQ);
+
+private:
+    static bool
+    performReplacement(Reference synRef, Reference valRef,
+                       std::vector<QueryClause *> *clauses,
+                       std::vector<QueryClause *> *withClauses,
+                       std::unordered_set<std::string> selectedSynName);
 };

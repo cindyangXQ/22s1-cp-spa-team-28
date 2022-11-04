@@ -23,3 +23,7 @@ void SolvableQuery::setClauseGroup(
     std::vector<std::vector<QueryClause *>> *clauseGroups) {
     this->clauseGroups = *clauseGroups;
 }
+void SolvableQuery::replaceWithClause(
+    std::vector<QueryClause*> newWithClause) {
+    this->withCls = newWithClause;
+}

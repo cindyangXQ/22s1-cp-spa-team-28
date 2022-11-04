@@ -144,3 +144,13 @@ double PatternClause::getOptimizeScore() {
     }
     return baseScore * synScore;
 }
+
+bool PatternClause::replace(Reference synRef, Reference valRef) {
+    if (entRef.isASynonym() &&
+        entRef.getSynonymName() == synRef.getSynonymName()) {
+        entRef = valRef;
+        return true;
+    } else {
+        return false;
+    }
+}
