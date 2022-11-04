@@ -15,6 +15,11 @@ public:
     explicit QueryFacade(Storage *storage);
 
     /*
+     * Resets cache of tables that are not supposed to be precomputed for SPA.
+     */
+    void resetCache();
+
+    /*
      * Returns the number of entries stored for a particular Designation.
      */
     int getTableSize(Designation desType);

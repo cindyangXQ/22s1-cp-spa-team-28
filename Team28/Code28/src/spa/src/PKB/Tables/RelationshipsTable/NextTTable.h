@@ -9,6 +9,8 @@ class NextTTable : public StmtToStmtRelationshipsTable, public Reflexive {
 public:
     void initNextT(StorageView *storage);
 
+    void resetCache();
+
     /*
      * Returns true if the relationship holds between leftReference and
      * rightReference.

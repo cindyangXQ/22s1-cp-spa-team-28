@@ -30,6 +30,8 @@ public:
 
     void initAffects();
 
+    void resetCache();
+
 private:
     ControlFlowGraph *cfg;
     Storage *storage;

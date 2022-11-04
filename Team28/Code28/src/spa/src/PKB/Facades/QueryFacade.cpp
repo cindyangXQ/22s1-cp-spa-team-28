@@ -2,6 +2,15 @@
 
 #include "QueryFacade.h"
 
+void QueryFacade::resetCache() {
+    NextTTable *nextTTable = this->storage->getTable<NextTTable>();
+    nextTTable->resetCache();
+    AffectsTable *affectsTable = this->storage->getTable<AffectsTable>();
+    affectsTable->resetCache();
+    AffectsTTable *affectsTTable = this->storage->getTable<AffectsTTable>();
+    affectsTTable->resetCache();
+};
+
 int QueryFacade::getTableSize(Designation desType) {
     Table *table = this->storage->getDesignationTable(desType);
     return table->getTableSize();

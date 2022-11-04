@@ -6,14 +6,17 @@ void NextTTable::initNextT(StorageView *storage) {
     this->next = storage->getTable<NextTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
     this->totalLines = statements->getTableSize();
+};
 
+void NextTTable::resetCache() {
+    this->isDFSComputed.clear();
     for (int i = 1; i <= this->totalLines; i++) {
         for (int j = 1; j <= this->totalLines; j++) {
             std::pair<int, int> curr = std::make_pair(i, j);
             this->matrix[curr] = false;
         }
     }
-};
+}
 
 bool NextTTable::validate(Reference leftRef, Reference rightRef) {
     if (leftRef.isWildcard() && rightRef.isWildcard()) {

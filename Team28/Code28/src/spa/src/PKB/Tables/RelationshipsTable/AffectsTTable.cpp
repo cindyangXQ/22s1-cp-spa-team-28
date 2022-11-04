@@ -7,6 +7,11 @@ void AffectsTTable::initAffectsT(StorageView *storage) {
         statements->getStatementsSetByType(StatementType::ASSIGN);
 }
 
+void AffectsTTable::resetCache() {
+    this->matrix.clear();
+    this->isComputed = false;
+}
+
 std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
     if (isComputed) {
         return this->matrix;

@@ -14,14 +14,16 @@ void AffectsTable::initAffects(StorageView *storage) {
     this->modifiableStatements.insert(calls.begin(), calls.end());
     this->modifiableStatements.insert(this->assignments.begin(),
                                       this->assignments.end());
+}
 
+void AffectsTable::resetCache() {
     for (int i : this->assignments) {
         for (int j : this->assignments) {
             std::pair<int, int> curr = std::make_pair(i, j);
             this->matrix[curr] = Status::UNKNOWN;
         }
     }
-}
+};
 
 bool AffectsTable::validate(Reference leftRef, Reference rightRef) {
     if (leftRef.isWildcard() && rightRef.isWildcard()) {

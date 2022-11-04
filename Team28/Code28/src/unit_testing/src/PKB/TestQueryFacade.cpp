@@ -39,7 +39,9 @@ QueryFacade InitAffectsStorage::createSimple() {
     statements->store(&s1);
     statements->store(&s2);
     affects->initAffects(storage->getStorageView());
+    affects->resetCache();
     affectsT->initAffectsT(storage->getStorageView());
+    affectsT->resetCache();
 
     return facade;
 }

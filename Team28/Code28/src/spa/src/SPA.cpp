@@ -14,6 +14,8 @@ void SPA::preprocess() {
     this->pkb.initAffects();
 }
 
+void SPA::resetCache() { this->pkb.resetCache(); }
+
 void SPA::evaluateQuery(std::string query, std::list<std::string> &results) {
     this->qps.evaluate(query, results);
 }
