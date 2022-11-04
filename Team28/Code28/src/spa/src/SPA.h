@@ -12,6 +12,8 @@ public:
 
     void preprocess();
 
+    void resetCache();
+
     void evaluateQuery(std::string query, std::list<std::string> &results);
 
     PKB getPKB();

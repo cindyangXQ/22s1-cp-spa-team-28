@@ -7,6 +7,15 @@ void AffectsTTable::initAffectsT(StorageView *storage) {
         statements->getStatementsSetByType(StatementType::ASSIGN);
 }
 
+void AffectsTTable::resetCache() {
+    if (!shouldTableReset()) {
+        return;
+    }
+    this->matrix.clear();
+    this->isComputed = false;
+    markTableResetted();
+}
+
 std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
     if (isComputed) {
         return this->matrix;
@@ -32,6 +41,7 @@ std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
         }
     }
     this->isComputed = true;
+    markForReset();
     return this->matrix;
 }
 

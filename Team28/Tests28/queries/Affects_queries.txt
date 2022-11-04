@@ -1,0 +1,165 @@
+1 - Affects with no synonym return True, consecutive stmts in same level
+
+Select BOOLEAN such that Affects(30, 31)
+TRUE
+5000
+2 - Affects with no synonym return False, consecutive stmts in same level
+ 
+Select BOOLEAN such that Affects(4, 5)
+FALSE
+5000
+3 - simple Affects with no synonym return False, in different nested level
+
+Select BOOLEAN such that Affects(1, 7)
+FALSE
+5000
+4 - simple Affects with no synonym return True, in different nested level
+
+Select BOOLEAN such that Affects(2, 7)
+TRUE
+5000
+5 - in while loop
+
+Select BOOLEAN such that Affects(4, 4)
+TRUE
+5000
+6 - Affects with no synonym, if in while loop (2 affects)
+
+Select BOOLEAN such that Affects(15, 17) and Affects(4, 7)
+TRUE
+5000
+7 - Affects no synonym, in if stmt (one in if clause, one in else clause)
+
+Select BOOLEAN such that Affects(7, 10)
+FALSE
+5000
+8 - Affects no synonym, different nested level in while container
+
+Select BOOLEAN such that Affects(13, 15)
+TRUE
+5000
+9 - Affects no synonym, in while container, stmt2 smaller stmt1
+
+Select BOOLEAN such that Affects(17, 15)
+TRUE
+5000
+10 - Affects no synonym, call stmt in between
+
+Select BOOLEAN such that Affects(4, 13)
+FALSE
+5000
+11 - Affects no synonym, in different procedure
+
+Select BOOLEAN such that Affects(19, 29)
+FALSE
+5000
+12 - Affects with synonym, all statements that affected by 2
+stmt s;
+Select s such that Affects(2, s)
+7, 13
+5000
+13 - Affects with synonym, statements that affected by 1 (not exists)
+stmt s;
+Select s such that Affects(1, s)
+
+5000
+14 - Affects with one synonym, statements that may affect 13
+stmt s;
+Select s such that Affects(s, 13)
+2, 5, 15, 10, 7
+5000
+15 - Affects with one synonym, assignment that affected by 2
+assign s;
+Select s such that Affects(2, s)
+7, 13
+5000
+16 - Affects with one synonym, assignment that may affect 13
+assign s;
+Select s such that Affects(s, 13)
+2, 5, 15, 10, 7
+5000
+17 - Affects with one synonym, statement affects by itself
+stmt s;
+Select s such that Affects(s, s)
+4
+5000
+18 - Affects with one synonym, statement that affect statement 5(not exists)
+stmt s;
+Select s such that Affects(s, 5)
+
+5000
+19 - Affects with no synonym, read statement in between
+
+Select BOOLEAN such that Affects(32, 34)
+FALSE
+5000
+20 - Affects with two synonyms (2 Affects)
+stmt s1, s2;
+Select s2 such that Affects(s1, s1) and Affects(s1, s2)
+4, 7
+5000
+21 - Affects with two synonyms (2 Affects)
+stmt s1, s2;
+Select s2 such that Affects(s1, s1) and Affects(s2, s1)
+4
+5000
+22 - 2 Affects clauses
+stmt s1, s2;
+Select s2 such that Affects(s1, 17) and Affects(s2, s1)
+13, 4, 5, 17, 2
+5000
+23 - 2 Affects clauses
+stmt s1, s2;
+Select s2 such that Affects(s1, 17) and Affects(s1, s2)
+17, 13
+5000
+24 - 2 Affects clauses
+stmt s1, s2;
+Select s2 such that Affects(13, s1) and Affects(s1, s2)
+17, 13
+5000
+25 - All Affects r/s
+stmt s1, s2;
+Select <s1,s2> such that Affects(s1, s2)
+2 7,2 13,4 4,4 7,5 7,5 13,7 13,7 17,10 13,10 18,13 15,15 13,15 17,17 15,19 17,23 29,25 29,30 31,31 32
+5000
+26 - All Affects* r/s
+stmt s1, s2;
+Select <s1,s2> such that Affects*(s1, s2)
+2 7,2 13,4 4,4 7,5 7,5 13,7 13,7 17,10 13,10 18,13 15,15 13,15 17,17 15,19 17,23 29,25 29,30 31,31 32,2 15,2 17,4 13,4 15,4 17,5 15,5 17,7 15,10 15,10 17,13 17,15 15,17 13,17 17,13 13,19 13,19 15,30 32
+5000
+27 - Affects* with no synonym
+
+Select BOOLEAN such that Affects*(2, 7)
+TRUE
+5000
+28 - Affects* with no synonym
+
+Select BOOLEAN such that Affects*(1, 13)
+FALSE
+5000
+29 - Affects* with 1 synonym (first para)
+stmt s1;
+Select s1 such that Affects*(17, s1)
+15, 13, 17
+5000
+30 - Affects* with 1 synonym (second para)
+stmt s1;
+Select s1 such that Affects*(s1, 17)
+7, 15, 19, 2, 4, 5, 10, 13, 17
+5000
+31 - Affects* with 2 synonyms
+stmt s1, s2;
+Select s1 such that Affects*(s1, s1)
+13, 4, 17, 15
+5000
+32 - 2 Affects*, statement that affect and be affected by a same statement
+stmt s1, s2;
+Select <s1, s2> such that Affects*(s1, s2) and Affects*(s2, s1)
+13 13,13 15,13 17,15 13,15 15,17 13,17 15,17 17,4 4, 15 17
+5000
+33 - Meaningless query, with call synonym
+call c;
+Select c such that Affects(2, c)
+
+5000

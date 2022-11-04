@@ -6,16 +6,29 @@ void NextTTable::initNextT(StorageView *storage) {
     this->next = storage->getTable<NextTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
     this->totalLines = statements->getTableSize();
+    initMatrix();
+};
 
+void NextTTable::initMatrix() {
     for (int i = 1; i <= this->totalLines; i++) {
         for (int j = 1; j <= this->totalLines; j++) {
             std::pair<int, int> curr = std::make_pair(i, j);
             this->matrix[curr] = false;
         }
     }
-};
+}
+
+void NextTTable::resetCache() {
+    if (!shouldTableReset()) {
+        return;
+    }
+    this->isDFSComputed.clear();
+    initMatrix();
+    markTableResetted();
+}
 
 bool NextTTable::validate(Reference leftRef, Reference rightRef) {
+    markForReset();
     if (leftRef.isWildcard() && rightRef.isWildcard()) {
         return verifyDoubleWildcards();
     }
@@ -39,6 +52,7 @@ std::vector<Value> NextTTable::solveRight(Reference leftRef,
     if (stmtRefSet.count(rightSynonym) == 0) {
         return std::vector<Value>();
     }
+    markForReset();
     StatementsTable *statements = storage->getTable<StatementsTable>();
     std::vector<int> possibleRights =
         getStatementsHelper(statements, rightSynonym);
@@ -52,6 +66,7 @@ std::vector<Value> NextTTable::solveLeft(Reference rightRef,
     if (stmtRefSet.count(leftSynonym) == 0) {
         return std::vector<Value>();
     }
+    markForReset();
     StatementsTable *statements = storage->getTable<StatementsTable>();
     std::vector<int> possibleLefts =
         getStatementsHelper(statements, leftSynonym);
@@ -66,6 +81,7 @@ NextTTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
         stmtRefSet.count(rightSynonym) == 0) {
         return std::vector<std::pair<Value, Value>>();
     }
+    markForReset();
     StatementType leftType = Statement::getStmtTypeFromEntityName(leftSynonym);
     StatementType rightType =
         Statement::getStmtTypeFromEntityName(rightSynonym);
@@ -89,6 +105,10 @@ NextTTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
 
 std::vector<Value> NextTTable::solveBothReflexive(EntityName stmtEntity,
                                                   StorageView *storage) {
+    if (stmtRefSet.count(stmtEntity) == 0) {
+        return std::vector<Value>();
+    }
+    markForReset();
     StatementType stmtType = Statement::getStmtTypeFromEntityName(stmtEntity);
     StatementsTable *statements = storage->getTable<StatementsTable>();
     std::vector<int> possibleValues = statements->getStatementsByType(stmtType);
