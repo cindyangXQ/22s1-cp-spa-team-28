@@ -26,7 +26,10 @@ public:
         Right right = rs->getRight();
         storeRightToLeftMap(left, right);
         storeLeftToRightMap(right, left);
+        this->tableSize++;
     }
+
+    int getTableSize() { return this->tableSize; }
 
     /*
      * Returns string form of all relationships.
@@ -128,6 +131,7 @@ public:
 protected:
     std::map<Left, std::unordered_set<Right>> leftToRightsMap;
     std::map<Right, std::unordered_set<Left>> rightToLeftsMap;
+    int tableSize = 0;
 
     /*
      * Adds all possibleRights from the given left into intermediateResult.

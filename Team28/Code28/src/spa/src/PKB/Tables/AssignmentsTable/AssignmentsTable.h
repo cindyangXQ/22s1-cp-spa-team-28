@@ -27,6 +27,8 @@ public:
      */
     void store(TableValue *assignment);
 
+    int getTableSize();
+
     /*
      * Returns string form of all assignments.
      */
@@ -88,6 +90,7 @@ private:
     std::vector<Value> allLineNumbers;
     std::vector<Assignment> allAssignments;
     std::map<int, Assignment *> lineAssignmentMap;
+    int tableSize = 0;
 
     /*
      * Return list of possible values of assignments that satisfy the given

@@ -19,6 +19,8 @@ void StatementsTable::store(TableValue *statement) {
     this->tableSize++;
 }
 
+int StatementsTable::getTableSize() { return this->tableSize; }
+
 std::vector<std::string> StatementsTable::getAllAsString() {
     std::vector<std::string> result = {};
     for (Statement *stmt : this->statements) {
@@ -116,8 +118,6 @@ StatementsTable::getAllValues(EntityName entity) {
     }
     return result;
 }
-
-int StatementsTable::getTableSize() { return this->tableSize; }
 
 std::unordered_set<int>
 StatementsTable::getStatementsSetByType(StatementType type) {

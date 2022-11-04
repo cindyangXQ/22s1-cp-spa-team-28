@@ -24,7 +24,10 @@ public:
         T *ent = static_cast<T *>(entity);
         this->names.insert(ent->getName());
         this->nameEntityMap[ent->getName()] = ent;
+        this->tableSize++;
     };
+
+    int getTableSize() { return this->tableSize; }
 
     /*
      * Returns all names as a string.
@@ -75,6 +78,7 @@ public:
 protected:
     std::unordered_set<std::string> names;
     std::map<std::string, T *> nameEntityMap;
+    int tableSize = 0;
 };
 
 class ConstantsTable : public NamesTable<Constant> {

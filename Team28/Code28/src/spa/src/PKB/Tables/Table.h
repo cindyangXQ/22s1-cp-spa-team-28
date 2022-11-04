@@ -13,6 +13,8 @@ class Table {
 public:
     virtual void store(TableValue *item) = 0;
 
+    virtual int getTableSize() = 0;
+
     virtual std::vector<Value> getMatchingValue(std::string value,
                                                 EntityName entity) = 0;
 
