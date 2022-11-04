@@ -32,13 +32,12 @@ void WithOptimizer::optimize(SolvableQuery *solvableQ) {
             }
         } else {
             newWithClauses.push_back(curr);
-        }           
+        }
     }
     solvableQ->replaceWithClause(newWithClauses);
 }
 bool WithOptimizer::performReplacement(
-    Reference synRef, Reference valRef,
-    std::vector<QueryClause*>* clauses,
+    Reference synRef, Reference valRef, std::vector<QueryClause *> *clauses,
     std::vector<QueryClause *> *withClauses,
     std::unordered_set<std::string> selectedSynName) {
     if (synRef.isSecondaryAttribute()) {
