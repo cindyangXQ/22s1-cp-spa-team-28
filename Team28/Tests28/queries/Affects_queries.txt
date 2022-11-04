@@ -96,12 +96,12 @@ FALSE
 20 - Affects with two synonyms (2 Affects)
 stmt s1, s2;
 Select s2 such that Affects(s1, s1) and Affects(s1, s2)
-7
+4, 7
 5000
 21 - Affects with two synonyms (2 Affects)
 stmt s1, s2;
 Select s2 such that Affects(s1, s1) and Affects(s2, s1)
-
+4
 5000
 22 - 2 Affects clauses
 stmt s1, s2;
