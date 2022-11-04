@@ -399,6 +399,66 @@ TEST_CASE("extract usesS, nested if/while") {
     }
 }
 
+TEST_CASE("extract usesS, call") {
+    std::vector<Relationship<int, std::string> *> expected;
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 1, "a"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 2, "b"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 3, "c"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 2, "c"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 4, "d"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 2, "d"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 5, "h"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 2, "h"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 6, "e"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 7, "f"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 6, "f"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 8, "g"));
+    expected.push_back(new Relationship<int, std::string>(
+        RelationshipReference::USES, 9, "h"));
+
+    std::string sourceProgram = "procedure Bedok {"
+                                "    x = a;"
+                                "    if (b != 2) then {"
+                                "        x = c;"
+                                "    }"
+                                "    else {"
+                                "        x = d;"
+                                "        call Clementi;"
+                                "    }"
+                                "    while (e != 6) {"
+                                "        x = f;"
+                                "    }"
+                                "    print g;"
+                                "}"
+                                "procedure Clementi { "
+                                "    x = h; "
+                                "}";
+    std::vector<Token *> tokens = Tokenizer(sourceProgram).tokenize();
+    ProgramNode *program = ProgramParser(0, tokens).parse();
+    UsesSExtractor extr(program, nullptr);
+    std::vector<Relationship<int, std::string> *> extracted = extr.extract();
+
+    REQUIRE(expected.size() == extracted.size());
+    for (int i = 0; i < expected.size(); i++) {
+        REQUIRE(expected[i]->getLeft() == extracted[i]->getLeft());
+        REQUIRE(expected[i]->getRight() == extracted[i]->getRight());
+        REQUIRE(expected[i]->getRelationshipReference() ==
+                extracted[i]->getRelationshipReference());
+    }
+}
+
 TEST_CASE("extract condVars, nested if/while") {
     std::vector<Relationship<int, std::string> *> expectedIf;
     expectedIf.push_back(new Relationship<int, std::string>(
