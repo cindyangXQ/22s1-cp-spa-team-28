@@ -9,7 +9,10 @@ void AssignmentsTable::store(TableValue *assignment) {
     this->allLineNumbers.push_back(
         Value(ValueType::STMT_NUM, std::to_string(lineNo)));
     this->lineAssignmentMap[lineNo] = assign;
+    this->tableSize++;
 };
+
+int AssignmentsTable::getTableSize() { return this->tableSize; }
 
 std::vector<std::string> AssignmentsTable::getAllAsString() {
     std::vector<std::string> result = {};

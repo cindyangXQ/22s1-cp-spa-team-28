@@ -238,3 +238,36 @@ TEST_CASE("ProceduresTable getAllAsString works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("ConstantsTable: getTableSize works correctly") {
+    ConstantsTable table;
+    Constant test1 = Constant("test1");
+    Constant test2 = Constant("test2");
+
+    table.store(&test1);
+    table.store(&test2);
+
+    REQUIRE(table.getTableSize() == 2);
+}
+
+TEST_CASE("VariablesTable: getTableSize works correctly") {
+    VariablesTable table;
+    Variable test1 = Variable("test1");
+    Variable test2 = Variable("test2");
+
+    table.store(&test1);
+    table.store(&test2);
+
+    REQUIRE(table.getTableSize() == 2);
+}
+
+TEST_CASE("ProceduresTable: getTableSize works correctly") {
+    ProceduresTable table;
+    Procedure test1 = Procedure("test1", 1);
+    Procedure test2 = Procedure("test2", 2);
+
+    table.store(&test1);
+    table.store(&test2);
+
+    REQUIRE(table.getTableSize() == 2);
+}

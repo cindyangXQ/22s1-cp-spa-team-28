@@ -464,3 +464,9 @@ TEST_CASE("AffectsTable: solveBothReflexive works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("AffectsTable: getTableSize works correctly") {
+    AffectsTable affectsTable;
+
+    REQUIRE(affectsTable.getTableSize() == INT_MAX);
+}

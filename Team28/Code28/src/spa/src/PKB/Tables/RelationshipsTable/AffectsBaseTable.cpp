@@ -1,5 +1,7 @@
 #include "AffectsBaseTable.h"
 
+int AffectsBaseTable::getTableSize() { return INT_MAX; };
+
 bool AffectsBaseTable::isAssignment(int stmt) {
     return this->assignments.count(stmt) > 0;
 };

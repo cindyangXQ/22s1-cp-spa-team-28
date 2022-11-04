@@ -33,11 +33,11 @@ void Storage::initRelationshipsTable() {
     initTable<IfControlVarTable>(Designation::IF_C);
     initTable<WhileControlVarTable>(Designation::WHILE_C);
     initTable<CallProcTable>(Designation::PROC_NAME);
-    initTable<NextTable>();
-    initTable<NextTTable>();
-    initTable<AffectsTable>();
-    initTable<AffectsTTable>();
-};
+    initTable<NextTable>(Designation::NEXT);
+    initTable<NextTTable>(Designation::NEXT_T);
+    initTable<AffectsTable>(Designation::AFFECTS);
+    initTable<AffectsTTable>(Designation::AFFECTS_T);
+}
 
 void Storage::initRsTablesMap() {
     this->rsTables[RelationshipReference::FOLLOWS] =

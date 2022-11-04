@@ -150,3 +150,17 @@ TEST_CASE("AssignmentsTable: getVar works correctly") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("AssignmentsTable: getTableSize works correctly") {
+    AssignmentsTable assignmentsTable;
+
+    std::string expr1 = "((1)+(2))";
+    Assignment assignment1 = Assignment(1, std::string("x1"), expr1);
+    assignmentsTable.store(&assignment1);
+
+    std::string expr2 = "((1)+(3))";
+    Assignment assignment2 = Assignment(2, std::string("x2"), expr2);
+    assignmentsTable.store(&assignment2);
+
+    REQUIRE(assignmentsTable.getTableSize() == 2);
+}

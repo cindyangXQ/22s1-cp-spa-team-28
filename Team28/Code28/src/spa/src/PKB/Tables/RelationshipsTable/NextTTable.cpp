@@ -1,5 +1,7 @@
 #include "NextTTable.h"
 
+int NextTTable::getTableSize() { return INT_MAX; };
+
 void NextTTable::initNextT(StorageView *storage) {
     this->next = storage->getTable<NextTable>();
     StatementsTable *statements = storage->getTable<StatementsTable>();
