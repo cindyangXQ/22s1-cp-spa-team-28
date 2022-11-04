@@ -32,7 +32,7 @@ jobs:
           cd Team28/Code28
           mkdir build
           cd build
-          cmake -A x86 ..
+          cmake -A amd64 ..
           cmake --build . --target autotester --config Release
           cd ../..
       - name: Setup Python
