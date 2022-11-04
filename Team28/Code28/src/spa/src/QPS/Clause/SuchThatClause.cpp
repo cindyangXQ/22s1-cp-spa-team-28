@@ -10,6 +10,7 @@ void SuchThatClause::parse(std::smatch matches, std::vector<Synonym> syns) {
     this->relationship = RELATIONSHIP_MAP.at(matches[2]);
     this->refLeft = Reference::getReference(matches[3], syns);
     this->refRight = Reference::getReference(matches[4], syns);
+    this->populateSynsUsed();
 }
 
 bool SuchThatClause::validate() {
@@ -117,4 +118,34 @@ ClauseResult SuchThatClause::handleBothSynonym(QueryFacade *queryFacade) {
         clauseResult.insert(Tuple({result[i].first, result[i].second}));
     }
     return clauseResult;
+}
+
+std::unordered_set<std::string> SuchThatClause::getSynonymsUsed() {
+    return this->synsUsed;
+}
+
+void SuchThatClause::populateSynsUsed() {
+    if (refLeft.isASynonym()) {
+        synsUsed.insert(refLeft.getSynonymName());
+    }
+    if (refRight.isASynonym()) {
+        synsUsed.insert(refRight.getSynonymName());
+    }
+}
+
+double SuchThatClause::getOptimizeScore() {
+    double baseScore = 1.0;
+    double synScore = 1.0;
+    double relationshipScore = 1.0;
+    if (this->synsUsed.size() == 0) {
+        synScore = 0.01;
+    } else if (this->synsUsed.size() == 1) {
+        synScore = 0.5;
+    }
+    if (this->relationship == RelationshipReference::AFFECTS ||
+        this->relationship == RelationshipReference::AFFECTS_T ||
+        this->relationship == RelationshipReference::NEXT_T) {
+        relationshipScore = 10.0;
+    }
+    return baseScore * synScore;
 }

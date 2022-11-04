@@ -1,4 +1,5 @@
 #include "PKB/Facades/QueryFacade.h"
+#include "QPS/Optimizer/QueryOptimizer.h"
 #include "QPS/Evaluator/QueryEvaluator.h"
 #include "QPS/Parser/QueryParser.h"
 #include "QPS/Parser/SolvableQuery.h"
@@ -153,6 +154,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause") {
 
     SolvableQuery solvableQ =
         QueryParser::parse("stmt s; Select s such that Follows(1,2)");
+    QueryOptimizer::optimize(&solvableQ);
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
     QueryResult queryResult = queryEvaluator.evaluate(&solvableQ);
     std::vector<std::string> result =
@@ -180,6 +182,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQ =
         QueryParser::parse("stmt s; Select s such that Follows(2,1)");
+    QueryOptimizer::optimize(&solvableQ);
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
     QueryResult queryResult = queryEvaluator.evaluate(&solvableQ);
     std::vector<std::string> result =
@@ -210,6 +213,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQRight =
         QueryParser::parse("stmt s; Select s such that Follows(1,s)");
+    QueryOptimizer::optimize(&solvableQRight);
     QueryResult queryResultRight = queryEvaluator.evaluate(&solvableQRight);
     std::vector<std::string> result_right =
         queryEvaluator.interpretQueryResult(&queryResultRight);
@@ -218,6 +222,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQLeft =
         QueryParser::parse("stmt s; Select s such that Follows(s,2)");
+    QueryOptimizer::optimize(&solvableQLeft);
     QueryResult queryResultLeft = queryEvaluator.evaluate(&solvableQLeft);
     std::vector<std::string> resultLeft =
         queryEvaluator.interpretQueryResult(&queryResultLeft);
@@ -226,6 +231,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQWildcard =
         QueryParser::parse("stmt s; Select s such that Follows(_, s)");
+    QueryOptimizer::optimize(&solvableQWildcard);
     QueryResult queryResultWildcard =
         queryEvaluator.evaluate(&solvableQWildcard);
     std::vector<std::string> resultWildcard =
@@ -235,6 +241,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQWildcardRight =
         QueryParser::parse("stmt s; Select s such that Follows(s, _)");
+    QueryOptimizer::optimize(&solvableQWildcardRight);
     QueryResult queryResultWildcardRight =
         queryEvaluator.evaluate(&solvableQWildcardRight);
     std::vector<std::string> resultWildcardRight =
@@ -244,6 +251,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQZero =
         QueryParser::parse("stmt s; Select s such that Follows(s,1)");
+    QueryOptimizer::optimize(&solvableQZero);
     QueryResult queryResultZero = queryEvaluator.evaluate(&solvableQZero);
     std::vector<std::string> resultZero =
         queryEvaluator.interpretQueryResult(&queryResultZero);
@@ -259,6 +267,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQFollow =
         QueryParser::parse("stmt s; Select s such that Follows(s, s)");
+    QueryOptimizer::optimize(&solvableQFollow);
     QueryResult queryResultFollow = queryEvaluator.evaluate(&solvableQFollow);
     std::vector<std::string> resultFollow =
         queryEvaluator.interpretQueryResult(&queryResultFollow);
@@ -267,6 +276,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQFollowT =
         QueryParser::parse("stmt s; Select s such that Follows*(s, s)");
+    QueryOptimizer::optimize(&solvableQFollowT);
     QueryResult queryResultFollowT =
         queryEvaluator.evaluate(&solvableQFollowT);
     std::vector<std::string> resultFollowT =
@@ -276,6 +286,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQParent =
         QueryParser::parse("stmt s; Select s such that Parent*(s, s)");
+    QueryOptimizer::optimize(&solvableQParent);
     QueryResult queryResultParent = queryEvaluator.evaluate(&solvableQParent);
     std::vector<std::string> resultParent =
         queryEvaluator.interpretQueryResult(&queryResultParent);
@@ -284,6 +295,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
 
     SolvableQuery solvableQParentT =
         QueryParser::parse("stmt s; Select s such that Parent*(s, s)");
+    QueryOptimizer::optimize(&solvableQParentT);
     QueryResult queryResultParentT =
         queryEvaluator.evaluate(&solvableQParentT);
     std::vector<std::string> resultParentT =

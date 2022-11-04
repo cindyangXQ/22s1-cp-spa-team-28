@@ -391,12 +391,12 @@ TEST_CASE("Parser can parse pattern clause") {
     QueryParser::parse<PatternClause>(&correct, syns, &clause);
     PatternClause *clause1 = dynamic_cast<PatternClause *>(clause.back());
     Reference entRef = clause1->getEntRef();
-    Synonym syn = clause1->getSyn();
+    Reference stmtRef = clause1->getStmtRef();
     REQUIRE(entRef.isASynonym() == true);
     REQUIRE(entRef.getSynonymName() == "v");
     REQUIRE(entRef.getEntityName() == EntityName::VARIABLE);
-    REQUIRE(syn.getName() == "a");
-    REQUIRE(syn.getEntityName() == EntityName::ASSIGN);
+    REQUIRE(stmtRef.getSynonymName() == "a");
+    REQUIRE(stmtRef.getEntityName() == EntityName::ASSIGN);
     REQUIRE(clause1->getExpression() == "(x)");
     REQUIRE(clause1->getIsExact() == false);
 
@@ -404,12 +404,12 @@ TEST_CASE("Parser can parse pattern clause") {
     QueryParser::parse<PatternClause>(&exact, syns, &clause);
     PatternClause *clause2 = dynamic_cast<PatternClause *>(clause.back());
     Reference entRefExact = clause2->getEntRef();
-    Synonym synExact = clause2->getSyn();
+    Reference stmtRefExact = clause2->getStmtRef();
     REQUIRE(entRefExact.isASynonym() == true);
     REQUIRE(entRefExact.getSynonymName() == "v");
     REQUIRE(entRefExact.getEntityName() == EntityName::VARIABLE);
-    REQUIRE(synExact.getName() == "a");
-    REQUIRE(synExact.getEntityName() == EntityName::ASSIGN);
+    REQUIRE(stmtRefExact.getSynonymName() == "a");
+    REQUIRE(stmtRefExact.getEntityName() == EntityName::ASSIGN);
     REQUIRE(clause2->getExpression() == "(x)");
     REQUIRE(clause2->getIsExact() == true);
 
@@ -579,16 +579,16 @@ TEST_CASE("Parser can parse while pattern clauses") {
     std::vector<QueryClause *> clause;
     QueryParser::parse<PatternClause>(&correct, syns, &clause);
     PatternClause *clause1 = dynamic_cast<PatternClause *>(clause.back());
-    Synonym syn1 = clause1->getSyn();
+    Reference stmtRef1 = clause1->getStmtRef();
     REQUIRE(clause1->getExpression() == "_");
-    REQUIRE(syn1.getEntityName() == EntityName::WHILE);
+    REQUIRE(stmtRef1.getEntityName() == EntityName::WHILE);
 
     std::string space = "pattern w(_,    _      )";
     QueryParser::parse<PatternClause>(&space, syns, &clause);
     PatternClause *clause2 = dynamic_cast<PatternClause *>(clause.back());
-    Synonym syn2 = clause2->getSyn();
+    Reference stmtRef2 = clause2->getStmtRef();
     REQUIRE(clause2->getExpression() == "_");
-    REQUIRE(syn2.getEntityName() == EntityName::WHILE);
+    REQUIRE(stmtRef2.getEntityName() == EntityName::WHILE);
 
     std::string noWildcard = "pattern w(v, \"x\")";
     REQUIRE_THROWS(
@@ -605,16 +605,16 @@ TEST_CASE("Parser can parse if pattern clauses") {
     std::vector<QueryClause *> clause;
     QueryParser::parse<PatternClause>(&correct, syns, &clause);
     PatternClause *clause1 = dynamic_cast<PatternClause *>(clause.back());
-    Synonym syn1 = clause1->getSyn();
+    Reference stmtRef1 = clause1->getStmtRef();
     REQUIRE(clause1->getExpression() == "_");
-    REQUIRE(syn1.getEntityName() == EntityName::IF);
+    REQUIRE(stmtRef1.getEntityName() == EntityName::IF);
 
     std::string space = "pattern ifs(   _    ,   _   ,     _    )";
     QueryParser::parse<PatternClause>(&space, syns, &clause);
     PatternClause *clause2 = dynamic_cast<PatternClause *>(clause.back());
-    Synonym syn2 = clause2->getSyn();
+    Reference stmtRef2 = clause2->getStmtRef();
     REQUIRE(clause2->getExpression() == "_");
-    REQUIRE(syn2.getEntityName() == EntityName::IF);
+    REQUIRE(stmtRef2.getEntityName() == EntityName::IF);
 
     std::string noWildcardLeft = "pattern ifs(v, \"x\", _)";
     REQUIRE_THROWS(

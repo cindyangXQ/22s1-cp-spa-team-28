@@ -165,11 +165,15 @@ public:
     void parse(std::smatch matches, std::vector<Synonym> syns);
     bool validate();
     ClauseResult evaluate(QueryFacade *queryFacade);
+    std::unordered_set<std::string> getSynonymsUsed();
+    double getOptimizeScore();
 
 private:
     RelationshipReference relationship;
     Reference refLeft;
     Reference refRight;
+    std::unordered_set<std::string> synsUsed;
+    void populateSynsUsed();
     ClauseResult handleNoSynonym(QueryFacade *queryFacade);
     ClauseResult handleLeftSynonym(QueryFacade *queryFacade);
     ClauseResult handleRightSynonym(QueryFacade *queryFacade);
