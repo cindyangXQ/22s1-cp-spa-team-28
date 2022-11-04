@@ -7,6 +7,7 @@ bool PatternClause::getIsExact() { return this->isExact; }
 
 void PatternClause::parse(std::smatch matches, std::vector<Synonym> syns) {
     this->stmtRef = Reference::getReference(matches[2], syns);
+    this->patternType = this->stmtRef.getEntityName();
     this->entRef = Reference::getReference(matches[3], syns);
     Expression expr = Utils::trimSpaces(matches[5]);
     this->isExact = expr.find('_') == std::string::npos;
@@ -47,29 +48,39 @@ bool PatternClause::validate() {
 }
 
 ClauseResult PatternClause::evaluate(QueryFacade *queryFacade) {
-    if (stmtRef.getEntityName() == EntityName::ASSIGN) {
-        return handleAssign(queryFacade);
-    } else if (stmtRef.getEntityName() == EntityName::WHILE) {
-        return handleWhile(queryFacade);
-    } else if (stmtRef.getEntityName() == EntityName::IF) {
-        return handleIf(queryFacade);
-    } else {
-        return ClauseResult(true);
+    if (stmtRef.isASynonym() && entRef.isASynonym()) {
+        return handleBothSynonym(queryFacade);
+    } else if (!stmtRef.isASynonym() && entRef.isASynonym()) {
+        return handleRightSynonym(queryFacade);
+    } else if (stmtRef.isASynonym() && !entRef.isASynonym()) {
+        return handleLeftSynonym(queryFacade);
+    } else if (!stmtRef.isASynonym() && !entRef.isASynonym()) {
+        return handleNoSynonym(queryFacade);
     }
 }
 
-ClauseResult PatternClause::handleAssign(QueryFacade *queryFacade) {
-    if (entRef.isASynonym()) {
-        ClauseResult clauseResult = ClauseResult(std::vector{stmtRef, entRef});
+ClauseResult PatternClause::handleNoSynonym(QueryFacade *queryFacade) {
+    bool isTrue;
+    bool isEmpty;
+    if (this->patternType == EntityName::ASSIGN) {
         AssignExpression expr = AssignExpression(expression, isExact);
-        std::vector<std::pair<Value, Value>> result =
-            queryFacade->getAssignAndVar(expr);
-        for (int i = 0; i < result.size(); i++) {
-            clauseResult.insert(
-                Tuple(std::vector{result[i].first, result[i].second}));
-        }
-        return clauseResult;
+        isTrue = queryFacade->validate(std::stoi(stmtRef.getValueString()),
+                                       entRef.getValueString(), expr);
+    } else if (this->patternType == EntityName::IF) {
+        isTrue = queryFacade->validate(Designation::IF_C,
+                                       std::stoi(stmtRef.getValueString()),
+                                       entRef.getValueString());
     } else {
+        isTrue = queryFacade->validate(Designation::WHILE_C,
+                                       std::stoi(stmtRef.getValueString()),
+                                       entRef.getValueString());
+    }
+    isEmpty = !isTrue;
+    return ClauseResult(isEmpty);
+}
+
+ClauseResult PatternClause::handleLeftSynonym(QueryFacade *queryFacade) {
+    if (this->patternType == EntityName::ASSIGN) {
         ClauseResult clauseResult = ClauseResult(std::vector{stmtRef});
         AssignExpression expr = AssignExpression(expression, isExact);
         std::vector<Value> result =
@@ -78,17 +89,12 @@ ClauseResult PatternClause::handleAssign(QueryFacade *queryFacade) {
             clauseResult.insert(Tuple(std::vector{result[i]}));
         }
         return clauseResult;
-    }
-}
-
-ClauseResult PatternClause::handleWhile(QueryFacade *queryFacade) {
-    if (entRef.isASynonym()) {
-        ClauseResult clauseResult = ClauseResult(std::vector{stmtRef, entRef});
-        std::vector<std::pair<Value, Value>> result =
-            queryFacade->getCondAndVar(Designation::WHILE_C);
+    } else if (this->patternType == EntityName::IF) {
+        ClauseResult clauseResult = ClauseResult(std::vector{stmtRef});
+        std::vector<Value> result =
+            queryFacade->getCond(Designation::IF_C, entRef.getValueString());
         for (int i = 0; i < result.size(); i++) {
-            clauseResult.insert(
-                Tuple(std::vector{result[i].first, result[i].second}));
+            clauseResult.insert(Tuple(std::vector{result[i]}));
         }
         return clauseResult;
     } else {
@@ -102,8 +108,47 @@ ClauseResult PatternClause::handleWhile(QueryFacade *queryFacade) {
     }
 }
 
-ClauseResult PatternClause::handleIf(QueryFacade *queryFacade) {
-    if (entRef.isASynonym()) {
+ClauseResult PatternClause::handleRightSynonym(QueryFacade *queryFacade) {
+    if (this->patternType == EntityName::ASSIGN) {
+        ClauseResult clauseResult = ClauseResult(std::vector{entRef});
+        AssignExpression expr = AssignExpression(expression, isExact);
+        std::vector<Value> result =
+            queryFacade->getVar(std::stoi(stmtRef.getValueString()), expr);
+        for (int i = 0; i < result.size(); i++) {
+            clauseResult.insert(Tuple(std::vector{result[i]}));
+        }
+        return clauseResult;
+    } else if (this->patternType == EntityName::IF) {
+        ClauseResult clauseResult = ClauseResult(std::vector{entRef});
+        std::vector<Value> result = queryFacade->getVar(
+            Designation::IF_C, std::stoi(stmtRef.getValueString()));
+        for (int i = 0; i < result.size(); i++) {
+            clauseResult.insert(Tuple(std::vector{result[i]}));
+        }
+        return clauseResult;
+    } else {
+        ClauseResult clauseResult = ClauseResult(std::vector{entRef});
+        std::vector<Value> result = queryFacade->getVar(
+            Designation::WHILE_C, std::stoi(stmtRef.getValueString()));
+        for (int i = 0; i < result.size(); i++) {
+            clauseResult.insert(Tuple(std::vector{result[i]}));
+        }
+        return clauseResult;
+    }
+}
+
+ClauseResult PatternClause::handleBothSynonym(QueryFacade *queryFacade) {
+    if (this->patternType == EntityName::ASSIGN) {
+        ClauseResult clauseResult = ClauseResult(std::vector{stmtRef, entRef});
+        AssignExpression expr = AssignExpression(expression, isExact);
+        std::vector<std::pair<Value, Value>> result =
+            queryFacade->getAssignAndVar(expr);
+        for (int i = 0; i < result.size(); i++) {
+            clauseResult.insert(
+                Tuple(std::vector{result[i].first, result[i].second}));
+        }
+        return clauseResult;
+    } else if (this->patternType == EntityName::IF) {
         ClauseResult clauseResult = ClauseResult(std::vector{stmtRef, entRef});
         std::vector<std::pair<Value, Value>> result =
             queryFacade->getCondAndVar(Designation::IF_C);
@@ -113,11 +158,12 @@ ClauseResult PatternClause::handleIf(QueryFacade *queryFacade) {
         }
         return clauseResult;
     } else {
-        ClauseResult clauseResult = ClauseResult(std::vector{stmtRef});
-        std::vector<Value> result =
-            queryFacade->getCond(Designation::IF_C, entRef.getValueString());
+        ClauseResult clauseResult = ClauseResult(std::vector{stmtRef, entRef});
+        std::vector<std::pair<Value, Value>> result =
+            queryFacade->getCondAndVar(Designation::WHILE_C);
         for (int i = 0; i < result.size(); i++) {
-            clauseResult.insert(Tuple(std::vector{result[i]}));
+            clauseResult.insert(
+                Tuple(std::vector{result[i].first, result[i].second}));
         }
         return clauseResult;
     }
@@ -146,11 +192,16 @@ double PatternClause::getOptimizeScore() {
 }
 
 bool PatternClause::replace(Reference synRef, Reference valRef) {
+    bool replaced = false;
     if (entRef.isASynonym() &&
         entRef.getSynonymName() == synRef.getSynonymName()) {
         entRef = valRef;
-        return true;
-    } else {
-        return false;
+        replaced = true;
     }
+    if (stmtRef.isASynonym() &&
+        stmtRef.getSynonymName() == synRef.getSynonymName()) {
+        stmtRef = valRef;
+        replaced = true;
+    }
+    return replaced;
 }

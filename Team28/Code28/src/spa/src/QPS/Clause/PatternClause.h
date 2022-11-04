@@ -26,13 +26,15 @@ public:
     bool replace(Reference synRef, Reference valRef);
 
 private:
+    EntityName patternType;
     Reference stmtRef;
     Reference entRef;
     Expression expression;
     bool isExact;
     std::unordered_set<std::string> synsUsed;
     void populateSynsUsed();
-    ClauseResult handleAssign(QueryFacade *queryFacade);
-    ClauseResult handleIf(QueryFacade *queryFacade);
-    ClauseResult handleWhile(QueryFacade *queryFacade);
+    ClauseResult handleNoSynonym(QueryFacade *queryFacade);
+    ClauseResult handleLeftSynonym(QueryFacade *queryFacade);
+    ClauseResult handleRightSynonym(QueryFacade *queryFacade);
+    ClauseResult handleBothSynonym(QueryFacade *queryFacade);
 };
