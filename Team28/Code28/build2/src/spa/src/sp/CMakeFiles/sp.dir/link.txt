@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libsp.a CMakeFiles/sp.dir/DesignExtractor/DesignExtractor.cpp.o CMakeFiles/sp.dir/ProgramParser/EntityNode.cpp.o CMakeFiles/sp.dir/ProgramParser/ExprParser.cpp.o CMakeFiles/sp.dir/ProgramParser/Parser.cpp.o CMakeFiles/sp.dir/SP.cpp.o CMakeFiles/sp.dir/SPUtils.cpp.o CMakeFiles/sp.dir/Tokenizer/Token.cpp.o CMakeFiles/sp.dir/Tokenizer/Tokenizer.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libsp.a
