@@ -2593,3 +2593,135 @@ TEST_CASE("Pattern-if/while validate with nothing stored works correctly") {
     REQUIRE(!facade.validate(Designation::IF_C, 1, "_"));
     REQUIRE(!facade.validate(Designation::WHILE_C, 1, "_"));
 }
+
+TEST_CASE("SolveRight queries for Follows(1, 2) with nothing "
+          "stored return correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    Reference leftRef;
+    EntityName rightEntityName;
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // SolveRight(Follows, 1, Assign) returns {}
+    leftRef = Reference("1");
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveRight(Follows, 2, Assign) returns {}
+    leftRef = Reference("2");
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveRight(Follows, 1, Print) returns {}
+    leftRef = Reference("1");
+    rightEntityName = EntityName::PRINT;
+    expectedResult = {};
+    output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveRight(Follows, _, Assign) returns {}
+    leftRef = Reference("_");
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("SolveLeft queries for Follows(1, 2) with nothing stored "
+          "return correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    Reference rightRef;
+    EntityName leftEntityName;
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // SolveLeft(Follows, 2, Assign) for Follows(1, 2) returns {}
+    rightRef = Reference("2");
+    leftEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Follows, 1, Assign) for Follows(1, 2) returns {}
+    rightRef = Reference("1");
+    leftEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Follows, 2, Print) for Follows(1, 2) returns {}
+    rightRef = Reference("2");
+    leftEntityName = EntityName::PRINT;
+    expectedResult = {};
+    output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Follows, _, Assign) for Follows(1, 2) returns {}
+    rightRef = Reference("_");
+    leftEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("SolveBoth queries for Follows(1, 2) with nothing stored "
+          "return correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    EntityName leftEntityName;
+    EntityName rightEntityName;
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // SolveBoth(Follows, Stmt, Stmt) for Follows(1, 2) returns {}
+    leftEntityName = EntityName::STMT;
+    rightEntityName = EntityName::STMT;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveBoth(Follows, Stmt, Print) for Follows(1, 2) returns {}
+    leftEntityName = EntityName::STMT;
+    rightEntityName = EntityName::PRINT;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveBoth(Follows, Call, Stmt) for Follows(1, 2) returns {}
+    leftEntityName = EntityName::CALL;
+    rightEntityName = EntityName::STMT;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
