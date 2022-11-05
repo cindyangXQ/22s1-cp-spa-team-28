@@ -2444,3 +2444,152 @@ TEST_CASE("QueryFacade getTableSize works as expected") {
     REQUIRE(affects->getTableSize() == INT_MAX);
     REQUIRE(affectsT->getTableSize() == INT_MAX);
 }
+
+TEST_CASE("getTableSize with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    AssignmentsTable *assigns = storage->getTable<AssignmentsTable>();
+    ProceduresTable *procs = storage->getTable<ProceduresTable>();
+    VariablesTable *vars = storage->getTable<VariablesTable>();
+    ConstantsTable *consts = storage->getTable<ConstantsTable>();
+    ParentTable *parent = storage->getTable<ParentTable>();
+    ParentTTable *parentT = storage->getTable<ParentTTable>();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
+    FollowsTTable *followsT = storage->getTable<FollowsTTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
+    ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
+    UsesPTable *usesP = storage->getTable<UsesPTable>();
+    CallsTable *calls = storage->getTable<CallsTable>();
+    CallsTTable *callsT = storage->getTable<CallsTTable>();
+    BranchInTable *branchIn = storage->getTable<BranchInTable>();
+    BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
+    IfControlVarTable *ifs = storage->getTable<IfControlVarTable>();
+    WhileControlVarTable *whiles = storage->getTable<WhileControlVarTable>();
+    CallProcTable *callProc = storage->getTable<CallProcTable>();
+    NextTable *next = storage->getTable<NextTable>();
+    NextTTable *nextT = storage->getTable<NextTTable>();
+    AffectsTable *affects = storage->getTable<AffectsTable>();
+    AffectsTTable *affectsT = storage->getTable<AffectsTTable>();
+
+    REQUIRE(statements->getTableSize() == 0);
+    REQUIRE(assigns->getTableSize() == 0);
+    REQUIRE(procs->getTableSize() == 0);
+    REQUIRE(vars->getTableSize() == 0);
+    REQUIRE(consts->getTableSize() == 0);
+    REQUIRE(parent->getTableSize() == 0);
+    REQUIRE(parentT->getTableSize() == 0);
+    REQUIRE(follows->getTableSize() == 0);
+    REQUIRE(followsT->getTableSize() == 0);
+    REQUIRE(modifiesS->getTableSize() == 0);
+    REQUIRE(modifiesP->getTableSize() == 0);
+    REQUIRE(usesS->getTableSize() == 0);
+    REQUIRE(usesP->getTableSize() == 0);
+    REQUIRE(calls->getTableSize() == 0);
+    REQUIRE(callsT->getTableSize() == 0);
+    REQUIRE(branchIn->getTableSize() == 0);
+    REQUIRE(branchOut->getTableSize() == 0);
+    REQUIRE(ifs->getTableSize() == 0);
+    REQUIRE(whiles->getTableSize() == 0);
+    REQUIRE(callProc->getTableSize() == 0);
+    REQUIRE(next->getTableSize() == 0);
+    REQUIRE(nextT->getTableSize() == INT_MAX);
+    REQUIRE(affects->getTableSize() == INT_MAX);
+    REQUIRE(affectsT->getTableSize() == INT_MAX);
+}
+
+TEST_CASE("getAllStatementsTypes with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    REQUIRE(facade.getAllStatementsByType(StatementType::STMT).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::READ).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::PRINT).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::ASSIGN).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::CALL).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::WHILE).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::IF).size() == 0);
+}
+
+TEST_CASE("getAllEntities with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    REQUIRE(facade.getAllEntities(Designation::STMT).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::ASSIGN).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::VAR).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::CONST).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::PROC).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::FOLLOWS).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::FOLLOWS_T).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::PARENT).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::PARENT_T).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::MOD_S).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::MOD_P).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::USE_S).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::USE_P).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::CALL).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::CALL_T).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::B_IN).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::B_OUT).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::IF_C).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::WHILE_C).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::PROC_NAME).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::NEXT).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::NEXT_T).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::AFFECTS).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::AFFECTS_T).size() == 0);
+}
+
+TEST_CASE("RelationshipRef validate with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    Reference left = Reference("1");
+    Reference right = Reference("2");
+    Reference wildcard = Reference("_");
+
+    REQUIRE(!facade.validate(RelationshipReference::FOLLOWS, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::FOLLOWS_T, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::PARENT, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::PARENT_T, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::USES, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::MODIFIES, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::CALLS, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::CALLS_T, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::NEXT, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::AFFECTS, left, right));
+    // NOTE: NextTTable and AffectsTTable have dependency on the respective
+    // non-star table, which is why exception gets thrown.
+    // REQUIRE(!facade.validate(RelationshipReference::NEXT_T, left, right));
+    // REQUIRE(!facade.validate(RelationshipReference::AFFECTS_T, left, right));
+
+    REQUIRE(!facade.validate(RelationshipReference::FOLLOWS, left, wildcard));
+    REQUIRE(!facade.validate(RelationshipReference::NEXT, wildcard, right));
+    // Vacuously true
+    REQUIRE(facade.validate(RelationshipReference::NEXT, wildcard, wildcard));
+}
+
+TEST_CASE("Pattern-assign validate with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    AssignExpression assignExact = AssignExpression("x", true);
+    AssignExpression assignPartial = AssignExpression("x", false);
+    AssignExpression wildcard = AssignExpression("_", false);
+
+    REQUIRE(!facade.validate(1, "x", assignExact));
+    REQUIRE(!facade.validate(1, "x", assignPartial));
+    REQUIRE(!facade.validate(1, "x", wildcard));
+}
+
+TEST_CASE("Pattern-if/while validate with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    REQUIRE(!facade.validate(Designation::IF_C, 1, "x"));
+    REQUIRE(!facade.validate(Designation::WHILE_C, 1, "x"));
+    REQUIRE(!facade.validate(Designation::IF_C, 1, "_"));
+    REQUIRE(!facade.validate(Designation::WHILE_C, 1, "_"));
+}
