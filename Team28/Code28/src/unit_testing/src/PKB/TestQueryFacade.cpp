@@ -3120,3 +3120,86 @@ TEST_CASE("solveBothAttribute with nothing stored returns correct results -- "
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("getAssign with nothing stored returns correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // getAssign('_', '_', false) returns {}
+    expectedResult = {};
+    output = facade.getAssign("_", AssignExpression("_", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssign('_', '1', false) returns {}
+    expectedResult = {};
+    output = facade.getAssign("_", AssignExpression("1", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignExact('_', '(1)', true) returns {}
+    expectedResult = {};
+    output = facade.getAssign("_", AssignExpression("(1)", true));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssign('x1', '_', false) returns {}
+    expectedResult = {};
+    output = facade.getAssign("x1", AssignExpression("_", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssign('x1', '10', false) returns {}
+    expectedResult = {};
+    output = facade.getAssign("x1", AssignExpression("10", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignExact('x1', '(10)', true) returns {}
+    expectedResult = {};
+    output = facade.getAssign("x1", AssignExpression("(10)", true));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("getAssignAndVar with nothing stored returns correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // getAssignAndVar('_', false) returns
+    // {}
+    expectedResult = {};
+    output = facade.getAssignAndVar(AssignExpression("_", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignAndVar('(1)', false) returns {}
+    expectedResult = {};
+    output = facade.getAssignAndVar(AssignExpression("(1)", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignAndVarExact('(1)', true) returns {}
+    expectedResult = {};
+    output = facade.getAssignAndVar(AssignExpression("(1)", true));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignAndVar('(x1)', false) returns {}
+    expectedResult = {};
+    output = facade.getAssignAndVar(AssignExpression("(x1)", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignAndVarExact('(x1)', true) returns {}
+    expectedResult = {};
+    output = facade.getAssignAndVar(AssignExpression("(x1)", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
