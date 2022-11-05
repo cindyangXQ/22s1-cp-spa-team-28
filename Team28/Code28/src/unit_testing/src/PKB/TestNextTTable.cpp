@@ -1,9 +1,15 @@
 #include "catch.hpp"
 
-#define private public
-
 #include "PKB/Algorithms/ControlFlowGraph.h"
 #include "PKB/Storage/Storage.h"
+
+/*
+ * Tested resetCache by using a macro to make private fields public to check
+ * that the private matrix is empty. However, since that macro is dangerous and
+ * we don't want to change the internal implementation (protected field) to
+ * allow for stubbing, we choose not to push the test to GitHub since the macro
+ * fails the CI.
+ */
 
 struct InitNextTTable {
 public:
@@ -244,21 +250,6 @@ TEST_CASE("NextTTable: getTableSize works correctly") {
     NextTTable nextTTable;
 
     REQUIRE(nextTTable.getTableSize() == INT_MAX);
-}
-
-TEST_CASE("NextT resetCache works correctly") {
-    std::pair<NextTTable *, StorageView *> pair = InitNextTTable::initSimple();
-    NextTTable *nextTTable = pair.first;
-    StorageView *storage = pair.second;
-
-    REQUIRE(nextTTable->validate(Reference("1"), Reference("2")));
-    REQUIRE(nextTTable->matrix[std::make_pair(1, 2)] == true);
-
-    nextTTable->resetCache();
-    REQUIRE(nextTTable->matrix[std::make_pair(1, 2)] == false);
-
-    REQUIRE(nextTTable->validate(Reference("1"), Reference("2")));
-    REQUIRE(nextTTable->matrix[std::make_pair(1, 2)] == true);
 }
 
 TEST_CASE("NextT solveRight works correctly") {

@@ -1,5 +1,3 @@
-#define private public
-
 #include "PKB/Algorithms/ControlFlowGraph.h"
 #include "PKB/Storage/Storage.h"
 #include "PKB/Tables/RelationshipsTable/AffectsTTable.h"
@@ -7,6 +5,14 @@
 #include "commons/Relationship.h"
 
 #include "catch.hpp"
+
+/*
+ * Tested resetCache by using a macro to make private fields public to check
+ * that the private matrix is empty. However, since that macro is dangerous and
+ * we don't want to change the internal implementation (protected field) to
+ * allow for stubbing, we choose not to push the test to GitHub since the macro
+ * fails the CI.
+ */
 
 struct InitAffectsTTable {
 public:
@@ -505,20 +511,4 @@ TEST_CASE("AffectsTTable: getTableSize works correctly") {
     AffectsTTable affectsTTable;
 
     REQUIRE(affectsTTable.getTableSize() == INT_MAX);
-}
-
-TEST_CASE("AffectsTTable resetCache works correctly") {
-    std::pair<AffectsTTable *, StorageView *> pair =
-        InitAffectsTTable::initCode6();
-    AffectsTTable *affects = pair.first;
-    StorageView *storage = pair.second;
-
-    REQUIRE(affects->validate(Reference("1"), Reference("4")));
-    REQUIRE(affects->matrix[std::make_pair(1, 4)] == true);
-
-    affects->resetCache();
-    REQUIRE(affects->matrix[std::make_pair(1, 4)] == false);
-
-    REQUIRE(affects->validate(Reference("1"), Reference("4")));
-    REQUIRE(affects->matrix[std::make_pair(1, 4)] == true);
 }
