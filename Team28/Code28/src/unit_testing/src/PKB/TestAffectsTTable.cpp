@@ -1,3 +1,5 @@
+#define private public
+
 #include "PKB/Algorithms/ControlFlowGraph.h"
 #include "PKB/Storage/Storage.h"
 #include "PKB/Tables/RelationshipsTable/AffectsTTable.h"
@@ -503,4 +505,20 @@ TEST_CASE("AffectsTTable: getTableSize works correctly") {
     AffectsTTable affectsTTable;
 
     REQUIRE(affectsTTable.getTableSize() == INT_MAX);
+}
+
+TEST_CASE("AffectsTTable resetCache works correctly") {
+    std::pair<AffectsTTable *, StorageView *> pair =
+        InitAffectsTTable::initCode6();
+    AffectsTTable *affects = pair.first;
+    StorageView *storage = pair.second;
+
+    REQUIRE(affects->validate(Reference("1"), Reference("4")));
+    REQUIRE(affects->matrix[std::make_pair(1, 4)] == true);
+
+    affects->resetCache();
+    REQUIRE(affects->matrix[std::make_pair(1, 4)] == false);
+
+    REQUIRE(affects->validate(Reference("1"), Reference("4")));
+    REQUIRE(affects->matrix[std::make_pair(1, 4)] == true);
 }

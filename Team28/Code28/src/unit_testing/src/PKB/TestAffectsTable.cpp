@@ -1,3 +1,5 @@
+#define private public
+
 #include "PKB/Algorithms/ControlFlowGraph.h"
 #include "PKB/Storage/Storage.h"
 #include "PKB/Tables/RelationshipsTable/AffectsTable.h"
@@ -183,7 +185,6 @@ std::pair<AffectsTable *, StorageView *> InitAffectsTable::initCode6() {
     ControlFlowGraph cfg = ControlFlowGraph(next, storage->getStorageView());
     cfg.populateNext();
     affects->initAffects(storage->getStorageView());
-    affects->resetCache();
 
     return std::make_pair(affects, storage->getStorageView());
 }
@@ -470,4 +471,20 @@ TEST_CASE("AffectsTable: getTableSize works correctly") {
     AffectsTable affectsTable;
 
     REQUIRE(affectsTable.getTableSize() == INT_MAX);
+}
+
+TEST_CASE("AffectsTable resetCache works correctly") {
+    std::pair<AffectsTable *, StorageView *> pair =
+        InitAffectsTable::initCode6();
+    AffectsTable *affects = pair.first;
+    StorageView *storage = pair.second;
+
+    REQUIRE(affects->validate(Reference("1"), Reference("4")));
+    REQUIRE(affects->matrix[std::make_pair(1, 4)] == Status::TRUE);
+
+    affects->resetCache();
+    REQUIRE(affects->matrix[std::make_pair(1, 4)] == Status::UNKNOWN);
+
+    REQUIRE(affects->validate(Reference("1"), Reference("4")));
+    REQUIRE(affects->matrix[std::make_pair(1, 4)] == Status::TRUE);
 }

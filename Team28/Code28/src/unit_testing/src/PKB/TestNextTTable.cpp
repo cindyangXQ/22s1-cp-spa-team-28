@@ -1,5 +1,7 @@
 #include "catch.hpp"
 
+#define private public
+
 #include "PKB/Algorithms/ControlFlowGraph.h"
 #include "PKB/Storage/Storage.h"
 
@@ -41,6 +43,7 @@ TEST_CASE("CFG Traverses Correctly (NextT) - 1 procedure, infinite loop") {
     REQUIRE(nextTTable->validate(Reference("1"), Reference("1")));
     REQUIRE(nextTTable->validate(Reference("2"), Reference("2")));
 }
+
 TEST_CASE("CFG Traverses Correctly (NextT) - 1 procedure") {
     Storage *storage = new Storage();
     NextTable *nextTable = storage->getTable<NextTable>();
@@ -201,6 +204,44 @@ TEST_CASE("NextTTable: getTableSize works correctly") {
     NextTTable nextTTable;
 
     REQUIRE(nextTTable.getTableSize() == INT_MAX);
+}
+
+TEST_CASE("NextT resetCache works correctly") {
+    Storage *storage = new Storage();
+    NextTable *nextTable = storage->getTable<NextTable>();
+    NextTTable *nextTTable = storage->getTable<NextTTable>();
+    FollowsTable *followsTable = storage->getTable<FollowsTable>();
+    ProceduresTable *procTable = storage->getTable<ProceduresTable>();
+    StatementsTable *statementsTable = storage->getTable<StatementsTable>();
+
+    Statement s1 = Statement(1, StatementType::WHILE);
+    Statement s2 = Statement(2, StatementType::ASSIGN);
+    statementsTable->store(&s1);
+    statementsTable->store(&s2);
+
+    // Follows
+    Relationship<int, int> relation =
+        Relationship(RelationshipReference::FOLLOWS, 1, 2);
+    followsTable->store(&relation);
+
+    // Procedure(s)
+    Procedure main = Procedure("main", 1);
+    procTable->store(&main);
+
+    StorageView *storageView = storage->getStorageView();
+    ControlFlowGraph cfg = ControlFlowGraph(nextTable, storageView);
+
+    cfg.populateNext();
+    nextTTable->initNextT(storageView);
+
+    REQUIRE(nextTTable->validate(Reference("1"), Reference("2")));
+    REQUIRE(nextTTable->matrix[std::make_pair(1, 2)] == true);
+
+    nextTTable->resetCache();
+    REQUIRE(nextTTable->matrix[std::make_pair(1, 2)] == false);
+
+    REQUIRE(nextTTable->validate(Reference("1"), Reference("2")));
+    REQUIRE(nextTTable->matrix[std::make_pair(1, 2)] == true);
 }
 
 // TODO Add unit tests for the remaining solve methods
