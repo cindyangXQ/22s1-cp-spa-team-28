@@ -460,7 +460,7 @@ TEST_CASE("getUsesTables works correctly") {
 TEST_CASE("getAttributesTables works correctly") {
     Storage *storage = new Storage();
 
-    Table *table =
+    Attributable *table =
         storage->getAttributesTable(EntityName::STMT, EntityAttribute::STMT_NO);
     REQUIRE(typeid(*table) == typeid(StatementsTable));
     table =

@@ -84,7 +84,9 @@ bool StatementsTable::hasSecondaryAttribute(const int &lineNum) {
 }
 
 std::vector<Value> StatementsTable::getMatchingValue(std::string value,
-                                                     EntityName entity) {
+                                                     EntityName entity,
+                                                     StorageView *storage) {
+    UNUSED(storage);
     int v = std::stoi(value);
     std::vector<int> values;
     std::vector<Value> result = {};
@@ -103,7 +105,8 @@ std::vector<Value> StatementsTable::getMatchingValue(std::string value,
 }
 
 std::map<Value, std::vector<Value>>
-StatementsTable::getAllValues(EntityName entity) {
+StatementsTable::getAllValues(EntityName entity, StorageView *storage) {
+    UNUSED(storage);
     std::vector<int> values;
     std::map<Value, std::vector<Value>> result = {};
     if (entity == EntityName::STMT) {

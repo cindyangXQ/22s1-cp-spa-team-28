@@ -10,12 +10,13 @@
 #include "../../../commons/Entity.h"
 #include "../../../commons/Procedure.h"
 #include "../../../commons/Variable.h"
+#include "../Attributable.h"
 #include "../Table.h"
 
 /*
  * Class encapsulating a Table used for storing Procedures/Variables/Constants.
  */
-template <typename T> class NamesTable : public Table {
+template <typename T> class NamesTable : public Table, public Attributable {
 public:
     /*
      * Stores an entity into NamesTable.
@@ -55,8 +56,10 @@ public:
     std::unordered_set<std::string> getAll() { return this->names; }
 
     virtual std::vector<Value> getMatchingValue(std::string value,
-                                                EntityName entity) {
+                                                EntityName entity,
+                                                StorageView *storage) {
         UNUSED(entity);
+        UNUSED(storage);
         std::vector<Value> result = {};
         if (this->names.count(value) == 1) {
             result.push_back(Value(ValueType::VAR_NAME, value));
@@ -65,8 +68,9 @@ public:
     }
 
     virtual std::map<Value, std::vector<Value>>
-    getAllValues(EntityName entity) {
+    getAllValues(EntityName entity, StorageView *storage) {
         UNUSED(entity);
+        UNUSED(storage);
         std::map<Value, std::vector<Value>> result = {};
         for (std::string name : this->names) {
             Value v = Value(ValueType::VAR_NAME, name);
@@ -83,8 +87,10 @@ protected:
 
 class ConstantsTable : public NamesTable<Constant> {
 public:
-    std::vector<Value> getMatchingValue(std::string value, EntityName entity);
-    std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
+    std::vector<Value> getMatchingValue(std::string value, EntityName entity,
+                                        StorageView *storage);
+    std::map<Value, std::vector<Value>> getAllValues(EntityName entity,
+                                                     StorageView *storage);
 };
 class VariablesTable : public NamesTable<Variable> {};
 class ProceduresTable : public NamesTable<Procedure> {

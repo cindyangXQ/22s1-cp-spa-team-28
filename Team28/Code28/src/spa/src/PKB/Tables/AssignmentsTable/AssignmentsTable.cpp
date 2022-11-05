@@ -178,19 +178,6 @@ AssignmentsTable::getAssignAndVarExact(std::string expression) {
     return result;
 };
 
-std::vector<Value> AssignmentsTable::getMatchingValue(std::string value,
-                                                      EntityName entity) {
-    UNUSED(value);
-    UNUSED(entity);
-    return std::vector<Value>{};
-};
-
-std::map<Value, std::vector<Value>>
-AssignmentsTable::getAllValues(EntityName entity) {
-    UNUSED(entity);
-    return std::map<Value, std::vector<Value>>{};
-};
-
 bool AssignmentsTable::validate(int stmtNo, std::string varName,
                                 AssignExpression expr) {
     if (this->lineAssignmentMap.count(stmtNo) == 0) {
