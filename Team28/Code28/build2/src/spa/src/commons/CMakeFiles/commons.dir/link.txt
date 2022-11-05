@@ -1,2 +1,0 @@
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libcommons.a CMakeFiles/commons.dir/AssignExpression.cpp.o CMakeFiles/commons.dir/Assignment.cpp.o CMakeFiles/commons.dir/Constant.cpp.o CMakeFiles/commons.dir/Procedure.cpp.o CMakeFiles/commons.dir/Reference.cpp.o CMakeFiles/commons.dir/Statement.cpp.o CMakeFiles/commons.dir/Synonym.cpp.o CMakeFiles/commons.dir/Value.cpp.o CMakeFiles/commons.dir/Variable.cpp.o
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libcommons.a
