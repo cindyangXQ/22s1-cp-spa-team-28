@@ -230,25 +230,26 @@ std::string QueryFacade::getSecondaryAttribute(int stmtNum) {
 std::vector<Value> QueryFacade::solveOneAttribute(Reference ref, Value value) {
     std::string v = value.getValue();
     EntityName entity = ref.getEntityName();
-    Table *table = this->storage->getAttributesTable(entity, ref.getAttr());
+    Attributable *table =
+        this->storage->getAttributesTable(entity, ref.getAttr());
 
-    return table->getMatchingValue(v, entity);
+    return table->getMatchingValue(v, entity, this->storage->getStorageView());
 }
 
 std::vector<std::pair<Value, Value>>
 QueryFacade::solveBothAttribute(Reference left, Reference right) {
     // TODO: find a method to inner join instead of cross product
     EntityName leftEnt = left.getEntityName();
-    Table *leftTable =
+    Attributable *leftTable =
         this->storage->getAttributesTable(leftEnt, left.getAttr());
     std::map<Value, std::vector<Value>> leftValuesMap =
-        leftTable->getAllValues(leftEnt);
+        leftTable->getAllValues(leftEnt, this->storage->getStorageView());
 
     EntityName rightEnt = right.getEntityName();
-    Table *rightTable =
+    Attributable *rightTable =
         this->storage->getAttributesTable(rightEnt, right.getAttr());
     std::map<Value, std::vector<Value>> rightValuesMap =
-        rightTable->getAllValues(rightEnt);
+        rightTable->getAllValues(rightEnt, this->storage->getStorageView());
 
     std::vector<std::pair<Value, Value>> result;
     for (auto const &[key, value] : leftValuesMap) {

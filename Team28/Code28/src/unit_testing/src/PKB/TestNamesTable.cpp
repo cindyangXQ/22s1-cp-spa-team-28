@@ -1,3 +1,4 @@
+#include "PKB/Storage/Storage.h"
 #include "PKB/Tables/NamesTable/NamesTable.h"
 #include "commons/Constant.h"
 #include "commons/Procedure.h"
@@ -94,7 +95,9 @@ TEST_CASE("ProceduresTable can getAll statements correctly") {
 }
 
 TEST_CASE("ConstantsTable::getMatchingValue works correctly") {
-    ConstantsTable table;
+    Storage *storage = new Storage();
+    ConstantsTable *table = storage->getTable<ConstantsTable>();
+    StorageView *storageView = storage->getStorageView();
     Constant c1 = Constant("1");
     Constant c2 = Constant("2");
     Constant c3 = Constant("3");
@@ -102,30 +105,61 @@ TEST_CASE("ConstantsTable::getMatchingValue works correctly") {
     Constant c5 = Constant("5");
     Constant c6 = Constant("6");
 
-    table.store(&c1);
-    table.store(&c2);
-    table.store(&c3);
-    table.store(&c4);
-    table.store(&c5);
-    table.store(&c6);
+    table->store(&c1);
+    table->store(&c2);
+    table->store(&c3);
+    table->store(&c4);
+    table->store(&c5);
+    table->store(&c6);
 
     // getMatchingValue gets each Constant correctly
     std::vector<Value> test;
     std::vector<Value> result;
 
     std::vector<std::string> correctStr = {"1", "2", "3", "4", "5", "6"};
-    std::vector<std ::string> wrongStr = {"7", "8", "9"};
 
     for (std::string str : correctStr) {
-        test = table.getMatchingValue(
-            str, EntityName::STMT); // EntityName is placeholder
+        test = table->getMatchingValue(str, EntityName::CONSTANT, storageView);
         result = {Value(ValueType::STMT_NUM, str)};
         REQUIRE(test == result);
     }
 }
 
+TEST_CASE("VariablesTable::getMatchingValue works correctly") {
+    Storage *storage = new Storage();
+    VariablesTable *table = storage->getTable<VariablesTable>();
+    StorageView *storageView = storage->getStorageView();
+    Variable c1 = Variable("a");
+    Variable c2 = Variable("b");
+    Variable c3 = Variable("c");
+    Variable c4 = Variable("d");
+    Variable c5 = Variable("e");
+    Variable c6 = Variable("f");
+
+    table->store(&c1);
+    table->store(&c2);
+    table->store(&c3);
+    table->store(&c4);
+    table->store(&c5);
+    table->store(&c6);
+
+    // getMatchingValue gets each Constant correctly
+    std::vector<Value> test;
+    std::vector<Value> result;
+
+    std::vector<std::string> correctStr = {"a", "b", "c", "d", "e", "f"};
+
+    for (std::string str : correctStr) {
+        test = table->getMatchingValue(str, EntityName::VARIABLE, storageView);
+        result = {Value(ValueType::VAR_NAME, str)};
+        REQUIRE(test == result);
+    }
+}
+
 TEST_CASE("ConstantsTable::getAllValues works correctly") {
-    ConstantsTable table;
+    Storage *storage = new Storage();
+    ConstantsTable *table = storage->getTable<ConstantsTable>();
+    StorageView *storageView = storage->getStorageView();
     Constant c1 = Constant("1");
     Constant c2 = Constant("2");
     Constant c3 = Constant("3");
@@ -133,12 +167,12 @@ TEST_CASE("ConstantsTable::getAllValues works correctly") {
     Constant c5 = Constant("5");
     Constant c6 = Constant("6");
 
-    table.store(&c1);
-    table.store(&c2);
-    table.store(&c3);
-    table.store(&c4);
-    table.store(&c5);
-    table.store(&c6);
+    table->store(&c1);
+    table->store(&c2);
+    table->store(&c3);
+    table->store(&c4);
+    table->store(&c5);
+    table->store(&c6);
 
     std::map<Value, std::vector<Value>> test;
     std::vector<Value> resKeys;
@@ -149,13 +183,60 @@ TEST_CASE("ConstantsTable::getAllValues works correctly") {
     std::vector<Value> keys;
     std::vector<std::vector<Value>> values;
 
-    // getAllValues by STMT works correctly
-    test = table.getAllValues(EntityName::STMT);
+    // getAllValues by CONSTANT works correctly
+    test = table->getAllValues(EntityName::CONSTANT, storageView);
 
     correctStr = {"1", "2", "3", "4", "5", "6"};
 
     for (std::string str : correctStr) {
         Value val = Value(ValueType::STMT_NUM, str);
+        resKeys.push_back(val);
+        resValues.push_back({val});
+    }
+
+    for (auto &elem : test) {
+        keys.push_back(elem.first);
+        values.push_back(elem.second);
+    }
+
+    for (int i = 0; i < correctStr.size(); i++) {
+        REQUIRE(keys[i] == resKeys[i]);
+        REQUIRE(values[i] == resValues[i]);
+    }
+}
+
+TEST_CASE("VariablesTable::getAllValues works correctly") {
+    Storage *storage = new Storage();
+    VariablesTable *table = storage->getTable<VariablesTable>();
+    StorageView *storageView = storage->getStorageView();
+    Variable c1 = Variable("a");
+    Variable c2 = Variable("b");
+    Variable c3 = Variable("c");
+    Variable c4 = Variable("d");
+    Variable c5 = Variable("e");
+    Variable c6 = Variable("f");
+
+    table->store(&c1);
+    table->store(&c2);
+    table->store(&c3);
+    table->store(&c4);
+    table->store(&c5);
+    table->store(&c6);
+
+    std::map<Value, std::vector<Value>> test;
+    std::vector<Value> resKeys;
+    std::vector<std::vector<Value>> resValues;
+
+    std::vector<Value> keys;
+    std::vector<std::vector<Value>> values;
+
+    // getAllValues by CONSTANT works correctly
+    test = table->getAllValues(EntityName::VARIABLE, storageView);
+
+    std::vector<std::string> correctStr = {"a", "b", "c", "d", "e", "f"};
+
+    for (std::string str : correctStr) {
+        Value val = Value(ValueType::VAR_NAME, str);
         resKeys.push_back(val);
         resValues.push_back({val});
     }

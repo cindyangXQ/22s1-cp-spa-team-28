@@ -1,3 +1,4 @@
+#include "PKB/Storage/Storage.h"
 #include "PKB/Tables/StatementsTable/StatementsTable.h"
 
 #include "catch.hpp"
@@ -150,7 +151,10 @@ TEST_CASE("isAttributableStatement works correctly") {
 }
 
 TEST_CASE("getMatchingValue works correctly") {
-    StatementsTable table;
+    Storage *storage = new Storage();
+    StorageView *storageView = storage->getStorageView();
+    StatementsTable *table = storage->getTable<StatementsTable>();
+
     Statement assignStmt = Statement(1, StatementType::ASSIGN);
     Statement callStmt = Statement(2, StatementType::CALL);
     Statement ifStmt = Statement(3, StatementType::IF);
@@ -158,12 +162,12 @@ TEST_CASE("getMatchingValue works correctly") {
     Statement readStmt = Statement(5, StatementType::READ);
     Statement whileStmt = Statement(6, StatementType::WHILE);
 
-    table.store(&assignStmt);
-    table.store(&callStmt);
-    table.store(&ifStmt);
-    table.store(&printStmt);
-    table.store(&readStmt);
-    table.store(&whileStmt);
+    table->store(&assignStmt);
+    table->store(&callStmt);
+    table->store(&ifStmt);
+    table->store(&printStmt);
+    table->store(&readStmt);
+    table->store(&whileStmt);
 
     std::vector<Value> test;
     std::vector<Value> result;
@@ -177,13 +181,13 @@ TEST_CASE("getMatchingValue works correctly") {
     wrongStr = {"7", "8", "9"};
 
     for (std::string str : correctStr) {
-        test = table.getMatchingValue(str, EntityName::STMT);
+        test = table->getMatchingValue(str, EntityName::STMT, storageView);
         result = {Value(ValueType::STMT_NUM, str)};
         REQUIRE(test == result);
     }
 
     for (std::string str : wrongStr) {
-        test = table.getMatchingValue(str, EntityName::STMT);
+        test = table->getMatchingValue(str, EntityName::STMT, storageView);
         result = {};
         REQUIRE(test == result);
     }
@@ -192,13 +196,13 @@ TEST_CASE("getMatchingValue works correctly") {
     correctStr = {"1"};
     wrongStr = {"2", "3", "4", "5", "6", "7", "8", "9"};
     for (std::string str : correctStr) {
-        test = table.getMatchingValue(str, EntityName::ASSIGN);
+        test = table->getMatchingValue(str, EntityName::ASSIGN, storageView);
         result = {Value(ValueType::STMT_NUM, str)};
         REQUIRE(test == result);
     }
 
     for (std::string str : wrongStr) {
-        test = table.getMatchingValue(str, EntityName::ASSIGN);
+        test = table->getMatchingValue(str, EntityName::ASSIGN, storageView);
         result = {};
         REQUIRE(test == result);
     }
@@ -207,13 +211,13 @@ TEST_CASE("getMatchingValue works correctly") {
     correctStr = {"2"};
     wrongStr = {"1", "3", "4", "5", "6", "7", "8", "9"};
     for (std::string str : correctStr) {
-        test = table.getMatchingValue(str, EntityName::CALL);
+        test = table->getMatchingValue(str, EntityName::CALL, storageView);
         result = {Value(ValueType::STMT_NUM, str)};
         REQUIRE(test == result);
     }
 
     for (std::string str : wrongStr) {
-        test = table.getMatchingValue(str, EntityName::CALL);
+        test = table->getMatchingValue(str, EntityName::CALL, storageView);
         result = {};
         REQUIRE(test == result);
     }
@@ -222,13 +226,13 @@ TEST_CASE("getMatchingValue works correctly") {
     correctStr = {"3"};
     wrongStr = {"1", "2", "4", "5", "6", "7", "8", "9"};
     for (std::string str : correctStr) {
-        test = table.getMatchingValue(str, EntityName::IF);
+        test = table->getMatchingValue(str, EntityName::IF, storageView);
         result = {Value(ValueType::STMT_NUM, str)};
         REQUIRE(test == result);
     }
 
     for (std::string str : wrongStr) {
-        test = table.getMatchingValue(str, EntityName::IF);
+        test = table->getMatchingValue(str, EntityName::IF, storageView);
         result = {};
         REQUIRE(test == result);
     }
@@ -236,13 +240,13 @@ TEST_CASE("getMatchingValue works correctly") {
     correctStr = {"4"};
     wrongStr = {"1", "2", "3", "5", "6", "7", "8", "9"};
     for (std::string str : correctStr) {
-        test = table.getMatchingValue(str, EntityName::PRINT);
+        test = table->getMatchingValue(str, EntityName::PRINT, storageView);
         result = {Value(ValueType::STMT_NUM, str)};
         REQUIRE(test == result);
     }
 
     for (std::string str : wrongStr) {
-        test = table.getMatchingValue(str, EntityName::PRINT);
+        test = table->getMatchingValue(str, EntityName::PRINT, storageView);
         result = {};
         REQUIRE(test == result);
     }
@@ -250,13 +254,13 @@ TEST_CASE("getMatchingValue works correctly") {
     correctStr = {"5"};
     wrongStr = {"1", "2", "3", "4", "6", "7", "8", "9"};
     for (std::string str : correctStr) {
-        test = table.getMatchingValue(str, EntityName::READ);
+        test = table->getMatchingValue(str, EntityName::READ, storageView);
         result = {Value(ValueType::STMT_NUM, str)};
         REQUIRE(test == result);
     }
 
     for (std::string str : wrongStr) {
-        test = table.getMatchingValue(str, EntityName::READ);
+        test = table->getMatchingValue(str, EntityName::READ, storageView);
         result = {};
         REQUIRE(test == result);
     }
@@ -264,20 +268,23 @@ TEST_CASE("getMatchingValue works correctly") {
     correctStr = {"6"};
     wrongStr = {"1", "2", "3", "4", "5", "7", "8", "9"};
     for (std::string str : correctStr) {
-        test = table.getMatchingValue(str, EntityName::WHILE);
+        test = table->getMatchingValue(str, EntityName::WHILE, storageView);
         result = {Value(ValueType::STMT_NUM, str)};
         REQUIRE(test == result);
     }
 
     for (std::string str : wrongStr) {
-        test = table.getMatchingValue(str, EntityName::WHILE);
+        test = table->getMatchingValue(str, EntityName::WHILE, storageView);
         result = {};
         REQUIRE(test == result);
     }
 }
 
 TEST_CASE("getAllValues works correctly") {
-    StatementsTable table;
+    Storage *storage = new Storage();
+    StorageView *storageView = storage->getStorageView();
+    StatementsTable *table = storage->getTable<StatementsTable>();
+
     Statement assignStmt = Statement(1, StatementType::ASSIGN);
     Statement callStmt = Statement(2, StatementType::CALL);
     Statement ifStmt = Statement(3, StatementType::IF);
@@ -285,12 +292,12 @@ TEST_CASE("getAllValues works correctly") {
     Statement readStmt = Statement(5, StatementType::READ);
     Statement whileStmt = Statement(6, StatementType::WHILE);
 
-    table.store(&assignStmt);
-    table.store(&callStmt);
-    table.store(&ifStmt);
-    table.store(&printStmt);
-    table.store(&readStmt);
-    table.store(&whileStmt);
+    table->store(&assignStmt);
+    table->store(&callStmt);
+    table->store(&ifStmt);
+    table->store(&printStmt);
+    table->store(&readStmt);
+    table->store(&whileStmt);
 
     std::map<Value, std::vector<Value>> test;
     std::vector<Value> resKeys;
@@ -302,7 +309,7 @@ TEST_CASE("getAllValues works correctly") {
     std::vector<std::vector<Value>> values;
 
     // getAllValues by STMT works correctly
-    test = table.getAllValues(EntityName::STMT);
+    test = table->getAllValues(EntityName::STMT, storageView);
 
     correctStr = {"1", "2", "3", "4", "5", "6"};
 
@@ -323,7 +330,7 @@ TEST_CASE("getAllValues works correctly") {
     }
 
     // getAllValues by ASSIGN works correctly
-    test = table.getAllValues(EntityName::ASSIGN);
+    test = table->getAllValues(EntityName::ASSIGN, storageView);
 
     correctStr = {"1"};
 
@@ -344,7 +351,7 @@ TEST_CASE("getAllValues works correctly") {
     }
 
     // getAllValues by CALL works correctly
-    test = table.getAllValues(EntityName::CALL);
+    test = table->getAllValues(EntityName::CALL, storageView);
 
     correctStr = {"2"};
 
@@ -365,7 +372,7 @@ TEST_CASE("getAllValues works correctly") {
     }
 
     // getAllValues by IF works correctly
-    test = table.getAllValues(EntityName::IF);
+    test = table->getAllValues(EntityName::IF, storageView);
 
     correctStr = {"3"};
 
@@ -385,7 +392,7 @@ TEST_CASE("getAllValues works correctly") {
         REQUIRE(values[i] == resValues[i]);
     }
     // getAllValues by PRINT works correctly
-    test = table.getAllValues(EntityName::PRINT);
+    test = table->getAllValues(EntityName::PRINT, storageView);
 
     correctStr = {"4"};
 
@@ -406,7 +413,7 @@ TEST_CASE("getAllValues works correctly") {
     }
 
     // getAllValues by READ works correctly
-    test = table.getAllValues(EntityName::READ);
+    test = table->getAllValues(EntityName::READ, storageView);
 
     correctStr = {"5"};
 
@@ -427,7 +434,7 @@ TEST_CASE("getAllValues works correctly") {
     }
 
     // getAllValues by WHILE works correctly
-    test = table.getAllValues(EntityName::WHILE);
+    test = table->getAllValues(EntityName::WHILE, storageView);
 
     correctStr = {"6"};
 

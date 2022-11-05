@@ -29,7 +29,7 @@ public:
         this->tableSize++;
     }
 
-    virtual int getTableSize() { return this->tableSize; }
+    int getTableSize() { return this->tableSize; }
 
     /*
      * Returns string form of all relationships.
@@ -114,19 +114,6 @@ public:
         }
         return *this->retrieveLeft(left).begin();
     }
-
-    virtual std::vector<Value> getMatchingValue(std::string value,
-                                                EntityName entity) {
-        UNUSED(value);
-        UNUSED(entity);
-        return std::vector<Value>{};
-    };
-
-    virtual std::map<Value, std::vector<Value>>
-    getAllValues(EntityName entity) {
-        UNUSED(entity);
-        return std::map<Value, std::vector<Value>>{};
-    };
 
 protected:
     std::map<Left, std::unordered_set<Right>> leftToRightsMap;

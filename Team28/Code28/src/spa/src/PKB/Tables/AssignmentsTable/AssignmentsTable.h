@@ -80,10 +80,6 @@ public:
      */
     std::vector<Value> getVar(int stmtNo, AssignExpression expr);
 
-    std::vector<Value> getMatchingValue(std::string value, EntityName entity);
-
-    std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
-
 private:
     const std::string WILDCARD_SYMBOL = "_";
     const std::string EMPTY_STRING = "";

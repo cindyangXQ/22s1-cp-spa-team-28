@@ -5,12 +5,13 @@
 #include <vector>
 
 #include "../../../commons/Statement.h"
+#include "../Attributable.h"
 #include "../Table.h"
 
 /*
  * Class encapsulating a Table used to store SIMPLE statements.
  */
-class StatementsTable : public Table {
+class StatementsTable : public Table, public Attributable {
 public:
     StatementsTable();
 
@@ -59,9 +60,11 @@ public:
      */
     bool hasSecondaryAttribute(const int &index);
 
-    std::vector<Value> getMatchingValue(std::string value, EntityName entity);
+    std::vector<Value> getMatchingValue(std::string value, EntityName entity,
+                                        StorageView *storage);
 
-    std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
+    std::map<Value, std::vector<Value>> getAllValues(EntityName entity,
+                                                     StorageView *storage);
 
     std::unordered_set<int> getStatementsSetByType(StatementType type);
 

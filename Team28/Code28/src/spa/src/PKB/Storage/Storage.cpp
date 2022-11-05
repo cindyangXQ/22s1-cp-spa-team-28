@@ -129,8 +129,8 @@ std::vector<Solvable *> Storage::getUsesTables() {
 
 StorageView *Storage::getStorageView() { return this->storageView; };
 
-Table *Storage::getAttributesTable(EntityName entity,
-                                   EntityAttribute attribute) {
+Attributable *Storage::getAttributesTable(EntityName entity,
+                                          EntityAttribute attribute) {
     return this->attributesTables[{entity, attribute}];
 };
 

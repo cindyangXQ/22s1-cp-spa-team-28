@@ -84,7 +84,8 @@ public:
      */
     StorageView *getStorageView();
 
-    Table *getAttributesTable(EntityName entity, EntityAttribute attribute);
+    Attributable *getAttributesTable(EntityName entity,
+                                     EntityAttribute attribute);
 
 private:
     std::map<std::type_index, Table *> tables;
@@ -93,7 +94,8 @@ private:
      * NOTE: Modifies and Uses are complex and won't be mapped here.
      */
     std::map<RelationshipReference, Solvable *> rsTables;
-    std::map<std::pair<EntityName, EntityAttribute>, Table *> attributesTables;
+    std::map<std::pair<EntityName, EntityAttribute>, Attributable *>
+        attributesTables;
 
     /*
      * Mapping of Designation to Table for external facing APIs in

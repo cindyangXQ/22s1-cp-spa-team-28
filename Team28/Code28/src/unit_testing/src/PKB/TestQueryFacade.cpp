@@ -1650,6 +1650,22 @@ TEST_CASE("solveOneAttribute returns correct results -- Relationships") {
     UsesSTable *usesS = storage->getTable<UsesSTable>();
     ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
     CallProcTable *callP = storage->getTable<CallProcTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+
+    // Statements
+    Statement assignStmt = Statement(1, StatementType::ASSIGN);
+    Statement printStmt = Statement(2, StatementType::PRINT);
+    Statement readStmt = Statement(3, StatementType::READ);
+    Statement callStmt = Statement(4, StatementType::CALL);
+    Statement ifStmt = Statement(5, StatementType::IF);
+    Statement whileStmt = Statement(6, StatementType::WHILE);
+
+    statements->store(&assignStmt);
+    statements->store(&callStmt);
+    statements->store(&ifStmt);
+    statements->store(&printStmt);
+    statements->store(&readStmt);
+    statements->store(&whileStmt);
 
     // Relationships
     Relationship<int, std::string> rs1 =
@@ -1920,7 +1936,7 @@ TEST_CASE("solveOneAttribute returns correct results -- Statements") {
 
 TEST_CASE("solveBothAttribute returns correct results -- Relationships") {
     // procedure main {
-    //     a = b + 1;
+    //     a = a + 1;
     //     print a;
     //     read a;
     //     call bar;
@@ -1931,8 +1947,26 @@ TEST_CASE("solveBothAttribute returns correct results -- Relationships") {
     UsesSTable *usesS = storage->getTable<UsesSTable>();
     ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
     CallProcTable *callP = storage->getTable<CallProcTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+
+    // Statements
+    Statement stmt1 = Statement(1, StatementType::ASSIGN);
+    Statement stmt2 = Statement(2, StatementType::PRINT);
+    Statement stmt3 = Statement(3, StatementType::READ);
+    Statement stmt4 = Statement(4, StatementType::CALL);
+    Statement stmt5 = Statement(5, StatementType::READ);
+
+    statements->store(&stmt1);
+    statements->store(&stmt2);
+    statements->store(&stmt3);
+    statements->store(&stmt4);
+    statements->store(&stmt5);
 
     // Relationships
+    Relationship<int, std::string> rs1a =
+        Relationship(RelationshipReference::MODIFIES, 1, std::string("a"));
+    Relationship<int, std::string> rs1b =
+        Relationship(RelationshipReference::USES, 1, std::string("a"));
     Relationship<int, std::string> rs2 =
         Relationship(RelationshipReference::USES, 2, std::string("a"));
     Relationship<int, std::string> rs3 =
@@ -1941,6 +1975,8 @@ TEST_CASE("solveBothAttribute returns correct results -- Relationships") {
         Relationship(RelationshipReference::USES, 4, std::string("bar"));
     Relationship<int, std::string> rs5 =
         Relationship(RelationshipReference::MODIFIES, 5, std::string("bar"));
+    modifiesS->store(&rs1a);
+    usesS->store(&rs1b);
     usesS->store(&rs2);
     modifiesS->store(&rs3);
     callP->store(&rs4);

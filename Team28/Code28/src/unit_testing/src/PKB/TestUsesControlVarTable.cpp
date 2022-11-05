@@ -1,5 +1,6 @@
 #include "catch.hpp"
 
+#include "PKB/Storage/Storage.h"
 #include "PKB/Tables/RelationshipsTable/RelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/UsesControlVarTable.h"
 
@@ -151,16 +152,26 @@ TEST_CASE("getStmtAndVar returns correct results") {
 TEST_CASE(
     "UsesControlVarTables getMatchingValue and getAllValues returns empty "
     "vector") {
-    WhileControlVarTable wTable;
+    Storage *storage = new Storage();
+    WhileControlVarTable *wTable = storage->getTable<WhileControlVarTable>();
+    StorageView *storageView = storage->getStorageView();
+
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    Statement stmt2 = Statement(2, StatementType::WHILE);
+    statements->store(&stmt2);
 
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 2, std::string("x"));
-    wTable.store(&test1);
+    wTable->store(&test1);
 
     // Return empty
-    REQUIRE(wTable.getMatchingValue("2", EntityName::STMT).size() == 0);
-    REQUIRE(wTable.getMatchingValue("x", EntityName::STMT).size() == 0);
-    REQUIRE(wTable.getAllValues(EntityName::STMT).size() == 0);
+    REQUIRE(
+        wTable->getMatchingValue("2", EntityName::STMT, storageView).size() ==
+        0);
+    REQUIRE(
+        wTable->getMatchingValue("x", EntityName::STMT, storageView).size() ==
+        0);
+    REQUIRE(wTable->getAllValues(EntityName::STMT, storageView).size() == 0);
 }
 
 TEST_CASE("UsesControlVarTable: validate works correctly") {
