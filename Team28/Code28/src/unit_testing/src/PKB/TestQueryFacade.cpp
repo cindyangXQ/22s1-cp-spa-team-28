@@ -3246,3 +3246,17 @@ TEST_CASE("GetCondAndVar with nothing stored returns correct results") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("getSecondaryAttribute with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    REQUIRE_THROWS(facade.getSecondaryAttribute(1),
+                   "StmtNum does not refer to attributable statement");
+    REQUIRE_THROWS(facade.getSecondaryAttribute(2),
+                   "StmtNum does not refer to attributable statement");
+    REQUIRE_THROWS(facade.getSecondaryAttribute(3),
+                   "StmtNum does not refer to attributable statement");
+    REQUIRE_THROWS(facade.getSecondaryAttribute(55),
+                   "StmtNum does not refer to attributable statement");
+}
