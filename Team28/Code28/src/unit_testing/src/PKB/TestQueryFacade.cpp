@@ -3203,3 +3203,46 @@ TEST_CASE("getAssignAndVar with nothing stored returns correct results") {
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
+
+TEST_CASE("GetCond with nothing stored returns correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // getCond(Designation::WHILE_C, "x") returns {}
+    output = facade.getCond(Designation::WHILE_C, "x");
+    expectedResult = {};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getCond(Designation::WHILE_C, "_") returns {}
+    output = facade.getCond(Designation::WHILE_C, "_");
+    expectedResult = {};
+    std::sort(output.begin(), output.end());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getCond(Designation::WHILE_C, "invalid") returns {}
+    output = facade.getCond(Designation::WHILE_C, "invalid");
+    expectedResult = {};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("GetCondAndVar with nothing stored returns correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    WhileControlVarTable *whiles = storage->getTable<WhileControlVarTable>();
+
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // getWhileAndVar returns {}
+    output = facade.getCondAndVar(Designation::WHILE_C);
+    expectedResult = {};
+    std::sort(output.begin(), output.end(), value_pair_sort());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
