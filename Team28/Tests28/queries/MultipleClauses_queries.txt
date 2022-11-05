@@ -136,7 +136,7 @@ TRUE
 26 - 2 with 1 pattern 1 such that
 while w; print p; variable v;
 Select p pattern w(v, _) with v.varName = "a22" and p.varName = "a28"
-15, 16, 25
+25
 5000
 27 - multiple clauses (include with), select synonym
 if ifs1, ifs2; variable v1, v2, v3; print p; stmt s; assign a;
