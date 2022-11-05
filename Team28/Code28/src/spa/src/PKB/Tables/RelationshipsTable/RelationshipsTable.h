@@ -282,6 +282,7 @@ protected:
         if (synName == EntityName::STMT) {
             return statements->getAllLineNumbers();
         }
+
         StatementType statementType =
             Statement::getStmtTypeFromEntityName(synName);
         return statements->getStatementsByType(statementType);
