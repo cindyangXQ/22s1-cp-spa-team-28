@@ -176,7 +176,11 @@ void PatternClause::populateOptimizeScore(QueryFacade *queryFacade) {
     if (this->entRef.isASynonym()) {
         baseScore += queryFacade->getTableSize(this->entRef.getDesignation());
     }
-    this->score = multiplier * baseScore;
+    if (multiplier * baseScore < 0) {
+        this->score = INT_MAX;
+    } else {
+        this->score = multiplier * baseScore;
+    }
 }
 
 double PatternClause::getOptimizeScore() { return this->score; }

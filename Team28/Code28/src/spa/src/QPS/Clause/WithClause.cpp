@@ -89,7 +89,7 @@ void WithClause::populateSynsUsed() {
 }
 
 void WithClause::populateOptimizeScore(QueryFacade *queryFacade) {
-    double multiplier = 1.0;
+    double multiplier = 0.01;
     if (synsUsed.size() == 0) {
         multiplier *= 0.01;
     }
@@ -100,7 +100,11 @@ void WithClause::populateOptimizeScore(QueryFacade *queryFacade) {
     if (this->refRight.isASynonym()) {
         baseScore += queryFacade->getTableSize(this->refRight.getDesignation());
     }
-    this->score = multiplier * baseScore;
+    if (multiplier * baseScore < 0) {
+        this->score = INT_MAX;
+    } else {
+        this->score = multiplier * baseScore;
+    }
 }
 
 double WithClause::getOptimizeScore() { return this->score; }
