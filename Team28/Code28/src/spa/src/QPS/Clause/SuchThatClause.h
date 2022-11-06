@@ -153,6 +153,21 @@ const std::unordered_set<RelationshipReference> noSameSynonym = {
     RelationshipReference::CALLS,   RelationshipReference::CALLS_T,
     RelationshipReference::NEXT};
 
+const std::unordered_map<RelationshipReference, Designation>
+    RELATIONSHIP_DESIGNATION_MAP = {
+        {RelationshipReference::FOLLOWS, Designation::FOLLOWS},
+        {RelationshipReference::FOLLOWS_T, Designation::FOLLOWS_T},
+        {RelationshipReference::PARENT, Designation::PARENT},
+        {RelationshipReference::PARENT_T, Designation::PARENT_T},
+        {RelationshipReference::MODIFIES, Designation::MOD_S},
+        {RelationshipReference::USES, Designation::USE_S},
+        {RelationshipReference::CALLS, Designation::CALL},
+        {RelationshipReference::CALLS_T, Designation::CALL_T},
+        {RelationshipReference::NEXT, Designation::NEXT},
+        {RelationshipReference::NEXT_T, Designation::NEXT_T},
+        {RelationshipReference::AFFECTS, Designation::AFFECTS},
+        {RelationshipReference::AFFECTS_T, Designation::AFFECTS_T}};
+
 /*
  * Class encapsulating the logic of the such that clause.
  */

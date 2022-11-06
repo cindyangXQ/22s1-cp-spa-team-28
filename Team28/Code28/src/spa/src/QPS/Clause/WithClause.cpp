@@ -89,19 +89,21 @@ void WithClause::populateSynsUsed() {
 }
 
 void WithClause::populateOptimizeScore(QueryFacade *queryFacade) {
-    double baseScore = 0.01;
-    double synScore = 1.0;
-    if (this->synsUsed.size() == 0) {
-        synScore = 0.01;
-    } else if (this->synsUsed.size() == 1) {
-        synScore = 0.5;
+    double multiplier = 1.0;
+    if (synsUsed.size() == 0) {
+        multiplier *= 0.01;
     }
-    this->score = baseScore * synScore;
+    double baseScore = 0.0;
+    if (this->refLeft.isASynonym()) {
+        baseScore += queryFacade->getTableSize(this->refLeft.getDesignation());
+    }
+    if (this->refRight.isASynonym()) {
+        baseScore += queryFacade->getTableSize(this->refRight.getDesignation());
+    }
+    this->score = multiplier * baseScore;
 }
 
-double WithClause::getOptimizeScore() {
-    return this->score;
-}
+double WithClause::getOptimizeScore() { return this->score; }
 
 bool WithClause::replace(Reference synRef, Reference valRef) {
     bool replaced = false;

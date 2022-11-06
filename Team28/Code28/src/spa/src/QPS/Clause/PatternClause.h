@@ -6,10 +6,6 @@
 
 const std::unordered_set<EntityName> PATTERN_ENTITY_MAP = {
     EntityName::ASSIGN, EntityName::IF, EntityName::WHILE};
-const std::unordered_map<EntityName, Designation> ENTITY_DESIGNATION_MAP = {
-    {EntityName::ASSIGN, Designation::ASSIGN},
-    {EntityName::IF, Designation::IF_C},
-    {EntityName::WHILE, Designation::WHILE_C}};
 typedef std::string Expression;
 
 /*
