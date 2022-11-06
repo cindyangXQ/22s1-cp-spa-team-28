@@ -14,7 +14,9 @@
  */
 class QPS {
 public:
-    QPS(QueryFacade *facade) : evaluator(QueryEvaluator(facade)){};
+    QPS(QueryFacade *facade)
+        : evaluator(QueryEvaluator(facade)),
+          optimizer(QueryOptimizer(facade)){};
 
     void evaluate(std::string query, std::list<std::string> &results);
 
@@ -22,4 +24,5 @@ public:
 
 private:
     QueryEvaluator evaluator;
+    QueryOptimizer optimizer;
 };

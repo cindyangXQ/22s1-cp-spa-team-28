@@ -133,22 +133,29 @@ void SuchThatClause::populateSynsUsed() {
     }
 }
 
-double SuchThatClause::getOptimizeScore() {
-    double baseScore = 1.0;
-    double synScore = 1.0;
-    double relationshipScore = 1.0;
-    if (this->synsUsed.size() == 0) {
-        synScore = 0.01;
-    } else if (this->synsUsed.size() == 1) {
-        synScore = 0.5;
+void SuchThatClause::populateOptimizeScore(QueryFacade *queryFacade) {
+    double multiplier = 1.0;
+    if (synsUsed.size() == 0) {
+        multiplier *= 0.01;
     }
-    if (this->relationship == RelationshipReference::AFFECTS ||
-        this->relationship == RelationshipReference::AFFECTS_T ||
-        this->relationship == RelationshipReference::NEXT_T) {
-        relationshipScore = 10.0;
+    double baseScore = 0.0;
+    Designation relationship =
+        RELATIONSHIP_DESIGNATION_MAP.at(this->relationship);
+    baseScore += queryFacade->getTableSize(relationship);
+    if (this->refLeft.isASynonym()) {
+        baseScore += queryFacade->getTableSize(this->refLeft.getDesignation());
     }
-    return baseScore * synScore;
+    if (this->refRight.isASynonym()) {
+        baseScore += queryFacade->getTableSize(this->refRight.getDesignation());
+    }
+    if (multiplier * baseScore < 0) {
+        this->score = INT_MAX;
+    } else {
+        this->score = multiplier * baseScore;
+    }
 }
+
+double SuchThatClause::getOptimizeScore() { return this->score; }
 
 bool SuchThatClause::replace(Reference synRef, Reference valRef) {
     bool replaced = false;

@@ -6,10 +6,6 @@
 
 const std::unordered_set<EntityName> PATTERN_ENTITY_MAP = {
     EntityName::ASSIGN, EntityName::IF, EntityName::WHILE};
-const std::unordered_map<EntityName, Designation> ENTITY_DESIGNATION_MAP = {
-    {EntityName::ASSIGN, Designation::ASSIGN},
-    {EntityName::IF, Designation::IF_C},
-    {EntityName::WHILE, Designation::WHILE_C}};
 typedef std::string Expression;
 
 const std::regex IF_PATTERN("^\\s*,\\s*_\\s*$");
@@ -28,6 +24,7 @@ public:
     bool validate();
     ClauseResult evaluate(QueryFacade *queryFacade);
     std::unordered_set<std::string> getSynonymsUsed();
+    void populateOptimizeScore(QueryFacade *queryFacade);
     double getOptimizeScore();
     bool replace(Reference synRef, Reference valRef);
 
@@ -38,6 +35,7 @@ private:
     Expression expression;
     bool isExact;
     std::unordered_set<std::string> synsUsed;
+    double score;
     void populateSynsUsed();
     ClauseResult handleNoSynonym(QueryFacade *queryFacade);
     ClauseResult handleLeftSynonym(QueryFacade *queryFacade);

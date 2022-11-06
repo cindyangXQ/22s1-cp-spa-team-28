@@ -106,16 +106,26 @@ void WithClause::populateSynsUsed() {
     }
 }
 
-double WithClause::getOptimizeScore() {
-    double baseScore = 0.25;
-    double synScore = 1.0;
-    if (this->synsUsed.size() == 0) {
-        synScore = 0.01;
-    } else if (this->synsUsed.size() == 1) {
-        synScore = 0.5;
+void WithClause::populateOptimizeScore(QueryFacade *queryFacade) {
+    double multiplier = 0.01;
+    if (synsUsed.size() == 0) {
+        multiplier *= 0.01;
     }
-    return baseScore * synScore;
+    double baseScore = 0.0;
+    if (this->refLeft.isASynonym()) {
+        baseScore += queryFacade->getTableSize(this->refLeft.getDesignation());
+    }
+    if (this->refRight.isASynonym()) {
+        baseScore += queryFacade->getTableSize(this->refRight.getDesignation());
+    }
+    if (multiplier * baseScore < 0) {
+        this->score = INT_MAX;
+    } else {
+        this->score = multiplier * baseScore;
+    }
 }
+
+double WithClause::getOptimizeScore() { return this->score; }
 
 bool WithClause::replace(Reference synRef, Reference valRef) {
     bool replaced = false;

@@ -1,6 +1,7 @@
 #include "OrderOptimizer.h"
 
-void OrderOptimizer::optimize(SolvableQuery *solvableQ) {
+void OrderOptimizer::optimize(SolvableQuery *solvableQ,
+                              QueryFacade *queryFacade) {
     std::vector<std::vector<QueryClause *>> clauseGroups =
         solvableQ->getClauseGroup();
     std::vector<std::vector<QueryClause *>> sortedClauseGroups;
@@ -8,6 +9,9 @@ void OrderOptimizer::optimize(SolvableQuery *solvableQ) {
 
     for (int i = 0; i < clauseGroups.size(); i++) {
         std::vector<QueryClause *> group = clauseGroups[i];
+        for (QueryClause *clause : group) {
+            clause->populateOptimizeScore(queryFacade);
+        }
         double totalScore = getTotalScore(group);
         sort(group.begin(), group.end(),
              [](QueryClause *q1, QueryClause *q2) -> bool {

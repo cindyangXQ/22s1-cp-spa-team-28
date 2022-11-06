@@ -163,16 +163,27 @@ void PatternClause::populateSynsUsed() {
     }
 }
 
-double PatternClause::getOptimizeScore() {
-    double baseScore = 1.0;
-    double synScore = 1.0;
-    if (this->synsUsed.size() == 0) {
-        synScore = 0.01;
-    } else if (this->synsUsed.size() == 1) {
-        synScore = 0.5;
+void PatternClause::populateOptimizeScore(QueryFacade *queryFacade) {
+    double multiplier = 1.0;
+    if (synsUsed.size() == 0) {
+        multiplier *= 0.01;
     }
-    return baseScore * synScore;
+    double baseScore = 0.0;
+    baseScore += queryFacade->getTableSize(patternType);
+    if (this->stmtRef.isASynonym()) {
+        baseScore += queryFacade->getTableSize(this->stmtRef.getDesignation());
+    }
+    if (this->entRef.isASynonym()) {
+        baseScore += queryFacade->getTableSize(this->entRef.getDesignation());
+    }
+    if (multiplier * baseScore < 0) {
+        this->score = INT_MAX;
+    } else {
+        this->score = multiplier * baseScore;
+    }
 }
+
+double PatternClause::getOptimizeScore() { return this->score; }
 
 bool PatternClause::replace(Reference synRef, Reference valRef) {
     bool replaced = false;

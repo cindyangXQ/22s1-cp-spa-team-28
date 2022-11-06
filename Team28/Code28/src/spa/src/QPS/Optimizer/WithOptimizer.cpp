@@ -37,6 +37,7 @@ void WithOptimizer::optimize(SolvableQuery *solvableQ) {
     }
     solvableQ->replaceWithClause(newWithClauses);
 }
+
 bool WithOptimizer::performReplacement(
     Reference synRef, Reference valRef, std::vector<QueryClause *> *clauses,
     std::vector<QueryClause *> *withClauses, int i,

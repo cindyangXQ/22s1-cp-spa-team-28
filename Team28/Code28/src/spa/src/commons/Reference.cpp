@@ -65,6 +65,10 @@ ReferenceType Reference::getRefType() { return this->type; }
 
 Synonym Reference::getSynonym() { return this->syn; }
 
+Designation Reference::getDesignation() {
+    return ENTITY_DESIGNATION_MAP.at(this->syn.getEntityName());
+}
+
 EntityName Reference::getEntityName() { return this->syn.getEntityName(); }
 
 std::string Reference::getSynonymName() { return this->syn.getName(); }

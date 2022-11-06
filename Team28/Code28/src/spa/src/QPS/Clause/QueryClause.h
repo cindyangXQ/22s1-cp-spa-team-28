@@ -11,6 +11,7 @@ public:
     virtual bool validate() = 0;
     virtual ClauseResult evaluate(QueryFacade *queryFacade) = 0;
     virtual std::unordered_set<std::string> getSynonymsUsed() = 0;
+    virtual void populateOptimizeScore(QueryFacade *queryFacade) = 0;
     virtual double getOptimizeScore() = 0;
     virtual bool replace(Reference synRef, Reference valRef) = 0;
 };
