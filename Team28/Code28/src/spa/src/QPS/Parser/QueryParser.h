@@ -12,7 +12,7 @@ const char CLAUSE_SEPARATOR = ';';
 const char ARG_SEPARATOR = ',';
 const int MIN_CLAUSE_NUM = 2;
 const int SUCH_THAT_REGEX_CHECK = 5;
-const int PATTERN_REGEX_CHECK = 7;
+const int PATTERN_REGEX_CHECK = 8;
 const int WITH_REGEX_CHECK = 4;
 
 const std::unordered_map<std::type_index, int> REGEX_CHECK_MAP = {

@@ -22,6 +22,7 @@ public:
     std::vector<QueryClause *> getQueryClause();
     std::vector<QueryClause *> getWithClause();
     std::vector<std::vector<QueryClause *>> getClauseGroup();
+    void replaceWithClause(std::vector<QueryClause *> newWithClause);
     void setClauseGroup(std::vector<std::vector<QueryClause *>> *clauseGroups);
 
 private:

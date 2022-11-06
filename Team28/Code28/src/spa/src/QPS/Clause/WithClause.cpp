@@ -98,3 +98,20 @@ double WithClause::getOptimizeScore() {
     }
     return baseScore * synScore;
 }
+
+bool WithClause::replace(Reference synRef, Reference valRef) {
+    bool replaced = false;
+    if (refLeft.getRefType() == ReferenceType::ATTR_REF &&
+        refLeft.getSynonymName() == synRef.getSynonymName() &&
+        refLeft.getAttr() == synRef.getAttr()) {
+        refLeft = valRef;
+        replaced = true;
+    }
+    if (refRight.getRefType() == ReferenceType::ATTR_REF &&
+        refRight.getSynonymName() == synRef.getSynonymName() &&
+        refRight.getAttr() == synRef.getAttr()) {
+        refRight = valRef;
+        replaced = true;
+    }
+    return replaced;
+}

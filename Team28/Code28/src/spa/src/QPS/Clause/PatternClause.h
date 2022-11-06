@@ -6,8 +6,14 @@
 
 const std::unordered_set<EntityName> PATTERN_ENTITY_MAP = {
     EntityName::ASSIGN, EntityName::IF, EntityName::WHILE};
+const std::unordered_map<EntityName, Designation> ENTITY_DESIGNATION_MAP = {
+    {EntityName::ASSIGN, Designation::ASSIGN},
+    {EntityName::IF, Designation::IF_C},
+    {EntityName::WHILE, Designation::WHILE_C}};
 typedef std::string Expression;
 
+const std::regex IF_PATTERN("^\\s*,\\s*_\\s*$");
+const std::regex ASSIGN_WHILE_PATTERN("^\\s*$");
 /*
  * Class encapsulating the logic of the pattern clause.
  */
@@ -23,15 +29,18 @@ public:
     ClauseResult evaluate(QueryFacade *queryFacade);
     std::unordered_set<std::string> getSynonymsUsed();
     double getOptimizeScore();
+    bool replace(Reference synRef, Reference valRef);
 
 private:
+    Designation patternType;
     Reference stmtRef;
     Reference entRef;
     Expression expression;
     bool isExact;
     std::unordered_set<std::string> synsUsed;
     void populateSynsUsed();
-    ClauseResult handleAssign(QueryFacade *queryFacade);
-    ClauseResult handleIf(QueryFacade *queryFacade);
-    ClauseResult handleWhile(QueryFacade *queryFacade);
+    ClauseResult handleNoSynonym(QueryFacade *queryFacade);
+    ClauseResult handleLeftSynonym(QueryFacade *queryFacade);
+    ClauseResult handleRightSynonym(QueryFacade *queryFacade);
+    ClauseResult handleBothSynonym(QueryFacade *queryFacade);
 };
