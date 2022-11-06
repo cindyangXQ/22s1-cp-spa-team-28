@@ -900,7 +900,7 @@ a,b,h
 5000
 181 - Pattern while parent if using same control variable exists
 while w,w1,w2,w3; if i,i1,i2,i3; variable v,v1,v2,v3; stmt n;
-Select BOOLEAN pattern w(v,_) such that Parent(w, i) pattern i(v,_,_) such that Calls("assign", "mixed")
+Select BOOLEAN pattern w(v,_) such that Parent(w, i) pattern i(v,_,_) such that Calls("assign", "mujvnjkldnjknbkjvnk")
 TRUE
 5000
 182 - Pattern while parent if using same control variable exists
