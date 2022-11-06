@@ -12,6 +12,8 @@ const std::unordered_map<EntityName, Designation> ENTITY_DESIGNATION_MAP = {
     {EntityName::WHILE, Designation::WHILE_C}};
 typedef std::string Expression;
 
+const std::regex IF_PATTERN("^\\s*,\\s*_\\s*$");
+const std::regex ASSIGN_WHILE_PATTERN("^\\s*$");
 /*
  * Class encapsulating the logic of the pattern clause.
  */
