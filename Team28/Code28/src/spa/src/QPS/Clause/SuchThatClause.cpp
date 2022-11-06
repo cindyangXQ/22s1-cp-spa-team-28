@@ -145,7 +145,10 @@ double SuchThatClause::getOptimizeScore() {
     if (this->relationship == RelationshipReference::AFFECTS ||
         this->relationship == RelationshipReference::AFFECTS_T ||
         this->relationship == RelationshipReference::NEXT_T) {
+        relationshipScore = 1000.0;
+    } else if (this->relationship == RelationshipReference::PARENT_T ||
+               this->relationship == RelationshipReference::FOLLOWS_T) {
         relationshipScore = 10.0;
     }
-    return baseScore * synScore;
+    return baseScore * synScore * relationshipScore;
 }

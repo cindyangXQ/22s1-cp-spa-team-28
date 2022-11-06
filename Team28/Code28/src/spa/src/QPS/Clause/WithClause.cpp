@@ -89,7 +89,7 @@ void WithClause::populateSynsUsed() {
 }
 
 double WithClause::getOptimizeScore() {
-    double baseScore = 0.25;
+    double baseScore = 0.01;
     double synScore = 1.0;
     if (this->synsUsed.size() == 0) {
         synScore = 0.01;
