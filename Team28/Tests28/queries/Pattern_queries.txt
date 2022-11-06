@@ -928,7 +928,7 @@ while w; if i; variable v; stmt n;
 Select BOOLEAN pattern w(v,_,_)
 SyntaxError
 5000
-197 - Syntactically invalid pattern if
+187 - Syntactically invalid pattern if
 while w; if i; variable v; stmt n;
 Select BOOLEAN pattern i(v,_,_,_)
 SyntaxError
