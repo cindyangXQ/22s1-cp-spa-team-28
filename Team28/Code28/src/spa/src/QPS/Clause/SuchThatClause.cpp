@@ -133,7 +133,7 @@ void SuchThatClause::populateSynsUsed() {
     }
 }
 
-double SuchThatClause::getOptimizeScore() {
+void SuchThatClause::populateOptimizeScore(QueryFacade *queryFacade) {
     double baseScore = 1.0;
     double synScore = 1.0;
     double relationshipScore = 1.0;
@@ -150,22 +150,11 @@ double SuchThatClause::getOptimizeScore() {
                this->relationship == RelationshipReference::FOLLOWS_T) {
         relationshipScore = 10.0;
     }
-    return baseScore * synScore * relationshipScore;
+    this->score = baseScore * synScore * relationshipScore;
 }
 
-bool SuchThatClause::replace(Reference synRef, Reference valRef) {
-    bool replaced = false;
-    if (refLeft.isASynonym() &&
-        refLeft.getSynonymName() == synRef.getSynonymName()) {
-        refLeft = valRef;
-        replaced = true;
-    }
-    if (refRight.isASynonym() &&
-        refRight.getSynonymName() == synRef.getSynonymName()) {
-        refRight = valRef;
-        replaced = true;
-    }
-    return replaced;
+double SuchThatClause::getOptimizeScore() {
+    return this->score;
 }
 
 bool SuchThatClause::replace(Reference synRef, Reference valRef) {

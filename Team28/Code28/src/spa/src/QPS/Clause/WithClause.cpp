@@ -88,7 +88,7 @@ void WithClause::populateSynsUsed() {
     }
 }
 
-double WithClause::getOptimizeScore() {
+void WithClause::populateOptimizeScore(QueryFacade *queryFacade) {
     double baseScore = 0.01;
     double synScore = 1.0;
     if (this->synsUsed.size() == 0) {
@@ -96,7 +96,11 @@ double WithClause::getOptimizeScore() {
     } else if (this->synsUsed.size() == 1) {
         synScore = 0.5;
     }
-    return baseScore * synScore;
+    this->score = baseScore * synScore;
+}
+
+double WithClause::getOptimizeScore() {
+    return this->score;
 }
 
 bool WithClause::replace(Reference synRef, Reference valRef) {

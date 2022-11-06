@@ -152,7 +152,7 @@ void PatternClause::populateSynsUsed() {
     }
 }
 
-double PatternClause::getOptimizeScore() {
+void PatternClause::populateOptimizeScore(QueryFacade *queryFacade) {
     double baseScore = 1.0;
     double synScore = 1.0;
     if (this->synsUsed.size() == 0) {
@@ -160,7 +160,11 @@ double PatternClause::getOptimizeScore() {
     } else if (this->synsUsed.size() == 1) {
         synScore = 0.5;
     }
-    return baseScore * synScore;
+    this->score = baseScore * synScore;
+}
+
+double PatternClause::getOptimizeScore() {
+    return this->score;
 }
 
 bool PatternClause::replace(Reference synRef, Reference valRef) {
