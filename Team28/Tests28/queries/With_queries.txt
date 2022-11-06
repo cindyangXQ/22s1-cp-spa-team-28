@@ -173,3 +173,33 @@ constant c;
 Select c with c.value = 012
 SyntaxError
 5000
+35 - reflective query: procName
+procedure p; call c;
+Select <p, c.procName> with "call" = p.procName and "call" = c.procName
+call call 
+5000
+36 - reflective query: varName and stmt#
+read r; variable v; print p;
+Select v with 5 = r.stmt# and "read" = r.varName with "read" = v.varName with "constant" = p.varName and 4 = p.stmt#
+read
+5000
+37 - reflective query: constant.value
+constant c, c1;
+Select c1 with 12456 = c.value and c1.value = 1
+
+5000
+38 - invalid reflective query: wrong type for constant value
+constant c;
+Select c with "call" = c.value
+SemanticError
+5000
+39 - invalid reflective query: wrong type for wrong varName
+variable v;
+Select v with 80 = v.varName
+SemanticError
+5000
+40 - invalid reflective query: invalid name for varName
+variable v;
+Select v with "1main" = v.varName
+SyntaxError
+5000
