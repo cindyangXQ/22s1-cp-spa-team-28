@@ -17,20 +17,38 @@ bool WithClause::validate() {
     if (refLeft.isASynonym() || refRight.isASynonym()) {
         return false;
     }
-    if (refLeft.getAttr() == EntityAttribute::PROC_NAME ||
-        refLeft.getAttr() == EntityAttribute::VAR_NAME ||
-        refLeft.getRefType() == ReferenceType::ENT_REF) {
-        return (refRight.getAttr() == EntityAttribute::PROC_NAME ||
-                refRight.getAttr() == EntityAttribute::VAR_NAME ||
-                refRight.getRefType() == ReferenceType::ENT_REF);
-    } else if (refLeft.getAttr() == EntityAttribute::STMT_NO ||
-               refLeft.getAttr() == EntityAttribute::VALUE ||
-               refLeft.getRefType() == ReferenceType::STMT_REF) {
-        return (refRight.getAttr() == EntityAttribute::STMT_NO ||
-                refRight.getAttr() == EntityAttribute::VALUE ||
-                refRight.getRefType() == ReferenceType::STMT_REF);
+    if (refLeft.getRefType() == ReferenceType::ATTR_REF &&
+        refRight.getRefType() == ReferenceType::ATTR_REF) {
+        if (refLeft.getAttr() == EntityAttribute::PROC_NAME ||
+            refLeft.getAttr() == EntityAttribute::VAR_NAME) {
+            return (refRight.getAttr() == EntityAttribute::PROC_NAME ||
+                    refRight.getAttr() == EntityAttribute::VAR_NAME);
+        } else {
+            return (refRight.getAttr() == EntityAttribute::STMT_NO ||
+                    refRight.getAttr() == EntityAttribute::VALUE);
+        }
+    } else if (refLeft.getRefType() == ReferenceType::ATTR_REF &&
+               refRight.getRefType() != ReferenceType::ATTR_REF) {
+        if (refLeft.getAttr() == EntityAttribute::PROC_NAME ||
+            refLeft.getAttr() == EntityAttribute::VAR_NAME) {
+            return refRight.getRefType() == ReferenceType::ENT_REF;
+        } else {
+            return refRight.getRefType() == ReferenceType::STMT_REF;
+        }
+    } else if (refLeft.getRefType() != ReferenceType::ATTR_REF &&
+               refRight.getRefType() == ReferenceType::ATTR_REF) {
+        if (refRight.getAttr() == EntityAttribute::PROC_NAME ||
+            refRight.getAttr() == EntityAttribute::VAR_NAME) {
+            return refLeft.getRefType() == ReferenceType::ENT_REF;
+        } else {
+            return refLeft.getRefType() == ReferenceType::STMT_REF;
+        }
     } else {
-        return false;
+        if (refLeft.getRefType() == ReferenceType::ENT_REF) {
+            return refRight.getRefType() == ReferenceType::ENT_REF;
+        } else if (refLeft.getRefType() == ReferenceType::STMT_REF) {
+            return refRight.getRefType() == ReferenceType::STMT_REF;
+        }
     }
 }
 
