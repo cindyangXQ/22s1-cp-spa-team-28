@@ -9,7 +9,7 @@ void WithOptimizer::optimize(SolvableQuery *solvableQ) {
     std::vector<Reference> selectedRefs = selectClause.getRefs();
     std::unordered_set<std::string> selectedSynName;
 
-    for each (Reference ref in selectedRefs) {
+    for (Reference ref : selectedRefs) {
         selectedSynName.insert(ref.getSynonymName());
     }
     for (int i = 0; i < withClauses.size(); i++) {
