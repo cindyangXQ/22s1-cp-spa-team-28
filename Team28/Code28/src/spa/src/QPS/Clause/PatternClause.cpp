@@ -7,6 +7,10 @@ bool PatternClause::getIsExact() { return this->isExact; }
 
 void PatternClause::parse(std::smatch matches, std::vector<Synonym> syns) {
     this->stmtRef = Reference::getReference(matches[2], syns);
+    if (stmtRef.getEntityName() == EntityName::IF &&
+        !std::regex_search(matches[6].str(), IF_PATTERN)) {
+        throw SyntaxError("Too many wildcards at the end of If pattern");
+    }
     this->entRef = Reference::getReference(matches[3], syns);
     Expression expr = Utils::trimSpaces(matches[5]);
     this->isExact = expr.find('_') == std::string::npos;

@@ -8,6 +8,7 @@ const std::unordered_set<EntityName> PATTERN_ENTITY_MAP = {
     EntityName::ASSIGN, EntityName::IF, EntityName::WHILE};
 typedef std::string Expression;
 
+const std::regex IF_PATTERN("^\\s*,\\s*_\\s*$");
 /*
  * Class encapsulating the logic of the pattern clause.
  */
