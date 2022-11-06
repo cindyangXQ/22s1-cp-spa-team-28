@@ -293,7 +293,6 @@ protected:
      */
     template <typename T>
     std::vector<std::string> getNamesHelper(NamesTable<T> *namesTable) {
-        // TODO: consider returning set directly
         std::unordered_set<std::string> namesSet = namesTable->getAll();
         std::vector<std::string> namesVector =
             std::vector<std::string>(namesSet.begin(), namesSet.end());

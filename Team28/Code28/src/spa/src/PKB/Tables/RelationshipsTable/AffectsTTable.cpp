@@ -20,7 +20,6 @@ std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
     if (isComputed) {
         return this->matrix;
     }
-    // TODO: Clean up/change method entirely
     for (int i : this->assignments) {
         for (int j : this->assignments) {
             std::pair<int, int> curr = std::make_pair(i, j);

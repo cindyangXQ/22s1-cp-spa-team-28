@@ -352,13 +352,6 @@ TEST_CASE("getRsTable works correctly") {
     table = storage->getRsTable(RelationshipReference::USES,
                                 ReferenceType::ATTR_REF);
     REQUIRE(!table);
-    // TODO: Handle case where EMPTY is passed in/ Remove EMPTY? Exception
-    // because EMPTY is never added
-    /*
-    table = storage->getRsTable(RelationshipReference::EMPTY,
-                                ReferenceType::ATTR_REF);
-    REQUIRE(!table);
-    */
 }
 
 TEST_CASE("getControlVarTable works correctly") {
