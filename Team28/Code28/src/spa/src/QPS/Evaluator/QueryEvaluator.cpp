@@ -10,6 +10,13 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
         std::vector<ClauseResult> groupResult;
         for (QueryClause *clause : group) {
             ClauseResult result = clause->evaluate(queryFacade);
+            if (result.getIsEmpty()) {
+                if (selectClause.getSelectType() == SelectType::BOOLEAN) {
+                    throw EmptyTableError("BOOLEAN");
+                } else {
+                    throw EmptyTableError("SYNONYM");
+                }
+            }
             groupResult.push_back(result);
         }
         clauseResultList.push_back(groupResult);

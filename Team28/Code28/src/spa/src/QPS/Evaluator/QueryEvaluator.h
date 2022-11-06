@@ -5,6 +5,7 @@
 #include "../Clause/SelectClause.h"
 #include "../Clause/SuchThatClause.h"
 #include "../Clause/WithClause.h"
+#include "../Error/EmptyTableError.h"
 #include "../Parser/SolvableQuery.h"
 #include "../Utils.h"
 #include "QueryResult.h"
