@@ -6,6 +6,14 @@
 
 #include "catch.hpp"
 
+/*
+ * Tested resetCache by using a macro to make private fields public to check
+ * that the private matrix is empty. However, since that macro is dangerous and
+ * we don't want to change the internal implementation (protected field) to
+ * allow for stubbing, we choose not to push the test to GitHub since the macro
+ * fails the CI.
+ */
+
 struct InitAffectsTTable {
 public:
     static std::pair<AffectsTTable *, StorageView *> initCode6();

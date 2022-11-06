@@ -48,15 +48,18 @@ std::vector<std::pair<Value, Value>> UsesControlVarTable::getStmtAndVar() {
 };
 
 std::vector<Value> UsesControlVarTable::getMatchingValue(std::string value,
-                                                         EntityName entity) {
+                                                         EntityName entity,
+                                                         StorageView *storage) {
     UNUSED(value);
     UNUSED(entity);
+    UNUSED(storage);
     return std::vector<Value>{};
 };
 
 std::map<Value, std::vector<Value>>
-UsesControlVarTable::getAllValues(EntityName entity) {
+UsesControlVarTable::getAllValues(EntityName entity, StorageView *storage) {
     UNUSED(entity);
+    UNUSED(storage);
     return std::map<Value, std::vector<Value>>{};
 };
 

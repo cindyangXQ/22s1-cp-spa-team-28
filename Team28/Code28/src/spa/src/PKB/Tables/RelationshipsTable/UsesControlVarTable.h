@@ -38,8 +38,10 @@ public:
      */
     std::vector<Value> getVar(int stmtNo);
 
-    std::vector<Value> getMatchingValue(std::string value, EntityName entity);
-    std::map<Value, std::vector<Value>> getAllValues(EntityName entity);
+    std::vector<Value> getMatchingValue(std::string value, EntityName entity,
+                                        StorageView *storage);
+    std::map<Value, std::vector<Value>> getAllValues(EntityName entity,
+                                                     StorageView *storage);
 
 private:
     const std::string WILDCARD_SYMBOL = "_";

@@ -2,8 +2,10 @@
 #include "../../../commons/StringUtil.h"
 
 std::vector<Value> ConstantsTable::getMatchingValue(std::string value,
-                                                    EntityName entity) {
+                                                    EntityName entity,
+                                                    StorageView *storage) {
     UNUSED(entity);
+    UNUSED(storage);
     std::vector<Value> result = {};
     if (this->names.count(value) == 1) {
         result.push_back(Value(ValueType::STMT_NUM, value));
@@ -12,8 +14,9 @@ std::vector<Value> ConstantsTable::getMatchingValue(std::string value,
 }
 
 std::map<Value, std::vector<Value>>
-ConstantsTable::getAllValues(EntityName entity) {
+ConstantsTable::getAllValues(EntityName entity, StorageView *storage) {
     UNUSED(entity);
+    UNUSED(storage);
     std::map<Value, std::vector<Value>> result = {};
     for (std::string name : this->names) {
         Value v = Value(ValueType::STMT_NUM, name);

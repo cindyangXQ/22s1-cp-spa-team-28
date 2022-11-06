@@ -6,7 +6,7 @@ import sys
 import os
 
 def autotest(source_path):
-    cmd = ".\\Team28\\Code28\\build\\src\\autotester\\Release\\autotester.exe .\\Team28\\Tests28\\source\\{}_source.txt .\\Team28\\Tests28\\queries\\{}_queries.txt .\\Team28\\Tests28\\out_{}.xml".format(
+    cmd = "Team28\\Code28\\build\\src\\autotester\\Release\\autotester.exe Team28\\Tests28\\source\\{}_source.txt Team28\\Tests28\\queries\\{}_queries.txt Team28\\Tests28\\out_{}.xml".format(
         source_path, source_path, source_path
     )
     os.system(cmd)
@@ -17,7 +17,7 @@ def remove_suffix(input_string, suffix):
     return input_string
 
 if __name__ == "__main__":
-    pathArr = os.listdir(".\\Team28\\Tests28\\source")
+    pathArr = os.listdir("Team28\\Tests28\\source")
 
     for i in range(len(pathArr)):
         pathArr[i] = remove_suffix(pathArr[i], "_source.txt")

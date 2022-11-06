@@ -18,23 +18,6 @@ TEST_CASE("AssignmentsTable can initialise, store and retrieve correctly") {
                        output.begin()));
 }
 
-TEST_CASE(
-    "AssignmentsTable getMatchingValue and getAllValues returns empty vector") {
-    AssignmentsTable assignmentsTable;
-
-    IntStringPair test = IntStringPair(1, "x1");
-    // Line 1: x1 = 1 + 2
-    std::string expr = "((1)+(2))";
-    Assignment assignment = Assignment(1, std::string("x1"), expr);
-    assignmentsTable.store(&assignment);
-
-    // Stored correct values
-    REQUIRE(
-        assignmentsTable.getMatchingValue("x1", EntityName::ASSIGN).size() ==
-        0);
-    REQUIRE(assignmentsTable.getAllValues(EntityName::ASSIGN).size() == 0);
-}
-
 TEST_CASE("AssignmentsTable getAllAsString works correctly") {
     AssignmentsTable assignmentsTable;
 

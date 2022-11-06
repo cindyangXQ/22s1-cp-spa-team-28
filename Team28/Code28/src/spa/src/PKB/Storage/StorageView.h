@@ -12,7 +12,6 @@
 #include "../../commons/Procedure.h"
 #include "../../commons/TableValue.h"
 #include "../../commons/Variable.h"
-
 #include "../Tables/Table.h"
 
 /*

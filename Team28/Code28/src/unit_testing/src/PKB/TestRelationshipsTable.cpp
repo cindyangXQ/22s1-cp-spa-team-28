@@ -1,5 +1,6 @@
 #include "catch.hpp"
 
+#include "PKB/Storage/Storage.h"
 #include "PKB/Tables/RelationshipsTable/NextTTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToProcRelationshipsTable.h"
 #include "PKB/Tables/RelationshipsTable/ProcToVarRelationshipsTable.h"
@@ -398,40 +399,74 @@ TEST_CASE(
 }
 
 TEST_CASE("usesS getMatchingValue works correctly") {
-    UsesSTable usesS;
-    // procedure main { x = x + 1; y = y + 1; }
+    Storage *storage = new Storage();
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
+    StorageView *storageView = storage->getStorageView();
+
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    Statement stmt1 = Statement(1, StatementType::ASSIGN);
+    Statement stmt2 = Statement(2, StatementType::ASSIGN);
+    Statement stmt3 = Statement(3, StatementType::PRINT);
+    statements->store(&stmt1);
+    statements->store(&stmt2);
+    statements->store(&stmt3);
+
+    // procedure main { x = x + 1; y = y + 1; print z;}
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::USES, 1, std::string("x"));
     Relationship<int, std::string> test2 =
         Relationship(RelationshipReference::USES, 2, std::string("y"));
-    usesS.store(&test1);
-    usesS.store(&test2);
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::USES, 3, std::string("z"));
+    usesS->store(&test1);
+    usesS->store(&test2);
+    usesS->store(&test3);
 
-    // procedure main { x = x + 1; y = y + 1; }
     std::vector<Value> expectedResult;
     std::vector<Value> output;
 
     // "x" retrieves {1}
     expectedResult = {Value(ValueType::STMT_NUM, "1")};
-    output = usesS.getMatchingValue("x", EntityName::STMT);
+    output = usesS->getMatchingValue("x", EntityName::STMT, storageView);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // "y" retrieves {2}
     expectedResult = {Value(ValueType::STMT_NUM, "2")};
-    output = usesS.getMatchingValue("y", EntityName::STMT);
+    output = usesS->getMatchingValue("y", EntityName::STMT, storageView);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // "z" retrieves {}
+    // Stmt "z" retrieves {3}
+    expectedResult = {Value(ValueType::STMT_NUM, "3")};
+    output = usesS->getMatchingValue("z", EntityName::STMT, storageView);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Print "z" retrieves {3}
+    expectedResult = {Value(ValueType::STMT_NUM, "3")};
+    output = usesS->getMatchingValue("z", EntityName::PRINT, storageView);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    // Assign "z" retrieves {}
     expectedResult = {};
-    output = usesS.getMatchingValue("z", EntityName::STMT);
+    output = usesS->getMatchingValue("z", EntityName::ASSIGN, storageView);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
 
 TEST_CASE("usesS getAllValues works correctly") {
-    UsesSTable usesS;
+    Storage *storage = new Storage();
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
+    StorageView *storageView = storage->getStorageView();
+
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    Statement stmt1 = Statement(1, StatementType::ASSIGN);
+    Statement stmt2 = Statement(2, StatementType::ASSIGN);
+    Statement stmt3 = Statement(3, StatementType::PRINT);
+    statements->store(&stmt1);
+    statements->store(&stmt2);
+    statements->store(&stmt3);
 
     // procedure main { x = x + 1; y = y + 1; print y;}
     Relationship<int, std::string> test1 =
@@ -440,18 +475,32 @@ TEST_CASE("usesS getAllValues works correctly") {
         Relationship(RelationshipReference::USES, 2, std::string("y"));
     Relationship<int, std::string> test3 =
         Relationship(RelationshipReference::USES, 3, std::string("y"));
-    usesS.store(&test1);
-    usesS.store(&test2);
-    usesS.store(&test3);
+    usesS->store(&test1);
+    usesS->store(&test2);
+    usesS->store(&test3);
     std::map<Value, std::vector<Value>> expectedResult;
     std::map<Value, std::vector<Value>> output;
 
-    // Correctly retrieved
+    // Correctly retrieved STMTS
     expectedResult = {
         {Value(ValueType::VAR_NAME, "x"), {Value(ValueType::STMT_NUM, "1")}},
         {Value(ValueType::VAR_NAME, "y"),
          {Value(ValueType::STMT_NUM, "2"), Value(ValueType::STMT_NUM, "3")}}};
-    output = usesS.getAllValues(EntityName::STMT);
+    output = usesS->getAllValues(EntityName::STMT, storageView);
+    for (auto const &[key, value] : expectedResult) {
+        REQUIRE(output.count(key) > 0);
+        std::vector<Value> outputVector = output[key];
+
+        for (Value v : value) {
+            REQUIRE(std::find(outputVector.begin(), outputVector.end(), v) !=
+                    outputVector.end());
+        }
+    }
+
+    // Correctly retrieved PRINT
+    expectedResult = {
+        {Value(ValueType::VAR_NAME, "y"), {Value(ValueType::STMT_NUM, "3")}}};
+    output = usesS->getAllValues(EntityName::PRINT, storageView);
     for (auto const &[key, value] : expectedResult) {
         REQUIRE(output.count(key) > 0);
         std::vector<Value> outputVector = output[key];
@@ -464,71 +513,117 @@ TEST_CASE("usesS getAllValues works correctly") {
 }
 
 TEST_CASE("modifiesS getMatchingValue works correctly") {
-    ModifiesSTable modifiesS;
+    Storage *storage = new Storage();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
+    StorageView *storageView = storage->getStorageView();
 
-    // procedure main { x = x + 1; y = y + 1; }
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    Statement stmt1 = Statement(1, StatementType::ASSIGN);
+    Statement stmt2 = Statement(2, StatementType::ASSIGN);
+    Statement stmt3 = Statement(3, StatementType::READ);
+    statements->store(&stmt1);
+    statements->store(&stmt2);
+    statements->store(&stmt3);
+
+    // procedure main { x = x + 1; y = y + 1; read y }
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::MODIFIES, 1, std::string("x"));
     Relationship<int, std::string> test2 =
         Relationship(RelationshipReference::MODIFIES, 2, std::string("y"));
-    modifiesS.store(&test1);
-    modifiesS.store(&test2);
+    Relationship<int, std::string> test3 =
+        Relationship(RelationshipReference::MODIFIES, 3, std::string("y"));
+    modifiesS->store(&test1);
+    modifiesS->store(&test2);
+    modifiesS->store(&test3);
     std::vector<Value> expectedResult;
     std::vector<Value> output;
 
     // "x" retrieves {1}
     expectedResult = {Value(ValueType::STMT_NUM, "1")};
-    output = modifiesS.getMatchingValue("x", EntityName::STMT);
+    output = modifiesS->getMatchingValue("x", EntityName::STMT, storageView);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
-    // "y" retrieves {2}
-    expectedResult = {Value(ValueType::STMT_NUM, "2")};
-    output = modifiesS.getMatchingValue("y", EntityName::STMT);
+    // STMT "y" retrieves {2}
+    expectedResult = {Value(ValueType::STMT_NUM, "2"),
+                      Value(ValueType::STMT_NUM, "3")};
+    output = modifiesS->getMatchingValue("y", EntityName::STMT, storageView);
+    std::sort(output.begin(), output.end());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // READ "y" retrieves {2}
+    expectedResult = {Value(ValueType::STMT_NUM, "3")};
+    output = modifiesS->getMatchingValue("y", EntityName::READ, storageView);
+    std::sort(output.begin(), output.end());
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // "z" retrieves {}
     expectedResult = {};
-    output = modifiesS.getMatchingValue("z", EntityName::STMT);
+    output = modifiesS->getMatchingValue("z", EntityName::STMT, storageView);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
 
 TEST_CASE("callProc getMatchingValue works correctly") {
-    CallProcTable callProcs;
+    Storage *storage = new Storage();
+    CallProcTable *callProcs = storage->getTable<CallProcTable>();
+    StorageView *storageView = storage->getStorageView();
+
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    Statement stmt1 = Statement(1, StatementType::CALL);
+    Statement stmt2 = Statement(2, StatementType::CALL);
+    statements->store(&stmt1);
+    statements->store(&stmt2);
 
     // procedure main { call foo; call bar; }
     Relationship<int, std::string> test1 =
         Relationship(RelationshipReference::CALLS, 1, std::string("foo"));
     Relationship<int, std::string> test2 =
         Relationship(RelationshipReference::CALLS, 2, std::string("bar"));
-    callProcs.store(&test1);
-    callProcs.store(&test2);
+    callProcs->store(&test1);
+    callProcs->store(&test2);
     std::vector<Value> expectedResult;
     std::vector<Value> output;
 
     // "foo" retrieves {1}
     expectedResult = {Value(ValueType::STMT_NUM, "1")};
-    output = callProcs.getMatchingValue("foo", EntityName::STMT);
+    output = callProcs->getMatchingValue("foo", EntityName::STMT, storageView);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // "bar" retrieves {2}
     expectedResult = {Value(ValueType::STMT_NUM, "2")};
-    output = callProcs.getMatchingValue("bar", EntityName::STMT);
+    output = callProcs->getMatchingValue("bar", EntityName::STMT, storageView);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // CALL "bar" retrieves {2}
+    expectedResult = {Value(ValueType::STMT_NUM, "2")};
+    output = callProcs->getMatchingValue("bar", EntityName::CALL, storageView);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 
     // "z" retrieves {}
     expectedResult = {};
-    output = callProcs.getMatchingValue("z", EntityName::STMT);
+    output = callProcs->getMatchingValue("z", EntityName::STMT, storageView);
     REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
                        output.begin()));
 }
 
 TEST_CASE("callProc getAllValues works correctly") {
-    CallProcTable callProcs;
+    Storage *storage = new Storage();
+    CallProcTable *callProcs = storage->getTable<CallProcTable>();
+    StorageView *storageView = storage->getStorageView();
+
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    Statement stmt1 = Statement(1, StatementType::CALL);
+    Statement stmt2 = Statement(2, StatementType::CALL);
+    Statement stmt3 = Statement(3, StatementType::CALL);
+    statements->store(&stmt1);
+    statements->store(&stmt2);
+    statements->store(&stmt3);
 
     // procedure main { call foo; call bar; call bar; }
     Relationship<int, std::string> test1 =
@@ -537,9 +632,9 @@ TEST_CASE("callProc getAllValues works correctly") {
         Relationship(RelationshipReference::CALLS, 2, std::string("bar"));
     Relationship<int, std::string> test3 =
         Relationship(RelationshipReference::CALLS, 3, std::string("bar"));
-    callProcs.store(&test1);
-    callProcs.store(&test2);
-    callProcs.store(&test3);
+    callProcs->store(&test1);
+    callProcs->store(&test2);
+    callProcs->store(&test3);
 
     std::map<Value, std::vector<Value>> expectedResult;
     std::map<Value, std::vector<Value>> output;
@@ -549,7 +644,7 @@ TEST_CASE("callProc getAllValues works correctly") {
         {Value(ValueType::VAR_NAME, "foo"), {Value(ValueType::STMT_NUM, "1")}},
         {Value(ValueType::VAR_NAME, "bar"),
          {Value(ValueType::STMT_NUM, "2"), Value(ValueType::STMT_NUM, "3")}}};
-    output = callProcs.getAllValues(EntityName::STMT);
+    output = callProcs->getAllValues(EntityName::STMT, storageView);
     for (auto const &[key, value] : expectedResult) {
         REQUIRE(output.count(key) > 0);
         std::vector<Value> outputVector = output[key];
@@ -559,45 +654,6 @@ TEST_CASE("callProc getAllValues works correctly") {
                     outputVector.end());
         }
     }
-}
-
-TEST_CASE("StmtToStmtRsTables getMatchingValue and getAllValues returns empty "
-          "vector") {
-    FollowsTable follows;
-    Relationship<int, int> test1 =
-        Relationship(RelationshipReference::FOLLOWS, 1, 2);
-    follows.store(&test1);
-
-    // Return empty
-    REQUIRE(follows.getMatchingValue("1", EntityName::STMT).size() == 0);
-    REQUIRE(follows.getMatchingValue("2", EntityName::STMT).size() == 0);
-    REQUIRE(follows.getAllValues(EntityName::STMT).size() == 0);
-}
-
-TEST_CASE("ProcToProcRsTables getMatchingValue and getAllValues returns empty "
-          "vector") {
-    CallsTable calls;
-    Relationship<std::string, std::string> test = Relationship(
-        RelationshipReference::CALLS, std::string("foo"), std::string("bar"));
-    calls.store(&test);
-
-    // Return empty
-    REQUIRE(calls.getMatchingValue("foo", EntityName::STMT).size() == 0);
-    REQUIRE(calls.getMatchingValue("bar", EntityName::STMT).size() == 0);
-    REQUIRE(calls.getAllValues(EntityName::STMT).size() == 0);
-}
-
-TEST_CASE("ProcToVarRsTables getMatchingValue and getAllValues returns empty "
-          "vector") {
-    UsesPTable usesP;
-    Relationship<std::string, std::string> test = Relationship(
-        RelationshipReference::CALLS, std::string("foo"), std::string("x"));
-    usesP.store(&test);
-
-    // Return empty
-    REQUIRE(usesP.getMatchingValue("foo", EntityName::STMT).size() == 0);
-    REQUIRE(usesP.getMatchingValue("x", EntityName::STMT).size() == 0);
-    REQUIRE(usesP.getAllValues(EntityName::STMT).size() == 0);
 }
 
 TEST_CASE("RelationshipsTable getAllAsString works correctly") {

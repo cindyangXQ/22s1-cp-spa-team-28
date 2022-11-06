@@ -143,3 +143,33 @@ assign a; variable v;
 Select a pattern a(v, _) and variable.varName = "a2"
 SyntaxError
 5000
+29 - invalid query: wrong procedure value type
+procedure p;
+Select p with p.procName = 1
+SemanticError
+5000
+30 - invalid query: wrong varName value type
+variable v;
+Select v with v.varName = 80
+SemanticError
+5000
+31 - invalid query: wrong stmt# value type
+stmt s;
+Select s with s.stmt# = "main"
+SemanticError
+5000
+32 - invalid query: wrong constant.value value type
+constant c;
+Select c with c.value = "call"
+SemanticError
+5000
+33 - invalid query: invalid name for varName
+variable v;
+Select v with v.varName = "1main"
+SyntaxError
+5000
+34 - invalid query: number with leading 0
+constant c;
+Select c with c.value = 012
+SyntaxError
+5000

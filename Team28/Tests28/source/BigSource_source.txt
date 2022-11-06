@@ -1,0 +1,437 @@
+procedure proclowercase {
+	print pa;
+	print read;
+	print procedure;
+	print print;
+	print call;
+
+	read ra;
+	read read;
+	read procedure;
+	read print;
+	read call;
+
+	if (var1 == var2 * 3 / 8 + 2) then {
+		read rb;
+		print pb;
+		aa = ab+ac*ad/ae%af-ag;
+	} else {
+		read rc;
+		print pc;
+		ah = ai+aj*ak/al%am-an;
+	}
+
+	if (var3 > var4 * 3 / 8 + 2) then {
+		if (var5 >= var6 * 3 / 8 + 2) then {
+			read rd;
+			print pd;
+			ao = ap+aq*ar/as%at-au;
+		} else {
+			read re;
+			print pe;
+			av = aw+ax*ay/az%aaa-abb;
+			call ma3yD456igi67ts6712;
+		}
+	} else {
+		read rf;
+		print pf;
+		acc = add+aee*aff/agg%ahh-aii;
+	}
+
+	if (var7 < var8 * 3 / 8 + 2) then {
+		read rg;
+		print pg;
+		ajj = akk+all*amm/ann%aoo-app;
+	} else {
+		if (var9 <= var10 * 3 / 8 + 2) then {
+			read rh;
+			print ph;
+			aqq = arr+ass*att/auu%avv-aww;
+			call ma3yD456igi67ts6712;
+		} else {
+			read ri;
+			print pi;
+			axx = ayy+azz*aaaa/abbb%accc-addd;
+		}
+	}
+
+	if (v11 != v12 * 3 / 8 + 2) then {
+		read rj;
+		print pj;
+		aeee = afff+aggg*ahhh/aiii%ajjj-akkk;
+
+		if (v13 == 13) then {
+			read rk;
+			print pk;
+			alll = ammm+annn*aooo/appp%aqqq-arrr;
+		} else {
+			read rl;
+			print pl;
+			asss = attt+auuu*avvv/awww%axxx-ayyy;
+		}
+	} else {
+		read rm;
+		print pm;
+		azzz = a4a+a4b*a4c/a4d%a4e-a4f;
+		call PROCUPPERCASE;
+
+		if (v14 == 14 * 3 / 8 + 2) then {
+			read rn;
+			print pn;
+			a4g = a4h+a4i*a4j/a4k%a4l-a4m;
+		} else {
+			read ro;
+			print po;
+			a4n = a4o+a4p*a4q/a4r%a4s-a4t;
+			call ma3yD456igi67ts6712;
+		}
+	}
+}
+
+procedure PROCUPPERCASE {
+	print pab;
+	read rab;
+	a4u = (a4v+a4w)*a4x/(a4y%(a4z-a5a));
+
+	while (v15 * 3 / 8 + 2 == v16) {
+		read rp;
+		print pp;
+		a5b = (a5c+a5d)*a5e/(a5f%(a5g-a5h));
+		call ma3yD456igi67ts6712;
+	}
+
+	while (v17 * 3 / 8 + 2 > v18) {
+		read rq;
+		print pq;
+		a5i = (a5j+a5k)*a5l/(a5m%(a5n-a5o));
+		
+		while (v19 * 3 / 8 + 2 >= v20) {
+			read rr;
+			print pr;
+			a5p = (a5q+a5r)*a5s/(a5t%(a5u-a5v));
+			call ma3yD456igi67ts6712;
+		}
+	}
+
+	while (v21 * 3 / 8 + 2 < v22) {
+		read rs;
+		print ps;
+		a5w = (a5x+a5y)*a5z/(a6a%(a6b-a6c));
+		
+		while (v23 * 3 / 8 + 2 <= v24) {
+			read rt;
+			print pt;
+			a6d = (a6e+a56f)*a6g/(a6h%(a6i-a6j));
+			
+			while (v25 * 3 / 8 + 2 != v26) {
+				read ru;
+				print pu;
+				a6k = (a6l+a6m)*a6n/(a6o%(a6p-a6q));
+				call ma3yD456igi67ts6712;
+			}
+		}
+	}
+
+	while (27 == v27) {
+		read rv;
+		print pv;
+		a6r = (a6s+a6t)*a6u/(a6v%(a6w-a6x));
+		
+		while (28 * 3 / 8 + 2 > v28) {
+			read rw;
+			print pw;
+			a6y = (a6z+a7a)*a7b/(a7c%(a7d-a7e));
+			
+			while (29 * 3 / 8 + 2 <= v29) {
+				read rx;
+				print px;
+				a7f = (a7g+a7h)*a7i/(a7j%(a7k-a7l));
+				call ProcCamelCase;
+			
+				while (30 * 3 / 8 + 2 != v30) {
+					read ry;
+					print py;
+					a7m = (a7n+a7o)*a7p/(a7q%(a7r-a7s));
+					call ma3yD456igi67ts6712;
+				}
+			}
+		}
+	}
+}
+
+procedure ProcCamelCase {
+	print pa1b2c3;
+	read pa1b2c3;
+	a7t = (a7u+a7v)*a7w/(a7x%(a7y-a7z));
+
+	while (v31 == 32 * 3 / 8 + 2) {
+		read rz;
+		print pz;
+		a8a = (a8b+a8c)*a8d/(a8e%(a8f-a8g));
+
+		if (v33 != 33) then {
+			read raa;
+			print pbb;
+			a8h = (a8i+a8j)*a8k/(a8l%(a8m-a8n));
+		} else {
+			read rcc;
+			print pdd;
+			a8o = (a8p+a8q)*a8r/(a8s%(a8t-a8u));
+			call ma3yD456igi67ts6712;
+		}
+	}
+
+	while (v34 > 34 * 3 / 8 + 2) {
+		read ree;
+		print pff;
+		a8v = (a8w+a8x)*a8y/(a8z%(a9a-a9b));
+		
+		if (v35 >= 35) then {
+			read rggg;
+			print pggg;
+			a9a = (a9b+a9c)*a9d/(a9e%(a9f-a9g));
+		
+			if (v36 < 36 * 3 / 8 + 2) then {
+				read rhhh;
+				print phhh;
+				a9h = (a9i+a9j)*a9k/(a9l%(a9m-a9n));
+			} else {
+				read riii;
+				print piii;
+				a9o = (a9p+a9q)*a9r/(a9s%(a9t-a9u));
+				call ma3yD456igi67ts6712;
+			}
+		} else {
+			read rjjj;
+			print pjjj;
+			a9v = (a9w+a9x)*a9y/(a9z%(axa-axb));
+			
+			if (v36 <= 36) then {
+				read rkkk;
+				print pkkk;
+				axb = (axc+axd)*axe/(axf%(axg-axh));
+			} else {
+				read rlll;
+				print plll;
+				axi = (axj+axk)*axl/(axm%(axn-axo));
+				call pRoCrANdoM;
+			}
+		}
+	}
+}
+
+procedure pRoCrANdoM {
+	print pABCvar;
+	read pABCvar;
+	axp = (axq+axr)*axs/(axt%(axu-axv));
+
+	if (37 == v37 * 3 / 8 + 2) then {
+		read rmmm;
+		print pmmm;
+		axw = axx + ((axy) * axz) / (ax1a % (ax1b - ax1c));
+		call ma3yD456igi67ts6712;
+	} else {
+		read rlll;
+		print plll;
+		ax1d = ax1e + ((ax1f) * ax1g) / (ax1h % (ax1i - ax1j));
+	}
+
+	if (38 != v38 * 3 / 8 + 2) then {
+		read rnnn;
+		print pnnn;
+		ax1k = ax1l + ((ax1m) * ax1n) / (ax1o % (ax1p - ax1q));
+		call within234Digit;
+
+		while(39 > v39 * 3 / 8 + 2) {
+			read rooo;
+			print pooo;
+			ax1r = ax1s + ((ax1t) * ax1u) / (ax1v % (ax1w - ax1x));
+		}
+	} else {
+		read rppp;
+		print pppp;
+		ax1x = ax1y + ((ax1z) * ax2a) / (ax2b % (ax2c - ax2d));
+
+		while(40 >= v40) {
+			read rqqq;
+			print pqqq;
+			ax2e = ax2f + ((ax2g) * ax2h) / (ax2i % (ax2j - ax2k));
+			call ma3yD456igi67ts6712;
+		}
+	}
+
+	if (41 < v41) then {
+		read rrrr;
+		print prrr;
+		ax2l = ax2m + ((ax2n) * ax2o) / (ax2p % (ax2q - ax2r));
+
+		while(42 <= v42 * 3 / 8 + 2) {
+			read rsss;
+			print psss;
+			ax2s = ax2t + ((ax2u) * ax2v) / (ax2w % (ax2x - ax2y));
+			call ma3yD456igi67ts6712;
+
+			while(43 * 3 / 8 + 2 == v43) {
+				read rttt;
+				print pttt;
+				ax2z = ax3a + ((ax3b) * ax3c) / (ax3d % (ax3e - ax3f));
+				call withDigit123;
+			}
+		}
+	} else {
+		read ruuu;
+		print puuu;
+		ax3g = ax3h + ((ax3i) * ax3j) / (ax3k % (ax3l - ax3m));
+
+		while(44 * 3 / 8 + 2 != v44) {
+			read rvvv;
+			print pvvv;
+			ax3n = ax3o + ((ax3p) * ax3q) / (ax3r % (ax3s - ax3t));
+
+			while(v45 * 3 / 8 + 2 > 45) {
+				read rwww;
+				print pwww;
+				ax3u = ax3v + ((ax3w) * ax3x) / (ax3y % (ax3z - ax4a));
+				call ma3yD456igi67ts6712;
+			}
+		}
+	}
+	
+}
+
+procedure withDigit123 {
+	print pV1a2r3;
+	read rV1a2r3;
+	ax4b = (((ax4c)+((ax4d)*(ax4e)))/((ax4f)%((ax4g)-(ax4h))));
+
+	if(v46 * 3 / 8 + 2 == 46) then {
+		read rxxx;
+		print pxxx;
+		ax4i = (((ax4j)+((ax4k)*(ax4l)))/((ax4m)%((ax4n)-(ax4o))));
+		
+		while(v47 * 3 / 8 + 2 > 47) {
+			read ryyy;
+			print pyyy;
+			ax4p = (((ax4q)+((ax4r)*(ax4s)))/((ax4t)%((ax4u)-(ax4v))));
+
+			if(v48 * 3 / 8 + 2 >= 48) then {
+				read rzzz;
+				print pzzz;
+				ax4w = (((ax4x)+((ax4y)*(ax4z)))/((ax5a)%((ax5b)-(ax5c))));
+		
+				while(v49 * 3 / 8 + 2 < 49) {
+					read r4a;
+					print p4a;
+					ax5d = (((ax5e)+((ax5f)*(ax5g)))/((ax5h)%((ax5i)-(ax5j))));
+					call ma3yD456igi67ts6712;
+				}
+			} else {
+				read r4b;
+				print p4b;
+				ax5j = (((ax5k)+((ax5l)*(ax5m)))/((ax5n)%((ax5o)-(ax5p))));
+				
+				while(v50 * 3 / 8 + 2 <= 50) {
+					read r4c;
+					print p4c;
+					ax5q = (((ax5r)+((ax5s)*(ax5t)))/((ax5u)%((ax5v)-(ax5w))));
+					call within234Digit;
+				}
+			}
+		}
+	} else {
+		read r4d;
+		print p4d;
+		ax5x = (((ax5y)+((ax5z)*(ax6a)))/((ax6b)%((ax6c)-(ax6d))));
+		
+		while(51 * 3 / 8 + 2 != v51) {
+			read r4e;
+			print p4e;
+			ax6e = (((ax6f)+((ax6g)*(ax6h)))/((ax6i)%((ax6j)-(ax6k))));
+			
+			if(52 * 3 / 8 + 2 > v52) then {
+				read r4f;
+				print p4f;
+				ax6l = (((ax6m)+((ax6n)*(ax6o)))/((ax6p)%((ax6q)-(ax6r))));
+				
+				while(53 * 3 / 8 + 2 <= v53) {
+					read r4g;
+					print p4g;
+					ax6s = (((ax6t)+((ax6u)*(ax6v)))/((ax6w)%((ax6x)-(ax6y))));
+				}
+			} else {
+				read r4h;
+				print p4h;
+				ax6z = (((ax7a)+((ax7b)*(ax7c)))/((ax7d)%((ax7e)-(ax7f))));
+				
+				while(54 * 3 / 8 + 2 == v54) {
+					read r4i;
+					print p4i;
+					ax7g = (((ax7h)+((ax7i)*(ax7j)))/((ax7k)%((ax7l)-(ax7m))));
+					call ma3yD456igi67ts6712;
+				}
+			}
+		}
+	}
+}
+
+procedure within234Digit {
+	print pabc;
+	read rabc;
+	ax7n = (ax7o+ax7p)*ax7q/ax7r%(ax7s-ax7t);
+
+	while(v55 % 3 / 8 - 2 == v56 % 3 / 8 - 2) {
+		read r4j;
+		print p4j;
+		ax7u = (ax7v+ax7w)*ax7x/ax7y%(ax7z-ax8a);
+		
+		if(v57 % 3 / 8 - 2 != v58 % 3 / 8 - 2) then {
+			read r4k;
+			print p4k;
+			ax8b = (ax8c+ax8d)*ax8e/ax8f%(ax8g-ax8h);
+		
+			while(v59 % 3 / 8 - 2 > v60 % 3 / 8 - 2) {
+				read r4l;
+				print p4l;
+				ax8i = (ax8j+ax8k)*ax8l/ax8m%(ax8n-ax8o);
+				
+				if(v61 % 3 / 8 - 2 >= v62 % (3) / 8 - 2) then {
+					read r4m;
+					print p4m;
+					ax8p = (ax8q+ax8r)*ax8s/ax8t%(ax8u-ax8v);
+				} else {
+					read r4n;
+					print p4n;
+					ax8w = (ax8x+ax8y)*ax8z/ax9a%(ax9b-ax9c);
+					call ma3yD456igi67ts6712;
+				}
+			}
+		} else {
+			read r4o;
+			print p4o;
+			ax9d = (ax9e+ax9f)*ax9g/ax9h%(ax9i-ax9j);
+			
+			while(v63 % 3 / 8 - 2 < v64 % 3 / 8 - 2) {
+				read r4p;
+				print p4p;
+				ax9k = (ax9l+ax9m)*ax9n/ax9o%(ax9p-ax9q);
+				
+				if(v65 % 3 / 8 - 2 <= v66 % 3 / 8 - 2) then {
+					read r4q;
+					print p4q;
+					ax9r = (ax9s+ax9t)*ax9u/ax9v%(ax9w-ax9x);
+				} else {
+					read r4r;
+					print p4r;
+					ax9y = (ax9z+axxa)*axxb/axxc%(axxd-axxe);
+					call ma3yD456igi67ts6712;
+				}
+			}
+		}
+	}
+}
+
+procedure ma3yD456igi67ts6712 {
+	print pbc;
+	read rbc;
+	ax10f = (ax10g+ax10h)*ax10i/ax10j%(ax10k-ax10l);
+}

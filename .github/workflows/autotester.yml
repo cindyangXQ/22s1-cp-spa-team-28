@@ -32,13 +32,13 @@ jobs:
           cd Team28/Code28
           mkdir build
           cd build
-          cmake -A x64 ..
+          cmake ..
           cmake --build . --target autotester --config Release
           cd ../..
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: '3.8'
       - name: Run Python script
         run: |
           python .\run-autotester-ci.py
@@ -48,4 +48,3 @@ jobs:
           name: system-test-report
           path: |
             Team28/Tests28/*.xml
-            Team28/Code28/tests/analysis.xsl

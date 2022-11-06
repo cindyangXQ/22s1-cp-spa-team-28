@@ -1650,6 +1650,22 @@ TEST_CASE("solveOneAttribute returns correct results -- Relationships") {
     UsesSTable *usesS = storage->getTable<UsesSTable>();
     ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
     CallProcTable *callP = storage->getTable<CallProcTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+
+    // Statements
+    Statement assignStmt = Statement(1, StatementType::ASSIGN);
+    Statement printStmt = Statement(2, StatementType::PRINT);
+    Statement readStmt = Statement(3, StatementType::READ);
+    Statement callStmt = Statement(4, StatementType::CALL);
+    Statement ifStmt = Statement(5, StatementType::IF);
+    Statement whileStmt = Statement(6, StatementType::WHILE);
+
+    statements->store(&assignStmt);
+    statements->store(&callStmt);
+    statements->store(&ifStmt);
+    statements->store(&printStmt);
+    statements->store(&readStmt);
+    statements->store(&whileStmt);
 
     // Relationships
     Relationship<int, std::string> rs1 =
@@ -1920,7 +1936,7 @@ TEST_CASE("solveOneAttribute returns correct results -- Statements") {
 
 TEST_CASE("solveBothAttribute returns correct results -- Relationships") {
     // procedure main {
-    //     a = b + 1;
+    //     a = a + 1;
     //     print a;
     //     read a;
     //     call bar;
@@ -1931,8 +1947,26 @@ TEST_CASE("solveBothAttribute returns correct results -- Relationships") {
     UsesSTable *usesS = storage->getTable<UsesSTable>();
     ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
     CallProcTable *callP = storage->getTable<CallProcTable>();
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+
+    // Statements
+    Statement stmt1 = Statement(1, StatementType::ASSIGN);
+    Statement stmt2 = Statement(2, StatementType::PRINT);
+    Statement stmt3 = Statement(3, StatementType::READ);
+    Statement stmt4 = Statement(4, StatementType::CALL);
+    Statement stmt5 = Statement(5, StatementType::READ);
+
+    statements->store(&stmt1);
+    statements->store(&stmt2);
+    statements->store(&stmt3);
+    statements->store(&stmt4);
+    statements->store(&stmt5);
 
     // Relationships
+    Relationship<int, std::string> rs1a =
+        Relationship(RelationshipReference::MODIFIES, 1, std::string("a"));
+    Relationship<int, std::string> rs1b =
+        Relationship(RelationshipReference::USES, 1, std::string("a"));
     Relationship<int, std::string> rs2 =
         Relationship(RelationshipReference::USES, 2, std::string("a"));
     Relationship<int, std::string> rs3 =
@@ -1941,6 +1975,8 @@ TEST_CASE("solveBothAttribute returns correct results -- Relationships") {
         Relationship(RelationshipReference::USES, 4, std::string("bar"));
     Relationship<int, std::string> rs5 =
         Relationship(RelationshipReference::MODIFIES, 5, std::string("bar"));
+    modifiesS->store(&rs1a);
+    usesS->store(&rs1b);
     usesS->store(&rs2);
     modifiesS->store(&rs3);
     callP->store(&rs4);
@@ -2407,4 +2443,820 @@ TEST_CASE("QueryFacade getTableSize works as expected") {
     REQUIRE(nextT->getTableSize() == INT_MAX);
     REQUIRE(affects->getTableSize() == INT_MAX);
     REQUIRE(affectsT->getTableSize() == INT_MAX);
+}
+
+TEST_CASE("getTableSize with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    StatementsTable *statements = storage->getTable<StatementsTable>();
+    AssignmentsTable *assigns = storage->getTable<AssignmentsTable>();
+    ProceduresTable *procs = storage->getTable<ProceduresTable>();
+    VariablesTable *vars = storage->getTable<VariablesTable>();
+    ConstantsTable *consts = storage->getTable<ConstantsTable>();
+    ParentTable *parent = storage->getTable<ParentTable>();
+    ParentTTable *parentT = storage->getTable<ParentTTable>();
+    FollowsTable *follows = storage->getTable<FollowsTable>();
+    FollowsTTable *followsT = storage->getTable<FollowsTTable>();
+    ModifiesSTable *modifiesS = storage->getTable<ModifiesSTable>();
+    ModifiesPTable *modifiesP = storage->getTable<ModifiesPTable>();
+    UsesSTable *usesS = storage->getTable<UsesSTable>();
+    UsesPTable *usesP = storage->getTable<UsesPTable>();
+    CallsTable *calls = storage->getTable<CallsTable>();
+    CallsTTable *callsT = storage->getTable<CallsTTable>();
+    BranchInTable *branchIn = storage->getTable<BranchInTable>();
+    BranchOutTable *branchOut = storage->getTable<BranchOutTable>();
+    IfControlVarTable *ifs = storage->getTable<IfControlVarTable>();
+    WhileControlVarTable *whiles = storage->getTable<WhileControlVarTable>();
+    CallProcTable *callProc = storage->getTable<CallProcTable>();
+    NextTable *next = storage->getTable<NextTable>();
+    NextTTable *nextT = storage->getTable<NextTTable>();
+    AffectsTable *affects = storage->getTable<AffectsTable>();
+    AffectsTTable *affectsT = storage->getTable<AffectsTTable>();
+
+    REQUIRE(statements->getTableSize() == 0);
+    REQUIRE(assigns->getTableSize() == 0);
+    REQUIRE(procs->getTableSize() == 0);
+    REQUIRE(vars->getTableSize() == 0);
+    REQUIRE(consts->getTableSize() == 0);
+    REQUIRE(parent->getTableSize() == 0);
+    REQUIRE(parentT->getTableSize() == 0);
+    REQUIRE(follows->getTableSize() == 0);
+    REQUIRE(followsT->getTableSize() == 0);
+    REQUIRE(modifiesS->getTableSize() == 0);
+    REQUIRE(modifiesP->getTableSize() == 0);
+    REQUIRE(usesS->getTableSize() == 0);
+    REQUIRE(usesP->getTableSize() == 0);
+    REQUIRE(calls->getTableSize() == 0);
+    REQUIRE(callsT->getTableSize() == 0);
+    REQUIRE(branchIn->getTableSize() == 0);
+    REQUIRE(branchOut->getTableSize() == 0);
+    REQUIRE(ifs->getTableSize() == 0);
+    REQUIRE(whiles->getTableSize() == 0);
+    REQUIRE(callProc->getTableSize() == 0);
+    REQUIRE(next->getTableSize() == 0);
+    REQUIRE(nextT->getTableSize() == INT_MAX);
+    REQUIRE(affects->getTableSize() == INT_MAX);
+    REQUIRE(affectsT->getTableSize() == INT_MAX);
+}
+
+TEST_CASE("getAllStatementsTypes with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    REQUIRE(facade.getAllStatementsByType(StatementType::STMT).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::READ).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::PRINT).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::ASSIGN).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::CALL).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::WHILE).size() == 0);
+    REQUIRE(facade.getAllStatementsByType(StatementType::IF).size() == 0);
+}
+
+TEST_CASE("getAllEntities with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    REQUIRE(facade.getAllEntities(Designation::STMT).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::ASSIGN).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::VAR).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::CONST).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::PROC).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::FOLLOWS).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::FOLLOWS_T).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::PARENT).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::PARENT_T).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::MOD_S).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::MOD_P).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::USE_S).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::USE_P).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::CALL).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::CALL_T).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::B_IN).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::B_OUT).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::IF_C).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::WHILE_C).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::PROC_NAME).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::NEXT).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::NEXT_T).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::AFFECTS).size() == 0);
+    REQUIRE(facade.getAllEntities(Designation::AFFECTS_T).size() == 0);
+}
+
+TEST_CASE("RelationshipRef validate with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    Reference left = Reference("1");
+    Reference right = Reference("2");
+    Reference wildcard = Reference("_");
+
+    REQUIRE(!facade.validate(RelationshipReference::FOLLOWS, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::FOLLOWS_T, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::PARENT, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::PARENT_T, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::USES, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::MODIFIES, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::CALLS, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::CALLS_T, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::NEXT, left, right));
+    REQUIRE(!facade.validate(RelationshipReference::AFFECTS, left, right));
+    // NOTE: NextTTable and AffectsTTable have dependency on the respective
+    // non-star table, which is why exception gets thrown.
+    // REQUIRE(!facade.validate(RelationshipReference::NEXT_T, left, right));
+    // REQUIRE(!facade.validate(RelationshipReference::AFFECTS_T, left, right));
+
+    REQUIRE(!facade.validate(RelationshipReference::FOLLOWS, left, wildcard));
+    REQUIRE(!facade.validate(RelationshipReference::NEXT, wildcard, right));
+    // Vacuously true
+    REQUIRE(facade.validate(RelationshipReference::NEXT, wildcard, wildcard));
+}
+
+TEST_CASE("Pattern-assign validate with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    AssignExpression assignExact = AssignExpression("x", true);
+    AssignExpression assignPartial = AssignExpression("x", false);
+    AssignExpression wildcard = AssignExpression("_", false);
+
+    REQUIRE(!facade.validate(1, "x", assignExact));
+    REQUIRE(!facade.validate(1, "x", assignPartial));
+    REQUIRE(!facade.validate(1, "x", wildcard));
+}
+
+TEST_CASE("Pattern-if/while validate with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    REQUIRE(!facade.validate(Designation::IF_C, 1, "x"));
+    REQUIRE(!facade.validate(Designation::WHILE_C, 1, "x"));
+    REQUIRE(!facade.validate(Designation::IF_C, 1, "_"));
+    REQUIRE(!facade.validate(Designation::WHILE_C, 1, "_"));
+}
+
+TEST_CASE("SolveRight queries for Follows(1, 2) with nothing "
+          "stored return correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    Reference leftRef;
+    EntityName rightEntityName;
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // SolveRight(Follows, 1, Assign) returns {}
+    leftRef = Reference("1");
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveRight(Follows, 2, Assign) returns {}
+    leftRef = Reference("2");
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveRight(Follows, 1, Print) returns {}
+    leftRef = Reference("1");
+    rightEntityName = EntityName::PRINT;
+    expectedResult = {};
+    output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveRight(Follows, _, Assign) returns {}
+    leftRef = Reference("_");
+    rightEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveRight(RelationshipReference::FOLLOWS, leftRef,
+                               rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("SolveLeft queries for Follows(1, 2) with nothing stored "
+          "return correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    Reference rightRef;
+    EntityName leftEntityName;
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // SolveLeft(Follows, 2, Assign) for Follows(1, 2) returns {}
+    rightRef = Reference("2");
+    leftEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Follows, 1, Assign) for Follows(1, 2) returns {}
+    rightRef = Reference("1");
+    leftEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Follows, 2, Print) for Follows(1, 2) returns {}
+    rightRef = Reference("2");
+    leftEntityName = EntityName::PRINT;
+    expectedResult = {};
+    output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveLeft(Follows, _, Assign) for Follows(1, 2) returns {}
+    rightRef = Reference("_");
+    leftEntityName = EntityName::ASSIGN;
+    expectedResult = {};
+    output = facade.solveLeft(RelationshipReference::FOLLOWS, rightRef,
+                              leftEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("SolveBoth queries for Follows(1, 2) with nothing stored "
+          "return correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    EntityName leftEntityName;
+    EntityName rightEntityName;
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // SolveBoth(Follows, Stmt, Stmt) for Follows(1, 2) returns {}
+    leftEntityName = EntityName::STMT;
+    rightEntityName = EntityName::STMT;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveBoth(Follows, Stmt, Print) for Follows(1, 2) returns {}
+    leftEntityName = EntityName::STMT;
+    rightEntityName = EntityName::PRINT;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // SolveBoth(Follows, Call, Stmt) for Follows(1, 2) returns {}
+    leftEntityName = EntityName::CALL;
+    rightEntityName = EntityName::STMT;
+    expectedResult = {};
+    output = facade.solveBoth(RelationshipReference::FOLLOWS, leftEntityName,
+                              rightEntityName);
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("solveOneAttribute with nothing stored returns correct results -- "
+          "Relationships") {
+    // procedure main {
+    //     a = b + 1;
+    //     print a;
+    //     read x;
+    //     call bar;
+    //     if (a) ...
+    //     while (a) ...
+    // } ... assumes valid procedure bar exists
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // Call.procName
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CALL, ""), EntityAttribute::PROC_NAME),
+        Value(ValueType::VAR_NAME, "bar"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CALL, ""), EntityAttribute::PROC_NAME),
+        Value(ValueType::VAR_NAME, "init"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Read.varName
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::READ, ""), EntityAttribute::VAR_NAME),
+        Value(ValueType::VAR_NAME, "x"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::READ, ""), EntityAttribute::VAR_NAME),
+        Value(ValueType::VAR_NAME, "a"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Print.varName
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PRINT, ""), EntityAttribute::VAR_NAME),
+        Value(ValueType::VAR_NAME, "a"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PRINT, ""), EntityAttribute::VAR_NAME),
+        Value(ValueType::VAR_NAME, "A"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("solveOneAttribute with nothing stored returns correct results -- "
+          "Entities") {
+    // procedure main {
+    //     a = b + 1;
+    //     print a;
+    //     read x;
+    //     call bar;
+    //     if (a) ...
+    //     while (a) ...
+    // } ... assumes valid procedure bar exists
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // Constants
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CONSTANT, "1"), EntityAttribute::VALUE),
+        Value(ValueType::STMT_NUM, "1"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CONSTANT, "2"), EntityAttribute::VALUE),
+        Value(ValueType::STMT_NUM, "2"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Variables
+    expectedResult = {};
+    output =
+        facade.solveOneAttribute(Reference(Synonym(EntityName::VARIABLE, "a"),
+                                           EntityAttribute::VAR_NAME),
+                                 Value(ValueType::VAR_NAME, "a"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::VARIABLE, "main"),
+                  EntityAttribute::VAR_NAME),
+        Value(ValueType::VAR_NAME, "main"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Procedures
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PROCEDURE, "main"),
+                  EntityAttribute::PROC_NAME),
+        Value(ValueType::VAR_NAME, "main"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PROCEDURE, "init"),
+                  EntityAttribute::PROC_NAME),
+        Value(ValueType::VAR_NAME, "init"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("solveOneAttribute with nothing stored returns correct results -- "
+          "Statements") {
+    // procedure main {
+    //     a = b + 1;
+    //     print a;
+    //     read x;
+    //     call bar;
+    //     if (a) ...
+    //     while (a) ...
+    // } ... assumes valid procedure bar exists
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // STATEMENT
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::STMT, "1"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "1"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::STMT, "7"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "7"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    // ASSIGN
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::ASSIGN, "1"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "1"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::ASSIGN, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // PRINT
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PRINT, "2"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "2"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::PRINT, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // READ
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::READ, "3"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "3"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::READ, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // CALL
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CALL, "4"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "4"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::CALL, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // IF
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::IF, "5"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "5"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::IF, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // WHILE
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::WHILE, "6"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "6"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    expectedResult = {};
+    output = facade.solveOneAttribute(
+        Reference(Synonym(EntityName::WHILE, "1"), EntityAttribute::STMT_NO),
+        Value(ValueType::STMT_NUM, "1"));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("solveBothAttribute with nothing stored returns correct results -- "
+          "Relationships") {
+    // procedure main {
+    //     a = a + 1;
+    //     print a;
+    //     read a;
+    //     call bar;
+    //     read bar;
+    // } ... assumes valid procedure bar exists
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // Call.procName match with Read.varName
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::CALL, ""), EntityAttribute::PROC_NAME),
+        Reference(Synonym(EntityName::READ, ""), EntityAttribute::VAR_NAME));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Call.procName match with Print.varName
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::CALL, ""), EntityAttribute::PROC_NAME),
+        Reference(Synonym(EntityName::PRINT, ""), EntityAttribute::VAR_NAME));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // Read.procName match with Print.varName
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::READ, ""), EntityAttribute::VAR_NAME),
+        Reference(Synonym(EntityName::PRINT, ""), EntityAttribute::VAR_NAME));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("solveBothAttribute with nothing stored returns correct results -- "
+          "Statements") {
+    // procedure main {
+    //     a = b + 1;
+    //     print a;
+    //     read x;
+    //     call bar;
+    //     if (a) ...
+    //     while (a) ...
+    // } ... assumes valid procedure bar exists
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // STMT with ASSIGN
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::STMT, ""), EntityAttribute::STMT_NO),
+        Reference(Synonym(EntityName::ASSIGN, ""), EntityAttribute::STMT_NO));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // ASSIGN with ASSIGN
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::ASSIGN, ""), EntityAttribute::STMT_NO),
+        Reference(Synonym(EntityName::ASSIGN, ""), EntityAttribute::STMT_NO));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // ASSIGN with PRINT
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::ASSIGN, ""), EntityAttribute::STMT_NO),
+        Reference(Synonym(EntityName::PRINT, ""), EntityAttribute::STMT_NO));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // STMT with PRINT
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::STMT, ""), EntityAttribute::STMT_NO),
+        Reference(Synonym(EntityName::PRINT, ""), EntityAttribute::STMT_NO));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // STMT with STMT
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::STMT, ""), EntityAttribute::STMT_NO),
+        Reference(Synonym(EntityName::STMT, ""), EntityAttribute::STMT_NO));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("solveBothAttribute with nothing stored returns correct results -- "
+          "Entities") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // CONST with CONST
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::CONSTANT, ""), EntityAttribute::VALUE),
+        Reference(Synonym(EntityName::CONSTANT, ""), EntityAttribute::VALUE));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+    // VAR with VAR
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::VARIABLE, ""), EntityAttribute::VAR_NAME),
+        Reference(Synonym(EntityName::VARIABLE, ""),
+                  EntityAttribute::VAR_NAME));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // PROC with PROC
+    expectedResult = {};
+    output =
+        facade.solveBothAttribute(Reference(Synonym(EntityName::PROCEDURE, ""),
+                                            EntityAttribute::PROC_NAME),
+                                  Reference(Synonym(EntityName::PROCEDURE, ""),
+                                            EntityAttribute::PROC_NAME));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // VAR with CONST
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::VARIABLE, ""), EntityAttribute::VAR_NAME),
+        Reference(Synonym(EntityName::CONSTANT, ""), EntityAttribute::VALUE));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // VAR with PROC
+    expectedResult = {};
+    output = facade.solveBothAttribute(
+        Reference(Synonym(EntityName::VARIABLE, ""), EntityAttribute::VAR_NAME),
+        Reference(Synonym(EntityName::PROCEDURE, ""),
+                  EntityAttribute::PROC_NAME));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // PROC with VAR
+    expectedResult = {};
+    output =
+        facade.solveBothAttribute(Reference(Synonym(EntityName::PROCEDURE, ""),
+                                            EntityAttribute::PROC_NAME),
+                                  Reference(Synonym(EntityName::VARIABLE, ""),
+                                            EntityAttribute::VAR_NAME));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("getAssign with nothing stored returns correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // getAssign('_', '_', false) returns {}
+    expectedResult = {};
+    output = facade.getAssign("_", AssignExpression("_", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssign('_', '1', false) returns {}
+    expectedResult = {};
+    output = facade.getAssign("_", AssignExpression("1", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignExact('_', '(1)', true) returns {}
+    expectedResult = {};
+    output = facade.getAssign("_", AssignExpression("(1)", true));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssign('x1', '_', false) returns {}
+    expectedResult = {};
+    output = facade.getAssign("x1", AssignExpression("_", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssign('x1', '10', false) returns {}
+    expectedResult = {};
+    output = facade.getAssign("x1", AssignExpression("10", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignExact('x1', '(10)', true) returns {}
+    expectedResult = {};
+    output = facade.getAssign("x1", AssignExpression("(10)", true));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("getAssignAndVar with nothing stored returns correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // getAssignAndVar('_', false) returns
+    // {}
+    expectedResult = {};
+    output = facade.getAssignAndVar(AssignExpression("_", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignAndVar('(1)', false) returns {}
+    expectedResult = {};
+    output = facade.getAssignAndVar(AssignExpression("(1)", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignAndVarExact('(1)', true) returns {}
+    expectedResult = {};
+    output = facade.getAssignAndVar(AssignExpression("(1)", true));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignAndVar('(x1)', false) returns {}
+    expectedResult = {};
+    output = facade.getAssignAndVar(AssignExpression("(x1)", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getAssignAndVarExact('(x1)', true) returns {}
+    expectedResult = {};
+    output = facade.getAssignAndVar(AssignExpression("(x1)", false));
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("GetCond with nothing stored returns correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    std::vector<Value> expectedResult;
+    std::vector<Value> output;
+
+    // getCond(Designation::WHILE_C, "x") returns {}
+    output = facade.getCond(Designation::WHILE_C, "x");
+    expectedResult = {};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getCond(Designation::WHILE_C, "_") returns {}
+    output = facade.getCond(Designation::WHILE_C, "_");
+    expectedResult = {};
+    std::sort(output.begin(), output.end());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+
+    // getCond(Designation::WHILE_C, "invalid") returns {}
+    output = facade.getCond(Designation::WHILE_C, "invalid");
+    expectedResult = {};
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("GetCondAndVar with nothing stored returns correct results") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+    WhileControlVarTable *whiles = storage->getTable<WhileControlVarTable>();
+
+    std::vector<std::pair<Value, Value>> expectedResult;
+    std::vector<std::pair<Value, Value>> output;
+
+    // getWhileAndVar returns {}
+    output = facade.getCondAndVar(Designation::WHILE_C);
+    expectedResult = {};
+    std::sort(output.begin(), output.end(), value_pair_sort());
+    REQUIRE(std::equal(expectedResult.begin(), expectedResult.end(),
+                       output.begin()));
+}
+
+TEST_CASE("getSecondaryAttribute with nothing stored works correctly") {
+    Storage *storage = new Storage();
+    QueryFacade facade = QueryFacade(storage);
+
+    REQUIRE_THROWS(facade.getSecondaryAttribute(1),
+                   "StmtNum does not refer to attributable statement");
+    REQUIRE_THROWS(facade.getSecondaryAttribute(2),
+                   "StmtNum does not refer to attributable statement");
+    REQUIRE_THROWS(facade.getSecondaryAttribute(3),
+                   "StmtNum does not refer to attributable statement");
+    REQUIRE_THROWS(facade.getSecondaryAttribute(55),
+                   "StmtNum does not refer to attributable statement");
 }
