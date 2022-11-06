@@ -61,42 +61,42 @@ none
 13 - Assign pattern (syntactic error)
 assign a, a1; variable v, v1; if ifs, ifs1; while w, w1;
 Select a pattern a(_,        "(2 + 3)"_)
-none
+SyntaxError
 5000
 14 - Assign pattern (syntactic error)
 assign a, a1; variable v, v1; if ifs, ifs1; while w, w1;
 Select a pattern a(_,        _"2 + 3)"_)
-none
+SyntaxError
 5000
 15 - Assign pattern (syntactic error)
 assign a, a1; variable v, v1; if ifs, ifs1; while w, w1;
 Select a pattern a(_,        _"(2 + 3"_)
-none
+SyntaxError
 5000
 16 - Assign pattern (syntactic error)
 assign a, a1; variable v, v1; if ifs, ifs1; while w, w1;
 Select a pattern a(_,        _"(2 3 +)"_)
-none
+SyntaxError
 5000
 17 - Assign pattern (syntactic error)
 assign a, a1; variable v, v1; if ifs, ifs1; while w, w1;
 Select a pattern a(_,        _"(+ 2 3)"_)
-none
+SyntaxError
 5000
 18 - Assign pattern (syntactic error)
 assign a, a1; variable v, v1; if ifs, ifs1; while w, w1;
 Select a pattern a(_,        _"      "_)
-none
+SyntaxError
 5000
 19 - Assign pattern (syntactic error)
 assign a, a1; variable v, v1; if ifs, ifs1; while w, w1;
 Select a pattern a(_,        _" ( ) "_)
-none
+SyntaxError
 5000
 20 - Assign pattern (syntactic error)
 assign a, a1; variable v, v1; if ifs, ifs1; while w, w1;
 Select BOOLEAN pattern a(_,        _" ( ) "_)
-none
+SyntaxError
 5000
 21 - Assign pattern does not exist
 assign a, a1; variable v, v1; if ifs, ifs1; while w, w1;
