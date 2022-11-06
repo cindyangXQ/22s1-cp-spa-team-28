@@ -825,7 +825,7 @@ Select i pattern i(v,_,_) such that Uses(i, "c") with v.varName = "c"
 5000
 166 - Pattern if using control variables exists
 while w,w1,w2,w3; if i,i1,i2,i3; variable v,v1,v2,v3; stmt n;
-Select i pattern w(v,_,_) such that Uses(i, "d") with v.varName = "d"
+Select i pattern w(v,_) such that Uses(i, "d") with v.varName = "d"
 none
 5000
 167 - Pattern if using control variables exists
@@ -910,12 +910,12 @@ a,b,h
 5000
 183 - Pattern while more than three inner containers exists
 while w,w1,w2,w3; if i,i1,i2,i3; variable v,v1,v2,v3; stmt n;
-Select w pattern w(v,_) such that Parent(w, n) pattern w1(v1,_) with n = w1.stmt# pattern w2(_,_) pattern w3(_,_) such that Parent(w1, w2) and Parent(w2, w3)
+Select w pattern w(v,_,_) such that Parent(w, n) pattern w1(v1,_,_) with n = w1.stmt# pattern w2(_,_,_) pattern w3(_,_,_) such that Parent(w1, w2) and Parent(w2, w3)
 81,83,196,198,200,202,204,206,208,210
 5000
 184 - Pattern while more than three inner containers exists
 while w,w1,w2,w3; if i,i1,i2,i3; variable v,v1,v2,v3; stmt n;
-Select w.stmt# pattern w(v,_) such that Parent(w, n) pattern w1(v1,_) with n = w1.stmt# pattern w2(_,_) pattern w3(_,_) such that Parent(w1, w2) and Parent*(w2, w3)
+Select w.stmt# pattern w(v,_,_) such that Parent(w, n) pattern w1(v1,_,_) with n = w1.stmt# pattern w2(_,_,_) pattern w3(_,_,_) such that Parent(w1, w2) and Parent*(w2, w3)
 81,83,196,198,200,202,204,206,208,210,226
 5000
 185 - Pattern while with child assign exists
@@ -930,17 +930,13 @@ Select w.stmt# pattern w(v,_) such that Parent(w, n) such that Parent(n, s) and 
 5000
 187 - Semantically invalid pattern assign
 while w; if i; variable v; stmt n; assign a;
-Select BOOLEAN pattern a(v,_,_)
+Select BOOLEAN pattern a(v,_)
 FALSE
 5000
-188 - Semantically invalid pattern while
-while w; if i; variable v; stmt n;
-Select BOOLEAN pattern w(v,_,_)
-FALSE
 5000
-189 - Semantically invalid pattern if
+189 - Semantically invalid pattern while
 while w; if i; variable v; stmt n;
-Select BOOLEAN pattern i(v,_)
+Select BOOLEAN pattern w(v,_)
 FALSE
 5000
 190 - Syntactically invalid pattern if
