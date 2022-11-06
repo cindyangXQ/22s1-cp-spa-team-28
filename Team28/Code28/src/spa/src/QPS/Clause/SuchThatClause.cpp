@@ -149,7 +149,7 @@ void SuchThatClause::populateOptimizeScore(QueryFacade *queryFacade) {
         baseScore += queryFacade->getTableSize(this->refRight.getDesignation());
     }
     if (multiplier * baseScore < 0) {
-        this->score = INT_MAX; 
+        this->score = INT_MAX;
     } else {
         this->score = multiplier * baseScore;
     }
