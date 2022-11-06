@@ -11,11 +11,8 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
         for (QueryClause *clause : group) {
             ClauseResult result = clause->evaluate(queryFacade);
             if (result.getIsEmpty()) {
-                if (selectClause.getSelectType() == SelectType::BOOLEAN) {
-                    throw EmptyTableError("BOOLEAN");
-                } else {
-                    throw EmptyTableError("SYNONYM");
-                }
+                throw EmptyTableError(selectClause.getSelectType() ==
+                                      SelectType::BOOLEAN);
             }
             groupResult.push_back(result);
         }

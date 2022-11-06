@@ -16,7 +16,7 @@ void QPS::evaluate(std::string query, std::list<std::string> &results) {
     } catch (SemanticError e) {
         results.push_back("SemanticError");
     } catch (EmptyTableError e) {
-        if (e.isBoolean) {
+        if (e.getIsBoolean()) {
             results.push_back("FALSE");
         } else {
             return;

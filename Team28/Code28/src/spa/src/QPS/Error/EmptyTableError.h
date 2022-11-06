@@ -6,9 +6,12 @@
  * Error class for the validation of query semantic.
  */
 class EmptyTableError : public std::runtime_error {
-public:
+private:
     bool isBoolean;
-    EmptyTableError(const std::string &message) : runtime_error(message) {
-        isBoolean = (message == "BOOLEAN");
+
+public:
+    bool getIsBoolean() { return this->isBoolean; }
+    EmptyTableError(bool isBoolean) : runtime_error("Table is empty") {
+        this->isBoolean = isBoolean;
     }
 };
