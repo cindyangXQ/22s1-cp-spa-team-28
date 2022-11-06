@@ -10,6 +10,10 @@ QueryResult QueryEvaluator::evaluate(SolvableQuery *solvableQ) {
         std::vector<ClauseResult> groupResult;
         for (QueryClause *clause : group) {
             ClauseResult result = clause->evaluate(queryFacade);
+            if (result.getIsEmpty()) {
+                throw EmptyTableError(selectClause.getSelectType() ==
+                                      SelectType::BOOLEAN);
+            }
             groupResult.push_back(result);
         }
         clauseResultList.push_back(groupResult);

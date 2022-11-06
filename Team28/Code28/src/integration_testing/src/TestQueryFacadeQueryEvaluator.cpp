@@ -186,11 +186,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
     QueryOptimizer queryOptimizer = QueryOptimizer(&facade);
     queryOptimizer.optimize(&solvableQ);
     QueryEvaluator queryEvaluator = QueryEvaluator(&facade);
-    QueryResult queryResult = queryEvaluator.evaluate(&solvableQ);
-    std::vector<std::string> result =
-        queryEvaluator.interpretQueryResult(&queryResult);
-
-    REQUIRE(result.size() == 0);
+    REQUIRE_THROWS(queryEvaluator.evaluate(&solvableQ));
 }
 
 TEST_CASE("Query evaluator can evaluate query with single such that clause "
@@ -255,11 +251,7 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
     SolvableQuery solvableQZero =
         QueryParser::parse("stmt s; Select s such that Follows(s,1)");
     queryOptimizer.optimize(&solvableQZero);
-    QueryResult queryResultZero = queryEvaluator.evaluate(&solvableQZero);
-    std::vector<std::string> resultZero =
-        queryEvaluator.interpretQueryResult(&queryResultZero);
-
-    REQUIRE(resultZero.size() == 0);
+    REQUIRE_THROWS(queryEvaluator.evaluate(&solvableQZero));
 }
 
 TEST_CASE("Query evaluator can evaluate query with single such that clause "
@@ -272,40 +264,25 @@ TEST_CASE("Query evaluator can evaluate query with single such that clause "
     SolvableQuery solvableQFollow =
         QueryParser::parse("stmt s; Select s such that Follows(s, s)");
     queryOptimizer.optimize(&solvableQFollow);
-    QueryResult queryResultFollow = queryEvaluator.evaluate(&solvableQFollow);
-    std::vector<std::string> resultFollow =
-        queryEvaluator.interpretQueryResult(&queryResultFollow);
-
-    REQUIRE(resultFollow.size() == 0);
+    REQUIRE_THROWS(queryEvaluator.evaluate(&solvableQFollow));
 
     SolvableQuery solvableQFollowT =
         QueryParser::parse("stmt s; Select s such that Follows*(s, s)");
     queryOptimizer.optimize(&solvableQFollowT);
-    QueryResult queryResultFollowT =
-        queryEvaluator.evaluate(&solvableQFollowT);
-    std::vector<std::string> resultFollowT =
-        queryEvaluator.interpretQueryResult(&queryResultFollowT);
+    REQUIRE_THROWS(queryEvaluator.evaluate(&solvableQFollowT));
 
-    REQUIRE(resultFollowT.size() == 0);
 
     SolvableQuery solvableQParent =
         QueryParser::parse("stmt s; Select s such that Parent*(s, s)");
     queryOptimizer.optimize(&solvableQParent);
-    QueryResult queryResultParent = queryEvaluator.evaluate(&solvableQParent);
-    std::vector<std::string> resultParent =
-        queryEvaluator.interpretQueryResult(&queryResultParent);
+    REQUIRE_THROWS(queryEvaluator.evaluate(&solvableQParent));
 
-    REQUIRE(resultParent.size() == 0);
 
     SolvableQuery solvableQParentT =
         QueryParser::parse("stmt s; Select s such that Parent*(s, s)");
     queryOptimizer.optimize(&solvableQParentT);
-    QueryResult queryResultParentT =
-        queryEvaluator.evaluate(&solvableQParentT);
-    std::vector<std::string> resultParentT =
-        queryEvaluator.interpretQueryResult(&queryResultParentT);
+    REQUIRE_THROWS(queryEvaluator.evaluate(&solvableQParentT));
 
-    REQUIRE(resultParentT.size() == 0);
 }
 
 TEST_CASE("Select alternate attribute with no clauses") { 

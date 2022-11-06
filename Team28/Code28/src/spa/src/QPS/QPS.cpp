@@ -15,6 +15,12 @@ void QPS::evaluate(std::string query, std::list<std::string> &results) {
         results.push_back("SyntaxError");
     } catch (SemanticError e) {
         results.push_back("SemanticError");
+    } catch (EmptyTableError e) {
+        if (e.getIsBoolean()) {
+            results.push_back("FALSE");
+        } else {
+            return;
+        }
     }
 }
 
