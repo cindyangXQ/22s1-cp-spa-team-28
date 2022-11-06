@@ -18,3 +18,25 @@ bool AffectsBaseTable::isAssignmentEntity(EntityName entity) {
 int AffectsBaseTable::chooseStmt(int left, int right, Position pos) {
     return pos == Position::LEFT ? left : right;
 };
+
+bool AffectsBaseTable::validateHelper(
+    Reference leftRef, Reference rightRef, bool (*verifyDoubleWildcards)(),
+    bool (*verifySingleWildcard)(int, Position), bool (*checkRs)(int, int)) {
+    if (leftRef.isWildcard() && rightRef.isWildcard()) {
+        return verifyDoubleWildcards();
+    }
+    if (leftRef.isWildcard()) {
+        int right = convertToType<int>(rightRef.getValueString());
+        return verifySingleWildcard(right, Position::RIGHT);
+    }
+    if (rightRef.isWildcard()) {
+        int left = convertToType<int>(leftRef.getValueString());
+        return verifySingleWildcard(left, Position::LEFT);
+    }
+    int left = convertToType<int>(leftRef.getValueString());
+    int right = convertToType<int>(rightRef.getValueString());
+    if (!areAssignments(left, right)) {
+        return false;
+    }
+    return checkRs(left, right);
+};

@@ -36,23 +36,8 @@ void AffectsTable::resetCache() {
 
 bool AffectsTable::validate(Reference leftRef, Reference rightRef) {
     markForReset();
-    if (leftRef.isWildcard() && rightRef.isWildcard()) {
-        return verifyDoubleWildcards();
-    }
-    if (leftRef.isWildcard()) {
-        int right = convertToType<int>(rightRef.getValueString());
-        return verifySingleWildcard(right, Position::RIGHT);
-    }
-    if (rightRef.isWildcard()) {
-        int left = convertToType<int>(leftRef.getValueString());
-        return verifySingleWildcard(left, Position::LEFT);
-    }
-    int left = convertToType<int>(leftRef.getValueString());
-    int right = convertToType<int>(rightRef.getValueString());
-    if (!areAssignments(left, right)) {
-        return false;
-    }
-    return checkAffects(left, right);
+    return validateHelper(leftRef, rightRef, &verifyDoubleWildcards,
+                          &verifySingleWildcard, &checkAffects);
 };
 
 std::vector<Value> AffectsTable::solveRight(Reference leftRef,

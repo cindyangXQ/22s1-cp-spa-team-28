@@ -49,6 +49,11 @@ public:
 protected:
     std::unordered_set<int> assignments;
 
+    bool validateHelper(Reference leftRef, Reference rightRef,
+                        bool (*verifyDoubleWildcards)(),
+                        bool (*verifySingleWildcard)(int, Position),
+                        bool (*checkRs)(int, int));
+
     bool isAssignment(int stmt);
     bool areAssignments(int left, int right);
     bool isAssignmentEntity(EntityName entity);
