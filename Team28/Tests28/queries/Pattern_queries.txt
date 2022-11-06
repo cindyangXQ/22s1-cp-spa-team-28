@@ -935,7 +935,7 @@ TRUE
 5000
 189 - Semantically invalid pattern while
 while w; if i; variable v; stmt n;
-Select BOOLEAN pattern w(v,_)
+Select BOOLEAN pattern w(v,_,_)
 SyntaxError
 5000
 190 - Syntactically invalid pattern if
