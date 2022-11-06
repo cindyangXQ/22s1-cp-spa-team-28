@@ -149,3 +149,18 @@ double SuchThatClause::getOptimizeScore() {
     }
     return baseScore * synScore;
 }
+
+bool SuchThatClause::replace(Reference synRef, Reference valRef) {
+    bool replaced = false;
+    if (refLeft.isASynonym() &&
+        refLeft.getSynonymName() == synRef.getSynonymName()) {
+        refLeft = valRef;
+        replaced = true;
+    }
+    if (refRight.isASynonym() &&
+        refRight.getSynonymName() == synRef.getSynonymName()) {
+        refRight = valRef;
+        replaced = true;
+    }
+    return replaced;
+}
