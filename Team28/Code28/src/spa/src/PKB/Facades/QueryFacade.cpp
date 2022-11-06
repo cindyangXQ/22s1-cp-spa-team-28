@@ -2,6 +2,8 @@
 
 #include "QueryFacade.h"
 
+QueryFacade::QueryFacade(Storage *storage) { this->storage = storage; }
+
 void QueryFacade::resetCache() {
     NextTTable *nextTTable = this->storage->getTable<NextTTable>();
     nextTTable->resetCache();
@@ -15,39 +17,6 @@ int QueryFacade::getTableSize(Designation desType) {
     Table *table = this->storage->getDesignationTable(desType);
     return table->getTableSize();
 };
-
-bool QueryFacade::validateWildcard(Reference leftRef, Reference rightRef,
-                                   Solvable *sTable, Solvable *pTable) {
-    return sTable->validate(leftRef, rightRef) ||
-           pTable->validate(leftRef, rightRef);
-}
-
-std::vector<Value>
-QueryFacade::concatSolveRightResults(std::vector<Solvable *> solvables,
-                                     Reference leftRef,
-                                     EntityName rightSynonym) {
-    std::vector<Value> result = {};
-    std::vector<Value> intermediateRes = {};
-    for (Solvable *solvable : solvables) {
-        intermediateRes = solvable->solveRight(leftRef, rightSynonym,
-                                               this->storage->getStorageView());
-        result.insert(result.end(), intermediateRes.begin(),
-                      intermediateRes.end());
-    }
-    return result;
-};
-
-ReferenceType QueryFacade::getRefType(EntityName leftSynonym) {
-    if (STMT_REF_SET.count(leftSynonym) == 1) {
-        return ReferenceType::STMT_REF;
-    }
-    if (leftSynonym == EntityName::PROCEDURE) {
-        return ReferenceType::ENT_REF;
-    }
-    return ReferenceType::WILDCARD;
-}
-
-QueryFacade::QueryFacade(Storage *storage) { this->storage = storage; }
 
 std::vector<Statement *>
 QueryFacade::getAllStatementsByType(StatementType type) {
@@ -261,28 +230,6 @@ QueryFacade::solveBothAttribute(Reference left, Reference right) {
     return result;
 }
 
-void QueryFacade::addAllPairsInto(std::vector<std::pair<Value, Value>> *result,
-                                  std::vector<Value> *left,
-                                  std::vector<Value> *right) {
-    for (Value lValue : *left) {
-        for (Value rValue : *right) {
-            result->push_back(std::make_pair(lValue, rValue));
-        }
-    }
-};
-
-bool QueryFacade::isWildcardedUses(ReferenceType leftRef,
-                                   RelationshipReference relType) {
-    return leftRef == ReferenceType::WILDCARD &&
-           relType == RelationshipReference::USES;
-}
-
-bool QueryFacade::isWildcardedModifies(ReferenceType leftRef,
-                                       RelationshipReference relType) {
-    return leftRef == ReferenceType::WILDCARD &&
-           relType == RelationshipReference::MODIFIES;
-}
-
 std::vector<Value> QueryFacade::solveReflexive(RelationshipReference rsRef,
                                                EntityName stmtEntity) {
     if (STMT_REF_SET.count(stmtEntity) != 1) {
@@ -305,4 +252,59 @@ std::vector<Value> QueryFacade::getVar(Designation desType, int stmtNo) {
     }
     UsesControlVarTable *conds = this->storage->getControlVarTable(desType);
     return conds->getVar(stmtNo);
+}
+
+// Helper methods
+
+bool QueryFacade::validateWildcard(Reference leftRef, Reference rightRef,
+                                   Solvable *sTable, Solvable *pTable) {
+    return sTable->validate(leftRef, rightRef) ||
+           pTable->validate(leftRef, rightRef);
+}
+
+std::vector<Value>
+QueryFacade::concatSolveRightResults(std::vector<Solvable *> solvables,
+                                     Reference leftRef,
+                                     EntityName rightSynonym) {
+    std::vector<Value> result = {};
+    std::vector<Value> intermediateRes = {};
+    for (Solvable *solvable : solvables) {
+        intermediateRes = solvable->solveRight(leftRef, rightSynonym,
+                                               this->storage->getStorageView());
+        result.insert(result.end(), intermediateRes.begin(),
+                      intermediateRes.end());
+    }
+    return result;
+};
+
+ReferenceType QueryFacade::getRefType(EntityName leftSynonym) {
+    if (STMT_REF_SET.count(leftSynonym) == 1) {
+        return ReferenceType::STMT_REF;
+    }
+    if (leftSynonym == EntityName::PROCEDURE) {
+        return ReferenceType::ENT_REF;
+    }
+    return ReferenceType::WILDCARD;
+}
+
+void QueryFacade::addAllPairsInto(std::vector<std::pair<Value, Value>> *result,
+                                  std::vector<Value> *left,
+                                  std::vector<Value> *right) {
+    for (Value lValue : *left) {
+        for (Value rValue : *right) {
+            result->push_back(std::make_pair(lValue, rValue));
+        }
+    }
+};
+
+bool QueryFacade::isWildcardedUses(ReferenceType leftRef,
+                                   RelationshipReference relType) {
+    return leftRef == ReferenceType::WILDCARD &&
+           relType == RelationshipReference::USES;
+}
+
+bool QueryFacade::isWildcardedModifies(ReferenceType leftRef,
+                                       RelationshipReference relType) {
+    return leftRef == ReferenceType::WILDCARD &&
+           relType == RelationshipReference::MODIFIES;
 }
