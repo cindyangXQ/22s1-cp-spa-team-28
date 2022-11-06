@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-std::map<EntityName, StatementType> Statement::entityToStatementMap = {
+std::map<EntityName, StatementType> Statement::ENTITY_TO_STATEMENT_MAP = {
     {EntityName::READ, StatementType::READ},
     {EntityName::PRINT, StatementType::PRINT},
     {EntityName::CALL, StatementType::CALL},
@@ -27,7 +27,7 @@ StatementType Statement::getStatementType() { return this->type; }
 int Statement::getLineNumber() { return this->lineNo; }
 
 StatementType Statement::getStmtTypeFromEntityName(EntityName entityName) {
-    return Statement::entityToStatementMap[entityName];
+    return Statement::ENTITY_TO_STATEMENT_MAP[entityName];
 }
 
 bool Statement::operator==(const Statement &other) const {

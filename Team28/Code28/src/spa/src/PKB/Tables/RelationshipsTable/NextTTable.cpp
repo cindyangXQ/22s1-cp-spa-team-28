@@ -49,7 +49,7 @@ bool NextTTable::validate(Reference leftRef, Reference rightRef) {
 std::vector<Value> NextTTable::solveRight(Reference leftRef,
                                           EntityName rightSynonym,
                                           StorageView *storage) {
-    if (stmtRefSet.count(rightSynonym) == 0) {
+    if (STMT_REF_SET.count(rightSynonym) == 0) {
         return std::vector<Value>();
     }
     markForReset();
@@ -63,7 +63,7 @@ std::vector<Value> NextTTable::solveRight(Reference leftRef,
 std::vector<Value> NextTTable::solveLeft(Reference rightRef,
                                          EntityName leftSynonym,
                                          StorageView *storage) {
-    if (stmtRefSet.count(leftSynonym) == 0) {
+    if (STMT_REF_SET.count(leftSynonym) == 0) {
         return std::vector<Value>();
     }
     markForReset();
@@ -77,8 +77,8 @@ std::vector<Value> NextTTable::solveLeft(Reference rightRef,
 std::vector<std::pair<Value, Value>>
 NextTTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
                       StorageView *storage) {
-    if (stmtRefSet.count(leftSynonym) == 0 ||
-        stmtRefSet.count(rightSynonym) == 0) {
+    if (STMT_REF_SET.count(leftSynonym) == 0 ||
+        STMT_REF_SET.count(rightSynonym) == 0) {
         return std::vector<std::pair<Value, Value>>();
     }
     markForReset();
@@ -105,7 +105,7 @@ NextTTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
 
 std::vector<Value> NextTTable::solveBothReflexive(EntityName stmtEntity,
                                                   StorageView *storage) {
-    if (stmtRefSet.count(stmtEntity) == 0) {
+    if (STMT_REF_SET.count(stmtEntity) == 0) {
         return std::vector<Value>();
     }
     markForReset();

@@ -34,16 +34,10 @@ enum class Designation {
     AFFECTS_T
 };
 
-typedef std::unordered_set<Designation> DESIGNATION_TYPE_SET;
+typedef std::unordered_set<Designation> DesignationTypeSet;
 
-const DESIGNATION_TYPE_SET namedEntitiesSet = {
+const DesignationTypeSet NAMED_ENTITIES_SET = {
     Designation::VAR, Designation::CONST, Designation::PROC};
 
-const DESIGNATION_TYPE_SET condPatternSet = {Designation::IF_C,
+const DesignationTypeSet COND_PATTERN_SET = {Designation::IF_C,
                                              Designation::WHILE_C};
-
-const DESIGNATION_TYPE_SET nonPrecomputedSet = {
-    Designation::NEXT_T,
-    Designation::AFFECTS,
-    Designation::AFFECTS_T,
-};
