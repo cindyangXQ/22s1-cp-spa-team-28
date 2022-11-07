@@ -112,10 +112,10 @@ void WithClause::populateOptimizeScore(QueryFacade *queryFacade) {
         multiplier *= 0.01;
     }
     double baseScore = 0.0;
-    if (this->refLeft.isASynonym()) {
+    if (this->refLeft.getRefType() == ReferenceType::ATTR_REF) {
         baseScore += queryFacade->getTableSize(this->refLeft.getDesignation());
     }
-    if (this->refRight.isASynonym()) {
+    if (this->refRight.getRefType() == ReferenceType::ATTR_REF) {
         baseScore += queryFacade->getTableSize(this->refRight.getDesignation());
     }
     if (multiplier * baseScore < 0) {
