@@ -2,6 +2,8 @@
 
 #include "QueryFacade.h"
 
+QueryFacade::QueryFacade(Storage *storage) { this->storage = storage; }
+
 void QueryFacade::resetCache() {
     NextTTable *nextTTable = this->storage->getTable<NextTTable>();
     nextTTable->resetCache();
@@ -15,39 +17,6 @@ int QueryFacade::getTableSize(Designation desType) {
     Table *table = this->storage->getDesignationTable(desType);
     return table->getTableSize();
 };
-
-bool QueryFacade::validateWildcard(Reference leftRef, Reference rightRef,
-                                   Solvable *sTable, Solvable *pTable) {
-    return sTable->validate(leftRef, rightRef) ||
-           pTable->validate(leftRef, rightRef);
-}
-
-std::vector<Value>
-QueryFacade::concatSolveRightResults(std::vector<Solvable *> solvables,
-                                     Reference leftRef,
-                                     EntityName rightSynonym) {
-    std::vector<Value> result = {};
-    std::vector<Value> intermediateRes = {};
-    for (Solvable *solvable : solvables) {
-        intermediateRes = solvable->solveRight(leftRef, rightSynonym,
-                                               this->storage->getStorageView());
-        result.insert(result.end(), intermediateRes.begin(),
-                      intermediateRes.end());
-    }
-    return result;
-};
-
-ReferenceType QueryFacade::getRefType(EntityName leftSynonym) {
-    if (stmtRefSet.count(leftSynonym) == 1) {
-        return ReferenceType::STMT_REF;
-    }
-    if (leftSynonym == EntityName::PROCEDURE) {
-        return ReferenceType::ENT_REF;
-    }
-    return ReferenceType::WILDCARD;
-}
-
-QueryFacade::QueryFacade(Storage *storage) { this->storage = storage; }
 
 std::vector<Statement *>
 QueryFacade::getAllStatementsByType(StatementType type) {
@@ -65,7 +34,7 @@ QueryFacade::getAllStatementsByType(StatementType type) {
 }
 
 std::vector<std::string> QueryFacade::getAllEntities(Designation entityType) {
-    if (namedEntitiesSet.count(entityType) == 0) {
+    if (NAMED_ENTITIES_SET.count(entityType) == 0) {
         return std::vector<std::string>();
     }
     Table *entityTable = this->storage->getDesignationTable(entityType);
@@ -102,7 +71,7 @@ bool QueryFacade::validate(int stmtNo, std::string varName,
 
 bool QueryFacade::validate(Designation desType, int stmtNo,
                            std::string varName) {
-    if (condPatternSet.count(desType) == 0) {
+    if (COND_PATTERN_SET.count(desType) == 0) {
         return false;
     }
     UsesControlVarTable *conds = this->storage->getControlVarTable(desType);
@@ -184,7 +153,7 @@ QueryFacade::getAssignAndVar(AssignExpression expression) {
 
 std::vector<Value> QueryFacade::getCond(Designation condType,
                                         std::string varName) {
-    if (condPatternSet.count(condType) == 0) {
+    if (COND_PATTERN_SET.count(condType) == 0) {
         return std::vector<Value>();
     }
     UsesControlVarTable *conds = this->storage->getControlVarTable(condType);
@@ -193,7 +162,7 @@ std::vector<Value> QueryFacade::getCond(Designation condType,
 
 std::vector<std::pair<Value, Value>>
 QueryFacade::getCondAndVar(Designation condType) {
-    if (condPatternSet.count(condType) == 0) {
+    if (COND_PATTERN_SET.count(condType) == 0) {
         return std::vector<std::pair<Value, Value>>();
     }
     UsesControlVarTable *conds = this->storage->getControlVarTable(condType);
@@ -238,7 +207,6 @@ std::vector<Value> QueryFacade::solveOneAttribute(Reference ref, Value value) {
 
 std::vector<std::pair<Value, Value>>
 QueryFacade::solveBothAttribute(Reference left, Reference right) {
-    // TODO: find a method to inner join instead of cross product
     EntityName leftEnt = left.getEntityName();
     Attributable *leftTable =
         this->storage->getAttributesTable(leftEnt, left.getAttr());
@@ -262,6 +230,63 @@ QueryFacade::solveBothAttribute(Reference left, Reference right) {
     return result;
 }
 
+std::vector<Value> QueryFacade::solveReflexive(RelationshipReference rsRef,
+                                               EntityName stmtEntity) {
+    if (STMT_REF_SET.count(stmtEntity) != 1) {
+        return std::vector<Value>();
+    }
+
+    Reflexive *reflexive = this->storage->getReflexiveTable(rsRef);
+    return reflexive->solveBothReflexive(stmtEntity,
+                                         this->storage->getStorageView());
+};
+
+std::vector<Value> QueryFacade::getVar(int stmtNo, AssignExpression expr) {
+    AssignmentsTable *table = this->storage->getTable<AssignmentsTable>();
+    return table->getVar(stmtNo, expr);
+}
+
+std::vector<Value> QueryFacade::getVar(Designation desType, int stmtNo) {
+    if (COND_PATTERN_SET.count(desType) == 0) {
+        return std::vector<Value>();
+    }
+    UsesControlVarTable *conds = this->storage->getControlVarTable(desType);
+    return conds->getVar(stmtNo);
+}
+
+// Helper methods
+
+bool QueryFacade::validateWildcard(Reference leftRef, Reference rightRef,
+                                   Solvable *sTable, Solvable *pTable) {
+    return sTable->validate(leftRef, rightRef) ||
+           pTable->validate(leftRef, rightRef);
+}
+
+std::vector<Value>
+QueryFacade::concatSolveRightResults(std::vector<Solvable *> solvables,
+                                     Reference leftRef,
+                                     EntityName rightSynonym) {
+    std::vector<Value> result = {};
+    std::vector<Value> intermediateRes = {};
+    for (Solvable *solvable : solvables) {
+        intermediateRes = solvable->solveRight(leftRef, rightSynonym,
+                                               this->storage->getStorageView());
+        result.insert(result.end(), intermediateRes.begin(),
+                      intermediateRes.end());
+    }
+    return result;
+};
+
+ReferenceType QueryFacade::getRefType(EntityName leftSynonym) {
+    if (STMT_REF_SET.count(leftSynonym) == 1) {
+        return ReferenceType::STMT_REF;
+    }
+    if (leftSynonym == EntityName::PROCEDURE) {
+        return ReferenceType::ENT_REF;
+    }
+    return ReferenceType::WILDCARD;
+}
+
 void QueryFacade::addAllPairsInto(std::vector<std::pair<Value, Value>> *result,
                                   std::vector<Value> *left,
                                   std::vector<Value> *right) {
@@ -282,28 +307,4 @@ bool QueryFacade::isWildcardedModifies(ReferenceType leftRef,
                                        RelationshipReference relType) {
     return leftRef == ReferenceType::WILDCARD &&
            relType == RelationshipReference::MODIFIES;
-}
-
-std::vector<Value> QueryFacade::solveReflexive(RelationshipReference rsRef,
-                                               EntityName stmtEntity) {
-    if (stmtRefSet.count(stmtEntity) != 1) {
-        return std::vector<Value>();
-    }
-
-    Reflexive *reflexive = this->storage->getReflexiveTable(rsRef);
-    return reflexive->solveBothReflexive(stmtEntity,
-                                         this->storage->getStorageView());
-};
-
-std::vector<Value> QueryFacade::getVar(int stmtNo, AssignExpression expr) {
-    AssignmentsTable *table = this->storage->getTable<AssignmentsTable>();
-    return table->getVar(stmtNo, expr);
-}
-
-std::vector<Value> QueryFacade::getVar(Designation desType, int stmtNo) {
-    if (condPatternSet.count(desType) == 0) {
-        return std::vector<Value>();
-    }
-    UsesControlVarTable *conds = this->storage->getControlVarTable(desType);
-    return conds->getVar(stmtNo);
 }

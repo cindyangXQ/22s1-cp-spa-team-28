@@ -15,7 +15,7 @@ enum class StatementType { STMT, READ, PRINT, ASSIGN, CALL, WHILE, IF, NONE };
  */
 class Statement : public TableValue {
 public:
-    static std::map<EntityName, StatementType> entityToStatementMap;
+    static std::map<EntityName, StatementType> ENTITY_TO_STATEMENT_MAP;
 
     /*
      * Returns the corresponding StatementType from the given EntityName

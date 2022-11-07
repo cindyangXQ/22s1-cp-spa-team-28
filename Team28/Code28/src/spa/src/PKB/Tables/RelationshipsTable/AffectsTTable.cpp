@@ -20,7 +20,6 @@ std::map<std::pair<int, int>, bool> AffectsTTable::computeClosure() {
     if (isComputed) {
         return this->matrix;
     }
-    // TODO: Clean up/change method entirely
     for (int i : this->assignments) {
         for (int j : this->assignments) {
             std::pair<int, int> curr = std::make_pair(i, j);
@@ -65,8 +64,7 @@ bool AffectsTTable::validate(Reference leftRef, Reference rightRef) {
     if (!areAssignments(left, right)) {
         return false;
     }
-    std::pair curr = std::make_pair(left, right);
-    return this->matrix[curr];
+    return checkAffectsT(left, right);
 };
 
 std::vector<Value> AffectsTTable::solveRight(Reference leftRef,
@@ -150,8 +148,7 @@ std::vector<Value> AffectsTTable::solveBothReflexive(EntityName synonym,
     }
     std::vector<Value> result;
     for (int stmt : this->assignments) {
-        std::pair curr = std::make_pair(stmt, stmt);
-        if (this->matrix[curr]) {
+        if (checkAffectsT(stmt, stmt)) {
             Value stmtValue = Value(ValueType::STMT_NUM, toString(stmt));
             result.push_back(stmtValue);
         }
@@ -159,11 +156,15 @@ std::vector<Value> AffectsTTable::solveBothReflexive(EntityName synonym,
     return result;
 }
 
+bool AffectsTTable::checkAffectsT(int left, int right) {
+    std::pair curr = std::make_pair(left, right);
+    return this->matrix[curr];
+}
+
 bool AffectsTTable::verifyDoubleWildcards() {
     for (int left : this->assignments) {
         for (int right : this->assignments) {
-            std::pair curr = std::make_pair(left, right);
-            if (this->matrix[curr]) {
+            if (checkAffectsT(left, right)) {
                 return true;
             }
         }
@@ -177,8 +178,7 @@ bool AffectsTTable::verifyLeftWildcard(int right) {
     }
 
     for (int left : this->assignments) {
-        std::pair curr = std::make_pair(left, right);
-        if (this->matrix[curr]) {
+        if (checkAffectsT(left, right)) {
             return true;
         }
     }
@@ -190,8 +190,7 @@ bool AffectsTTable::verifyRightWildcard(int left) {
         return false;
     }
     for (int right : this->assignments) {
-        std::pair curr = std::make_pair(left, right);
-        if (this->matrix[curr]) {
+        if (checkAffectsT(left, right)) {
             return true;
         }
     }
@@ -203,7 +202,7 @@ void AffectsTTable::solveSingleWildcard(
     for (int left : this->assignments) {
         for (int right : this->assignments) {
             std::pair curr = std::make_pair(left, right);
-            if (this->matrix[curr]) {
+            if (checkAffectsT(left, right)) {
                 intermediateResult->insert(
                     Value(ValueType::STMT_NUM,
                           toString(chooseStmt(left, right, stmtPos))));

@@ -50,6 +50,7 @@ private:
      */
     std::map<std::pair<int, int>, bool> computeClosure();
 
+    bool checkAffectsT(int left, int right);
     bool verifyDoubleWildcards();
     bool verifyLeftWildcard(int right);
     bool verifyRightWildcard(int left);

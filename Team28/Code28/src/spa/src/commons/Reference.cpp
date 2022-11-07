@@ -7,9 +7,9 @@ Reference::Reference() {}
 Reference::Reference(Synonym syn) {
     this->isSynonym = true;
     this->syn = syn;
-    if (entRefSet.count(syn.getEntityName())) {
+    if (ENT_REF_SET.count(syn.getEntityName())) {
         this->type = ReferenceType::ENT_REF;
-    } else if (stmtRefSet.count(syn.getEntityName())) {
+    } else if (STMT_REF_SET.count(syn.getEntityName())) {
         this->type = ReferenceType::STMT_REF;
     } else {
         throw SemanticError("Invalid reference type");
@@ -21,7 +21,7 @@ Reference::Reference(Synonym syn, EntityAttribute attr) {
     this->type = ReferenceType::ATTR_REF;
     this->syn = syn;
     std::unordered_set<EntityAttribute> validAttr =
-        entityAttributeMap.at(syn.getEntityName());
+        ENTITY_ATTRIBUTE_MAP.at(syn.getEntityName());
     if (validAttr.count(attr)) {
         this->attr = attr;
     } else {

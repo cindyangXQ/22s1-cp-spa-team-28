@@ -2205,7 +2205,6 @@ TEST_CASE("pattern-assign validate works correctly") {
 }
 
 TEST_CASE("pattern-if/while validate works correctly") {
-    // TODO: SOME WEIRD BEHAVIOUR HELPPPPP
     Storage *storage = new Storage();
     QueryFacade facade = QueryFacade(storage);
     WhileControlVarTable *wTable = storage->getTable<WhileControlVarTable>();

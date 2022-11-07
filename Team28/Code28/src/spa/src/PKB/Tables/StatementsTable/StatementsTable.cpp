@@ -93,7 +93,7 @@ std::vector<Value> StatementsTable::getMatchingValue(std::string value,
     if (entity == EntityName::STMT) {
         values = this->getAllLineNumbers();
     } else {
-        StatementType stmtType = Statement::entityToStatementMap[entity];
+        StatementType stmtType = Statement::ENTITY_TO_STATEMENT_MAP[entity];
         values = this->getStatementsByType(stmtType);
     }
     for (int i : values) {
@@ -112,7 +112,7 @@ StatementsTable::getAllValues(EntityName entity, StorageView *storage) {
     if (entity == EntityName::STMT) {
         values = this->getAllLineNumbers();
     } else {
-        StatementType stmtType = Statement::entityToStatementMap[entity];
+        StatementType stmtType = Statement::ENTITY_TO_STATEMENT_MAP[entity];
         values = this->getStatementsByType(stmtType);
     }
     for (int i : values) {

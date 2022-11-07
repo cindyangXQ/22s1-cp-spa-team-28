@@ -22,26 +22,26 @@ enum class EntityName {
 
 enum class EntityAttribute { PROC_NAME, VAR_NAME, VALUE, STMT_NO };
 
-typedef std::unordered_set<EntityName> ENTITY_TYPE_SET;
-const ENTITY_TYPE_SET stmtRefSet = {
+typedef std::unordered_set<EntityName> EntityTypeSet;
+const EntityTypeSet STMT_REF_SET = {
     EntityName::STMT,  EntityName::READ, EntityName::PRINT, EntityName::CALL,
     EntityName::WHILE, EntityName::IF,   EntityName::ASSIGN};
 
-const ENTITY_TYPE_SET entRefSet = {EntityName::VARIABLE, EntityName::PROCEDURE,
+const EntityTypeSet ENT_REF_SET = {EntityName::VARIABLE, EntityName::PROCEDURE,
                                    EntityName::CONSTANT};
 
-typedef std::map<EntityName, EntityAttribute> INFERRED_ENTITY_ATTRIBUTE_MAP;
+typedef std::map<EntityName, EntityAttribute> InferredEntityAttributeMap;
 
-const INFERRED_ENTITY_ATTRIBUTE_MAP SECONDARY_ATTRIBUTE_MAP = {
+const InferredEntityAttributeMap SECONDARY_ATTRIBUTE_MAP = {
     {EntityName::CALL, EntityAttribute::PROC_NAME},
     {EntityName::PRINT, EntityAttribute::VAR_NAME},
     {EntityName::READ, EntityAttribute::VAR_NAME},
 };
 
 typedef std::unordered_map<EntityName, std::unordered_set<EntityAttribute>>
-    ENTITY_ATTRIBUTE_MAP;
+    EntityAtttributeMap;
 
-const ENTITY_ATTRIBUTE_MAP entityAttributeMap = {
+const EntityAtttributeMap ENTITY_ATTRIBUTE_MAP = {
     {EntityName::PROCEDURE, {EntityAttribute::PROC_NAME}},
     {EntityName::STMT, {EntityAttribute::STMT_NO}},
     {EntityName::READ, {EntityAttribute::STMT_NO, EntityAttribute::VAR_NAME}},
