@@ -62,19 +62,9 @@ std::vector<Value> AffectsTTable::solveRight(Reference leftRef,
     if (!isComputed) {
         this->computeClosure();
     }
-    std::unordered_set<Value> intermediateResult;
-    if (leftRef.isWildcard()) {
-        solveSingleWildcard(&intermediateResult, Position::RIGHT);
-    } else {
-        int left = convertToType<int>(leftRef.getValueString());
-        if (!isAssignment(left)) {
-            return std::vector<Value>();
-        }
-        solveHelper(left, &intermediateResult, Position::LEFT);
-    }
-    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
-                                                   intermediateResult.end());
-    return result;
+    return solveRightAffectsHelper<AffectsTTable>(
+        &leftRef, this, &AffectsTTable::solveSingleWildcard,
+        &AffectsTTable::solveHelper);
 }
 
 std::vector<Value> AffectsTTable::solveLeft(Reference rightRef,
@@ -86,19 +76,9 @@ std::vector<Value> AffectsTTable::solveLeft(Reference rightRef,
     if (!isComputed) {
         this->computeClosure();
     }
-    std::unordered_set<Value> intermediateResult;
-    if (rightRef.isWildcard()) {
-        solveSingleWildcard(&intermediateResult, Position::LEFT);
-    } else {
-        int right = convertToType<int>(rightRef.getValueString());
-        if (!isAssignment(right)) {
-            return std::vector<Value>();
-        }
-        solveHelper(right, &intermediateResult, Position::RIGHT);
-    }
-    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
-                                                   intermediateResult.end());
-    return result;
+    return solveLeftAffectsHelper<AffectsTTable>(
+        &rightRef, this, &AffectsTTable::solveSingleWildcard,
+        &AffectsTTable::solveHelper);
 };
 
 std::vector<std::pair<Value, Value>>
@@ -110,18 +90,8 @@ AffectsTTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
     if (!isComputed) {
         this->computeClosure();
     }
-    std::vector<std::pair<Value, Value>> result;
-    for (int left : this->assignments) {
-        for (int right : this->assignments) {
-            std::pair curr = std::make_pair(left, right);
-            if (this->matrix[curr]) {
-                Value leftValue = Value(ValueType::STMT_NUM, toString(left));
-                Value rightValue = Value(ValueType::STMT_NUM, toString(right));
-                result.push_back(std::make_pair(leftValue, rightValue));
-            }
-        }
-    }
-    return result;
+    return solveBothAffectsHelper<AffectsTTable>(this,
+                                                 &AffectsTTable::checkAffectsT);
 }
 
 std::vector<Value> AffectsTTable::solveBothReflexive(EntityName synonym,
@@ -132,14 +102,8 @@ std::vector<Value> AffectsTTable::solveBothReflexive(EntityName synonym,
     if (!isComputed) {
         this->computeClosure();
     }
-    std::vector<Value> result;
-    for (int stmt : this->assignments) {
-        if (checkAffectsT(stmt, stmt)) {
-            Value stmtValue = Value(ValueType::STMT_NUM, toString(stmt));
-            result.push_back(stmtValue);
-        }
-    }
-    return result;
+    return solveBothReflexAffectsHelper<AffectsTTable>(
+        this, &AffectsTTable::checkAffectsT);
 }
 
 bool AffectsTTable::checkAffectsT(int left, int right) {
@@ -195,7 +159,6 @@ void AffectsTTable::solveSingleWildcard(
     std::unordered_set<Value> *intermediateResult, Position stmtPos) {
     for (int left : this->assignments) {
         for (int right : this->assignments) {
-            std::pair curr = std::make_pair(left, right);
             if (checkAffectsT(left, right)) {
                 intermediateResult->insert(
                     Value(ValueType::STMT_NUM,
