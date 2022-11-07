@@ -36,23 +36,9 @@ void AffectsTable::resetCache() {
 
 bool AffectsTable::validate(Reference leftRef, Reference rightRef) {
     markForReset();
-    if (leftRef.isWildcard() && rightRef.isWildcard()) {
-        return verifyDoubleWildcards();
-    }
-    if (leftRef.isWildcard()) {
-        int right = convertToType<int>(rightRef.getValueString());
-        return verifySingleWildcard(right, Position::RIGHT);
-    }
-    if (rightRef.isWildcard()) {
-        int left = convertToType<int>(leftRef.getValueString());
-        return verifySingleWildcard(left, Position::LEFT);
-    }
-    int left = convertToType<int>(leftRef.getValueString());
-    int right = convertToType<int>(rightRef.getValueString());
-    if (!areAssignments(left, right)) {
-        return false;
-    }
-    return checkAffects(left, right);
+    return validateHelper<AffectsTable>(
+        &leftRef, &rightRef, this, &AffectsTable::verifyDoubleWildcards,
+        &AffectsTable::verifySingleWildcard, &AffectsTable::checkAffects);
 };
 
 std::vector<Value> AffectsTable::solveRight(Reference leftRef,
@@ -62,19 +48,9 @@ std::vector<Value> AffectsTable::solveRight(Reference leftRef,
         return std::vector<Value>();
     }
     markForReset();
-    std::unordered_set<Value> intermediateResult;
-    if (leftRef.isWildcard()) {
-        solveSingleWildcard(&intermediateResult, Position::RIGHT);
-    } else {
-        int left = convertToType<int>(leftRef.getValueString());
-        if (!isAssignment(left)) {
-            return std::vector<Value>();
-        }
-        solveHelper(left, &intermediateResult, Position::LEFT);
-    }
-    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
-                                                   intermediateResult.end());
-    return result;
+    return solveRightAffectsHelper<AffectsTable>(
+        &leftRef, this, &AffectsTable::solveSingleWildcard,
+        &AffectsTable::solveHelper);
 }
 
 std::vector<Value> AffectsTable::solveLeft(Reference rightRef,
@@ -84,19 +60,9 @@ std::vector<Value> AffectsTable::solveLeft(Reference rightRef,
         return std::vector<Value>();
     }
     markForReset();
-    std::unordered_set<Value> intermediateResult;
-    if (rightRef.isWildcard()) {
-        solveSingleWildcard(&intermediateResult, Position::LEFT);
-    } else {
-        int right = convertToType<int>(rightRef.getValueString());
-        if (!isAssignment(right)) {
-            return std::vector<Value>();
-        }
-        solveHelper(right, &intermediateResult, Position::RIGHT);
-    }
-    std::vector<Value> result = std::vector<Value>(intermediateResult.begin(),
-                                                   intermediateResult.end());
-    return result;
+    return solveLeftAffectsHelper<AffectsTable>(
+        &rightRef, this, &AffectsTable::solveSingleWildcard,
+        &AffectsTable::solveHelper);
 };
 
 std::vector<std::pair<Value, Value>>
@@ -106,17 +72,8 @@ AffectsTable::solveBoth(EntityName leftSynonym, EntityName rightSynonym,
         return std::vector<std::pair<Value, Value>>();
     }
     markForReset();
-    std::vector<std::pair<Value, Value>> result;
-    for (int left : this->assignments) {
-        for (int right : this->assignments) {
-            if (checkAffects(left, right)) {
-                Value leftValue = Value(ValueType::STMT_NUM, toString(left));
-                Value rightValue = Value(ValueType::STMT_NUM, toString(right));
-                result.push_back(std::make_pair(leftValue, rightValue));
-            }
-        }
-    }
-    return result;
+    return solveBothAffectsHelper<AffectsTable>(this,
+                                                &AffectsTable::checkAffects);
 }
 
 std::vector<Value> AffectsTable::solveBothReflexive(EntityName synonym,
@@ -125,14 +82,8 @@ std::vector<Value> AffectsTable::solveBothReflexive(EntityName synonym,
         return std::vector<Value>();
     }
     markForReset();
-    std::vector<Value> result;
-    for (int stmt : this->assignments) {
-        if (checkAffects(stmt, stmt)) {
-            Value stmtValue = Value(ValueType::STMT_NUM, toString(stmt));
-            result.push_back(stmtValue);
-        }
-    }
-    return result;
+    return solveBothReflexAffectsHelper<AffectsTable>(
+        this, &AffectsTable::checkAffects);
 }
 
 bool AffectsTable::isAffects(int s2, std::string v) {
