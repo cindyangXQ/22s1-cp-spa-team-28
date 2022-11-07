@@ -3,6 +3,7 @@
 #include "../Cache.h"
 #include "../Reflexive.h"
 #include "StmtToStmtRelationshipsTable.h"
+#include <functional>
 
 enum class Position { LEFT, RIGHT };
 
@@ -49,10 +50,11 @@ public:
 protected:
     std::unordered_set<int> assignments;
 
-    bool validateHelper(Reference leftRef, Reference rightRef,
-                        bool (*verifyDoubleWildcards)(),
-                        bool (*verifySingleWildcard)(int, Position),
-                        bool (*checkRs)(int, int));
+    bool validateHelper(
+        Reference leftRef, Reference rightRef,
+        const std::function<bool()> &verifyDoubleWildcards,
+        const std::function<bool(int, Position)> &verifySingleWildcard,
+        const std::function<bool(int, int)> &checkRs);
 
     bool isAssignment(int stmt);
     bool areAssignments(int left, int right);

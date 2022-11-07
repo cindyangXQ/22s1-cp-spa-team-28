@@ -20,8 +20,10 @@ int AffectsBaseTable::chooseStmt(int left, int right, Position pos) {
 };
 
 bool AffectsBaseTable::validateHelper(
-    Reference leftRef, Reference rightRef, bool (*verifyDoubleWildcards)(),
-    bool (*verifySingleWildcard)(int, Position), bool (*checkRs)(int, int)) {
+    Reference leftRef, Reference rightRef,
+    const std::function<bool()> &verifyDoubleWildcards,
+    const std::function<bool(int, Position)> &verifySingleWildcard,
+    const std::function<bool(int, int)> &checkRs) {
     if (leftRef.isWildcard() && rightRef.isWildcard()) {
         return verifyDoubleWildcards();
     }
