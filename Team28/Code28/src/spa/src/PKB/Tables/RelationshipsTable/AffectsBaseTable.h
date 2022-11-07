@@ -49,13 +49,35 @@ public:
 protected:
     std::unordered_set<int> assignments;
 
-    bool validateHelper(Reference leftRef, Reference rightRef,
-                        bool (*verifyDoubleWildcards)(),
-                        bool (*verifySingleWildcard)(int, Position),
-                        bool (*checkRs)(int, int));
-
     bool isAssignment(int stmt);
     bool areAssignments(int left, int right);
     bool isAssignmentEntity(EntityName entity);
     int chooseStmt(int left, int right, Position pos);
+
+    template <class object>
+    bool validateHelper(Reference *leftRef, Reference *rightRef,
+                        object *affectsTable,
+                        bool (object::*verifyDoubleWildcards)(),
+                        bool (object::*verifySingleWildcard)(int, Position),
+                        bool (object::*checkRs)(int, int)) {
+        if (leftRef->isWildcard() && rightRef->isWildcard()) {
+            return (affectsTable->*(verifyDoubleWildcards))();
+        }
+        if (leftRef->isWildcard()) {
+            int right = convertToType<int>(rightRef->getValueString());
+            return (affectsTable->*(verifySingleWildcard))(right,
+                                                           Position::RIGHT);
+        }
+        if (rightRef->isWildcard()) {
+            int left = convertToType<int>(leftRef->getValueString());
+            return (affectsTable->*(verifySingleWildcard))(left,
+                                                           Position::LEFT);
+        }
+        int left = convertToType<int>(leftRef->getValueString());
+        int right = convertToType<int>(rightRef->getValueString());
+        if (!areAssignments(left, right)) {
+            return false;
+        }
+        return (affectsTable->*(checkRs))(left, right);
+    };
 };

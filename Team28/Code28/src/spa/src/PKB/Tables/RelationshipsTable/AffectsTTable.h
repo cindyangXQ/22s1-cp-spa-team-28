@@ -54,6 +54,7 @@ private:
     bool verifyDoubleWildcards();
     bool verifyLeftWildcard(int right);
     bool verifyRightWildcard(int left);
+    bool verifySingleWildcard(int stmt, Position pos);
     void solveSingleWildcard(std::unordered_set<Value> *intermediateResult,
                              Position pos);
     void solveHelper(int stmt, std::unordered_set<Value> *intermediateResult,

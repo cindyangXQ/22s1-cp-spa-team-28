@@ -36,8 +36,9 @@ void AffectsTable::resetCache() {
 
 bool AffectsTable::validate(Reference leftRef, Reference rightRef) {
     markForReset();
-    return validateHelper(leftRef, rightRef, &verifyDoubleWildcards,
-                          &verifySingleWildcard, &checkAffects);
+    return validateHelper<AffectsTable>(
+        &leftRef, &rightRef, this, &AffectsTable::verifyDoubleWildcards,
+        &AffectsTable::verifySingleWildcard, &AffectsTable::checkAffects);
 };
 
 std::vector<Value> AffectsTable::solveRight(Reference leftRef,

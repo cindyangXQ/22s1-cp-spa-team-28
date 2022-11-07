@@ -48,23 +48,9 @@ bool AffectsTTable::validate(Reference leftRef, Reference rightRef) {
     if (!isComputed) {
         this->computeClosure();
     }
-    if (leftRef.isWildcard() && rightRef.isWildcard()) {
-        return verifyDoubleWildcards();
-    }
-    if (leftRef.isWildcard()) {
-        int right = convertToType<int>(rightRef.getValueString());
-        return verifyLeftWildcard(right);
-    }
-    if (rightRef.isWildcard()) {
-        int left = convertToType<int>(leftRef.getValueString());
-        return verifyRightWildcard(left);
-    }
-    int left = convertToType<int>(leftRef.getValueString());
-    int right = convertToType<int>(rightRef.getValueString());
-    if (!areAssignments(left, right)) {
-        return false;
-    }
-    return checkAffectsT(left, right);
+    return validateHelper<AffectsTTable>(
+        &leftRef, &rightRef, this, &AffectsTTable::verifyDoubleWildcards,
+        &AffectsTTable::verifySingleWildcard, &AffectsTTable::checkAffectsT);
 };
 
 std::vector<Value> AffectsTTable::solveRight(Reference leftRef,
@@ -196,6 +182,14 @@ bool AffectsTTable::verifyRightWildcard(int left) {
     }
     return false;
 }
+
+bool AffectsTTable::verifySingleWildcard(int stmt, Position stmtPos) {
+    if (stmtPos == Position::LEFT) {
+        return verifyRightWildcard(stmt);
+    } else {
+        return verifyLeftWildcard(stmt);
+    }
+};
 
 void AffectsTTable::solveSingleWildcard(
     std::unordered_set<Value> *intermediateResult, Position stmtPos) {
